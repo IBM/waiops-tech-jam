@@ -1,0 +1,34 @@
+{
+  "name": "tech-academy-aiops-2022",
+  "private": true,
+  "version": "1.0.0",
+  "license": "Apache 2.0",
+  "scripts": {
+    "dev": "gatsby develop -H 0.0.0.0",
+    "dev:clean": "gatsby clean && gatsby develop -H 0.0.0.0",
+    "build": "gatsby build",
+    "build:clean": "yarn clean && gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "test": "echo \"no test specified\" && exit 0",
+    "deploy": "gatsby build --prefix-paths && gh-pages -d public",
+    "publish": "gh-pages -d public"
+  },
+  "dependencies": {
+    "acorn": "^8.7.0",
+    "gatsby": "^4.11.1",
+    "gatsby-plugin-pdf": "0.0.1",
+    "gatsby-theme-carbon": "^2.3.0",
+    "immer": "^9.0.12",
+    "node-fetch": ">=2.6.7",
+    "object-path": ">=0.11.8",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "sass": "^1.49.10",
+    "trim": ">=0.0.3",
+    "ws": ">=7.4.6"
+  },
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
+  }
+}

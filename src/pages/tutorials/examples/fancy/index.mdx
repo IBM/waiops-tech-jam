@@ -1,0 +1,191 @@
+---
+title: Fancy lab tutorial template
+description: Demonstration of how to build the markdown document to be nicely formatted on Gatsby carbon site
+---
+
+<PageDescription>
+
+This page is meant to demonstrate some of the components in action. You can
+check out the markdown used for this page
+[on github](https://github.com/carbon-design-system/gatsby-theme-carbon/blob/main/packages/example/src/pages/demo/index.mdx).
+
+The HTML tags in the document are optional, you can use them to get some nice formatting not available with regular markdown, e.g. graphical tiles for links
+
+</PageDescription>
+
+
+<AnchorLinks>
+  <AnchorLink>Two column section heading</AnchorLink>
+  <AnchorLink>Not working link as there is no matching header</AnchorLink>
+  <AnchorLink>Small anchor links</AnchorLink>
+  <AnchorLink>Images</AnchorLink>
+  <AnchorLink>Videos</AnchorLink>
+</AnchorLinks>
+
+<Row>
+<Column colMd={4} colLg={4} noGutterMdLeft>
+<ArticleCard
+  title="Getting started"
+  href="/getting-started"
+  actionIcon="arrowRight"
+>
+
+
+![Dark article layout mockup](/images/Article_06.png)
+
+</ArticleCard>
+</Column>
+<Column colMd={4} colLg={4} noGutterMdLeft>
+<ArticleCard
+  title="Fancy tutorial example"
+  href="/tutorials/examples/fancy"
+  actionIcon="arrowRight"
+>
+
+
+![Dark article layout mockup](/images/Article_06.png)
+
+</ArticleCard>
+</Column>
+<Column colMd={4} colLg={4} noGutterMdLeft>
+<ArticleCard
+  title="Simple tutorial example"
+  href="/tutorials/examples/simple"
+  actionIcon="arrowRight"
+>
+
+
+![Dark article layout mockup](/images/Article_06.png)
+
+</ArticleCard>
+</Column>
+</Row>
+
+
+<PageDescription>
+
+Lab tutorial description goes here
+
+</PageDescription>
+
+Additional text like lab prerequisites or other information goes here
+
+<Row>
+<Column colMd={5} colLg={8}>
+
+
+## Two column section heading
+
+Two column formated tutorial section introduction goes here. Fully optional. Delete the whole content between `Row` HTML tags to remove from the tutorial. The text in this section shows different formatting options
+
+```sh
+echo "This is a sample Shell script"
+```
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+```
+
+[Sample code file](/samples/sample.json)
+
+<a href="https://gatsby-theme-carbon.vercel.app/guides/MDX" class="external" target="_blank">External link that opens a new browser tab</a><MdxIcon name="bee" />
+
+
+**This is bold text**
+
+*This is italic text*
+
+> This is a highlighted text - can be used for example for famous quotes
+> which spans multiple lines
+
+This is a regular text
+
+<span style="color:red">This text is in red</span>
+
+</Column>
+<Column colMd={2} colLg={3} offsetMd={1} offsetLg={1}>
+<Aside>
+
+
+<p>
+  <strong>
+    This is a fancy 
+    <br />
+    comment box
+    <br />
+    on the right side
+  </strong>
+</p>
+
+Can be used as a comment to the main content but managing formatting can be bothersome. In such case, do not use.
+</Aside>
+</Column>
+</Row>
+
+
+## Small anchor links
+
+This section defines links to the headers below. Text in `AnchorLink` tags must match the Headers below for this to work.
+
+<AnchorLinks small>
+  <AnchorLink>Header</AnchorLink>
+  <AnchorLink>Header again</AnchorLink>
+</AnchorLinks>
+
+### Header
+
+Tutorial section content goes here
+
+### Header again
+
+Tutorial section content goes here
+
+1. This is a demonstration of an ordered list item. This list item is
+   particularly long to demonstrate how the text wraps and aligns with the first
+   line.
+   1. This is a nested list item, it should wrap in the same way. Typically,
+      nested list items should be of the same type (ordered, unordered) as their
+      parent.
+1. Ordered list item
+1. Ordered list item
+
+- This is a demonstration of an unordered list item. This list item is
+  particularly long to demonstrate how the text wraps and aligns with the first
+  line.
+  - This is a nested list item, it should wrap in the same way. Typically,
+    nested list items should be of the same type (ordered, unordered) as their
+    parent.
+- Unordered list item
+- Unordered list item
+
+## Images
+
+This section shows how to link global images from `src/images` subdirectory. The amount of upward directory references `..` in the path must much the directory structure of your tutorials. Do not use it if you doen't have to - it creates problems when you change the directory structure of the tutorial pages
+
+![If you see this text it means you get the path wrong](../../../../images/large-image.jpg)
+
+## Videos
+
+This is a sample how to embed a link to Vimeo video
+
+<Video title="Eyes" vimeoId="310583077" />

@@ -1,0 +1,210 @@
+---
+title: Exploring the capabilities of Watson AIOps Metric Anomaly Detection
+description: This lab will walk you through how to send metric data into Watson AIOps Metric Anomaly Detection feature, how to train on the data, and how to identify anomalies
+---
+
+<AnchorLinks>
+  <AnchorLink>6-1: Verify the Watson AIOps AI Manager installation</AnchorLink>
+  <AnchorLink>6-2: Generating an API key</AnchorLink>
+  <AnchorLink>6-3: Sending training data to the Watson AIOps API</AnchorLink>
+  <AnchorLink>6-4: Confirm that the training data was received</AnchorLink>
+  <AnchorLink>6-5: Running the training job</AnchorLink>
+  <AnchorLink>6-6: Sending anomalous data</AnchorLink>
+  <AnchorLink>6-7: Viewing the results</AnchorLink>
+  <AnchorLink>6-8: Lab summary</AnchorLink>
+</AnchorLinks>
+
+## 6-1: Verify the Watson AIOps AI Manager installation
+
+ At the beginning of the day, you started an install of Watson AIOps AI Manager. In general, a deployment of AI Manager runs around 90 minutes or so. Before we proceed with these labs, we will verify that the AI Manager install completed successfully.
+
+ Open a shell on your control node, then verify that your AI Manager installation has completed successfully:
+
+_oc get installations.orchestrator.aiops.ibm.com -A && echo "" && oc get ircore,AIOpsAnalyticsOrchestrator -A -o custom-columns="KIND:kind,NAMESPACE:metadata.namespace,NAME:metadata.name,STATUS:status.conditions[?(@.type==\"Ready\")].reason" && echo "" && oc get lifecycleservice -A -o custom-columns="KIND:kind,NAMESPACE:metadata.namespace,NAME:metadata.name,STATUS:status.conditions[?(@.type==\"Lifecycle Service Ready\")].reason" && echo "" && oc get BaseUI -A -o custom-columns="KIND:kind,NAMESPACE:metadata.namespace,NAME:metadata.name,STATUS:status.conditions[?(@.type==\"Ready\")].reason" && echo "" && oc get AIManager,aiopsedge,asm -A -o custom-columns="KIND:kind,NAMESPACE:metadata.namespace,NAME:metadata.name,STATUS:status.phase"_
+
+The status of the components should be "Ready", and Completed, Configured, and OK for AIManager, AIOpsEdge, and ASM respectively:
+
+ ![](RackMultipart20220818-1-u0l7a_html_ea87c51330b0c4de.png)
+
+## 6-2: Generating an API key
+
+ For this lab we will be sending in metric data through the Watson AIOps REST API. Any interaction with the Watson AIOps API must be authenticated by either a bearer token or an API key. In this section, we will generate an API key that we will use to send in our data.
+
+ First, we need to login to the Watson AIOps interface. To do that, we need to obtain the UI route (URL) for your Watson AIOps installation UI. Run the following command and copy the output:
+
+_oc get route -n cp4waiops cpd -o jsonpath='{.spec.host}'; echo_
+
+Open up your browser on your laptop and paste the URL. You will be presented with the main login screen. Click on "IBM provided credentials (admin only):
+
+ ![](RackMultipart20220818-1-u0l7a_html_2d5f0eba7b0855ea.png)
+
+Obtain the password for the admin user by running the following command, and copy the resulting output:
+
+_oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin\_password}' | base64 -d ; echo_
+
+Login to the Cloud Pak as user 'admin', and paste the password in the Password field:
+
+ ![](RackMultipart20220818-1-u0l7a_html_e5241bff42ac9d39.png)
+
+Click "Maybe Later" if the "take a tour" window pops up. You will be presented with the main Cloud Pak window. In the upper-right corner of this window you will see a blue user circle, click on this circle, and select "Profile and settings":
+
+![](RackMultipart20220818-1-u0l7a_html_eeb95127642dc27f.png)
+
+ In the admin user configuration interface, in the upper-right corner of the window you will see a link titled "API key". Select that link, and from the drop-down click "Generate new key":
+
+ ![](RackMultipart20220818-1-u0l7a_html_ec052fdd7cdbb229.png)
+
+ ![](RackMultipart20220818-1-u0l7a_html_8dfa3e8699268b6d.png)
+
+ Copy the key, and save it some place where you won't lose it. Note that once you close this window, you will never be able to obtain that key again. So if you lose it, you will need to generate another key.
+
+ Return to the console on your control node and create a Basic Authentication token, which will be used to authenticate with the Metrics REST API. Save the Basic Authentication as an environment variable named ZENAPIKEY. Run the following command, being sure to replace \<YOUR API KEY\> with the api key you copied in the previous step:
+
+_ZENAPIKEY=$(echo "admin:__\<YOUR API KEY\>"_ _|base64); echo $ZENAPIKEY_
+
+## 6-3: Sending training data to the Watson AIOps API
+
+ First we will obtain the training/display files we will use to demonstrate training/anomaly detection. SCP the following training and display files. Use \<LAB PASSWORD\> as the password:
+
+_scp scadmin@150.238.93.118:/home/scadmin/BookInfoJson-training __**-**__ 20220721-0000\_\_20220804-0000.json .
+ scp scadmin@150.238.93.118:/home/scadmin/BookInfoJson-display_ _ **-** __20220804-0000\_\_20220806-1200.json ._
+
+The metrics REST API is exposed via an OpenShift route. Obtain the route and store it in an environment variable named 'METRICROUTE':
+
+_export METRICROUTE=$(oc get route | grep ibm-nginx-svc | awk '{print $2}')_
+
+Next, send in the training data using the following curl POST command:
+
+_curl -k -v -X POST "https://${METRICROUTE}/aiops/api/app/metric-api/v1/metrics" --header 'Content-Type: application/json' --header "Authorization: ZenApiKey ${ZENAPIKEY}" --header 'X-TenantID: cfd95b7e-3bc7-4006-a4a8-a73a79c71255' --data @BookInfoJson-training-20220721-0000\_\_20220804-0000.json_
+
+The key response lines that you will see when the load is successful are:
+
+_\< HTTP/1.1 100 Continue_
+
+_\* We are completely uploaded and fine_
+
+_\* Mark bundle as not supporting multiuse_
+
+_\< HTTP/1.1 200 OK_
+
+Followed by several lines summarizing the completed session.
+
+## 6-4: Confirm that the training data was received
+
+ Much like we saw in the on-prem Metric Manager, data that is send in via the REST interface is placed on a Kafka topic and inserted into a Cassandra database. We can verify that our training data made it into Cassandra by logging into the Cassandra pod, running cqlsh, and querying the tararam.dt\_metric\_value table. The following steps describe this process.
+
+ First, obtain the Cassandra password and place it into an environment variable called "CASSANDRA\_PASSWORD". This can be achieved with the following command:
+
+_export CASSANDRA\_PASSWORD=$(oc get secret aiops-topology-cassandra-auth-secret --template={{.data.password}} |base64 -d)_
+
+Next, run cqlsh using 'oc exec' command:
+
+_oc exec -it aiops-topology-cassandra-0 -- /opt/ibm/cassandra/bin/cqlsh -u admin -p $CASSANDRA\_PASSWORD --ssl_
+
+ If you describe keyspaces, you will see our tararam keyspace. Switch context to that keyspace with the 'use tararam' command, and query the dt\_metric\_value table:
+
+_describe keyspaces;
+ use tararam;
+ select \* from dt\_metric\_value;_ You will see that, much like we saw with the on-prem REST service, we see our metric data.
+
+ ![](RackMultipart20220818-1-u0l7a_html_d0b0631ac249c5b9.png)
+
+ You can also view the unique resource/metric combinations that comprise the data that Z
+_select \* from md\_metric\_resource;_
+
+ ![](RackMultipart20220818-1-u0l7a_html_86d2483926d1f12c.png)
+
+ In the above output, you can see the unique metric/resource combinations that were found within the data that we sent to the REST interface. The mr\_id is the link between the resource/metric combination, and the metric value in the dt\_metric\_value table.
+
+## 6-5: Running the training job
+
+ Now that we have data in the system, we can kick off a training job. Return to the Watson AIOps interface in your browser, and from the main screen, click on AI model management:
+
+ ![](RackMultipart20220818-1-u0l7a_html_772a071f2ba58e59.png)
+
+ In the next window, you'll see a tile for "Metric anomaly detection". Select "Set up training" from this tile:
+
+ ![](RackMultipart20220818-1-u0l7a_html_26beae458fc23c3e.png)
+
+ Click "Next" on the description page:
+
+ ![](RackMultipart20220818-1-u0l7a_html_724a7e3fe58b9c2e.png)
+
+ The next screen allows you to define a schedule for ongoing re-training/re-learning. In general, it is recommended that this be scheduled on a daily basis, which is how the on-prem Metric Manager works as well. For our purposes though, we're going to manually train on the data, so you can leave this Off for now. Click "Next"
+
+ ![](RackMultipart20220818-1-u0l7a_html_6dc7fa1658dc9039.png)
+
+
+ The final screen explains where to find anomalies. Click "Done"
+
+ ![](RackMultipart20220818-1-u0l7a_html_b5b0299af82c7598.png)
+
+ Once your training configuration is complete, you will be brought back to the model management screen. Select the 3 icons at the top right of the Metric anomaly detection tile and select "Start training":
+
+ ![](RackMultipart20220818-1-u0l7a_html_c3b7419761e29bb2.png)
+
+ After a minute or two, training should complete and you should see the model deployed:
+
+ ![](RackMultipart20220818-1-u0l7a_html_e50620ce642a4dc6.png)
+
+## 6-6: Sending anomalous data
+
+We split the data into two parts to illustrate training and anomaly generation. In this step, we will send our anomalous data in. This will be in the same manner that we did for the training data… using curl.
+
+_curl -k -v -X POST "https://${METRICROUTE}/aiops/api/app/metric-api/v1/metrics" --header 'Content-Type: application/json' --header "Authorization: ZenApiKey ${ZENAPIKEY}" --header 'X-TenantID: cfd95b7e-3bc7-4006-a4a8-a73a79c71255' --data @BookInfoJson-display-20220804-0000\_\_20220806-1200.json_
+
+
+## 6-7: Viewing the results
+
+ To view the results of our analysis, return to the Watson AIOps interface, and from the main menu click on "Stories and Alerts".
+
+ ![](RackMultipart20220818-1-u0l7a_html_f0e4edb71b720bcd.png)
+
+ Click on the Alerts tab to see our anomalies:
+
+ ![](RackMultipart20220818-1-u0l7a_html_bbb28e31c3d1e299.png)
+
+ Select the "Type" Field for the "ResponseTime" anomaly for the productpage-v1 resource. Then, in the Alerts Details window on the right, click on "Metrics anomaly details".
+
+ ![](RackMultipart20220818-1-u0l7a_html_5b3159ddcf6ea147.png)
+
+ This will bring up a historical chart that shows the time leading up to the anomalous period, with the anomalous period displayed in a red shaded area:
+
+ ![](RackMultipart20220818-1-u0l7a_html_8d19849415f8b521.png)
+
+ To get an expanded view of this chart, click on the "View expanded chart" link below the chart. This will give you an expanded time period leading up to the anomaly, and also provide a list of any related alerts in the pane below, were there any at the time. The Metric Anomaly Detection feature currently leverages CNEA temporal events to do its event correlation. Future versions of Metric Anomaly Detection will also be able to show multiple related metrics on the same graph, whether the resources are related by temporal events, topology, or scope.
+
+ ![](RackMultipart20220818-1-u0l7a_html_544ee81dd044c338.png)
+
+ Also note that it is clear where the training period has ended, and we have a persisted baseline that started on 8/4/2022. If you hover your mouse over the graph, you can see the details of the time period and the actual value of the metric for that specific time period. You can see three instances where the response time went anomalous for short periods of time, then at the very right of the graph, we see where it went anomalous for a long period of time.
+
+ Much like we saw with Metric Manager, in MAD you can zoom in on any time period by holding your left mouse button down and dragging it across the time period that you want to zoom in:
+
+ ![](RackMultipart20220818-1-u0l7a_html_cc8d1e9c538f60f6.png)
+
+ To return to the expanded page, click anywhere in the top mini histogram bar. You will return to the expanded view.
+
+ Next, zoom in on the latest anomaly section to the right:
+
+ ![](RackMultipart20220818-1-u0l7a_html_2c6da27a60c84bbb.png)
+
+
+ Hover your mouse over the beginning of the red box, and you can see this situation started at 8/6/2022 at around 4:25 am., where the response time clearly started behaving contrary to the learned behavior. You can also see, on the right, where the data set ends. In live ingestion, this would likely be indicative of the "current time", but in our case this is historical data and that happens to be when the data set ends. Note the forecast of where that metric is headed based on Watson's forecasting algorithm. By default, we plot 20 intervals into the future… so if the data is 5 minute data, that would be 100 minutes into the future. You will notice that the forecast gets wider and wider farther into the future. This indicates that the further you go into the future, the less confident Watson is in terms of where it will be.
+
+ At the top of the histogram, you will see two black bars that let you move the start/stop time of the graph. Move the left one by clicking on it and dragging it to the left to include the time period where we saw the other anomalies:
+
+ At the top of the graph, note the three dots. This will bring up a menu that allows you to export the data in the current graph. You can export the data in CSV format, or you can export the graph as an image in PNG or JPG format.
+
+ ![](RackMultipart20220818-1-u0l7a_html_dc5559e04bafa27b.png)
+
+ You can also display the values in the current graph in a tabular view by clicking on the tabular view icon:
+
+ ![](RackMultipart20220818-1-u0l7a_html_5268b16c7555fb14.png)
+
+
+ Finally, you can bring up any arbitrary day in the past by clicking on the "Date" drop-down. A calendar view will pop up allowing you to select a day to view the metric data for the current metric for that date:
+
+ ![](RackMultipart20220818-1-u0l7a_html_7e8bc15c51f3584d.png)
+
+## 6-8: Lab summary
+
