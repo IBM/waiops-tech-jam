@@ -9,21 +9,21 @@ description: This lab will illustrate how to analyze CSV file structure, how to 
   <AnchorLink>3-3: Topic configuration</AnchorLink>
   <AnchorLink>3-4: Creating a model to ingest CSV</AnchorLink>
   <AnchorLink>3-5: Deploying the model</AnchorLink>
-  <AnchorLink>3-6: Ingesting the CSV data for machine learning</AnchorLink>
+  <AnchorLink>3-6: Ingesting CSV data for machine learning</AnchorLink>
 </AnchorLinks>
 
-## 3-1: Introduction
+## 3-1: **Introduction**
 
 The Metric Manager can consume data in four primary ways: Modelling/Mediating data that is in CSV format, Modelling/Mediating data that resides in a database via JDBC connection, and ingesting pre-formed JSON through either the REST mediation service or Kafka.
 
-This lab will be showing you how to consume data from CSV files. There are CSV files located in the /home/scadmin/BookInfoDemo/data/bookinfo/data directory. These files contain metrics for Application response time (APP), CPU utilization (CPU), Database transaction volume (DB), and disk utilization (DISKBUSY). This data spans a time period of 17 days.
+This lab will be showing you how to consume data from CSV files. There are CSV files located in the _/home/scadmin/BookInfoDemo/data/bookinfo/data_ directory. These files contain metrics for Application response time (APP), CPU utilization (CPU), Database transaction volume (DB), and disk utilization (DISKBUSY). This data spans a time period of 17 days.
 
  We will create a Metric Manager topic to receive this data, create a model for this data with the Mediation Tool, deploy that model, then start the topic and start ingesting the data.
 
 ## 3-2: **Creating a topic**
 
 
-  To create a topic, open a terminal window and run the following command:
+  To create a topic, open a terminal window and run the following commands:
 
 ```sh
 cd /opt/IBM/scanalytics/analytics/bin
@@ -50,7 +50,9 @@ BIGBLUE
 
 ### Topic configuration considerations
 
- There are considerations for topic configuration that need to be accounted for based on the data that the Metric Manager will be ingesting. One of the more important aspects of topic configurations is the system aggregation interval. The aggregation interval defines the rate of the data, in minutes, that Metric Manager will be consuming. This is largely dictated by the source of the metric data. The supported PI intervals are 5, 10, 15, and 60 minutes. If the source that is generating metrics for MM ingestion is collecting at 5 minutes, it is best to set the aggregation interval for the topic to 5. If the metrics are generated at 1 minute intervals, set the topic to 5 minutes, and PI will automatically aggregate the data to the 5 minute interval.
+_Aggregation interval_
+
+ There are considerations for topic configuration that need to be accounted for based on the data that the Metric Manager will be ingesting. One of the more important aspects of topic configurations is the system aggregation interval. The aggregation interval defines the rate, in minutes, of the metric data that Metric Manager will be consuming. This is largely dictated by the source of the metric data (e.g. an APM tool, network performance monitor, etc). The supported PI intervals are 5, 10, 15, and 60 minutes. If the source that is generating metrics for MM ingestion is collecting at 5 minutes, it is best to set the aggregation interval for the topic to 5. If the metrics are generated at 1 minute intervals, set the topic to 5 minutes, and PI will automatically aggregate the data to the 5 minute interval.
 
  For 5 minute data, time intervals in minutes/seconds are:
 
@@ -68,7 +70,7 @@ BIGBLUE
  10:00 – 19:59  
  …  
  …  
- 40:00 - 49:49
+ 40:00 - 49:49  
  50:00 – 59:59  
 
  Investigate the data that we will model and ingest. Change your directory to where our CSV files are located and list the contents of the directory:
@@ -78,9 +80,11 @@ cd /home/scadmin/BookInfoDemo/data/bookinfo/data
 ls
 ```
 
+_CSV file naming_
+
 You'll note that there are a number of csv files in that directory that look to adhere to a standard naming convention. There are rules that you must follow for naming these files, and those rules are documented in the "IBM Operations Analytics Predictive Insights" documentation at this link:
 
-[https://www.ibm.com/docs/en/oapi/1.3.6?topic=SSJQQ3\_1.3.6/com.ibm.scapi.doc/admin\_guide/r\_tasp\_csvrules.html](https://www.ibm.com/docs/en/oapi/1.3.6?topic=SSJQQ3_1.3.6/com.ibm.scapi.doc/admin_guide/r_tasp_csvrules.html)
+<a href="https://www.ibm.com/docs/en/oapi/1.3.6?topic=SSJQQ3\_1.3.6/com.ibm.scapi.doc/admin\_guide/r\_tasp\_csvrules.html" target="_blank">Rules for using CSV data sources</a>
 
  In short:
 
@@ -93,9 +97,13 @@ You'll note that there are a number of csv files in that directory that look to 
 
 `<GROUP>__<STARTDATE>-<STARTTIME>__<ENDDATE>-<ENDTIME>.csv`
 
- You will note that some groups have individual daily files (CPU, Diskbusy), and others have one csv file for the entire span of data (APP, DB). The Metric Manager extraction process is smart enough to read data for each of its intervals from the files simply based on the timestamp of the files that exist. Since we will be ingesting files in 'backlog' historical mode, and not live, having daily files or a file that spans 17 days is fine. If we were ingesting live data for anomaly detection, Metric Manager would expect to have a single file that contains all metric data for each aggregation interval. In live ingestion, the extractor instance will pick up the latest file for the previous aggregation interval (e.g. 00:00-04:59) and process it.
+ You will note that some groups have individual daily files (CPU, Diskbusy), and others have one csv file for the entire span of data (APP, DB). The Metric Manager extraction process is smart enough to read data for each of its intervals from the files simply based on the timestamp of the files that exist, as well as the timestamps within the files. Since we will be ingesting files in 'backlog' historical mode, and not live, having daily files or a file that spans 17 days is fine. If we were ingesting live data for anomaly detection, Metric Manager would expect to have a single file that contains all metric data for each aggregation interval. In live ingestion, the extractor instance will pick up the latest file for the previous aggregation interval (e.g. 00:00-04:59) and process it.
 
  So in looking at the file names, we can see that the data in this directory starts at October 1st at midnight, 2020, and ends on October 17th, noon, or about 17 days. Next, let's look at the interval of the data contained in the files.
+
+_Resources within Metric Manager_
+
+Any data sent into Metric Manager (whether it be CSV, or REST/Kafka) must contain enough information to properly classify the component that the metric is related to. For example, you may be collecting metrics for a router. That router may have multiple interfaces. There are metrics that are applicable to the router **node** itself (e.g. CPU utilization, buffer utilization), and there are metrics that are applicable to an **interface** on that router (e.g. packet drops, in bits per second, out bits per second, etc). 
 
  Run the following command to page through the data contained in the APP file:
 
@@ -103,15 +111,15 @@ You'll note that there are a number of csv files in that directory that look to 
 more APP__20201001-0000__20201017-1200.csv
 ```
 
-Note that the file has the required CSV header:
+Note that the file has the required CSV header, which must be the first entry of the CSV file:
 
-_Time,RESOURCE,ResponseTime_
+**_Time,RESOURCE,ResponseTime_**
 
- In looking at the file, it's clear that the timestamp is the first column, and looking at the times they are timestamped at 5 minute intervals. Look at the other files and confirm that they are also in 5 minute intervals with the exception of DISKBUSY, which appear to be in minute intervals. That is fine as MM will aggregate our data for us.
+ In looking at the file, it's clear that the timestamp is the first column, and looking at the times they are timestamped at 5 minute intervals. Look at the other files and confirm that they are also in 5 minute intervals with the exception of DISKBUSY, which appear to be in minute intervals. That is fine as MM will aggregate our data for us (more on this later).
 
- Also note that the timestamps are in a different format than the file name. It is in the format "Day/Month/Year Hour:Minute", using literal slashes, space, and colon as delimiters. Additionally the Year is in 2 digit format, rather than four. So during our model creation, we must use the notation "dd/MM/yy HH:mm". More on that later.
+ Also note that the timestamps are in a different format than the file name. It is in the format "Day/Month/Year Hour:Minute", using literal slashes, space, and colon as delimiters. Additionally the Year is in 2 digit format, rather than four. So during our model creation, we must use the notation "dd/MM/yy HH:mm". It is important to be cognizant of timestamp formats whether they be in the file name, or within the CSV file itself. They may not always be the same, and we will take this into account when we create our model for the CSV data.
 
-### Setting topic configuration items
+### Configuring topic options
 
  Given the velocity of the data contained in these CSV files, we will need to configure the Metric Manager topic aggregation interval to 5 minutes. To set the aggregation interval, first check to see what it is currently set to:
 
@@ -132,8 +140,12 @@ To verify the change, run the following command:
 ./admin.sh show -t=BIGBLUE |grep system.aggregation.interval
 ```
 
+... you should see that the system.aggregation.interval property is 5 minutes:
 
-When ingesting data from the past, it's important to configure the topic such that it doesn't automatically delete the data you ingest. Metric Manager is not meant to be used as a long-term metric data repository... it is meant to keep the data long enough to successfully identify changes in behavior, and to keep a small amount of historical for short-term review. When you create a topic, metric data is cleared out after 15 days, while anomaly alarm data is kept for 180 days. Since we have data originating from 2020, we need to set a couple more topic parameters to ensure the system doesn't age out our data. Set the following:
+`system.aggregation.interval: 5`
+
+
+When ingesting historical data, it's important to configure the topic such that it doesn't automatically delete the data you ingest. Metric Manager is not meant to be used as a long-term metric data repository... it is meant to keep the data long enough to successfully identify changes in behavior, and to keep a small amount of historical for short-term review. By default, a topic's metric data is cleared out after 15 days, while anomaly alarm data is kept for 180 days. Since we have data originating from 2020, we need to set a couple more topic parameters to ensure the system doesn't age out our data. Set the following options for the topic BIGBLUE:
 
 ```sh
 ./admin.sh set -t=BIGBLUE sta.corr.retention.days 1095
@@ -141,7 +153,7 @@ When ingesting data from the past, it's important to configure the topic such th
 ./admin.sh set -t=BIGBLUE system.metric.retention.days 1095
 ```
 
-Another thing you may need to do during a proof of concept is disable the alarm clearing. This is required to be disabled if you are analyzing past data and need to demonstrate what the anomaly alerts that arrive in Event Manager look like, without having them clear when the anomaly occurrence stops. Since we'll be viewing Event Manager events as part of our labs, we'll disable it:
+Another thing you may need to do during a proof of concept is disable alarm clearing. This is required to be disabled if you are analyzing past data and need to demonstrate what the anomaly alerts that arrive in Event Manager look like, without having them clear when the anomaly occurrence stops. Since we'll be viewing Event Manager events as part of our labs, we'll disable it:
 
 ```sh
 ./admin.sh set -t=BIGBLUE system.alarm.autoclear false
@@ -160,19 +172,19 @@ Another thing you may need to do during a proof of concept is disable the alarm 
 
 ## 3-4: **Creating a model to ingest CSV**
 
- The Mediation Tool is the component you will use to model the data in the CSV files so that Metric Manager can ingest, process, learn, and identify anomalies within the data. The tool allows you to create a 'model' of the data that resides in the CSV files you'll be working with, from within a user-friendly Eclipse interface. You can start the Mediation Tool by issuing the following commands from your VNC session terminal:
+ The Mediation Tool is the component you will use to model the data contained within the CSV files so that Metric Manager can ingest, process, learn, and identify anomalies within the data. The tool allows you to create a 'model' of the structure of the CSV files you'll be working with, from within a user-friendly Eclipse interface. You can start the Mediation Tool by issuing the following commands from your VNC session terminal:
 
 ```sh
 cd /opt/IBM/scanalytics/mediationtool/eclipse
 ./eclipse
 ```
 
- You will be presented with the initial config screen. Just leave the default and click "Ok".
+ You will be presented with the initial config screen. Leave the default and click "Ok".
 
  ![](images/Picture2.png)
 
 
- You will be presented with the main window. In this step we will create a new Predictive Insights project. From the main window select **File-\>New-\>Project** from the menu bar:
+ You will be presented with the main window. In this step we will create a new Predictive Insights project. A project is simply a folder that contains one or more model definitions. From the main window select **File-\>New-\>Project** from the menu bar:
 
  ![](images/Picture3.png)
 
@@ -206,7 +218,7 @@ cd /opt/IBM/scanalytics/mediationtool/eclipse
 
  ![](images/Picture10.png)
 
- In the next screen, you will select **Filesystem**, and click on **Metric names in column headers**.
+ In the next screen, you will select **File System** from the drop-down box, and select **Metric names in column headers**.
 
  ![](images/Picture11.png)
 
@@ -214,17 +226,20 @@ cd /opt/IBM/scanalytics/mediationtool/eclipse
 
 _A note about CSV structure: CSV files can be in either **wide** or **skinny** format. **Wide** format specifies the metric name in the CSV header. For example, in our data the CPU group has the following header:
 
- "TIME","RESOURCE","User%","Wait%"
- 01/10/20 00:00,"details",84.9,0
+ `"TIME","RESOURCE","User%","Wait%"`  
+ `01/10/20 00:00,"details",84.9,0`  
+ `…`  
+ `…`  
 
- Above we can see there are two metric definitions in the csv header, "User%" and "Wait%". That means that a single line contains multiple metric definitions per resource. Hence, we selected "Metric names in column headers".
+ Above we can see there are two metric definitions in the csv header, "User%" and "Wait%". That indicates that a single CSV line contains multiple metric definitions per resource. Hence, we selected **Metric names in column headers**.
 
- You may come across a situation where the metric name appears in the csv file data rather than the header. For example:
+ You may come across a situation where the metric name appears in the csv file data rather than the header. Compare the previous example with the following:
 
- "TIME","RESOURCE","METRICNAME"
- 01/10/20 03:20,details,User%,84.9
- 01/10/20 03:20,details,Wait%,0
- …
+ `"TIME","RESOURCE","METRICNAME"`  
+ `01/10/20 03:20,details,User%,84.9`  
+ `01/10/20 03:20,details,Wait%,0`  
+ `…`  
+ `…`  
 
  The CSV contains a generic "METRICNAME" indicator, and the various metric name appears within the csv lines, rather than the header. This is **skinny** format, and each line contains only one metric. When you model the CSV file, and select the metric column, it will show all of the available unique metric names as available, and you can include/exclude metrics as needed.
 
@@ -238,15 +253,16 @@ _Note: If you need to ingest files in both skinny and wide format, you must crea
 
  ![](images/Picture12.png)
 
- First, under File System Details, change the file path to:
+ First, under **File System Details**, change the **File Path** to:
 
 **/home/scadmin/BookInfoDemo/data/bookinfo/data**
 
- Next, modify the name pattern. As we learned previously, a CSV file name must start with a group refence, followed by a delimiter, followed next by a start time and optionally an end time. When defining the name pattern, we use regular expressions to match. To keep it simple, use the following regex to define the name pattern:
+ This tells the mediation tool where to expect the CSV files.
 
-**(.\*)\_\_(.\*)\_\_(.\*)\.csv**
+ Next, modify the name pattern. As we learned previously, a CSV file name must start with a **group reference**, followed by a **delimiter**, followed next by a **start time** and  an **end time** (with the end time only strictly necessary when the file contains data for a span of multiple intervals). When defining the name pattern, we use regular expressions to match. To keep it simple, use the following regex to define the name pattern:
 
- Note that the literal underscore delimiters are not a single underscore, but two.
+**(.\*)\_\_(.\*)\_\_(.\*)\\.csv**
+
 
  The mediation tool, as well as the Metric Manager extractor, uses the first regex match as the metric group identifier, the second as the Start Time, and, if defined, the third regex match as an end time.
 
@@ -262,7 +278,7 @@ _Note: If you need to ingest files in both skinny and wide format, you must crea
 
 The files provided are in GMT already so we can leave the timezone as it is.
 
- _Note: It is important to be cognizant of the timezone of the data and configure this appropriately, so that the analytics can properly learn the differences between weekday and weekend behavior patterns, as well as proper correlation of metrics across all CSV files. Much of the time the timezone will be GMT, but there are also several cases where they are provided in the local time zone. Make sure that you verify with the customer that the time zone is GMT, and if not, verify the actual time zone._
+ _Note: It is important to be cognizant of the timezone of the data and configure this appropriately, so that the analytics can properly learn the differences between weekday and weekend behavior patterns, as well as proper correlation of metrics across all CSV files. In many cases the timezone of the data you work with will be GMT, but you may run into cases where they are provided in some local time zone. Make sure that you verify with the customer what timezone the data timestamps are in._
 
  Once all the File System Details options have been configured, click the "Test Matching". You should get green checkmarks for the files in our directory indicating that the name pattern and time format worked properly:
 
@@ -293,7 +309,7 @@ The files provided are in GMT already so we can leave the timezone as it is.
 
  ![](images/Picture17.png)
 
- Expanding the tree view fully shows all of the available tables in our CSV files.:
+ Expanding the tree view **fully** shows all of the available tables and columns in our CSV files.:
 
  ![](images/Picture18.png)
 
@@ -312,7 +328,7 @@ The files provided are in GMT already so we can leave the timezone as it is.
 
  The mediation tool did a good job of providing a model based on the structure for this instance. It selected the proper CSV column for the **Timestamp (Time)**, the proper CSV column for the **Resource Key (RESOURCE)**, and the proper column for the **Metric Name (ResponseTime)**. So in this case, there isn't any additional work we need to do to define the model. But we do need to configure the timestamp format (as we did in the File Details definition). To do this, click select the **Model Properties** tab below the **Model Design** window. Open up the **Model -\> ApplicationPerformance -\> Timestamp** entry, and change the **Data Type** to **String** if it isn't already.
 
- As noted earlier, the time format is a bit different in the file that it is in the filename. As such we must define **Time Format** as **dd/MM/yy HH:mm** (don't forget the space between the date and time). When you are finished entering the Time Format field, hit the **enter** key so that the entry is saved.
+ Recall our earlier examination of the CSV file content. We discovered that the time format of the timestamp within the CSV file is different that it is in the filename. As such we must define **Time Format** as **dd/MM/yy HH:mm** (don't forget the space between the date and time). When you are finished entering the Time Format field, hit the **enter** key so that the entry is saved.
 
  ![](images/Picture22.png)
 
@@ -326,13 +342,12 @@ The files provided are in GMT already so we can leave the timezone as it is.
 
  If you do not see data in the preview after clicking on the **Preview extraction** icon, verify the configuration of your timestamp in the model properties tab. If you feel you have verified everything and are still having issues, consult a lab proctor.
 
- Finally, take a moment to save the work we have done so far for modelling the csv data in case we should lose connection or some other problem. In the Menu, select:
+ Finally, take a moment to save the work we have done so far for modelling the csv data in case we should lose connection or some other unavoidable disaster occurs. In the Menu, select **File -\> Save**:
 
- **File -\> Save**
 
  ![](images/Picture25.png)
 
- Next, we will configure a model for the CPU data. From the **Model Design** window, right-click on **CPU** under the ITM data source, and select **New Metric Group**.
+ Next, we will configure a model for the **CPU** data. From the **Model Design** window, right-click on **CPU** under the ITM data source, and select **New Metric Group**.
 
  ![](images/Picture26.png)
 
@@ -403,7 +418,9 @@ Verify data in extraction preview:
 
  Note that in the CSV file, we have four columns: TIME, RESOURCE, DISKNAME, and DISKBUSY. The mediation tool did a good jo of defining the Timestamp and identifying the metric name. However, for the resource key, it only used the RESOURCE field in the CSV file. If we don't add the DISKNAME field to the resource key, the Metric Manager will just aggregate/average the data for all disks to a single metric (DISKBUSY) at the Node level, which is certainly not what we want.
 
- The resource key is important for metrics that may be specific to a component or set of components on a node or device. For example, if Metric Manager is receiving network utilization metrics from a server that has 2 NIC cards, you need to define the resource not as simply the Node, but the Node + NIC name…. e.g. "server1:eth0 and server1:eth1".
+ The resource key is important for metrics that may be specific to a component or set of components on a node or device. For example, if Metric Manager is receiving network utilization metrics from a server that has **2 network interface cards**, you need to define the resource not as simply the Node, but the **Node + network interface card name**… e.g. "server1:eth0 and server1:eth1".
+
+The mediation tool does this for us when we define multiple columns as the **Resource Key**.
 
  In our case, what we need to do is include the **DISKNAME** as part of the Resource Key, so we don't just aggregate/average all values for all disks at the Node level. To do this, select **DISKNAME** from the ITM data tree with the left mouse button, hold down the button and drag it into the Attributes window to add DISKNAME as an attribute. Alternatively you can right-click on **DISKNAME** and select **Add Attribute**:
 
@@ -439,7 +456,7 @@ You'll notice that indeed there are multiple entries for a given time stamp.
 
  In our case, upon further investigation and a discussion with the team that manages the tool that measures DIKSBUSY, we discover the DISKBUSY metric is measured and written every 10 seconds, but the time format as written has left off the seconds column. This isn't a problem in this case, because the smallest aggregation interval Metric Manager supports is 5 minutes, and these values will be all aggregated up to 5 minutes anyway… even if the seconds column were included. So in our case, we can safely ignore the error.
 
- Data quality is paramount to ensure maximum value from Metric Manager. Be cognizant of the format of the data, and if there is something you come across that doesn't seem right, consult the owners of the tool that's generating the data for Metric Manager and verify that it is correct..
+ Data quality is paramount to ensure maximum value from Metric Manager. Be aware of the format of the data, and if there is something you come across that doesn't seem right, consult the owners of the tool that's generating the data for Metric Manager and verify that it is correct.
 
  To continue the lab, return to the Mediation Tool window and click **Ok** and verify that your extraction preview shows data:
 
@@ -463,8 +480,10 @@ You'll notice that indeed there are multiple entries for a given time stamp.
  And change the following items in the configuration window:
 
 `JDBC URL: jdbc:db2://pi-template.Hybrid-Squad.cloud:50000/SCAPIDB`  
-`Password: <LAB PASSWORD>`   
+`Password:` **<span style="color:green"><LAB PASSWORD\></span>**    
 `<CHECK "Save as Project Defaults">`  
+
+ ![](images/lab3-addon1.png)
 
  Click **Ok** when finished:
 
@@ -474,23 +493,21 @@ You'll notice that indeed there are multiple entries for a given time stamp.
 
  If there is just a single topic, it will deploy straight away.
 
- ![](images/Picture48.png)
 
  After the KPI count is complete, click **Yes** to deploy the model to the topic:
 
- ![](images/Picture49.png)
+ ![](images/Picture48.png)
 
 
  After the deployment completes successfully, exit the mediation tool to return to the command line.
 
- In this section, we went through the steps to model data that is in CSV format, and deploy that model to a topic. In the next section, we will ingest the data and see what anomalies were identified.
 
 ## 3-6: **Ingesting CSV data for machine learning**
 
 
 ### Start the topic
 
- Now that we have successfully created and deployed a model to our topic, we can extract the data for analysis and see how the Metric Manager learns the behavior of the data and identifies situations where the data has acted contrary to the learned behavior. We must first start the topic. Return to the command line and run the following commands:
+ Now that we have successfully created and deployed a model to our topic, we can extract the data for analysis and see how the Metric Manager learns the behavior of the data and identifies situations where the data has acted contrary to the learned behavior. We must first start the topic. Exit the mediation tool to return to the command line and run the following command to start the topic:
 
 ```sh
 /opt/IBM/scanalytics/analytics/bin/start.sh -t=BIGBLUE
@@ -511,7 +528,7 @@ If you still have problems starting up the topic, ask a lab proctor for assistan
 
 ### Verify required services are running
 
- Before we start the extraction, verify that the Netcool services are up and running by issuing the following command, using the password \<LAB PASSWORD\> as the password:
+ Before we start the extraction, verify that the Netcool services are up and running by issuing the following command, using the password **<span style="color:green"><LAB PASSWORD\></span>** as the password:
 
 ```sh
 sudo systemctl status nco
@@ -592,6 +609,6 @@ ls good
 
  By watching both the data directory and the good directory, you will be able to see which files are being processed (INUSE), and which files are complete and end up in the 'good' directory.
 
- Take a break. In about 12 to 15 minutes, the data directory will be empty of all CSV files, which have been moved to the good directory. Machine learning and anomaly detection of the ingested data will complete. The next lab will walk through navigating the UI and the results.
+ Take a break. In about 12 to 15 minutes, the data directory will be empty of all CSV files, which have been moved to the good directory. Machine learning and anomaly detection of the ingested data will complete. The next lab will walk through navigating the UI and viewing the results.
 
 
