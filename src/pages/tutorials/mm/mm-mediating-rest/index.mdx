@@ -41,7 +41,7 @@ description: This lab will teach you how to ingest metric data from the REST med
 /opt/IBM/scanalytics/analytics/bin/admin.sh set -t=BIGBLUE cassandra.host localhost
 ```
 
- Encrypt and copy the default Cassandra password using the following commands. When prompted, enter <CASSANDRA PASSWORD\> as the password:
+ Encrypt and copy the default Cassandra password (CASSANDRA_DEFAULT_PASSWORD) using the following commands. When prompted, enter <CASSANDRA PASSWORD\> as the password:
 
 ```sh
 /opt/IBM/scanalytics/analytics/bin/admin.sh passwd -c $PI\_HOME/config/cassandra.properties connection.password
