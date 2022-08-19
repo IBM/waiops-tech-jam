@@ -4,15 +4,15 @@ description: Watson AIOps temporal patterns
 ---
 
 <AnchorLinks>
-  <AnchorLink>9-1: Overview</AnchorLink>
-  <AnchorLink>9-2: Create historical data for learning</AnchorLink>
-  <AnchorLink>9-3: Insert historical events into event manager</AnchorLink>
-  <AnchorLink>9-4: Run training for temporal patterns</AnchorLink>
-  <AnchorLink>9-5: Check policies created from learning</AnchorLink>
-  <AnchorLink>9-6: Replay Events</AnchorLink>
+  <AnchorLink>10-1: Overview</AnchorLink>
+  <AnchorLink>10-2: Create historical data for learning</AnchorLink>
+  <AnchorLink>10-3: Insert historical events into event manager</AnchorLink>
+  <AnchorLink>10-4: Run training for temporal patterns</AnchorLink>
+  <AnchorLink>10-5: Check policies created from learning</AnchorLink>
+  <AnchorLink>10-6: Replay Events</AnchorLink>
 </AnchorLinks>
 
-## 9-1: Overview
+## 10-1: Overview
 
 This module focuses on temporal patterns that group events based on learned patterns in time-based relations. 
 
@@ -32,7 +32,7 @@ The generation of Temporal Policies is done based on the First Occurrence of an 
 
 ***
 
-## 9-2: Create historical data for learning
+## 10-2: Create historical data for learning
 
 In order to understand how Watson AIOps learns temporal patterns, we will simulate a sample set of events and train analytics engine on the simulated historical dataset.
 In this historical dataset we are simulating same issue in 3 differetn locations (SASKATOON,EDMONTON,VANCOUVER) , that will generate 3 temporal policies and 1 temporal pattern.
@@ -116,7 +116,7 @@ done
 
 ***
 
-## 9-3: Insert historical events into event manager
+## 10-3: Insert historical events into event manager
 
 Copy historic event generating script to ObjectServer pod
 
@@ -137,7 +137,7 @@ You can ignore message "Warning: Failed to find tar in the following directories
 
 Once replay is finished ( takes approx 5-6 mins), you can start training.
 
-## 9-4: Run training for temporal patterns
+## 10-4: Run training for temporal patterns
 
 Get image for trainer pod
 
@@ -161,7 +161,7 @@ oc run trainer -it --command=true --restart=Never --env=LICENSE=accept --image=c
 
 ***
 
-## 9-5: Check policies created from learning
+## 10-5: Check policies created from learning
 
 Launch "Policies" using new UI URL.
 ![](images/LaunchPolicies.png)
@@ -183,7 +183,7 @@ https://www.ibm.com/docs/en/noi/1.6.5?topic=policies-editing
 
 Note: Policy Details UI is only availabel in new UI
 
-## 9-6: Replay events
+## 10-6: Replay events
 
 Create pattern_events_live.sh script (as below)  that simulates a set of events into the ObjectServer for Location='WINNIPEG'. starttime  is EPOCH conversion for current time.
 
