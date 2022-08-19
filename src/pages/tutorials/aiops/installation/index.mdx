@@ -6,17 +6,16 @@ description: Deploy Watson for AIOps Event Manager onto OpenShift
 <AnchorLinks>
   <AnchorLink>2-1: Overview</AnchorLink>
   <AnchorLink>2-2: Create your OpenShift cluster on IBM Cloud </AnchorLink>
-  <AnchorLink>2-3: Prepare your OpenShift cluster</AnchorLink>
-  <AnchorLink>2-4: Install the Watson for AIOps Event Manager Operator</AnchorLink>
-  <AnchorLink>2-5: Deploy an instance of Watson for AIOps Event Manager</AnchorLink>
-  <AnchorLink>2-6: Locate your login details and log in to Watson for AIOps Event Manager</AnchorLink>
+  <AnchorLink>2-3: Obtain your Entitlement key </AnchorLink>
+  <AnchorLink>2-4: Prepare your OpenShift cluster</AnchorLink>
+  <AnchorLink>2-5: Install the Watson for AIOps Event Manager Operator</AnchorLink>
+  <AnchorLink>2-6: Deploy an instance of Watson for AIOps Event Manager</AnchorLink>
+  <AnchorLink>2-7: Locate your login details and log in to Watson for AIOps Event Manager</AnchorLink>
 </AnchorLinks>
 
 ## 2-1: Overview
 
-The Getting started with Watson for AIOps Event Manager blog mini-series will cover deployment, configuration, and set-up of Event Manager system to get you off to a fast start, and help you to get quick value from your investment.
-
-This first module focuses on the initial deployment of Event Manager.  This deployment scenario will assume you are deploying onto IBM Cloud however the steps would generally apply to an OpenShift cluster deployed on another cloud provider, or on-premise. The exception to this would be the setup of the persistent storage needed by the Event Manager. On IBM Cloud, it is recommended to simply use ibmc-block-gold for your storage class. If it is another cloud provider, select their alternative block storage option. For on-premise deployments, a good option would be VMware vSphere storage, particularly if you are already a VMware shop. In any case, block storage is recommended for performance reasons.
+This module focuses on the initial deployment of Event Manager.  This deployment scenario will assume you are deploying onto IBM Cloud however the steps would generally apply to an OpenShift cluster deployed on another cloud provider, or on-premise. The exception to this would be the setup of the persistent storage needed by the Event Manager. On IBM Cloud, it is recommended to simply use ibmc-block-gold for your storage class. If it is another cloud provider, select their alternative block storage option. For on-premise deployments, a good option would be VMware vSphere storage, particularly if you are already a VMware shop. In any case, block storage is recommended for performance reasons.
 
 For more detailed notes on the topic of storage, see the documentation link: https://www.ibm.com/docs/en/noi/1.6.5?topic=preparing-storage
 
@@ -63,7 +62,17 @@ Next click on Create cluster and use the following to create and deploy your clu
 
 ![](images/0_OCPCluster.png)
 
-## 2-3: Prepare your OpenShift cluster
+## 2-3: Obtain your personal Entitlement key 
+
+Navigate to [**ibm.com**](https://myibm.ibm.com/products-services/containerlibrary) to obtain your **entitlement key** that is assigned to your IBM ID which will grant you access to the IBM Entitled Registry. Copy this into a text editor in preparation for the next step. This will be needed for deploying an instance of Event Manager.
+
+You can check your entitlement for Watson AIOPs by clicking **View Library**
+
+![](images/entitlement_check.png)
+
+**NOTE:** If you do not have an existing IBM contract that allows you access to the software for these labs, you can register for trial using link [Trial license of Watson AIOps](https://www.ibm.com/account/reg/us-en/login?formid=urx-51074)
+
+## 2-4: Prepare your OpenShift cluster
 
 This step involves creating a namespace to install the Watson for AIOps Event Manager Operator into, and setting up your software entitlement key, so that you will be able to deploy an instance of Event Manager.
 
@@ -72,7 +81,6 @@ This step involves the following tasks:
 - Open the **OpenShift UI**
 - Acquire a token and log in to the OpenShift cluster via the command line
 - Create a **namespace** to deploy Event Manager into
-- ** Log in to ibm.com ** and obtain your personal entitlement key
 - Create an **entitlement key secret**
 
 Go to your newly created OpenShift cluster and click OpenShift web console to open the main OpenShift UI:
@@ -92,8 +100,6 @@ oc create namespace noi
 ```
 
 **NOTE:** This example uses **noi** as the name of the namespace. You can call it whatever you like however. Rest of the tutorial commands are based on namespace=noi
-
-Next, open a web browser and navigate to [**ibm.com**](https://myibm.ibm.com/products-services/containerlibrary) to obtain your **entitlement key** that is assigned to your IBM ID which will grant you access to the IBM Entitled Registry. Copy this into a text editor in preparation for the next step. This will be needed for deploying an instance of Event Manager.
 
 Prepare a command like the following, that uses your entitlement key to create a registry secret.
 
@@ -117,7 +123,7 @@ You are now ready to install the Event Manager operator and deploy an instance.
 
 For further information on this topic, see the following documentation link: https://www.ibm.com/docs/en/noi/1.6.5?topic=preparing-your-cluster
 
-## 2-4: Install the Watson for AIOps Event Manager Operator
+## 2-5: Install the Watson for AIOps Event Manager Operator
 
 The next step of deploying the Event Manager is to configure the software repository for your new OpenShift cluster, and then locate and install the Watson for AIOps Event Manager Operator. This process will pull down the necessary software images so that you can deploy an instance of the Event Manager.
 
@@ -178,7 +184,7 @@ The Watson for AIOps Event Manager Operator is now installed and ready for use.
 For further information on this topic, see the following documentation link: https://www.ibm.com/docs/en/noi/1.6.5?topic=installing-olm-ui
 
 
-## 2-5: Deploy an instance of Watson for AIOps Event Manager
+## 2-6: Deploy an instance of Watson for AIOps Event Manager
 
 This final step involves deploying an instance of Watson for AIOps Event Manager onto the OpenShift cluster.
 
@@ -232,7 +238,7 @@ The deployment of your instance will normally take about 20 to 30 minutes. You c
 
 Congratulations! You have successfully deployed an OpenShift cluster, installed the Watson for AIOps Event Manager Operator, and deployed an instance of the Event Manager.
 
-## 2-6: Locate your login details and log in to Watson for AIOps Event Manager
+## 2-7: Locate your login details and log in to Watson for AIOps Event Manager
 
 The final step is to locate your login credentials from your newly deployed instance of Watson for AIOps Event Manager and log in to the console.
 
