@@ -8,8 +8,9 @@ description: Install the Bee Travels Application and Setup Website Monitoring
   <AnchorLink>3-2: Create Website Within Instana</AnchorLink>
   <AnchorLink>3-3: Install Bee Travels</AnchorLink>
   <AnchorLink>3-4: Automated Load</AnchorLink>
-  <AnchorLink>3-5: Summary</AnchorLink>/AnchorLinks>
+  <AnchorLink>3-5: Summary</AnchorLink>
 </AnchorLinks>
+
 ***
 
 
@@ -67,9 +68,9 @@ vi /media/instana-openshift/src/services/ui/frontend/public/index.html
 Within the editor, you will see the following at the top of the HTML file.
 ![](images/index.png)
 
-Immediately after **\<head\>**, add the **javascript** that was copied from the Instana UI.  If you don't have the **javascript** copied, go back into the Instana UI and copy the block of **javascript**.
+Immediately after **<head\>**, add the **javascript** that was copied from the Instana UI.  If you don't have the **javascript** copied, go back into the Instana UI and copy the block of **javascript**.
 
-Then, paste the **javascript** block immediately after **\<head\>**
+Then, paste the **javascript** block immediately after **<head\>**
 
 The section should now look as follows, keeping in mind that some of your javascript will be slightly different to match your Instana server.
 
@@ -114,7 +115,7 @@ We will now set a **HOST** environment variable to match the **Host** and **Port
 export HOST=<hostname>
 ```
 
-Example:  **export HOST=image-registry-openshift-image-registry.jam-stack-dal10-04-565094-d8e5ccad3849ed39158bb0b911cc2b44-0000.us-south.containers.appdomain.cloud**
+Example:  **export HOST=image-registry-openshift-image-registry.<cluster domain\>**
 
 Next, login to the internal docker registry by typing:
 ```sh
@@ -154,7 +155,7 @@ You should see 5 pods running as shown below.
 
 If the pods have not all started, wait a minute or two and run the **oc get pods** command again.
 
-If you notice one of the pods in an error state such as CrashLoopBackoff, delete by typing **oc delete pod \<pod name\>** where you replace \<pod name\> with the name of the pod that is not running.
+If you notice one of the pods in an error state such as CrashLoopBackoff, delete by typing **oc delete pod <pod name\>** where you replace <pod name\> with the name of the pod that is not running.
 
 Once all of the pods are running, you need to expose a route so that the application is available externally.  Type the following command:
 ```sh
@@ -173,7 +174,7 @@ oc get route
 You will see results similar to this:
 ![](images/route.png)
 
-If desired, you can paste the route into a browser and bring up the **Bee Travels** user interface.  Make sure you specify HTTP.  For example:  http://ui-bee-travels.jam-stack-dal10-04-565094-d8e5ccad3849ed39158bb0b911cc2b44-0000.us-south.containers.appdomain.cloud
+If desired, you can paste the route into a browser and bring up the **Bee Travels** user interface.  Make sure you specify HTTP.  For example:  http://ui-bee-travels.<cluster domain\>
 
 You have successfully installed the **Bee Travels** application.
 
@@ -202,14 +203,14 @@ exit
 
 ```
 
-Finally, generate traffic by typing:   node traffic.js \<NUM_CALLS\> \<ROUTE\>
+Finally, generate traffic by typing:   node traffic.js <NUM_CALLS\> <ROUTE\>
 WHERE:
 - NUM_CALLS - refers to how many calls will be made to the Bee Travels application. Each call will make 2 requests to the application. One will be for searching hotels for a random city and the other will be for searching car rentals for the same random city.
 - ROUTE - refers to the created route's location/url from OpenShift. Make sure there is no trailing /
 
 NOTE: Make sure you specify **https://** for the URL. Don't just past the hostname for your route.
 
-Example:  **node traffic.js 1000 https://ui-bee-travels.jam-stack-dal10-04-565094-d8e5ccad3849ed39158bb0b911cc2b44-0000.us-south.containers.appdomain.cloud**
+Example:  **node traffic.js 1000 https://ui-bee-travels.<cluster domain\>**
 
 Leave this window open.  Any time you need to generate traffic to the application, re-run the previous command.
 

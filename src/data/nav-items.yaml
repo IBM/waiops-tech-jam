@@ -54,8 +54,8 @@
       path: /tutorials/instana/server
     - title: 3 - Agent Installation
       path: /tutorials/instana/agent
-    - title: 4 - Install Bee-Travels Application
-      path: /tutorials/instana/bee-travels
+    - title: 4 - Install Robot Shop Application
+      path: /tutorials/instana/robot-shop
     - title: 5 - Monitoring IBM middleware
       path: /tutorials/instana/ibm-middleware
     - title: 6 - Explore Instana

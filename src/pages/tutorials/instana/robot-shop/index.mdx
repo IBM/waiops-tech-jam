@@ -1,6 +1,6 @@
 ---
-title: Configure ACE and MQ for Instana Monitoring & Tracing
-description: Configure the Quote of the Day Application and Install/Configure Monitoring
+title: Install the Robot Shop Application
+description: Install the Robot Shop Application and Setup Website Monitoring
 ---
 
 <AnchorLinks>
@@ -57,7 +57,7 @@ cd robot-shop/K8s
 ```
 
 Login to the **Manage to** OpenShift Cluster.  The command will be similar to this
-  **oc login --token=sha256~QG-biGAbCdEWY7vPD2faySvHqnI4CpLIamJABC1238 --server=https://c116-e.us-south.containers.cloud.ibm.com:30059**
+  **oc login --token=<token\> --server=<cluster URL\>:30059**
 
 Create an OpenShift **project (workspace)** for the **Robot Shop** application by issuing the following commnand:
 ```sh
@@ -72,7 +72,7 @@ oc adm policy add-scc-to-user privileged -z default -n robot-shop
 
 ```
 
-Install the **Robot Shop** by issuing the following helm command. You'll need to replace \<EUM Key\> with the **key** value that you obtained in section 3.2 from the Instana user interface and \<Reporting URL\> is the **reportingURL** you obtained in section 3.2.
+Install the **Robot Shop** by issuing the following helm command. You'll need to replace \<EUM Key\> with the **key** value that you obtained in section 3.2 from the Instana user interface and <Reporting URL\> is the **reportingURL** you obtained in section 3.2.
 
 Note:  When you specify the **Reporting URL**, do not include the trailing slash \(\/\).
 
@@ -81,7 +81,7 @@ helm install robot-shop --set openshift=true  --set eum.key=<EUM Key> --set eum.
 
 ```
 
-Example: **helm install robot-shop --set openshift=true  --set eum.key=m-IMxZYFQyW_n7Xo0VRjrw --set eum.url=http://52.118.8.211:2999 -n robot-shop helm**
+Example: **helm install robot-shop --set openshift=true  --set eum.key=m-IMxZYFQyW_n7Xo0VRjrw --set eum.url=http://<your server IP\>:2999 -n robot-shop helm**
 
 If successful, you should see the results similar to what's shown below.
 ![](images/install.png)
@@ -114,7 +114,7 @@ oc get route
 
 ```
 
-The result should look similar to:   **web-robot-shop.jam-stack-dal10-04-565094-d8e5ccad3849ed39158bb0b911cc2b44-0000.us-south.containers.appdomain.cloud**
+The result should look similar to:   **web-robot-shop.<cluster domain\>**
 
 Paste the route into a browser and you'll see the Robot Shop user interface.
 
