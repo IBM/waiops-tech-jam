@@ -32,29 +32,33 @@
       path: /tutorials/aiops/fullyAutomatedRunbooks
 - title: Metric Management
   pages:
-    - title: 1 - Installing AI Manager
+    - title: 1 - Introduction
+      path: /tutorials/mm/introduction
+    - title: 2 - Installing AI Manager
       path: /tutorials/mm/aimgr-install
-    - title: 2 - Installing Metric Manager
+    - title: 3 - Installing Metric Manager
       path: /tutorials/mm/mm-install
-    - title: 3 - CSV Data Mediation
+    - title: 4 - CSV Data Mediation
       path: /tutorials/mm/mm-mediating-csv
-    - title: 4 - Analyzing Results
+    - title: 5 - Analyzing Results
       path: /tutorials/mm/mm-analyzing-results
-    - title: 5 - REST Data Mediation
+    - title: 6 - REST Data Mediation
       path: /tutorials/mm/mm-mediating-rest
-    - title: 6 - Metric Anomaly Detection
+    - title: 7 - Metric Anomaly Detection
       path: /tutorials/mm/mm-mad
 - title: Instana
   pages:
-    - title: 1 - Instana Server Installation
+    - title: 1 - Introduction
+      path: /tutorials/instana/introduction
+    - title: 2 - Instana Server Installation
       path: /tutorials/instana/server
-    - title: 2 - Agent Installation
+    - title: 3 - Agent Installation
       path: /tutorials/instana/agent
-    - title: 3 - Install Bee-Travels Application
+    - title: 4 - Install Bee-Travels Application
       path: /tutorials/instana/bee-travels
-    - title: 4 - Monitoring IBM middleware
+    - title: 5 - Monitoring IBM middleware
       path: /tutorials/instana/ibm-middleware
-    - title: 5 - Explore Instana
+    - title: 6 - Explore Instana
       path: /tutorials/instana/explore
-    - title: 6 - Administer Instana
+    - title: 7 - Administer Instana
       path: /tutorials/instana/administer

@@ -67,9 +67,9 @@ vi /media/instana-openshift/src/services/ui/frontend/public/index.html
 Within the editor, you will see the following at the top of the HTML file.
 ![](images/index.png)
 
-Immediately after **<head>**, add the **javascript** that was copied from the Instana UI.  If you don't have the **javascript** copied, go back into the Instana UI and copy the block of **javascript**.
+Immediately after **\<head\>**, add the **javascript** that was copied from the Instana UI.  If you don't have the **javascript** copied, go back into the Instana UI and copy the block of **javascript**.
 
-Then, paste the **javascript** block immediately after **<head>**
+Then, paste the **javascript** block immediately after **\<head\>**
 
 The section should now look as follows, keeping in mind that some of your javascript will be slightly different to match your Instana server.
 
@@ -154,7 +154,7 @@ You should see 5 pods running as shown below.
 
 If the pods have not all started, wait a minute or two and run the **oc get pods** command again.
 
-If you notice one of the pods in an error state such as CrashLoopBackoff, delete by typing **oc delete pod <pod name>** where you replace <<pod name> with the name of the pod that is not running.
+If you notice one of the pods in an error state such as CrashLoopBackoff, delete by typing **oc delete pod \<pod name\>** where you replace \<pod name\> with the name of the pod that is not running.
 
 Once all of the pods are running, you need to expose a route so that the application is available externally.  Type the following command:
 ```sh
@@ -202,7 +202,7 @@ exit
 
 ```
 
-Finally, generate traffic by typing:   node traffic.js <NUM_CALLS> <ROUTE>
+Finally, generate traffic by typing:   node traffic.js \<NUM_CALLS\> \<ROUTE\>
 WHERE:
 - NUM_CALLS - refers to how many calls will be made to the Bee Travels application. Each call will make 2 requests to the application. One will be for searching hotels for a random city and the other will be for searching car rentals for the same random city.
 - ROUTE - refers to the created route's location/url from OpenShift. Make sure there is no trailing /
