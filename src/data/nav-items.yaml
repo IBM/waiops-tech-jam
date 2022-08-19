@@ -12,7 +12,7 @@
       path: /tutorials/aiops/installation
     - title: 3 - Connect On-premise Probe
       path: /tutorials/aiops/connections
-    - title: 4- Webhook Integration
+    - title: 4 - Webhook Integration
       path: /tutorials/aiops/webhook
     - title: 5 - Create Sample Topology
       path: /tutorials/aiops/createTopology
