@@ -129,7 +129,7 @@ You should see a response similar to the following, indicating that it is listen
 
 ### Configure Cassandra with a username and password
 
- For security, it is required to configure Cassandra with a username and password so the topic extractor can securely authenticate with Cassandra and extract metric data. Using your preferred text editor, edit the /opt/IBM/apache-cassandra-3.11.10/conf/cassandra.yaml and change the authenticator line to:
+ For security, it is required to configure Cassandra with a username and password so the topic extractor can securely authenticate with Cassandra and extract metric data. Using your preferred text editor, edit the /opt/IBM/apache-cassandra-3.11.10/conf/cassandra.yaml and change the **authenticator** line to:
 
 `authenticator: PasswordAuthenticator`
 
@@ -143,13 +143,15 @@ You should see a response similar to the following, indicating that it is listen
 
  Finally, verify password authentication is working by running cqlsh, passing in username and the default cassandra password.
 
+```sh
 /opt/IBM/apache-cassandra-3.11.10/bin/cqlsh -u cassandra -p <DEFAULT CASSANDRA PASSWORD\>
+```
 
 You should see a successful connect, and arrive at the cqlsh prompt. 
 
 `cassandra@cqlsh>`
 
- Use the following commands to change the default 'cassandra' user's password to either the <CASSANDRA PASSWORD\> provided by the lab proctor, or the cassandra password you chose if you were required to use an alternative:
+ Use the following commands to change the default 'cassandra' user's password to either the **<span style="color:green"><CASSANDRA PASSWORD\></span>** provided by the lab proctor, or the cassandra password you chose if you were required to use an alternative:
 
 ```sh
 /opt/IBM/opt/IBM/apache-cassandra-3.11.10/bin/cqlsh -u cassandra -p <DEFAULT CASSANDRA PASSWORD\>
