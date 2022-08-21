@@ -19,7 +19,7 @@ In this lab, you will be installing the various components that make up the VM-b
 
 You will need to use VNC to access the UI of your VM. If you don't already have VNC installed, you can download the RealVNC VNC Viewer for your operating system at the following link:
 
-https://www.realvnc.com/en/connect/download/viewer/
+<a href="https://www.realvnc.com/en/connect/download/viewer/" target="_blank">RealVNC Downloads</a>
 
 MacOS, Window, and Linux clients are avaialable.
 
@@ -27,7 +27,8 @@ For the execution of the labs, you will need the following passwords, provided t
 
 **<span style="color:green"><VNC PASSWORD\></span>**  <br/>
 **<span style="color:green"><LAB PASSWORD\></span>**  <br/> 
-**<span style="color:green"><CASSANDRA DEFAULT PASSWORD\></span>**
+**<span style="color:green"><DEFAULT CASSANDRA PASSWORD\></span>** <br/>
+**<span style="color:green"><CASSANDRA PASSWORD\></span>**
 
 
 ## 2-2: Accessing your Metric Manager lab environment
@@ -158,7 +159,7 @@ You should receive the following message indicating that the environment has bee
  ![](images/lab2-Picture13.png)
 
 
-  The next screen is DB2 configuration. Since DB2 is installed and running locally, you can leave most as defaults, but change the password to <span style="color:green"><LAB PASSWORD\></span>. Click the **Validate** button. The installer will login to the DB2 instance to verify that the credentials are proper. If the verify fails, double-check that you typed the proper password.
+  The next screen is DB2 configuration. Since DB2 is installed and running locally, you can leave most as defaults, but change the password to **<span style="color:green"><LAB PASSWORD\></span>**. Click the **Validate** button. The installer will login to the DB2 instance to verify that the credentials are proper. If the verify fails, double-check that you typed the proper password.
 
  When the validation succeeds you will be able to click on the **Next \>** button to move to the next section, as shown below:
 
@@ -174,7 +175,7 @@ You should receive the following message indicating that the environment has bee
 
  ![](images/lab2-Picture16.png)
 
-_NOTE: If you get an error indicating that port 4100 is not reachable, open up a separate window and start up the following services, using <span style="color:green"><LAB PASSWORD\></span> as the authentication password:_
+_NOTE: If you get an error indicating that port 4100 is not reachable, open up a separate window and start up the following services, using **<span style="color:green"><LAB PASSWORD\></span>** as the authentication password:_
 
 ```sh
 systemctl start nco
@@ -265,20 +266,20 @@ cd /opt/IBM/software/predictiveInsights1.3.6_iFix5_el7_x86_64
 ./patch_PI_core_analytics_136_iFix5.sh
 ```
 
+ You will be prompted to enter the passwords for the DB2 database and the OMNIbus root user. Use the following:
+
+ DB2 database password: **<span style="color:green"><LAB PASSWORD\></span>**  
+ OMNIbus root user is blank, so just hit **enter**
+
+ ![](images/lab2-Picture24.png)
+
  Accept the license agreement, and the Streams portion of the update will proceed.
 
  When the Streams update completes, you will be prompted to display and accept the license agreement. Enter "S" to skip the license display, and enter "Y" to accept the license.
 
  ![](images/lab2-Picture23.png)
 
-
-  You will next be prompted to enter the passwords for the DB2 database and the OMNIbus root user. Use the following:
-
- DB2 database password: **<span style="color:green"><LAB PASSWORD\></span>**  
- OMNIbus root user is blank, so just hit enter
-
- ![](images/lab2-Picture24.png)
-
+ You will once more be prompted to enter the OMNIbus root user password. Just hit **Enter** again.
 
   The installation will complete. Next, you will need to restart the VNC daemon and re-open your VNC session. To perform this action, restart the VNC service using the following command, and authenticating with as the authentication **<span style="color:green"><LAB PASSWORD\></span>** password.
 
@@ -391,7 +392,7 @@ If it shows down, wait a minute, and try the status command again. If it still s
 
  ![](images/lab2-Picture31.png)
 
- Next, click on the "Snowflake" icon in the left navigation pane, and select "Service Diagnosis Anomaly Search":
+ Next, click on the "Snowflake" icon in the left navigation pane, and select "Service Diagnosis Metric Search":
 
  ![](images/lab2-Picture32.png)
 

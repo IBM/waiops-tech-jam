@@ -5,8 +5,8 @@ description: This lab will teach you how to ingest metric data from the REST med
 
 <AnchorLinks>
   <AnchorLink>5-1: Lab Introduction</AnchorLink>
-  <AnchorLink>5-2: Creating a topic</AnchorLink>
-  <AnchorLink>5-3: Starting Cassandra</AnchorLink>
+  <AnchorLink>5-2: Starting Cassandra</AnchorLink>
+  <AnchorLink>5-3: Create a topic for REST data</AnchorLink>
   <AnchorLink>5-4: Configuring the REST mediation service</AnchorLink>
   <AnchorLink>5-5: Starting Kafka</AnchorLink>
   <AnchorLink>5-6: Starting Spark</AnchorLink>
@@ -16,65 +16,19 @@ description: This lab will teach you how to ingest metric data from the REST med
 
 ## 5-1: Lab Introduction
 
- In our previous lab, we created a model for metric data that resided in CSV files. Metric Manager can also ingest data via a REST interface. The REST interface can accept pre-defined JSON payloads and process them for analysis and machine learning.
+ In lab 3 we created a model for metric data that resided in CSV files. Metric Manager can also ingest data via a REST interface. The REST interface can accept pre-defined JSON payloads and process them for analysis and machine learning.
 
- Since the definition of the JSON payload describes the model within its structure, it is not required to use the Mediation Tool to create a model. The prescribed JSON format defines the model. It is only necessary to ensure that the JSON payload adheres to the required format. This format is also the same as the new version of Watson AIOps container-based Metric Anomaly Detection component that is being actively developed, and that we will be working with in the final lab.
+ Since the definition of the JSON payload describes the model within its structure, it is not required to use the Mediation Tool to create a model. The pre-defined JSON format defines the model, and it is only necessary to ensure that the JSON payload adheres to the required format. This format is also the same as the new version of Watson AIOps container-based Metric Anomaly Detection component that is being actively developed, which we will be working with in the final lab.
 
  This lab will go through the various components that make up the REST mediation service. We will configure the components that we installed in lab 1, start the mediation service, and use a simple script to send data to the REST mediation service, and view the results.
 
-## 5-2: Create a topic for the REST mediation service
 
- You can store JSON data only in the topic that you use to extract the REST Mediation Service data. You cannot use an existing topic if it contains data from a CSV file or database. However, you can use an existing topic if it does not contain any data or if it contains only JSON data. We will reconfigure our BIGBLUE topic to accept REST data.
-
- Return to a terminal window and clear the topic using the following commands. When prompted, type " **I am sure"** and press enter. When it asks whether you want to clear out the database, type " **Yes**" and press enter.
-
-```sh
-/opt/IBM/scanalytics/analytics/bin/stop.sh -s
-/opt/IBM/scanalytics/analytics/bin/admin.sh cleanup -t=BIGBLUE
-```
-
-### Modify the topic to extract data from Cassandra:
-
- The following command configures the topic to connect to cassandra on localhost:
-
-```sh
-/opt/IBM/scanalytics/analytics/bin/admin.sh set -t=BIGBLUE cassandra.host localhost
-```
-
- Encrypt and copy the default Cassandra password using the following commands. When prompted, enter <CASSANDRA PASSWORD\> as the password:
-
-```sh
-/opt/IBM/scanalytics/analytics/bin/admin.sh passwd -c $PI\_HOME/config/cassandra.properties connection.password
-cat /opt/IBM/scanalytics/analytics/config/cassandra.properties
-```
-
- Copy the encrypted password that is saved in the file:
-
-```sh
-cat $PI\_HOME/config/cassandra.properties
-```
-
-** !! NOTE !!: If your encrypted Cassandra password begins with "+", due to a current defect in the PI code, you will need to select an alternative password for the Cassandra 'cassandra' user. Try making up an alternative password, encrypt that, and if is ok use that as an alternative. Then, in the next section, use your alternative password in place of <CASSANDRA PASSWORD\> **
-
-
-Set the encrypted value for our BIGBLUE topic, pasting the value for 'connection.password' obtained from the previous output:
-
-```sh
-/opt/IBM/scanalytics/analytics/bin/admin.sh set -t=BIGBLUE cassandra.password <ENCRYPTED CASSANDRA PASSWORD>
-```
-
- Set the Cassandra user for the topic to 'cassandra':
-
-```sh
-/opt/IBM/scanalytics/analytics/bin/admin.sh set -t=BIGBLUE cassandra.username cassandra_
-```
-
-## 5-3: Starting Cassandra
+## 5-2: Starting Cassandra
 
  Data that is sent to the REST mediation service is stored in a Cassandra database. The "run\_extractor\_instance" command will pull metrics from Cassandra for analysis. For production deployments, and depending on metric load, it is possible to use a distributed installation of Cassandra for high availability and performance. For this lab we will be configuring a single Cassandra instance.
 
-
-### Procedure:
+### Configuring startup:<br/>
+***
 
  As the 'scadmin' user, start Cassandra with the following command:
 
@@ -123,9 +77,9 @@ List the Cassandra servers:
 /opt/IBM/apache-cassandra-3.11.10/bin/nodetool status
 ```
 
-You should see a response similar to the following, indicating that it is listening on your IP address:
+You should see a response similar to the following, indicating that it is listening 127.0.0.1:
 
-`UN 150.238.93.122 133.29 KiB 256 100.0% b2f89d8c-dd23-451c-907a-59b72dc4d18c rack1`
+`UN 127.0.0.1 133.29 KiB 256 100.0% b2f89d8c-dd23-451c-907a-59b72dc4d18c rack1`
 
 ### Configure Cassandra with a username and password
 
@@ -141,10 +95,10 @@ You should see a response similar to the following, indicating that it is listen
 /opt/IBM/apache-cassandra-3.11.10/bin/nodetool status
 ```
 
- Finally, verify password authentication is working by running cqlsh, passing in username and the default cassandra password.
+ Finally, verify password authentication is working by running cqlsh, passing in username and **<span style="color:green"><CASSANDRA DEFAULT PASSWORD\></span>** as the password.
 
 ```sh
-/opt/IBM/apache-cassandra-3.11.10/bin/cqlsh -u cassandra -p <DEFAULT CASSANDRA PASSWORD\>
+/opt/IBM/apache-cassandra-3.11.10/bin/cqlsh -u cassandra -p <DEFAULT CASSANDRA PASSWORD>
 ```
 
 You should see a successful connect, and arrive at the cqlsh prompt. 
@@ -154,18 +108,69 @@ You should see a successful connect, and arrive at the cqlsh prompt.
  Use the following commands to change the default 'cassandra' user's password to either the **<span style="color:green"><CASSANDRA PASSWORD\></span>** provided by the lab proctor, or the cassandra password you chose if you were required to use an alternative:
 
 ```sh
-/opt/IBM/opt/IBM/apache-cassandra-3.11.10/bin/cqlsh -u cassandra -p <DEFAULT CASSANDRA PASSWORD\>
 cassandra@cqlsh> alter user cassandra with password '<CASSANDRA PASSWORD>';
 cassandra@cqlsh> quit
 ```
 
+ Encrypt and copy the default Cassandra password using the following commands. When prompted, enter <CASSANDRA PASSWORD\> as the password:
+
+```sh
+/opt/IBM/scanalytics/analytics/bin/admin.sh passwd -c $PI_HOME/config/cassandra.properties connection.password
+```
+
+ Inspect the encrypted password in the following file using the following command:
+
+```sh
+cat $PI_HOME/config/cassandra.properties
+```
+
+** !! NOTE !!: If your encrypted Cassandra password begins with the "+" character, due to a current defect in the PI code, you will need to select an alternative password for the Cassandra 'cassandra' user. Try making up an alternative password, encrypt that, and if is ok use that as an alternative. Then, in the next section, use your alternative password in place of <CASSANDRA PASSWORD\> **
+
+
  Cassandra configuration is now complete.
+
+## 5-3: Create a topic for REST data
+
+ You can store metric data data derived from REST only in the topic that you use to extract the REST Mediation Service data. You cannot use an existing topic if it contains data from a CSV file or database. However, you can use an existing topic if it does not contain any data or if it contains only JSON data. We will reconfigure our BIGBLUE topic to accept REST data.
+
+ Return to a terminal window and clear the topic using the following commands. When prompted, type " **I am sure"** and press enter. When it asks whether you want to clear out the database, type " **Yes**" and press enter. This will clean out all of the data from the topic and reset it to pristine.
+
+```sh
+/opt/IBM/scanalytics/analytics/bin/stop.sh -s
+/opt/IBM/scanalytics/analytics/bin/admin.sh cleanup -t=BIGBLUE
+```
+
+### Modify the topic to extract data from Cassandra:
+
+ The following command configures the topic to connect to cassandra on localhost:
+
+```sh
+/opt/IBM/scanalytics/analytics/bin/admin.sh set -t=BIGBLUE cassandra.host localhost
+```
+
+ Obtain the encrypted cassandra password, copying the text that follows **cassandra.password=**
+
+```sh
+cat $PI_HOME/config/cassandra.properties
+```
+
+Set the encrypted value for our BIGBLUE topic, pasting the value for 'connection.password' obtained from the previous output:
+
+```sh
+/opt/IBM/scanalytics/analytics/bin/admin.sh set -t=BIGBLUE cassandra.password <ENCRYPTED CASSANDRA PASSWORD>
+```
+
+ Set the Cassandra user for the topic to 'cassandra':
+
+```sh
+/opt/IBM/scanalytics/analytics/bin/admin.sh set -t=BIGBLUE cassandra.username cassandra
+```
 
 ## 5-4: Configuring the REST mediation service
 
  The next step in configuring the REST integration requires configuring the REST mediation service mediation configuration files. We will encrypt the Cassandra password and store it in the Mediation Service yaml files. We will use the user 'piadmin' to encrypt the password, then update the appropriate mediation service yaml files. The reason we need to use a separate user is because we require Java 11 for the IBM REST mediation code itself, while the rest of the REST mediation components (Cassandra, spark, kafka) requires Java 8.
 
- Sudo to the 'piadmin' user, using the password <LAB PASSWORD\> and run the password encryption utility:
+ Sudo to the 'piadmin' user, using the password **<span style="color:green"><LAB PASSWORD\></span>** and run the password encryption utility, passing **<span style="color:green"><CASSANDRA PASSWORD\></span>** as the argument to the encrypt_password.sh command:
 
 ```sh
 sudo su - piadmin
@@ -179,6 +184,8 @@ The "encrypt\_password.sh" tool will print the encrypted password. Copy the encr
 
 `cassandra.encrypted.password: <ENCRYPTED CASSANDRA PASSWORD>`
 
+ Save the file and exit. 
+
  Next, edit the /opt/IBM/pi-mediation-1.0.4/config/metric-spark.yml file and modify the following entries in the file:
 
 `spark.cassandra.auth.username: cassandra`  
@@ -186,9 +193,11 @@ The "encrypt\_password.sh" tool will print the encrypted password. Copy the encr
 `cassandra.username: cassandra`  
 `cassandra.password: <ENCRYPTED CASSANDRA PASSWORD>`  
 
+ Save the file and exit.
+
 ### Configuring authentication for the REST mediation service
 
- The REST API requires that you set a password to ensure that connections are authenticated. We will use the password <LAB PASSWORD\> as our API password. As the piadmin user, encrypt the password, making sure to substitute <LAB PASSWORD\> with the lab password provided earlier:
+ The REST API requires that you set a password to ensure that connections are authenticated. We will use the password **<span style="color:green"><LAB PASSWORD\></span>** as our API password. As the piadmin user, encrypt the password, making sure to substitute **<span style="color:green"><LAB PASSWORD\></span>** with the lab password provided earlier:
 
 ```sh
 cd /opt/IBM/pi-mediation-1.0.4/
@@ -214,36 +223,42 @@ cp /home/piadmin/start-pi-kafka.sh /opt/IBM/kafka_2.13-2.6.2/
  Wait about 30 seconds, then verify that it is running:
 
 ```sh
-ps -ef |grep kafka.Kafka
+ps -ef |grep kafka.Kafka |grep -v grep
 ```
 
 
 ## 5-6: Starting Spark
 
 
- Spark should be run as the 'piadmin' user as well, so if you are the user 'scadmin' user, sudo su to 'piadmin':
-
-```sh
-sudo su – piadmin
-```
-
- Start the Spark services by running the following command:
+ Spark must be run as the 'piadmin' user. Start the Spark services by running the following command: 
 
 ```sh
 /opt/IBM/spark-3.1.2-bin-hadoop3.2/sbin/start-all.sh
 ```
 
- Use <LAB PASSWORD\> for the password when it prompts.
+ Use **<span style="color:green"><LAB PASSWORD\></span>** for the password when it prompts.
 
 
 ## 5-7: Starting the REST mediation service
 
- Become the piadmin user (if you're not already) and start the service:
+ Become the piadmin user (if you're not already) and start the service. The service must be started from within the mediation directory:
 
 ```sh
-sudo su – piadmin
-/opt/IBM/pi-mediation-1.0.4/run_service.sh
+cd /opt/IBM/pi-mediation-1.0.4/
+./run_service.sh
 ```
+
+ Next, verify that the mediation service is running:
+
+```sh
+ps -ef |grep yml
+```
+
+You should see the following two java processes running:
+
+`java -Xms1G -Xmx2G -jar libs/ea-metric-spark.jar server config/metric-spark.yml`<br/>
+`java -Xms1G -Xmx2G -jar libs/ea-metric-api.jar server config/metric-api-service.yml`
+
 
 ## 5-8: Send data to the REST interface:
 
@@ -251,14 +266,22 @@ sudo su – piadmin
 
 ```sh
 cd /home/scadmin/BookInfoDemo/data/bookinfo
-scp 150.238.93.118:/home/scadmin/BookInfoJson-20220721-0000__20220806-1200.json ./
+wget http://150.238.93.118/BookInfoJson-20220721-0000__20220806-1200.json 
 ```
 
- When the file transfer completes, you can use curl to send the data to the REST service. Execute the following commands to send JSON data to the Metric Manager REST mediation service, making sure to substiture <LAB PASSWORD\>:
+ When the file transfer completes, you can use curl to send the data to the REST service. Execute the following commands to send JSON data to the Metric Manager REST mediation service, making sure to substiture **<span style="color:green"><LAB PASSWORD\></span>**:
 
 ```sh
 curl -vX POST --user "system:<LAB PASSWORD>" --header "Content-Type: application/json" --header "X-TenantID: BIGBLUE" http://pi-template.Hybrid-Squad.cloud:18080/metrics/api/1.0/metrics -d @BookInfoJson-20220721-0000__20220806-1200.json
 ```
+
+The key response lines that you will see when the load is successful are:
+
+
+_< HTTP/1.1 100 Continue_<br/>
+_< HTTP/1.1 200 OK_
+
+Followed by several lines summarizing the completed session.
 
  Wait a couple minutes, then verify that the data has made it into cassandra:
 
@@ -267,7 +290,13 @@ curl -vX POST --user "system:<LAB PASSWORD>" --header "Content-Type: application
 select * from tararam.dt_metric_value;
 ```
 
- The next step is to run the Metric Manager extractor to ingest the data from Cassandra for analysis and machine learning. Run the following command to run extraction:
+You should see several hundreds of lines of our data in the cassandra tables... page through or hit **Ctrl-C** when you're satisfied that data is making it into cassandra:
+
+ ![](images/lab6-add1.png)
+
+
+
+ The next step is to run the Metric Manager extractor to ingest the data from Cassandra for analysis and machine learning. Run the following command to start our BIGBLUE topic, then run extraction. Starting the topic may take a few minutes:
 
 ```sh
 /opt/IBM/scanalytics/analytics/bin/start.sh -t=BIGBLUE
@@ -282,15 +311,17 @@ tail -f /opt/IBM/scanalytics/analytics/log/BIGBLUE/AnalyticsBIGBLUE_log_Analytic
 
  The log file will show where it is in terms of what time interval it is collecting and analyzing, the amount of KPIs and how many KPIs are being evaluated for each algorithm (e.g. robust bounds, granger, flat line, etc). If you have any issues with ingestion, this log file can help you identify errors that may be attributing to the problem.
 
- Take a break for a few minutes. The ingestion will complete in about 10 minutes. When mediation is complete, follow the same procedure as in the previous lab to verify that the data was ingested and showing up. Open Firefox and log in as 'ncoadmin' / '<LAB PASSWORD\>', then click on the snowflake icon on the left menu pane and selecting "Service Diangosis Anomaly Search", and drilling into one of the anomalies:
+ Take a break for a few minutes. The ingestion will complete in about 10 minutes. When mediation is complete, follow the same procedure as in the previous lab to verify that the data was ingested and showing up. Open Firefox and log in as 'ncoadmin' / '**<span style="color:green"><LAB PASSWORD\></span>**', then click on the snowflake icon on the left menu pane and selecting "Service Diangosis Anomaly Search", and drilling into one of the anomalies:
 
  ![](images/Picture1.png)
 
  For live ongoing data ingestion using the REST interface, you would start the Metric Manager topic, then start the extractor \*without a start time or end time\*. That puts the Metric Manager extractor in live mode, and for each time interval (e.g. every 5 minutes), the extractor will pull the metrics that were posted to the REST interface for the last interval, and process them live. 
 
- You can create custom scripts to post metrics to the REST service. Additionally, our off-the-shelf Mediation Packs can collect metric from various sources (e.g. Splunk, Dynatrace, etc) and output to either CSV files for PI to collect, or can post to the REST Mediation Service.
+ You can create custom scripts to post metrics to the REST service. Additionally, our off-the-shelf Mediation Packs can collect metric from various sources (e.g. Splunk, Dynatrace, etc) and output to either CSV files for PI to collect, or can post to the REST Mediation Service. These off-the-shelf Mediation Packs currently work with Metric Manager on VM, but will in the future also work with Watson AIOps Metric Anomaly Detection.
 
- The REST Mediation Service code is the same code that is used in the Metric Anomaly Detection component of Watson AIOps, which you will be working with in the final lab.
+ ![](images/lab6-add2.png)
+
+ Note also that the REST Mediation Service code is the same code that is used in the Metric Anomaly Detection component of Watson AIOps, which you will be working with in the final lab.
 
 
  That concludes this lab. You learned how to install and configure the REST Mediation Service, how to start the components that make up the service, and also how to POST data to the service.
