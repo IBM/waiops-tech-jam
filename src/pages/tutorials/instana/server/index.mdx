@@ -4,17 +4,17 @@ description: How to install the Instana Server on a single server Self-Hosted co
 ---
 
 <AnchorLinks>
-  <AnchorLink>1-1: Introduction</AnchorLink>
-  <AnchorLink>1-2: Prerequisites</AnchorLink>
-  <AnchorLink>1-3: Install Instana Server</AnchorLink>
-  <AnchorLink>1-4: Activate the License</AnchorLink>
-  <AnchorLink>1-5: Launch the Instana User Interface</AnchorLink>
-  <AnchorLink>1-6: Turning on features and setting up SMTP</AnchorLink>
-  <AnchorLink>1-7: Upgrading the Instana Server</AnchorLink>
-  <AnchorLink>1-8: Summary</AnchorLink>
+  <AnchorLink>2-1: Introduction</AnchorLink>
+  <AnchorLink>2-2: Prerequisites</AnchorLink>
+  <AnchorLink>2-3: Install Instana Server</AnchorLink>
+  <AnchorLink>2-4: Activate the License</AnchorLink>
+  <AnchorLink>2-5: Launch the Instana User Interface</AnchorLink>
+  <AnchorLink>2-6: Turning on features and setting up SMTP</AnchorLink>
+  <AnchorLink>2-7: Upgrading the Instana Server</AnchorLink>
+  <AnchorLink>2-8: Summary</AnchorLink>
 </AnchorLinks>
 
-## 1-1:  Introduction
+## 2-1:  Introduction
 Instana backand is available as SaaS (prefered option) or self hosted (aka onPrem). For on-premises installation, Instana offers multiple options:
 - Single Server **self-hosted** is a Dockerized deployment that does not support multi-tenancy.
 - Two server Dockerized **self-hosted** configuration with the datastores on one server and the other components on another. This option is also single-tenant.
@@ -27,10 +27,11 @@ For informational purposes, on-prem (self-hosted) releases are delivered every 4
 
 You will be performing and on-line installation during this Tech Jam, but Instana does support off-line (air-gapped) installs.
 
-## 1-2:  Prerequisites
+## 2-2:  Prerequisites
 
 For the installation of the Instana server, we'll be following the instructions layed out in the Instana documentation for a **Self-Hosted Instana backend on Docker**
-The instructions can be found here for your reference, but you can follow the steps below.  (https://www.ibm.com/docs/en/instana-observability/current?topic=instana-self-hosted-backend-docker-premises).  
+The instructions can be found here for your reference, but you can follow the steps below.  
+https://www.ibm.com/docs/en/instana-observability/current?topic=instana-self-hosted-backend-docker-premises  
 This is Instana's smallest on-premise installation option.  Production and larger deployments are installed int kubernetes for horizontal scale and resiliency.
 
 Login to virtual machine that was assigned to you for the installations of the Instana Server. ssh from the control node.   Then use sudo to become root.  Use the credentials provided by the proctors.
@@ -87,7 +88,7 @@ You are now ready to start the installation of the Instana Server.
 
 ***
 
-## 1-3:  Installing Instana Server
+## 2-3:  Installing Instana Server
 
 Run the following commands to install the Instana Server.  These commands will vary depending on which Linux platform you are using for your installation.
 
@@ -167,7 +168,7 @@ Save the username (E-Mail) and password so that you can reuse it later.
 
 ***
 
-## 1-4:  Activate the license
+## 2-4:  Activate the license
 
 After completing the installation, you must activate the license.
 
@@ -192,7 +193,7 @@ instana license verify
 
 ***
 
-## 1-5:  Launch the Instana User interface
+## 2-5:  Launch the Instana User interface
 
 You are now ready to open a browser and login to the Instana user interface.
 
@@ -207,7 +208,7 @@ You will be taken to an Initial Screen where you can install the instana agents 
 ![](images/initialScreen.png)
 ***
 
-## 1-6:  Turning on features and setting up SMTP
+## 2-6:  Turning on features and setting up SMTP
 
 Following the initial install of your Instana server, there are optional configurations that you will likely want to make.  First, you need to setup the Instana server to use an SMTP server if you plan to send out Email notifications.  Second, there may be some optional features that you want to enable via feature flags.  Features such as VMware/vSphere monitoring, Power HMC monitoring, and zHMC monitoring are disabled by default. 
 
@@ -280,7 +281,7 @@ It will take a little while for the configuration changes to take effect.  Read 
 
 ***
 
-## 1-7:  Upgrading the Instana server
+## 2-7:  Upgrading the Instana server
 
 <span style="color:red">We are not going to execute an actual upgrade, but we want you to know the process.</span>
   
@@ -319,7 +320,7 @@ When performance the upgrade, the installer automatically pulls down the latest 
 ***
 
 
-## 1-8:  Summary
+## 2-8:  Summary
 
 In this portion of the lab, you have learned how to install a self-hosted docker based Instana server.  For a POC, we recommend either SaaS or the single server self-hosted docker installation of the Instana server.  For production deployments, customers will want the kubernetes based deployments to gain improved scalability and resiliency.
 
@@ -327,7 +328,7 @@ You have also learned how to configure the SMTP settings and how to enable featu
 
 Finally, you learned how to upgrade a docker based self-hosted Instana server.
 
-You are now ready to continue with other portions of the lab.    Navigate to section 2 of the Instana lab.
+You are now ready to continue with other portions of the lab.    Navigate to section 3 of the Instana lab.
 
 ***
 

@@ -4,17 +4,17 @@ description: Configure the Quote of the Day Application and Install/Configure Mo
 ---
 
 <AnchorLinks>
-  <AnchorLink>4-1: Introduction</AnchorLink>
-  <AnchorLink>4-2: Installing the Instana agents</AnchorLink>
-  <AnchorLink>4-3: Configure Quote of the Day Application to use MQ & ACE</AnchorLink>
-  <AnchorLink>4-4: Configure ACE and MQ for Resource Monitoring</AnchorLink>
-  <AnchorLink>4-5: Configure ACE and MQ for Tracing</AnchorLink>
-  <AnchorLink>4-6: Configure the ACE and MQ Sensors</AnchorLink>
-  <AnchorLink>4-7: Further Configuration</AnchorLink>
-  <AnchorLink>4-8: Summary</AnchorLink>
+  <AnchorLink>5-1: Introduction</AnchorLink>
+  <AnchorLink>5-2: Installing the Instana agents</AnchorLink>
+  <AnchorLink>5-3: Configure Quote of the Day Application to use MQ & ACE</AnchorLink>
+  <AnchorLink>5-4: Configure ACE and MQ for Resource Monitoring</AnchorLink>
+  <AnchorLink>5-5: Configure ACE and MQ for Tracing</AnchorLink>
+  <AnchorLink>5-6: Configure the ACE and MQ Sensors</AnchorLink>
+  <AnchorLink>5-7: Further Configuration</AnchorLink>
+  <AnchorLink>5-8: Summary</AnchorLink>
 </AnchorLinks>
 
-## 4-1:  Introduction
+## 5-1:  Introduction
 
 Positioning Instana at existing IBM customers often requires presenting Instana value proposition in context of other IBM middleware used by the client.
 In this section, you will find guidence about configuring and using Instana with the following IBM technologies:
@@ -24,7 +24,7 @@ In this section, you will find guidence about configuring and using Instana with
 
 ***
 
-## 4-2:  Installing the Instana agents
+## 5-2:  Installing the Instana agents
 
 In this portion of the lab, you will be updating "Quote of the Day" hybrid application to use ACE and MQ, and configuring the Instana to monitor the whole application.  That includes configuration of the MQ and ACE sensors.
 
@@ -40,7 +40,7 @@ sudo -i
 
 ***
 
-## 4-3:  Configure Quote of the Day Application to use MQ & ACE
+## 5-3:  Configure Quote of the Day Application to use MQ & ACE
 
 The **"Quote of the Day"** application has been installed for you on the OpenShift cluster. For more information about the **Quote of the Day** application, you can go to this GitLab location: https://gitlab.com/quote-of-the-day/quote-of-the-day (It is not necessary to go there, but you might be interested in learning more about the application.)
 
@@ -100,7 +100,7 @@ Type `oc get route -n qotd` to get the route for the application.  Then, in the 
 
 ***
 
-## 4-4:  Configure ACE and MQ for Resource Monitoring
+## 5-4:  Configure ACE and MQ for Resource Monitoring
 
 This section of the lab will help you understand how IBM MQ and IBM App Connect Enterprise (ACE) need to be configured for monitoring.  There are certain configuration settings within MQ and ACE that are required in order to get the
 monitoring KPIs.  The key KPI's that need to be enabled are Resource Stats and Flow Stats.  The requirements are documented in the [sensor configuration guide](https://www.ibm.com/docs/en/obi/223?topic=technologies-monitoring-app-connect-enterprise#monitoring-ibm-app-connect-enterprise) that is online.  You'll see links to those guides further down in this document.  
@@ -202,7 +202,7 @@ quit
 
 ***
 
-## 4-5:  Configure ACE and MQ for Tracing
+## 5-5:  Configure ACE and MQ for Tracing
 
 In addition to the "Resource Monitoring" KPIs, additional settings are required to enable Tracing within IBM MQ and ACE.  It is important that you understand this process since Tracing is typically not enabled by default in most IBM MQ and ACE environments.  In this section, we've documented the steps.
 
@@ -233,7 +233,7 @@ Note:  Even though the TAR files for ACE and MQ look similar, they are unique fo
 
 ***
 
-## 4-6:  Configure the ACE and MQ Sensors
+## 5-6:  Configure the ACE and MQ Sensors
 
 In this section, you will perform these commands as root on the ACE/MQ server.  From the control node, ssh to the ACE/MQ server.  Then, use sudo to switch to the root user.
 ```sh
@@ -331,7 +331,7 @@ com.instana.plugin.ibmmq:
 
 ***
 
-## 4-7:  Further Configuration
+## 5-7:  Further Configuration
 
 First, let's change the **Zone** name within the file.  This is similar to the Zone that you specified when installing the Docker and OpenShift monitoring Agents.   Scroll down until you see the section titled "Hardware & Zone".  Uncomment the 3 lines of text starting with 
 `com.instana.plugin.generic.hardware`.   By default the "availability-zone" parameter is set to "Datacenter A /Rack 42".  Change the value to **Quote of the Day**
@@ -391,10 +391,10 @@ The main install log file is /opt/instana/agent/data/log/agent.log
 
 ***
 
-## 4-8:  Summary
+## 5-8:  Summary
 
 You learned how to configure the Instana sensor for IBM App Connect Enterprise (ACE) and IBM MQ.
 
-Now, proceed to section 5.
+Now, proceed to section 6 where you will explore Instana.
 
 ***
