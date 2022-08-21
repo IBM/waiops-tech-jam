@@ -4,18 +4,18 @@ description: How to install, configure and troubleshoot Instana agent
 ---
 
 <AnchorLinks>
-  <AnchorLink>2-1: Instana Agent Deployment Options</AnchorLink>
-  <AnchorLink>2-2: Installing Instana agent on Linux VM</AnchorLink>
-  <AnchorLink>2-3: Installing Instana Agent on the Instana Server</AnchorLink>
-  <AnchorLink>2-4: Installing Instana agent on OpenShift cluster</AnchorLink>
-  <AnchorLink>2-5: Troubleshooting Instana agent installation on Kubernetes cluster</AnchorLink>
-  <AnchorLink>2-6: Configuring Proxy</AnchorLink>
-  <AnchorLink>2-7: Configuring Instana Agent</AnchorLink>
-  <AnchorLink>2-8: Agent Configuration Troubleshooting</AnchorLink>
-  <AnchorLink>2-9: Configuring GitOps for Agents</AnchorLink>
+  <AnchorLink>3-1: Instana Agent Deployment Options</AnchorLink>
+  <AnchorLink>3-2: Installing Instana agent on Linux VM</AnchorLink>
+  <AnchorLink>3-3: Installing Instana Agent on the Instana Server</AnchorLink>
+  <AnchorLink>3-4: Installing Instana agent on OpenShift cluster</AnchorLink>
+  <AnchorLink>3-5: Troubleshooting Instana agent installation on Kubernetes cluster</AnchorLink>
+  <AnchorLink>3-6: Configuring Proxy</AnchorLink>
+  <AnchorLink>3-7: Configuring Instana Agent</AnchorLink>
+  <AnchorLink>3-8: Agent Configuration Troubleshooting</AnchorLink>
+  <AnchorLink>3-9: Configuring GitOps for Agents</AnchorLink>
 </AnchorLinks>
 
-## 2-1:  Instana Agent Deployment Options
+## 3-1:  Instana Agent Deployment Options
 
 Instana has a variety of agent installation options including the mirror repository and static agents that allow customers to meet strict change control processes. Some of the available options are listed below:
 
@@ -53,7 +53,7 @@ A **static** host agent is a self-contained host agent that includes all the lat
 
 ***
 
-## 2-2:  Installing Instana Agent on Linux VM
+## 3-2:  Installing Instana Agent on Linux VM
 
 You will be installing the Instana Agent on the ACE/MQ server that has been provisioned for you for this lab.  Open up a terminal window and login to the ACE/MQ server as root.  You can ssh to the  ACE/MQ server from the control node.
 ```sh
@@ -96,7 +96,7 @@ those technologies.  In the case of some technologies (eg. MQ an and App Connect
 
 ***
 
-## 2-3:  Installing Instana Agent on the Instana Server
+## 3-3:  Installing Instana Agent on the Instana Server
 
 Next, you will install the Instana agent on the Instana server.  From the control node, ssh to the Instana server.  Then, type **sudo -i** to switch to the root user.
 ```sh
@@ -128,7 +128,7 @@ Cassandra, ClickHouse, ElasticSearch, Nginx, Node.js, and more.  Many of these t
 
 ***
 
-## 2-4:  Installing Instana Agent on OpenShift Cluster
+## 3-4:  Installing Instana Agent on OpenShift Cluster
 
 The next step is to install the Instana Monitoring into the OpenShift Cluster that we'll be using to install our Robot Shop application and has the Quote of the Day application pre-installed.  This is the cluster that we'll be monitoring.
 
@@ -197,7 +197,7 @@ If there are no pods running, wait a minute and issue the "oc get pods" command 
 
 ***
 
-## 2-5:  Troubleshooting Instana Agent Installation on Kubernetes Cluster
+## 3-5:  Troubleshooting Instana Agent Installation on Kubernetes Cluster
 
 If you don't see your cluster in Instana UI after a couple of minutes, you need to troubleshoot the Instana Agent.  From a terminal window with connection to your OCP cluster, issue the following command:
 
@@ -208,14 +208,14 @@ oc get pods -n instana-agent
 Check to make sure that all pods are running (since Instana agent runs as daemonset, number of pods should be equal to number of nodes in your cluster). If pods are running, you can examine the logs of one of the pods. Type:  
 
 ```sh
-oc logs <POD NAME\> -c instana-agent
+oc logs <POD NAME> -c instana-agent
 ```
 
-where **POD_NAME** is one of the pods listed in the previous command.
+where **<POD NAME\>** is one of the pods listed in the previous command.
 
 ***
 
-## 2-6:  Configuring Proxy
+## 3-6:  Configuring Proxy
 
 If there is no direct connectivity for the Instana agent you may need to setup a proxy. There are 2 connections with 2 different locations for configuration:
 
@@ -228,7 +228,7 @@ For backend connectivity you have to define *INSTANA_AGENT_PROXY_* variables. Fo
 
 ***
 
-## 2-7:  Configuring Instana Agent
+## 3-7:  Configuring Instana Agent
 
 There are multiple ways to configure Instana agent. Settings related to agent functionality reside in `configuration.yaml` file located by default in `/opt/instana/agent/etc/instana` directory. However, other settings related to agent environment sits in other *.cfg files.
 
@@ -242,7 +242,7 @@ For host based installation you can update `configuration.yaml` and agent should
 
 ***
 
-## 2-8:  Agent Configuration Troubleshooting
+## 3-8:  Agent Configuration Troubleshooting
 
 The first place to look when the agent does not start properly or does not work as expected is agent log file. By default it is located in `/opt/instana/agent/data/log/agent.log`
 
@@ -250,7 +250,7 @@ In case of Kubernetes based deployment you have to look at logs of `instana-agen
 
 ***
 
-## 2-9:  Configuring GitOps for Agents
+## 4-9:  Configuring GitOps for Agents
 
 If you don't want to modify the Instana agent configuration files for each agent locally, you can setup a centralized git repositoy for configuration files and instruct Instana agent to use these files. To accomplish that, follow the steps from the [documentation](https://www.ibm.com/docs/en/obi/current?topic=configuration-git-based-management#git-based-configuration-management).
 
@@ -263,4 +263,4 @@ The Instana agent fetches configuration updates from the remote repository:
 
 ***
 
-Proceed to section 3, where you will install and instrument the Bee-Travels application.
+Proceed to section 4, where you will install and instrument the Robot Shop application.

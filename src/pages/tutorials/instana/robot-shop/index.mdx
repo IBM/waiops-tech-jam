@@ -4,21 +4,21 @@ description: Install the Robot Shop Application and Setup Website Monitoring
 ---
 
 <AnchorLinks>
-  <AnchorLink>3-1: Introduction</AnchorLink>
-  <AnchorLink>3-2: Create the Website in Instana</AnchorLink>
-  <AnchorLink>3-3: Install Robot Shop</AnchorLink>
-  <AnchorLink>3-4: Setup Automated Load</AnchorLink>
-  <AnchorLink>3-5: Summary</AnchorLink>
+  <AnchorLink>4-1: Introduction</AnchorLink>
+  <AnchorLink>4-2: Create the Website in Instana</AnchorLink>
+  <AnchorLink>4-3: Install Robot Shop</AnchorLink>
+  <AnchorLink>4-4: Setup Automated Load</AnchorLink>
+  <AnchorLink>4-5: Summary</AnchorLink>
 </AnchorLinks>
 
-## 3-1:  Introduction
+## 4-1:  Introduction
 
 In this section of the lab, you will learn how to install the Robot Shop application.   Robot Shop is pre-configured to include any required configuration changes needed to enable monitoring.  Some technologies such as java don't require any configuration, but others require monitor configuration changes so that the application can be monitored.  During the install, you will also specify the required information that is necessary for Instana to monitor the End User Experience (EUM) / Real User Monitoring (RUM) data.
 
 
 ***
 
-## 3-2:  Create the Website in Instana
+## 4-2:  Create the Website in Instana
 
 If you want to capture EUM/RUM data within Instana, you must first create a website within the GUI (or via API).  Open the Instana GUI within your browser. 
 
@@ -35,7 +35,7 @@ Robot Shop has already done some of work for you.  When you deploy the applicati
 
 ***
 
-## 3-3:  Install Robot Shop
+## 4-3:  Install Robot Shop
 
 The full installation instructions for **Robot Shop** can be found here:  https://github.com/instana/robot-shop
 You'll notice that there are instructions for installing **Robot Shop** into a number of different environments including docker, kubernetes, and OpenShift.  This lab uses an OpenShift environment, so we'll be following those steps.
@@ -120,7 +120,7 @@ Paste the route into a browser and you'll see the Robot Shop user interface.
 
 ***
 
-## 3-5:  Setup Automated Load
+## 4-4:  Setup Automated Load
 
 Now that the application is running, you will want to generate some traffic against the application.  
 
@@ -139,10 +139,10 @@ oc get pods
 
 ***
 
-## 3-5:  Summary
+## 4-5:  Summary
 
 In this section, you learned how to install an application that includes monitoring and configure it for Website EUM/RUM monitoring.
 
-Now, proceed to section 4 where you will configure the monitoring for IBM MQ and IBM App Connect Enterprise (ACE).
+Now, proceed to section 5 where you will configure the monitoring for IBM MQ and IBM App Connect Enterprise (ACE).
 
 ***

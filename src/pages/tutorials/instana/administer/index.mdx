@@ -4,15 +4,15 @@ description: Perform Administrative Functions with Instana
 ---
 
 <AnchorLinks>
-  <AnchorLink>6-1: Create an Alert Channel</AnchorLink>
-  <AnchorLink>6-2: Create an Analytics Based Smart Alert</AnchorLink>
-  <AnchorLink>6-3: Create a Static Threshold (Event)</AnchorLink>
-  <AnchorLink>6-4: Setting up an Offline Event</AnchorLink>
-  <AnchorLink>6-5: Setup an Alert for the New Event</AnchorLink>
-  <AnchorLink>6-6: Summary</AnchorLink>
+  <AnchorLink>7-1: Create an Alert Channel</AnchorLink>
+  <AnchorLink>7-2: Create an Analytics Based Smart Alert</AnchorLink>
+  <AnchorLink>7-3: Create a Static Threshold (Event)</AnchorLink>
+  <AnchorLink>7-4: Setting up an Offline Event</AnchorLink>
+  <AnchorLink>7-5: Setup an Alert for the New Event</AnchorLink>
+  <AnchorLink>7-6: Summary</AnchorLink>
 </AnchorLinks>
 
-# 6-1:  Create an Alert Channel
+# 7-1:  Create an Alert Channel
 
 testing
 
@@ -41,7 +41,7 @@ Here are the steps for setting up the **Email** channel.
 
 ***
 
-# 6-2:  Create an Analytics Based Smart Alert
+# 7-2:  Create an Analytics Based Smart Alert
 
 In this section, students are going to create an analytics based **"Smart Alert"** to detect abnormal behavior within an application.
 
@@ -124,7 +124,7 @@ The **Smart Alert** dialog will close and you'll be back in the context of your 
 
 ***
 
-# 6-3:  Create a Static Threshold (Event)
+# 7-3:  Create a Static Threshold (Event)
 Now, let's examine how a more traditional threshold is created and used in conjunction with Alert Channels.
 
 On the left side of the screen, select the **"Settings"** gear.
@@ -213,7 +213,7 @@ The easiest way to formulate a **Dynamic Focus Query** is to go to the **Infrast
 A **Dynamic Focus Query** can be a complex expression using AND, OR, NOT, etc. to filter to a subset of the entities. These queries are build using the **Lucene** query language.  For more information on the **Lucene** query language, see the project documentation.  [Lucenes Query Language](https://www.ibm.com/docs/en/instana-observability/current?topic=instana-filtering-dynamic-focus)
 
 ***
-# 6-4:  Setting up an Offline Event
+# 7-4:  Setting up an Offline Event
 
 A common monitoring scenario is to setup an **Offline** Event to detect an Entity going offline.  We're going to create an **Event** that will detect any **Host** that goes offline.  
 
@@ -242,7 +242,7 @@ If you want to see how **entity.type:host** vs. **entity.selfType:host** behaves
 
 ***
 
-# 6-5:  Setup an Alert for the New Event
+# 7-5:  Setup an Alert for the New Event
 
 Now that you have a new Event defined, you need to define and Alert.  Alerts are used to notify people and teams via various Alert Channels.  You previously
 reviewed the options for Alert Channels.  The Alerts will be sent to one or more Alert Channels that you select.
@@ -311,13 +311,13 @@ That completes this section of the lab.
 
 ***
 
-# 6-6:  Summary
+# 7-6:  Summary
 
 At this point, you have created an Event and an Alert for that Event.  The next time the custom **"Event"** that you created triggers, an **"Alert"** will be sent to the **Alert Channel**.  In this case, a Email will be sent.
 
 In this section of the lab, you learned how to create a Smart Alert, a traditional Alert (Event), and learned how these Alerts are routed to the correct people/teams via Alert Channels.
 
 
-If you haven't completed all of the sections, you can continue other portions of the lab. Select one of the lab exercises in the upper left corner or select one of the images below.
+Proceed to the Turbonomic portion of the lab.
 
 ***
