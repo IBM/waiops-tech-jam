@@ -32,7 +32,11 @@ This tutorial won't provide you a detailed step-by-step instructions for simple 
 
 1. Open the browser to login to the Instana user interface.  Credentials for your instance you can find in the [Environments](../../general/teams) section.
 
-2. Login through SSH to the MQ/ACE virtual machine.
+2. Login through SSH to the MQ/ACE virtual machine.  You can ssh from the control node.  Then use sudo to switch to the root user:
+```sh
+sudo -i
+
+```
 
 ***
 
@@ -231,8 +235,18 @@ Note:  Even though the TAR files for ACE and MQ look similar, they are unique fo
 
 ## 4-6:  Configure the ACE and MQ Sensors
 
-After installing an Instana Agent, one of the first things you want to do is set a Zone name.  This allows you to organize your Agents to make them easier to find.  The Zones can
-also be used for custom queries, threshold distribution, and more.   In your case, set the Zone name to **Quote of the Day** or something meaningful.
+In this section, you will perform these commands as root on the ACE/MQ server.  From the control node, ssh to the ACE/MQ server.  Then, use sudo to switch to the root user.
+```sh
+ssh <IP of ACE/MQ server\>
+
+```
+
+```sh
+sudo -i
+
+```
+
+After installing an Instana Agent, one of the first things you want to do is set a Zone name.  This allows you to organize your Agents to make them easier to find.  The Zones can also be used for custom queries, threshold distribution, and more.   In your case, set the Zone name to **Quote of the Day** or something meaningful.
 
 Change directory to `/opt/instana/agent/etc/instana`
 

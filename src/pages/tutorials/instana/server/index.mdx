@@ -20,7 +20,7 @@ Instana backand is available as SaaS (prefered option) or self hosted (aka onPre
 - Two server Dockerized **self-hosted** configuration with the datastores on one server and the other components on another. This option is also single-tenant.
 - Small scale kubernetes deployment with the cloud native components running in a kubernetes cluster and the datastores running on a Docker host.  This configuration is multi-tenant.
 - Large scale kubernetes deployments run the cloud native portion in kubernetes and the datastores distributed across multiple servers.  For assistance with architecture/planning, 
-  contact the SWAT team or open a [Grow My Deal](https://ibm.biz/grow-my-deal) request.
+  contact the SWAT team or open a [SWAT Request](http://ibm.biz/automation-swat) request.
 - OpenShift support is currently in Tech Preview.
 
 For informational purposes, on-prem (self-hosted) releases are delivered every 4 weeks.   The release have odd numbers such as 225, 227, 229, etc.  When upgrading, you may upgrade from N-1 or N-2, but you can't skip more than one release.  So, you can upgrade from 225 to 229, but not to 231.  Even numbered releases are for SaaS only.  SaaS is upgraded every 2 weeks.
@@ -33,7 +33,11 @@ For the installation of the Instana server, we'll be following the instructions 
 The instructions can be found here for your reference, but you can follow the steps below.  (https://www.ibm.com/docs/en/instana-observability/current?topic=instana-self-hosted-backend-docker-premises).  
 This is Instana's smallest on-premise installation option.  Production and larger deployments are installed int kubernetes for horizontal scale and resiliency.
 
-Login to virtual machine that was assigned to you for the installations of the Instana Server.  Use the credentials provided in the slack channel.
+Login to virtual machine that was assigned to you for the installations of the Instana Server. ssh from the control node.   Then use sudo to become root.  Use the credentials provided by the proctors.
+```sh
+sudo -i
+
+```
 
 
 Instana has a few prereqs for installing the server.  Some of those have been setup for you.  Others, you will need to perform the installation.  For example, the firewall ports required 
@@ -62,7 +66,7 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
  ```
 
  Note:  There is a **Show more** button on the dialog.  Make sure you copy all of the commands and verify that docker is installed and running.  You can issue **docker ps** command to confirm that it is installed and running.
- ![](images/prereqs.png)
+  ![](images/prereqs.png)
 
 Next, create the following directories and/or filesystems that will be used for the Instana datastores (/mnt/metrics, /mnt/traces, /mnt/data).  Ideally, these directories/filesystems 
 will be setup on fast storage volumes.
@@ -105,8 +109,9 @@ Next, run the **instana init** command to install the Instana server.  You will 
 instana init
 ```
 
-When you run the **instana init** command, it generates a file named settings.hcl in your current directory.  It is important to save this file.  The settings.hcl file contains
-the configuration settings for your deployment.  It can be used to enable additional features and make other configuration settings in the future.
+If the instana command is not found, rerun the previous block of commands one at a time and make sure that the **apt-get install instana-console -y** command executed.
+
+When you run the **instana init** command, it generates a file named settings.hcl in your current directory.  It is important to save this file.  The settings.hcl file contains the configuration settings for your deployment.  It can be used to enable additional features and make other configuration settings in the future.
 
 You will be prompted to select **single**, **dual-instana**, or **dual-clickhouse**.  Type **Enter** to select **single**
 ![](images/single.png)
@@ -208,7 +213,7 @@ Following the initial install of your Instana server, there are optional configu
 
 Follow the steps below to configure the SMTP settings and enable some additional feature flags.
 
-1. Edit `settings.hcl` file according to the [documentation](https://www.ibm.com/docs/en/obi/current?topic=installer-enabling-feature-flags). Some common feature flags available are:
+1. Edit `settings.hcl` file according to the [documentation](https://www.ibm.com/docs/en/obi/current?topic=installer-enabling-feature-flags). The **settings.hcl** file will be located in the same directory where you issued the **instana init** command.  Some common feature flags available are:
 
 ```yaml
 feature "vsphereEnabled" {
@@ -266,6 +271,12 @@ Replace **<root password\>** with the root password of the Instana server.  If y
 Save the changes in the settings.hcl file.
 
 2. Run `instana update -f ./settings.hcl` to apply changes.
+```sh
+instana update -f ./settings.hcl
+
+```
+
+It will take a little while for the configuration changes to take effect.  Read section 1-7 while the configuration changes are being applied.
 
 ***
 

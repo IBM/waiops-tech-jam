@@ -31,6 +31,8 @@ All above mentioned methods are accessible via the wizard on the Instana UI
 
 ![](images/2022-05-21-17-46-38.png)
 
+If the Instana user interface is not available, go back and look at the command prompt where you issued the **instana update** command to change the configuration parameters.  The command may still be running.  The user interface won't be available until the update is complete.
+
 You begin by choosing the platform where you will be installing the agent.  Then you can selected the **Technology** dropdown and choose from a list of installation options.  For example, on Linux, you can choose a automatic **one-liner** installation, RPM, or TAR file installation.  For OpenShift/kubernetes, you have multiple options including operator, helm, and yaml installs.
 
 ![](images/2022-05-21-17-48-04.png)
@@ -53,7 +55,17 @@ A **static** host agent is a self-contained host agent that includes all the lat
 
 ## 2-2:  Installing Instana Agent on Linux VM
 
-You will be installing the Instana Agent on the ACE/MQ server that has been provisioned for you for this lab.  Open up a terminal window and login to the ACE/MQ server as root.
+You will be installing the Instana Agent on the ACE/MQ server that has been provisioned for you for this lab.  Open up a terminal window and login to the ACE/MQ server as root.  You can ssh to the  ACE/MQ server from the control node.
+```sh
+ssh <ACE/MQ server IP address\>
+
+```
+
+Then use sudo to switch to root:
+```sh
+sudo -i
+
+```
 
 In Instana UI, select the **"Stan"** the robot icon in the upper left corner
   ![](images/stan.png)
@@ -86,9 +98,10 @@ those technologies.  In the case of some technologies (eg. MQ an and App Connect
 
 ## 2-3:  Installing Instana Agent on the Instana Server
 
-Next, you will install the Instana agent on the Instana server.  Open a terminal window on the Instana Server.  Then, type **sudo -i** to switch to the root user.
+Next, you will install the Instana agent on the Instana server.  From the control node, ssh to the Instana server.  Then, type **sudo -i** to switch to the root user.
 ```sh
 sudo -i
+
 ```
 
 In Instana UI, select the **"Stan"** the robot icon in the upper left corner
@@ -117,12 +130,12 @@ Cassandra, ClickHouse, ElasticSearch, Nginx, Node.js, and more.  Many of these t
 
 ## 2-4:  Installing Instana Agent on OpenShift Cluster
 
-The next step is to install the Instana Monitoring into the OpenShift Cluster that we'll be using to install our Bee-Travels application.  This is the cluster that we'll be monitoring.
+The next step is to install the Instana Monitoring into the OpenShift Cluster that we'll be using to install our Robot Shop application and has the Quote of the Day application pre-installed.  This is the cluster that we'll be monitoring.
 
 Throughout this lab, we will be using the "oc" command to run commands within OpenShift.  The "oc" command is similar to kubectl for other versions of Kubernetes.  There are
 some minor syntax differences.
 
-To install Instana agent on OpenShift cluster you need to authenticate to the OCP cluster with appropriate permissions (cluster admin role). Then, follow the steps below:
+To install Instana agent on OpenShift cluster you need to authenticate to the OCP cluster with appropriate permissions (cluster admin role). In the lab environment, the **control node** is already logged into the cluster.  You can confirm by issues a command such as **oc get pods**  Follow the steps below to install the Agent into the cluster:
 
 In Instana UI select the "Stan" the robot icon in the upper left corner
 
@@ -195,7 +208,7 @@ oc get pods -n instana-agent
 Check to make sure that all pods are running (since Instana agent runs as daemonset, number of pods should be equal to number of nodes in your cluster). If pods are running, you can examine the logs of one of the pods. Type:  
 
 ```sh
-oc logs POD_NAME -c instana-agent
+oc logs <POD NAME\> -c instana-agent
 ```
 
 where **POD_NAME** is one of the pods listed in the previous command.

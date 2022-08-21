@@ -6,10 +6,11 @@ description: Explore Instana and the Quote of the Day Application
 <AnchorLinks>
   <AnchorLink>5-1: Explore Kubernetes</AnchorLink>
   <AnchorLink>5-2: Explore the Infrastructure View</AnchorLink>
-  <AnchorLink>5-3: Create an Application Perspective</AnchorLink>
-  <AnchorLink>5-4: Explore the Application</AnchorLink>
-  <AnchorLink>5-5: Websites and Mobile App monitoring</AnchorLink>
-  <AnchorLink>5-6: Summary</AnchorLink>
+  <AnchorLink>5-3: Create an Application Perspective for Robot Shop</AnchorLink>
+  <AnchorLink>5-4: Create an Application Perspective for QOTD</AnchorLink>
+  <AnchorLink>5-5: Explore the Application</AnchorLink>
+  <AnchorLink>5-6: Websites and Mobile App monitoring</AnchorLink>
+  <AnchorLink>5-7: Summary</AnchorLink>
 </AnchorLinks>
 ***
 
@@ -161,9 +162,39 @@ If time permits at the end of the lab, you can explore some of the other element
 
 ***
 
-##  5-3:  Create an Application Perspective
+##  5-3:  Create an Application Perspective for Robot Shop
 
 Before we can investigate Applications within Instana, we need to create an **Application Perspective**.  This section describes how to define the **Application Perspective**.
+
+**Application Perspectives** allow you to group together a number of different services and endpoints into dashboard that shows the health and performance of a business application. In this section, you will create and **Application Persective** for the **Robot Shop** application.
+
+On the left hand navigation, select **"Applications"**. You will see a screen open up that contains a list of all applications that are defined in the environment.  Initially, this list maybe almost empty shwoing just **All Services** generic bucket.  
+
+The next thing you are going to do is define an application.  You will see an **"Add"** button in the bottom right corner.
+
+  ![](images/add.png)
+
+Click the **"Add"** button
+
+A dialog will open with two options (one if Smart Alerts feature is not enabled yet on your server).  We'll examine the "Global Smart Alerts" in the Administrative section of this lab.  For now, click on the **"New Application Perspective"** button
+
+  ![](images/newApplication.png)
+
+Swich to the Advanced View Mode  in the upper right corner. Then complete the definition to look like below.  First, type in **kubernetes** and then select **namespace**.  Then, click in the **value** field.  You'll notice that when you click on it, the field is pre-populated with **kubernetes namespaces** that have applications being monitored.  Select the **robot-shop** namespace. 
+
+  ![](images/addRobotShop.png)
+
+This selection will allow the **application perspective** to limit the scope to all transactions within the **robot-shop** kubernetes namespace.
+
+Scroll down further in the dialog and select to include **All Calls** within the dashboard.
+
+Finally, click the **Create** button to create the application perspective.
+
+***
+
+##  5-4:  Create an Application Perspective for QOTD
+
+Before we can investigate Applications within Instana, we need to create an **Application Perspective**.  This section describes how to define the **Application Perspective** for the **Quote of the Day** application.
 
 **Application Perspectives** allow you to group together a number of different services and endpoints into dashboard that shows the health and performance of a business application. In this section, you will create and **Application Persective** for the **Quote of the Day** application.
 
@@ -179,7 +210,7 @@ A dialog will open with two options (one if Smart Alerts feature is not enabled 
 
   ![](images/newApplication.png)
 
-Swich to the Advanced View Mode  in the upper right corner. Then complete the definition to look like below.  As you add filters, you'll notice that Instana automatically populates the fields like the service name.  
+Swich to the Advanced View Mode  in the upper right corner. Then complete the definition to look like below.  As you add filters, you'll notice that Instana automatically populates the fields like the service name.  As you add filters, notice that you need to add a combination of AND and OR conditions to achieve the results that you want.
 
 ![](images/2022-05-27-18-48-03.png)
 
@@ -193,7 +224,7 @@ You have now created an Application Perspective. In the next section, you'll exp
 
 ***
 
-##  5-4:  Explore the Application
+##  5-5:  Explore the Application
 
 After creating the application, your screen should have automatically changed context to show the Application Perspective that you just defined.
 
@@ -320,7 +351,7 @@ like the oldest message on the queue, queue depth, input/output rates, and more.
 
 ***
 
-## 5-5:  Websites and Mobile App Monitoring
+## 5-6:  Websites and Mobile App Monitoring
 
 Next, let's take a look at **Website** and **Mobile Application** Monitoring.  In this environment, Instana does not include an native mobile applications, but know that Instana can gather End User Monitoring (EUM) data from Mobile Applications.  For now, we'll investigate the website monitoring.   
 
@@ -416,7 +447,7 @@ That completes the Explore section of the lab.
 
 ***
 
-## 5-6:  Summary
+## 5-7:  Summary
 
 In this exercise you have explored some of the key capabilities within Instana.  You explored Kubernetes monitoring. You explored the Infrastructure view.  You defined an Application Perspective. And you explored the application monitoring details.  You learned about the website monitoring and EUM data. And, you reviewed the unbounded analytics.
 
