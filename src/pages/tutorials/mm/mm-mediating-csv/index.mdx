@@ -84,7 +84,7 @@ _CSV file naming_
 
 You'll note that there are a number of csv files in that directory that look to adhere to a standard naming convention. There are rules that you must follow for naming these files, and those rules are documented in the "IBM Operations Analytics Predictive Insights" documentation at this link:
 
-<a href="https://www.ibm.com/docs/en/oapi/1.3.6?topic=SSJQQ3\_1.3.6/com.ibm.scapi.doc/admin\_guide/r\_tasp\_csvrules.html" target="_blank">Rules for using CSV data sources</a>
+<a href="https://www.ibm.com/docs/en/oapi/1.3.6?topic=SSJQQ3_1.3.6/com.ibm.scapi.doc/admin_guide/r_tasp_csvrules.html" target="_blank">Rules for using CSV data sources</a>
 
  In short:
 
@@ -224,16 +224,16 @@ cd /opt/IBM/scanalytics/mediationtool/eclipse
 
  Click **Finish**. You now have a data source that we will configure to ingest our csv files.
 
-_A note about CSV structure: CSV files can be in either **wide** or **skinny** format. **Wide** format specifies the metric name in the CSV header. For example, in our data the CPU group has the following header:
+_A note about CSV structure: CSV files can be in either **wide** or **skinny** format. **Wide** format specifies the metric name in the CSV header. For example, in our data the CPU group has the following header:_
 
  `"TIME","RESOURCE","User%","Wait%"`  
  `01/10/20 00:00,"details",84.9,0`  
  `…`  
  `…`  
 
- Above we can see there are two metric definitions in the csv header, "User%" and "Wait%". That indicates that a single CSV line contains multiple metric definitions per resource. Hence, we selected **Metric names in column headers**.
+_Above we can see there are two metric definitions in the csv header, "User%" and "Wait%". That indicates that a single CSV line contains multiple metric definitions per resource. Hence, we selected **Metric names in column headers**._
 
- You may come across a situation where the metric name appears in the csv file data rather than the header. Compare the previous example with the following:
+_You may come across a situation where the metric name appears in the csv file data rather than the header. Compare the previous example with the following:_
 
  `"TIME","RESOURCE","METRICNAME"`  
  `01/10/20 03:20,details,User%,84.9`  
@@ -241,7 +241,7 @@ _A note about CSV structure: CSV files can be in either **wide** or **skinny** f
  `…`  
  `…`  
 
- The CSV contains a generic "METRICNAME" indicator, and the various metric name appears within the csv lines, rather than the header. This is **skinny** format, and each line contains only one metric. When you model the CSV file, and select the metric column, it will show all of the available unique metric names as available, and you can include/exclude metrics as needed.
+_The CSV contains a generic "METRICNAME" indicator, and the various metric name appears within the csv lines, rather than the header. This is **skinny** format, and each line contains only one metric. When you model the CSV file, and select the metric column, it will show all of the available unique metric names as available, and you can include/exclude metrics as needed._
 
 _Note: If you need to ingest files in both skinny and wide format, you must create separate data sources for each type, as you cannot match skinny and wide formats in a single project. You can deploy multiple CSV data sources to a single topic, but they must be done as the same deployment action – that is you must multi-select the data sources, then select "deploy model"._
 
