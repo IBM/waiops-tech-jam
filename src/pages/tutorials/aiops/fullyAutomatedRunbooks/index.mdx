@@ -89,7 +89,17 @@ e) Retrieve OMNIBUS root password :
 oc get secret evtmanager-omni-secret -o go-template='{{range $k,$v := .data}}{{printf "%s: " $k}}{{if not $v}}{{$v}}{{else}}{{$v | base64decode}}{{end}}{{"\n"}}{{end}}'
 ```
 
-f) Test REST interface, OMNIbus password and port from the step (e) and step (d) are used to test the REST interface using curl. 
+f)  Please Note : You need to delete 1 network policy in cluster in order to successfully run next curl command that connects to ObjectServer REST API 
+ 
+ ```sh
+oc delete networkpolicy evtmanager-ibm-netcool-prod-network-policy
+```
+
+
+g) Test REST interface, OMNIbus password and port from the step (e) and step (d) are used to test the REST interface using curl. 
+
+ Cluster name is : <Your cluster ingressdomain>
+ 
 
 ```sh
 curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"select count(*) from alerts.status\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://<ClusterHostname>:30100/objectserver/restapi/sql/factory
