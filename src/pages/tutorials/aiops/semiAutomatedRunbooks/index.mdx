@@ -22,9 +22,9 @@ This module focuses on the creation of a simple Semi-automated runbook.
 
 ![](images/RunbookLifeCycle.png)
 
-**Scenario:** There is a httpd server running on HOST . The httpd process is monitored and configured to generate an alert when the Httpd API service goes UP/DOWN.
+**Scenario:** There is a apache2 server running on HOST . The apache2 process is monitored and configured to generate an alert when the apache2 API service goes UP/DOWN.
 
-**Objective:** Create a runbook to restart httpd API service and associate it with “Httpd API Service Down” alert.
+**Objective:** Create a runbook to restart apache2 API service and associate it with “apache2 API Service Down” alert.
 
 By the end of this module, you will have a fully functional semi-automated runbook ready in the Watson AIOPs Event Manager environment.
  
@@ -56,9 +56,9 @@ Navigate to:  ** Automations → Runbooks → Automations → Create Automation 
 Script :
 
 ```sh
-echo "Restarting the HTTPD service"
-sudo systemctl restart httpd
-sudo systemctl status httpd | grep Active
+echo "Restarting the apache2 service"
+sudo systemctl restart apache2
+sudo systemctl status apache2 | grep Active
 ```
 ***
 Automation Parameters:
@@ -104,21 +104,21 @@ For more information on triggers : https://www.ibm.com/docs/en/noi/1.6.5?topic=t
 
 Connect to OCP Infra node.
 
-Install & start httpd service on OCP Infra node.
+Install & start apache2 service on OCP Infra node.
 
 ```sh
-yum install httpd
-systemctl start httpd
-systemctl status httpd
+sudo apt install apache2
+sudo systemctl start apache2
+sudo systemctl status apache2
 ```
 
 Login to OCP cluster
 
-Now stop httpd Service and insert some test alert for httpd Service. (In live monitoring this alert is automatically generated when Service goes down)
+Now stop apache2 Service and insert some test alert for apache2 Service. (In live monitoring this alert is automatically generated when Service goes down)
 
 ```sh
-systemctl stop httpd
-systemctl status httpd
+sudo systemctl stop apache2
+sudo systemctl status apache2
 ```
 
 ```sh
@@ -144,10 +144,10 @@ Launch Alert Viewer and check alert with Summary = "API Server on HOST is DOWN".
 
 Connect to OCP Infra node.
 
-Check Status of httpd  service on OCP Infra node.
+Check Status of apache2  service on OCP Infra node.
 
 ```sh
-systemctl status httpd
+sudo systemctl status apache2
 ```
 
 It should return running status , as runbook automatically started this service 

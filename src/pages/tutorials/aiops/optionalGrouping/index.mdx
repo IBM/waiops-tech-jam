@@ -243,7 +243,7 @@ Login into evtmanager-ncoprimary pod
 oc exec -it evtmanager-ncoprimary-0 bash
 cd /opt/IBM/tivoli/netcool/omnibus/extensions/housekeeping/
 vim expiretime.sql
-``
+```
 
 In this exercise, we will configure and deploy the event expiry housekeeping automation. This automation will set **ExpireTime** for all events where it is not already set, except for parent events. The ExpireTime field is essentially a time-to-live (defined in seconds) and is used by the default expire automation to clear the events once they reach their expiry time. Events that have a zero value (ie. are unset) never expire, hence the need for such a housekeeping automation.
 
