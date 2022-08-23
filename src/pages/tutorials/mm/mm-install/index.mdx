@@ -52,6 +52,7 @@ For the execution of the labs, you will need the following passwords, provided t
 ## 2-3: Installing IBM Streams
   Metric Manager uses IBM Streams as its core ingestion/analytics engine. As such, the Streams software must be installed prior to installing the Metric Manager. The Streams install is very straightforward and only takes a couple of minutes.
 
+
   From your terminal command line, run the following command to start the Streams install:
 
 ```sh
@@ -114,8 +115,13 @@ You should receive the following message indicating that the environment has bee
 
 ## 2-4: Installing Metric Manager (Predictive Insights)
 
+  To install Metric Manager, DB2 needs to be running. From the command line window, issue the following command to start DB2:
 
-  From the command window, issue the following command to start the installation manager:
+```sh
+db2start
+```
+
+  Next, issue the following command to start the installation manager:
 
 ```sh
 /home/scadmin/IBM/InstallationManager/eclipse/launcher
