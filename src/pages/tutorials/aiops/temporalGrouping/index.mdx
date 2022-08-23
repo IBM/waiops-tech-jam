@@ -127,7 +127,7 @@ fi
 sleep 1m
 
 /opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -passwd $OMNIBUS_ROOT_PWD << EOF
-update alerts.status set Severity = 0 where Class=87772;
+update alerts.status set Severity = 0 where Class=87722;
 go
 exit
 EOF
@@ -135,7 +135,7 @@ EOF
 sleep  1m
 
 /opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -passwd $OMNIBUS_ROOT_PWD << EOF
-delete from alerts.status where Class=87772;
+delete from alerts.status where Class=87722;
 go
 exit
 EOF
