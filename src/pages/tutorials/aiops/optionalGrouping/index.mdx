@@ -40,20 +40,18 @@ To modify this setting in master.cae_properties , login into evtmanager-ncoprima
 ```sh
 oc exec -it evtmanager-ncoprimary-0 bash
 ```
+
 Then login into Objectserver via sql 
 
 ```sh
 /opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -passwd $OMNIBUS_ROOT_PWD
 ```
 Execute SQL command to update **CEACKeyPrefix**
-```
 
 ```sh
 update master.cea_properties set CharValue = 'INCIDENT' where Name = 'CEACKeyPrefix';
 go
 ```
-
-
 
 **CEAUseNodeForCKeyParent**
 
@@ -71,7 +69,9 @@ To modify this setting login into evtmanager-ncoprimary pod
 ```sh
 oc exec -it evtmanager-ncoprimary-0 bash
 ```
+
 Then login into Objectserver via sql 
+
 ```sh
 /opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -passwd $OMNIBUS_ROOT_PWD
 ```
@@ -97,6 +97,7 @@ To modify this setting login into evtmanager-ncoprimary pod
 ```sh
 oc exec -it evtmanager-ncoprimary-0 bash
 ```
+
 Then login into Objectserver via sql 
 
 ```sh
