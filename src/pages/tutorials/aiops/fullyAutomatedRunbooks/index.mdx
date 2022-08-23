@@ -22,7 +22,7 @@ This module focuses on the creation of a fully-automated runbook and updates run
 
 ![](images/AutoRunbookLifeCycle.png)
 
-Scenario: There is a httpd server running on HOST. The httpd process is monitored and configured to generate an alert when the Httpd API service goes UP/DOWN.
+Scenario: There is a apache2 server running on HOST. The apache2 process is monitored and configured to generate an alert when the apache2 API service goes UP/DOWN.
 
 Objective: We have a manual runbook available (created in previous lab) for this problem and have a good success rate based on feedback. As a next step to mature this runbook and achieve full automation, we want to execute this runbook automatically and update results in the event journal. So the problem can be fixed without operator intervention.
   
@@ -58,8 +58,8 @@ apiVersion: v1
 data:
   agg-p-props-append: |
     NRestOS.Enable: TRUE
-    NHttpd.EnableHTTP: TRUE
-    NHttpd.ListeningPort: 8080
+    Napache2.EnableHTTP: TRUE
+    Napache2.ListeningPort: 8080
   agg-p-sql-extensions: ""
 ```
 
@@ -171,23 +171,23 @@ Save changes to the trigger.
 
 Connect to OCP Infra node.
 
-Check status of httpd service on OCP Infra node. If it is not running start it.
+Check status of apache2 service on OCP Infra node. If it is not running start it.
 
 ```sh
-systemctl status httpd
+sudo systemctl status apache2
 ```
 
 ```sh
-systemctl start httpd
+sudo systemctl start apache2
 ```
 
 
-Now stop httpd Service and insert test alert for httpd Service. (In live monitoring this alert is automatically generated when Service goes down)
+Now stop apache2 Service and insert test alert for apache2 Service. (In live monitoring this alert is automatically generated when Service goes down)
 
 
 ```sh
-systemctl stop httpd
-systemctl status httpd
+sudo systemctl stop apache2
+sudo systemctl status apache2
 ```
 
 Login into OCP cluster and simulate corresponding alert 
@@ -225,10 +225,10 @@ Runbook execution status and result are updated for this event.
 
 You can check if the system automatically restarted the service.
 
-Connect to OCP Infra node & check status of httpd service.
+Connect to OCP Infra node & check status of apache2 service.
 
 ```sh
-systemctl status httpd
+sudo systemctl status apache2
 ```
 
 It should return running status , as runbook automatically started this service 
