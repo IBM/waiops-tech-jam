@@ -70,11 +70,11 @@
       path: /tutorials/turbonomic/installation
     - title: 3 - Understanding the UI
       path: /tutorials/turbonomic/ui
-    - title: 4 - Integrate Instana
-      path: /tutorials/turbonomic/integrate-instana
-    - title: 5 - Setup policy
-      path: /tutorials/turbonomic/policy
-    - title: 6 - Kubeturbo Installation
+    - title: 4 - Kubeturbo Installation
       path: /tutorials/turbonomic/kubeturbo
+    - title: 5 - Integrate Instana
+      path: /tutorials/turbonomic/integrate-instana
+    - title: 6 - Setup policy
+      path: /tutorials/turbonomic/policy
     - title: 7 - Taking Actions
       path: /tutorials/turbonomic/taking-actions
