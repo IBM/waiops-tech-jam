@@ -4,36 +4,19 @@ description: Set up webhook integrations in Event Manager
 ---
 <AnchorLinks>
   <AnchorLink>4-1: Overview</AnchorLink>
-  <AnchorLink>4-2: Create a new webhook integration with Microsoft Azure </AnchorLink>
-  <AnchorLink>4-3: Create a new generic webhook integration with SevOne</AnchorLink>
+  <AnchorLink>4-2: Create a new generic webhook integration with SevOne</AnchorLink>
 </AnchorLinks>
 
 
 ## 4-1: Overview
 
-This module focuses on the set up of two webhook integrations, so that events can be received from a cloud event source. The examples include an off-the-shelf integration with Microsoft Azure, and a generic webhook integration with SevOne.
+This module focuses on the set up of webhook integration, so that events can be received from a cloud event source. We will configure generic webhook integration with SevOne.
 
-By the end of this module, you will have configured two webhooks and be receiving events from your target sources.
-
-## 4-2: Create a new webhook integration with Microsoft Azure
-
-Watson for AIOps Event Manager comes with a number of built-in off-the-shelf event receivers that are pre-configured to be able to receive and interpret event payloads coming from certain types of event source, and then normalise them and insert them into Event Manager as normal events. The Microsoft Azure event receiver provides monitoring services for Azure resources and will receive events of the following types:
-
-* Azure Classic Metrics and Azure Metrics
-* Azure Activity Log Alerts
-* Azure Auto-shutdown notification
-* Azure Auto-scales notification
-* Azure Log Search Alerts
-
-To create a new Microsoft Azure event receiver integration, navigate to: **Administration → Integration with other systems**. Click on **New integration** and **Configure** a new integration for **Microsoft Azure**. Give the integration a name, and copy the provided webhook to a text editor and save it in a safe place. For security reasons, once you leave this page, you won't be able to access the webhook URL again.
-
-The rest of the set-up is done in the Microsoft Azure portal, using the webhook URL just created. Instructions for doing so are provided in IBM documentation: https://www.ibm.com/docs/en/noi/1.6.5?topic=integrations-microsoft-azure
-
-Once you have configured your event integration on both sides, return to the event view, and select the **AllEvents** or **Default** filter to see your new events.
+By the end of this module, you will have webhook configured receiving events from your target source.
 
 A full list of the incoming event integrations are documented here: https://www.ibm.com/docs/en/noi/1.6.5?topic=systems-configuring-incoming-integrations
 
-## 4-3: Create a new generic webhook integration with SevOne
+## 4-2: Create a new generic webhook integration with SevOne
 
 While the event integrations provide a large number of off-the-shelf integrations, it is typical that a user will have an event source for which there is no corresponding integration. Like everything with Netcool, where there is not an off-the-shelf option, there is always the generic option of integration as a backstop. In this exercise, we will create a generic webhook integration with SevOne.
 
