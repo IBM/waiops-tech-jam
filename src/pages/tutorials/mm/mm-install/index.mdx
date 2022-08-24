@@ -4,16 +4,16 @@ description: How to install Metric Manager
 ---
 
 <AnchorLinks>
-  <AnchorLink>2-1: Lab Introduction</AnchorLink>
-  <AnchorLink>2-2: Accessing your Metric Manager lab environment</AnchorLink>
-  <AnchorLink>2-3: Installing IBM Streams</AnchorLink>
-  <AnchorLink>2-4: Installing Metric Manager (Predictive Insights)</AnchorLink>
-  <AnchorLink>2-5: Installing Metric Manager Interim Fix 5</AnchorLink>
-  <AnchorLink>2-6: Installing the REST Mediation Service</AnchorLink>
+  <AnchorLink>3-1: Lab Introduction</AnchorLink>
+  <AnchorLink>3-2: Accessing your Metric Manager lab environment</AnchorLink>
+  <AnchorLink>3-3: Installing IBM Streams</AnchorLink>
+  <AnchorLink>3-4: Installing Metric Manager (Predictive Insights)</AnchorLink>
+  <AnchorLink>3-5: Installing Metric Manager Interim Fix 5</AnchorLink>
+  <AnchorLink>3-6: Installing the REST Mediation Service</AnchorLink>
 </AnchorLinks>
 
 
-## 2-1: Lab Introduction 
+## 3-1: Lab Introduction 
 
 In this lab, you will be installing the various components that make up the VM-based Metric Manager (formerly Predictive Insights) solution, as well as installing the latest Interim Fix (IFIX5), and the REST Mediation Service, which will be used in an upcoming lab.
 
@@ -31,7 +31,7 @@ For the execution of the labs, you will need the following passwords, provided t
 **<span style="color:green"><CASSANDRA PASSWORD\></span>**
 
 
-## 2-2: Accessing your Metric Manager lab environment
+## 3-2: Accessing your Metric Manager lab environment
 
   Open your VNC Viewer and create a new connection (File -> New Connection)
 
@@ -49,7 +49,7 @@ For the execution of the labs, you will need the following passwords, provided t
 
   You are now prepared to proceed with the installation of Metric Manager.
 
-## 2-3: Installing IBM Streams
+## 3-3: Installing IBM Streams
   Metric Manager uses IBM Streams as its core ingestion/analytics engine. As such, the Streams software must be installed prior to installing the Metric Manager. The Streams install is very straightforward and only takes a couple of minutes.
 
 
@@ -113,7 +113,7 @@ You should receive the following message indicating that the environment has bee
 
  `IBM Streams environment variables have been set.`
 
-## 2-4: Installing Metric Manager (Predictive Insights)
+## 3-4: Installing Metric Manager (Predictive Insights)
 
   To install Metric Manager, DB2 needs to be running. From the command line window, issue the following command to start DB2:
 
@@ -253,7 +253,7 @@ source ~/.bashrc
 
  You have completed the installation of Metric Manager. In the next section, you will install the latest update.
 
-## 2-5: Installing Metric Manager Interim Fix 5 
+## 3-5: Installing Metric Manager Interim Fix 5 
 
 The latest fix pack for Metric Manager is always available on the IBM Fix Central site. As of this writing, the latest available fix is IFIX5. It provides fixes for the core analytics, the UI, and installs a new version of Streams. Finally, it provides an update to the REST/Kafka mediation components, which we will work with in an upcoming lab.
 
@@ -338,9 +338,12 @@ And run the update UI script:
 ```sh
 ./patch_PI_UI_136_iFix5.sh
 ```
+<br/>
+<br/>
 
- You will be presented with a number of prompts, all of which **must** be typed in (the update script doesn't provide a facility for defaults). Use the following values for its relative prompt:
+# ** !!! DANGER, WILL ROBINSON !!! **
 
+The next portion of the installation will prompt you for 14 values. You must be *deliberate* in entering these values, and you must enter them as shown below. The interim fix installation script does not verify the values you enter here, and even though the prompts suggest default values, the defaults will not be accepted. **So ensure that you enter the correct values as listed below!**
 
  JazzSM/WebGUI host: ```pi-template.Hybrid-Squad.cloud```  
  JazzSM base directory: ```/home/scadmin/IBM/JazzSM```  
@@ -410,7 +413,7 @@ If it shows down, wait a minute, and try the status command again. If it still s
  If you receive an error, consult your lab proctor.
 
 
-## 2-6: Installing the REST Mediation Service
+## 3-6: Installing the REST Mediation Service
 
 Now that both the Core and UI components of Metric Manager are updated, our last step for install is to install the REST mediation service. Close firefox, return to your terminal, and follow these steps to install:
 
