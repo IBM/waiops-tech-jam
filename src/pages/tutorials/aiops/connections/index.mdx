@@ -19,7 +19,7 @@ This module focuses on configuring and connecting an on-premise Netcool/Probe to
 
 **NOTE:** This module uses on-premise OMNIbus probe that you want to connect into your Event Manager system. 
 OMNIbus Probe server is pre-installed for you on VM (pi-template) in your environment, including Simnet Probe under /home/scadmin/IBM/tivoli/netcool
-You can connect to this VM using `sh pi-template` from your control node.
+You can connect to this VM using `ssh pi-template` from your control node.
 
 This deployment scenario will assume you are deploying onto IBM Cloud however the steps would generally apply to an OpenShift cluster deployed on another cloud provider or on-premise.
 
@@ -160,7 +160,7 @@ c) Add new interfaces entry in $NCHOME/etc/omni.dat, representing the primary Ob
 ```sh
 [ROKS_AGG_P]
 {
- Primary: noi-proxy.noi.svc ssl 32767
+ Primary: evtmanager-proxy.noi.svc ssl 32767
 }
 ```
 

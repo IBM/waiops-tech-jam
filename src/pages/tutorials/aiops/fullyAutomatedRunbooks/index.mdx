@@ -22,7 +22,7 @@ This module focuses on the creation of a fully-automated runbook and updates run
 
 ![](images/AutoRunbookLifeCycle.png)
 
-Scenario: There is a httpd server running on HOST. The httpd process is monitored and configured to generate an alert when the Httpd API service goes UP/DOWN.
+Scenario: There is a apache2 server running on HOST. The apache2 process is monitored and configured to generate an alert when the apache2 API service goes UP/DOWN.
 
 Objective: We have a manual runbook available (created in previous lab) for this problem and have a good success rate based on feedback. As a next step to mature this runbook and achieve full automation, we want to execute this runbook automatically and update results in the event journal. So the problem can be fixed without operator intervention.
   
@@ -89,7 +89,19 @@ e) Retrieve OMNIBUS root password :
 oc get secret evtmanager-omni-secret -o go-template='{{range $k,$v := .data}}{{printf "%s: " $k}}{{if not $v}}{{$v}}{{else}}{{$v | base64decode}}{{end}}{{"\n"}}{{end}}'
 ```
 
-f) Test REST interface, OMNIbus password and port from the step (e) and step (d) are used to test the REST interface using curl. 
+f)  Please Note : You need to delete 1 network policy in cluster in order to successfully run next curl command that connects to ObjectServer REST API 
+ 
+ ```sh
+oc delete networkpolicy evtmanager-ibm-netcool-prod-network-policy
+```
+
+
+g) Test REST interface, OMNIbus password and port from the step (e) and step (d) are used to test the REST interface using curl. 
+
+
+ Cluster name is : `<Your cluster ingressdomain>`
+
+ 
 
 ```sh
 curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"select count(*) from alerts.status\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://<ClusterHostname>:30100/objectserver/restapi/sql/factory
@@ -124,7 +136,7 @@ Navigate to: ** Automations→ Runbooks → Automations → Create Automation **
 Script:
 
 ```sh
-curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"exec jinsert($alertid,0, getdate, '$message')\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://10.17.71.136:30100/objectserver/restapi/sql/factory
+curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"exec jinsert($alertid,0, getdate, '$message')\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' "http://10.17.71.136:30100/objectserver/restapi/sql/factory"
 ```
 
 ![](images/FRB_create_automation_params.png)
@@ -171,23 +183,23 @@ Save changes to the trigger.
 
 Connect to OCP Infra node.
 
-Check status of httpd service on OCP Infra node. If it is not running start it.
+Check status of apache2 service on OCP Infra node. If it is not running start it.
 
 ```sh
-systemctl status httpd
+sudo systemctl status apache2
 ```
 
 ```sh
-systemctl start httpd
+sudo systemctl start apache2
 ```
 
 
-Now stop httpd Service and insert test alert for httpd Service. (In live monitoring this alert is automatically generated when Service goes down)
+Now stop apache2 Service and insert test alert for apache2 Service. (In live monitoring this alert is automatically generated when Service goes down)
 
 
 ```sh
-systemctl stop httpd
-systemctl status httpd
+sudo systemctl stop apache2
+sudo systemctl status apache2
 ```
 
 Login into OCP cluster and simulate corresponding alert 
@@ -225,10 +237,10 @@ Runbook execution status and result are updated for this event.
 
 You can check if the system automatically restarted the service.
 
-Connect to OCP Infra node & check status of httpd service.
+Connect to OCP Infra node & check status of apache2 service.
 
 ```sh
-systemctl status httpd
+sudo systemctl status apache2
 ```
 
 It should return running status , as runbook automatically started this service 
