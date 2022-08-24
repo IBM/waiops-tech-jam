@@ -4,14 +4,14 @@ description: How to install a small deployment of AI Manager
 ---
 
 <AnchorLinks>
-  <AnchorLink>1-1: Introduction</AnchorLink>
-  <AnchorLink>1-2: Create a namespace for the Watson AIOps AI Manager install</AnchorLink>
-  <AnchorLink>1-3: Install the Watson AIOps AI Manager Operator</AnchorLink>
-  <AnchorLink>1-4: Install an instance of AI Manager</AnchorLink>
+  <AnchorLink>2-1: Introduction</AnchorLink>
+  <AnchorLink>2-2: Create a namespace for the Watson AIOps AI Manager install</AnchorLink>
+  <AnchorLink>2-3: Install the Watson AIOps AI Manager Operator</AnchorLink>
+  <AnchorLink>2-4: Install an instance of AI Manager</AnchorLink>
 </AnchorLinks>
 
 
-## 1-1: Introduction
+## 2-1: Introduction
 
 
 Before we begin with Metric Manager, we will start the installation of AI Manager, as this can take 90 minutes or so to complete.
@@ -24,7 +24,7 @@ If your cluster already has the catalog source installed, you may proceed.
 
 
 
-## 1-2: Create a namespace for the Watson AIOps AI Manager install
+## 2-2: Create a namespace for the Watson AIOps AI Manager install
 
  In the OpenShift UI, navigate to Projects:
 
@@ -54,7 +54,7 @@ Next, issue the following command to create the secret:
  oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-password=\<your entitlement key\> --docker-server=cp.icr.io --namespace=cp4waiops
 ```
 
-## 1-3: Install the Watson AIOps AI Manager Operator
+## 2-3: Install the Watson AIOps AI Manager Operator
 
  Navigate to "Operator Hub", and change the project at the top of the page to your 'cp4waiops' project. Then, in the search box under "All Items", type in "ai manager":
 
@@ -75,7 +75,7 @@ Next, issue the following command to create the secret:
  ![](images/Picture7.png)
 
 
-## 1-4: Install an instance of AI Manager
+## 2-4: Install an instance of AI Manager
 
  Now that the operator is installed, you can create instances of the AI Manager. From the Operator view, click on the "Create instance" Link in the AI Manager tile:
 
