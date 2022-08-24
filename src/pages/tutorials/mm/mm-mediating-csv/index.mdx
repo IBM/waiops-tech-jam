@@ -4,15 +4,15 @@ description: This lab will illustrate how to analyze CSV file structure, how to 
 ---
 
 <AnchorLinks>
-  <AnchorLink>3-1: Lab Introduction</AnchorLink>
-  <AnchorLink>3-2: Creating a topic</AnchorLink>
-  <AnchorLink>3-3: Topic configuration</AnchorLink>
-  <AnchorLink>3-4: Creating a model to ingest CSV</AnchorLink>
-  <AnchorLink>3-5: Deploying the model</AnchorLink>
-  <AnchorLink>3-6: Ingesting CSV data for machine learning</AnchorLink>
+  <AnchorLink>4-1: Lab Introduction</AnchorLink>
+  <AnchorLink>4-2: Creating a topic</AnchorLink>
+  <AnchorLink>4-3: Topic configuration</AnchorLink>
+  <AnchorLink>4-4: Creating a model to ingest CSV</AnchorLink>
+  <AnchorLink>4-5: Deploying the model</AnchorLink>
+  <AnchorLink>4-6: Ingesting CSV data for machine learning</AnchorLink>
 </AnchorLinks>
 
-## 3-1: **Introduction**
+## 4-1: **Introduction**
 
 The Metric Manager can consume data in four primary ways: Modelling/Mediating data that is in CSV format, Modelling/Mediating data that resides in a database via JDBC connection, and ingesting pre-formed JSON through either the REST mediation service or Kafka.
 
@@ -20,7 +20,7 @@ This lab will be showing you how to consume data from CSV files. There are CSV f
 
  We will create a Metric Manager topic to receive this data, create a model for this data with the Mediation Tool, deploy that model, then start the topic and start ingesting the data.
 
-## 3-2: **Creating a topic**
+## 4-2: **Creating a topic**
 
 
   To create a topic, open a terminal window and run the following commands:
@@ -46,7 +46,7 @@ BIGBLUE
 ./admin.sh delete_topic TEST
 ```
 
-## 3-3: **Topic configuration**
+## 4-3: **Topic configuration**
 
 ### Topic configuration considerations
 
@@ -170,7 +170,7 @@ Another thing you may need to do during a proof of concept is disable alarm clea
 
  Topic configuration is complete!
 
-## 3-4: **Creating a model to ingest CSV**
+## 4-4: **Creating a model to ingest CSV**
 
  The Mediation Tool is the component you will use to model the data contained within the CSV files so that Metric Manager can ingest, process, learn, and identify anomalies within the data. The tool allows you to create a 'model' of the structure of the CSV files you'll be working with, from within a user-friendly Eclipse interface. You can start the Mediation Tool by issuing the following commands from your VNC session terminal:
 
@@ -471,7 +471,7 @@ You'll notice that indeed there are multiple entries for a given time stamp.
 
  ![](images/Picture45.png)
 
-## 3-5: Deploying the model
+## 4-5: Deploying the model
 
  Next, to deploy the model, right-click on the BIGBLUE.pamodel title under the TECHJAM2022 project, and select **Deploy Model**:
 
@@ -502,7 +502,7 @@ You'll notice that indeed there are multiple entries for a given time stamp.
  After the deployment completes successfully, exit the mediation tool to return to the command line.
 
 
-## 3-6: **Ingesting CSV data for machine learning**
+## 4-6: **Ingesting CSV data for machine learning**
 
 
 ### Start the topic

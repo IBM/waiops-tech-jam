@@ -4,21 +4,21 @@ description: This lab will walk you through the steps to analyze and review the 
 ---
 
 <AnchorLinks>
-  <AnchorLink>4-1: Lab Introduction</AnchorLink>
-  <AnchorLink>4-2: Accessing the dashboard</AnchorLink>
-  <AnchorLink>4-3: The anomaly search view</AnchorLink>
-  <AnchorLink>4-4: Launching anomaly details</AnchorLink>
-  <AnchorLink>4-5: Viewing alarms in Event Manager</AnchorLink>
-  <AnchorLink>4-6: Metric search</AnchorLink>
-  <AnchorLink>4-7: Anomaly distribution dashboard</AnchorLink>
+  <AnchorLink>5-1: Lab Introduction</AnchorLink>
+  <AnchorLink>5-2: Accessing the dashboard</AnchorLink>
+  <AnchorLink>5-3: The anomaly search view</AnchorLink>
+  <AnchorLink>5-4: Launching anomaly details</AnchorLink>
+  <AnchorLink>5-5: Viewing alarms in Event Manager</AnchorLink>
+  <AnchorLink>5-6: Metric search</AnchorLink>
+  <AnchorLink>5-7: Anomaly distribution dashboard</AnchorLink>
 </AnchorLinks>
 
 
-## 4-1: Lab Introduction
+## 5-1: Lab Introduction
 
 In our previous lab, we configured a Metric Manager topic to receive data, we built a data model based on CSV files, we deployed the model to our topic, and we ran extraction to allow the Metric Manager to ingest the data and learn the behavior. Now that we have run our data through the system for analysis and machine learning, we will review the results of the metric analysis.
 
-## 4-2: Accessing the dashboard
+## 5-2: Accessing the dashboard
 
 
 To view the results of the ingestion and analysis, open Firefox from the Desktop menu:
@@ -31,7 +31,7 @@ Login as ncoadmin / **<span style="color:green"><LAB PASSWORD\></span>**:
 
  (note, if you don't see the above login screen when opening up Firefox, click on the "IBM Dashboard Application Services Hub" bookmark in the bookmarks bar).
 
-## 4-3: The anomaly search view
+## 5-3: The anomaly search view
 
  From the main Dashboard window, find the "Snowflake" icon in the left menu pane, click on it, and select "Service Diagnosis Anomaly Search":
 
@@ -60,7 +60,7 @@ Login as ncoadmin / **<span style="color:green"><LAB PASSWORD\></span>**:
 
  ![](images/lab4-Picture53.png)
 
-## 4-4: Launching anomaly details
+## 5-4: Launching anomaly details
 
  Next, find the anomaly that indicates **ResponseTime is Higher than expected** for the **productpage-v1** resource, and select **Launch** (may be in a different location that what is shown below):
 
@@ -126,7 +126,7 @@ The **Info** column provides information with regards to why a metric has been i
 
  Looking at the overall related anomalies gives cross-silo visibility that would otherwise not be possible by only looking at the specific monitoring tools that are collecting this data. We have brought together performance data from our APM solution, which provides response time information for the productpage-v1 application. We have brought in database transaction information from our database monitoring tool. And we have brought in disk performance metrics from our infrastructure monitoring tool. In seeing these anomalies together, we can surmise that the disk saturation is limiting the number of database transactions, which is, in turn, causing a serious performance problem for the application.
 
-## 4-5: Viewing alarms in Event Manager
+## 5-5: Viewing alarms in Event Manager
 
 Next, we will look at the alarms in Event Manager that were generated for these anomalies. Anomaly alerts are generated through the use of a stdin probe that is installed and configured during the installation of the Metric Manager. There are default views and filters that are also installed into DASH, and a pre-configure event list that shows metric related events. To access this event list, click on the flag icon in the left pane, then select **Detected Anomalies** :
 
@@ -153,7 +153,7 @@ One thing that's a little bit different than looking at the anomaly search, is t
 
  ![](images/lab4-Picture67.png)
 
-## 4-6: Metric search
+## 5-6: Metric search
 
 You can perform aribitrary searches for resource / metric combinations. 
 
@@ -173,7 +173,7 @@ gives way to...
 
 Searching for aribitrary metrics allows you to view the behaviour of metrics **without** them necessarily being anomalous, which can come in handy if you want to ensure that a given metric is being collected, and also in situations where someone needs evidence that a metric or set of metrics of interest are acting within their learned baselines.
 
-## 4-7: Anomaly distribution dashboard
+## 5-7: Anomaly distribution dashboard
 
 Finally, there is also an anomaly distribution dashboard that shows the time frame of anomalies received, the number of anomalies that occurred for each time frame in a bar graph, and top 10 anomalous nodes, resources, and metrics. Its more useful for large datasets to be able to identify the when, over time, the most anomalies occur, and the top origin of those anomalies. You can access it by clicking on the **Flag** icon in the left navigation bar, then selecting the **Service Diagnosis Dashboard** menu item:
 
