@@ -134,7 +134,7 @@ Navigate to: ** Automations→ Runbooks → Automations → Create Automation **
 Script:
 
 ```sh
-curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"exec jinsert($alertid,0, getdate, '$message')\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://10.17.71.136:30100/objectserver/restapi/sql/factory
+curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"exec jinsert($alertid,0, getdate, '$message')\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' "http://10.17.71.136:30100/objectserver/restapi/sql/factory"
 ```
 
 ![](images/FRB_create_automation_params.png)
