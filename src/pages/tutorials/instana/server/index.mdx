@@ -34,7 +34,19 @@ The instructions can be found here for your reference, but you can follow the st
 https://www.ibm.com/docs/en/instana-observability/current?topic=instana-self-hosted-backend-docker-premises  
 This is Instana's smallest on-premise installation option.  Production and larger deployments are installed int kubernetes for horizontal scale and resiliency.
 
-Login to virtual machine that was assigned to you for the installations of the Instana Server. ssh from the control node.   Then use sudo to become root.  Use the credentials provided by the proctors.
+For the lab, you were assigned a virtual machine labeled the **control node**.  ssh into the control using the id_rsa file that you previously downloaded as shown below:
+```sh
+ssh -i id_rsa jammer@<IP address of control node>
+
+```
+
+Once you are logged onto the control node, ssh to the Instana server by issuing the following command:
+```sh
+ssh jammer@instana
+
+```
+
+Once you are logged onto the Instana server node, use sudo to become root.
 ```sh
 sudo -i
 
@@ -99,6 +111,7 @@ wget -qO - "https://self-hosted.instana.io/signing_key.gpg" | apt-key add -
 apt-get update -y
 apt-get upgrade -y
 apt-get install instana-console -y
+ls instana
 
 ```
 
@@ -110,7 +123,7 @@ Next, run the **instana init** command to install the Instana server.  You will 
 instana init
 ```
 
-If the instana command is not found, rerun the previous block of commands one at a time and make sure that the **apt-get install instana-console -y** command executed.
+<span style="color:red">If the instana command is not found, rerun the previous block of commands one at a time and make sure to execute the "apt-get install instana-console -y" command.</span>
 
 When you run the **instana init** command, it generates a file named settings.hcl in your current directory.  It is important to save this file.  The settings.hcl file contains the configuration settings for your deployment.  It can be used to enable additional features and make other configuration settings in the future.
 
@@ -260,8 +273,8 @@ Next, search for the **smtp** section in the settings.hcl file.   Modify the smt
     from      = "server@instana.com"
     host      = "localhost"
     port      = 25
-    user      = "root"
-    password  = "<root password>"
+    user      = "jammer"
+    password  = "<jammer password provided by proctors"
     use_ssl   = false
     start_tls = false
   }
