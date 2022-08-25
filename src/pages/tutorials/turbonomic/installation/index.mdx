@@ -146,6 +146,8 @@ EOF
 oc get pods -n ${NS} -w
 ```
 
+Ensure all the pods are in `STATUS` = `Running` and `READY` = `1/1`. 
+
 Example output:
 
 ```
@@ -178,6 +180,9 @@ check for the route
 ```sh
 oc get route -n ${NS}
 ```
+
+Example output:
+![](images/ocGetRouteOutput.png)
 
 Copy the `HOST/PORT` under `api` name.
 
