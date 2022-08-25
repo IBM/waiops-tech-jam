@@ -15,7 +15,7 @@ description: Deploy Watson for AIOps Event Manager onto OpenShift
 
 ## 2-1: Overview
 
-This module focuses on the initial deployment of Event Manager.  This deployment scenario will assume you are deploying onto IBM Cloud however the steps would generally apply to an OpenShift cluster deployed on another cloud provider, or on-premise. The exception to this would be the setup of the persistent storage needed by the Event Manager. On IBM Cloud, it is recommended to simply use ibmc-block-gold for your storage class. If it is another cloud provider, select their alternative block storage option. For on-premise deployments, a good option would be VMware vSphere storage, particularly if you are already a VMware shop. In any case, block storage is recommended for performance reasons.
+This module focuses on the initial deployment of Event Manager.  This deployment scenario will assume you are deploying onto IBM Cloud however the steps would generally apply to an OpenShift cluster deployed on another cloud provider, or on-premise. The exception to this would be the setup of the persistent storage needed by the Event Manager. On IBM Cloud, it is recommended to simply use `ibmc-block-gold` for your storage class. If it is another cloud provider, select their alternative block storage option. For on-premise deployments, a good option would be VMware vSphere storage, particularly if you are already a VMware shop. In any case, block storage is recommended for performance reasons.
 
 For more detailed notes on the topic of storage, see the documentation link: https://www.ibm.com/docs/en/noi/1.6.5?topic=preparing-storage
 
@@ -24,7 +24,7 @@ By the end of this module, you will have provisioned an OpenShift cluster, prepa
 
 ## 2-2: Create your OpenShift cluster on IBM Cloud 
 
-**NOTE: If cluster is already provisioned , you can progress to Section 2.3 **
+**NOTE: If cluster has already been provisioned, you can skip to Section 2.3. **
 
 The Event Manager documentation specifies two sizes of deployment: trial and production.
 
@@ -74,7 +74,7 @@ You can check your entitlement for Watson AIOPs by clicking **View Library**
 
 ## 2-4: Prepare your OpenShift cluster
 
-This step involves creating a namespace to install the Watson for AIOps Event Manager Operator into, and setting up your software entitlement key, so that you will be able to deploy an instance of Event Manager.
+This step involves creating a namespace (called "Project" on OpenShift) to install the Watson for AIOps Event Manager Operator into, and setting up your software entitlement key, so that you will be able to deploy an instance of Event Manager.
 
 This step involves the following tasks:
 
@@ -83,15 +83,30 @@ This step involves the following tasks:
 - Create a **namespace** to deploy Event Manager into
 - Create an **entitlement key secret**
 
-Go to your newly created OpenShift cluster and click OpenShift web console to open the main OpenShift UI:
+During this module, you will need to log in to your dedicated "control" virtual machine, to run configuration commands against your OpenShift cluster.
+
+Prior to starting this lab, you should have received two emails - one containing the IP address of your "control" virtual machine, and one containing a zip file with an id_rsa file which you need to access the control VM.
+
+- Follow the instructions in the email to unzip the id_rsa.zip file and save the key file on your laptop
+- Open a command terminal (on Windows, use "Windows Powershell")
+- Navigate to the directory where your rsa_id file is located
+- Open an SSH session as the "jammer" user to your control box using the IP address in the other email
+
+```ssh -i rsa_id jammer@10.20.30.40
+```
+After you have successfully opened a terminal session to your control virtual machine, log in in to https://cloud.ibm.com, and select the account labelled "2576490 - itztsgltechlabs01" from the top-right drop-down menu. Then, click on the menu button in the top-left corner, select OpenShift, then Clusters
+
+You should see two OpenShift clusters listed: one labelled "manage-from" and one "manage-to". For the Event Manager sections, we will be working with the "manage-from" cluster. Click on the manage-from OpenShift cluster, then click the blue "OpenShift web console" button to open the main OpenShift UI:
 
 ![](images/1_OpenshiftWebConsole.png)
 
-Click on your logged in user id > **Copy Login Command**, then **Display Token**, to reveal the cluster login command. 
+Click on your logged in user id in the top-right of the screen, then select **Copy Login Command**, then **Display Token**, to reveal the cluster login command that you will need to authenticate to the OpenShift cluster.
 
 ![](images/2_LoginCommand.png)
 
-Copy the full **oc login** command displayed under **Log in with this token**. Open a command prompt and paste this command into your terminal. This directive will make a connection to your cluster and authenticate you, so you will be ready to start preparing the cluster.
+Copy the full **oc login** command displayed under **Log in with this token** and save it into Notepad or a local text editor.
+
+Go back to your terminal session you opened to your control virtual machine, and paste the full "oc login" command into your terminal. This command will make a connection to your cluster and authenticate you, so you will be ready to start preparing the cluster by issuing various commands against it.
 
 From your command prompt, issue the following command to create the namespace:
 
@@ -99,7 +114,7 @@ From your command prompt, issue the following command to create the namespace:
 oc create namespace noi
 ```
 
-**NOTE:** This example uses **noi** as the name of the namespace. You can call it whatever you like however. Rest of the tutorial commands are based on namespace=noi
+**NOTE:** This example uses **noi** as the name of the namespace. You can call it whatever you like however. The rest of the tutorial commands are based on `namespace=noi` so it's advisable to use it to avoid any errors.
 
 Prepare a command like the following, that uses your entitlement key to create a registry secret.
 
@@ -177,7 +192,7 @@ Navigate to: **Operators → Installed Operators** and you will be able to monit
 
 ![](images/6_InstalledOperator.png)
 
-**NOTE:** Ensure your namespace, also referred to as **Project**, is selected from the top drop-down menu.
+**NOTE:** Ensure your namespace, also referred to as **Project**, is selected from the top drop-down menu - ie. "noi"
 
 The Watson for AIOps Event Manager Operator is now installed and ready for use.
 
@@ -188,9 +203,7 @@ For further information on this topic, see the following documentation link: htt
 
 This final step involves deploying an instance of Watson for AIOps Event Manager onto the OpenShift cluster.
 
-Before doing so, you will need to have your cluster domain information to-hand, as it is required by the installation. To obtain your cluster domain name, go back to the your IBM Cloud account, navigate to your OpenShift clusters page, and click on your cluster to inspect the details.
-
-Under the **Networking** section, you will see a field like the following that contains your **Ingress subdomain**:
+Before deploying an instance of Event Manager, you will need to know your cluster's "ingress subdomain". If you go back to your IBM Cloud browser tab where you have the "manage-from" cluster details open, and scroll down to the **Networking** section, you will find a text box that contains your **Ingress subdomain**:
 
 ![](images/7_Ingress.png)
 
@@ -200,7 +213,7 @@ The Event Manager deployment will ask you for your OpenShift **Cluster Domain (F
 
 `Use the fully qualified domain name (FQDN) to specify the cluster domain: apps.<clustername>.*.*.com`
 
-If you are installing Event Manager on an IBM Cloud OpenShift cluster (as in this case), simply use the Ingress subdomain as-is. Do not prepend the value with apps. for instance, or modify it in any way. If you are deploying onto an on-premise OpenShift cluster, use apps.FQDN as recommended.
+Since you will be installing Event Manager on an IBM Cloud OpenShift cluster (as in this case), simply use the Ingress subdomain as-is. Do not prepend the value with `apps.` for instance, or modify it in any way.
 
 Navigate to: **Operators → Installed Operators** and click on **IBM Cloud Pak for Watson AIOps Event Manager**.
 
@@ -210,7 +223,7 @@ Click on the **NOI** tab and click the button **Create NOI**.  You will be promp
 
 Use the following to guide you through the various configuration settings. Where there is no note about any parameter given, you can leave it as its default setting:
 
-* Use the default value of `evtmanager` for the Name
+* Use the default value of `evtmanager` for the Name - use this
 
 * Choose **noi-registry-secret** for your **Entitlement Secret** (this is the one you created in step 2)
 
@@ -218,7 +231,7 @@ Use the following to guide you through the various configuration settings. Where
 
 * Ensure **Version** is set to the latest: **1.6.5.1**
 
-* Under **Cluster Domain (FQDN)**, enter the **Ingress subdomain** value you copied earlier (or apps.FQDN if on-premise)
+* Under **Cluster Domain (FQDN)**, enter the **Ingress subdomain** value you copied earlier
 
 * Under **Deployment Type**, choose **trial** or **production** depending on your hardware profile from Step 1. For tutorial we will use **trial**
 
@@ -228,11 +241,15 @@ Use the following to guide you through the various configuration settings. Where
 
 * Click on **Topology** and and select **ibmc-block-gold** for both StorageClass prompts
 
-* Click on Topology Observers and check each Observer you want to deploy
+* Click on Topology Observers and check each Observer you want to deploy - you can just accept the defaults
 
 * Click on Create to begin deploying your Event Manager instance
 
-The deployment of your instance will normally take about 20 to 30 minutes. You can monitor the deployment's progress both from Installed Operators page as well as from: Workloads → Pods page. Ensure that the Project drop-down menu at the top of the page is set to your namespace. Once all the pods have deployed and are showing with a Status of Running and 1/1 or 2/2, you will know that your deployment has completed. This can also be confirmed by returning to the Installed Operators page and seeing: Phase: OK next to your deployment:
+**NOTE: It is essential that you take your time entering all these values and checking they are correct before clicking OK.**
+
+The deployment of your instance will normally take about 20 to 30 minutes. You can monitor the deployment's progress both from Installed Operators page as well as from: Workloads → Pods page. Ensure that the Project drop-down menu at the top of the page is set to your namespace ("noi"). Once all the pods have deployed and are showing with a Status of Running and 1/1 or 2/2, you will know that your deployment has completed. You can sort your pods by "Ready" status, and filter on all pods except for "Completed" jobs.
+
+This can also be confirmed by returning to the Installed Operators page and seeing: Phase: OK next to your deployment:
 
 ![](images/8_NOI.png)
 
@@ -267,17 +284,17 @@ For example:
 
 * Click on the hamburger button in the top-left corner of the screen, and select **Netcool WebGUI** from the drop-down menu. A new tab opens with the Netcool/WebGUI UI displayed.
 
-* Click on the cog wheel in the top-right hand corner and select **User Roles** from the drop-down menu.
+* Click on the cog wheel in the top-right hand corner and select **User Roles** from the drop-down menu
 
-* Click on the **Search** button to bring up all users (basically do an unfiltered search).
+* Click on the **Search** button to bring up all users (basically do an unfiltered search)
 
-* Click on the **icpadmin** user hyperlink.
+* Click on the **icpadmin** user hyperlink
 
-* Check all available **Roles**, scroll down, and click **Save**.
+* Check all available **Roles**, scroll down, and click **Save**
 
-* Close the Netcool/WebGUI tab, log out of the Event Manager UI, and log back in again as **icpadmin**. 
+* Close the Netcool/WebGUI tab, log out of the Event Manager UI, and log back in again as **icpadmin**
 
-* You will now see the full list of menu items under the hamburger icon in the top-left corner of the screen.
+* You will now see the full list of menu items under the hamburger icon in the top-left corner of the screen
 
 
 You have now completed this module and are ready for module "Connect an on-premise Probe to Watson for AIOps Event Manager"
