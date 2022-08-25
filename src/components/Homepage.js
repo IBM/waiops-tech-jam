@@ -18,14 +18,6 @@ const FirstRightText = () => (
   </p>
 );
 
-const SecondLeftText = () => <p>Jump directly to the tutorials →</p>;
-
-const SecondRightText = () => (
-  <p>
-
-  </p>
-);
-
 const BannerText = () => <h1>Tech Jam 2022</h1>;
 
 const customProps = {
