@@ -55,9 +55,15 @@ A **static** host agent is a self-contained host agent that includes all the lat
 
 ## 3-2:  Installing Instana Agent on Linux VM
 
-You will be installing the Instana Agent on the ACE/MQ server that has been provisioned for you for this lab.  Open up a terminal window and login to the ACE/MQ server as root.  You can ssh to the  ACE/MQ server from the control node.
+You will be installing the Instana Agent on the ACE/MQ server that has been provisioned for you for this lab.  Open up a terminal window.   First, login to the control node using your rsa_id file
 ```sh
-ssh <ACE/MQ server IP address\>
+ssh -i id_rsa jammer@<IP address of your control node>
+```
+
+From the control node, ssh to the ACE/MQ server as follows:
+
+```sh
+ssh jammer@mqace
 
 ```
 
@@ -98,7 +104,13 @@ those technologies.  In the case of some technologies (eg. MQ an and App Connect
 
 ## 3-3:  Installing Instana Agent on the Instana Server
 
-Next, you will install the Instana agent on the Instana server.  From the control node, ssh to the Instana server.  Then, type **sudo -i** to switch to the root user.
+Next, you will install the Instana agent on the Instana server.  From a terminal windows on the control node, ssh to the Instana server as follows:
+```sh
+ssh jammer@instana
+
+```
+
+ Then, type **sudo -i** to switch to the root user.
 ```sh
 sudo -i
 
@@ -135,7 +147,20 @@ The next step is to install the Instana Monitoring into the OpenShift Cluster th
 Throughout this lab, we will be using the "oc" command to run commands within OpenShift.  The "oc" command is similar to kubectl for other versions of Kubernetes.  There are
 some minor syntax differences.
 
-To install Instana agent on OpenShift cluster you need to authenticate to the OCP cluster with appropriate permissions (cluster admin role). In the lab environment, the **control node** is already logged into the cluster.  You can confirm by issues a command such as **oc get pods**  Follow the steps below to install the Agent into the cluster:
+To install Instana agent on OpenShift cluster you need to authenticate to the OCP cluster with appropriate permissions (cluster admin role). In the lab environment, the **control node** is already logged into the cluster.  But, we need to make sure you are logged into the **manage to** cluster and not the **manage from** cluster.  Issue the following command:
+```sh
+oc get projects
+```
+
+Then, look for the **qotd** and **qotd-load** projects.  If you don't see those two projects, then you must login to the correct cluster.  Open the OpenShift user interface for the **manage to** cluster.  Then, click in the upper right corner on the username and select **Copy loging command**
+  ![](images/ocLogin.png)
+
+Then, click on **Display Token**
+
+Copy the login command and paste it into the terminal window on the control node.
+  ![](images/loginCommand.png)
+
+Follow the steps below to install the Agent into the cluster:
 
 In Instana UI select the "Stan" the robot icon in the upper left corner
 

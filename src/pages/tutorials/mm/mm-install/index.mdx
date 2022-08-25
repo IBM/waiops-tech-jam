@@ -35,7 +35,7 @@ For the execution of the labs, you will need the following passwords, provided t
 
   Open your VNC Viewer and create a new connection (File -> New Connection)
 
-  Use your lab machine's IP address and display #3 as shown in the example below (e.g. <IPADDR\>:3 - your lab machine's IP address will differ). Leave everything else default. Click OK when complete.
+  Use your lab machine's IP address (the 'pi-template' ip address you used yesterday for the probe lab), and display #3 as shown in the example below (e.g. <IPADDR\>:3 - your lab machine's IP address will differ). Leave everything else default. Click OK when complete.
 
  ![](images/lab2-Picture1.png)
 
@@ -293,8 +293,6 @@ cd /opt/IBM/software/predictiveInsights1.3.6_iFix5_el7_x86_64
 sudo systemctl restart vncserver@:3
 ```
 
- ![](images/lab2-Picture25.png)
-
  After a minute or two, your VNC session should reconnect to the scadmin user's desktop. If it doesn't automatically reconnect, close the VNC session window and reconnect from the VNC Viewer connections list.
 
 
@@ -343,7 +341,7 @@ And run the update UI script:
 
 # ** !!! DANGER, WILL ROBINSON !!! **
 
-The next portion of the installation will prompt you for 14 values. You must be *deliberate* in entering these values, and you must enter them as shown below. The interim fix installation script does not verify the values you enter here, and even though the prompts suggest default values, the defaults will not be accepted. **So ensure that you enter the correct values as listed below!**
+The next portion of the installation will prompt you for 14 values. You must be *deliberate* in entering these values, and you must enter them as shown below. The interim fix installation script does not verify the values you enter here, and even though the prompts suggest default values, the defaults will not be accepted. **Please ensure that you enter the correct values as listed below!**
 
  JazzSM/WebGUI host: ```pi-template.Hybrid-Squad.cloud```  
  JazzSM base directory: ```/home/scadmin/IBM/JazzSM```  
