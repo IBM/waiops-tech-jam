@@ -131,9 +131,13 @@ Go back to your YAML editor view in Step 3 earlier. Assign it to
 
 ![](images/kubeturboCreateInstance-6.png)
 
-7) When you have applied your configuration you will see that you have created an instance, or custom resource, called `kubeturbo-release`:
+7) Then set a cluster name for the `targetName`, e.g. `manage-to-kubeturbo-cluster`. Then click on `Create` button
 
-![](https://raw.githubusercontent.com/evat-pm/images/master/KOH-instanceCreated.png?raw=true)
+![](images/kubeturboCreateInstance-7.png) 
+
+8) When you have applied your configuration you will see that you have created an instance, or custom resource, called `kubeturbo-release`:
+
+![](images/kubeturboCreateInstance-8.png)
 
 ***
 
@@ -149,15 +153,19 @@ Navigate to `Workloads -> Deployment` and select `kubeturbo-operator` project:
 
 ![Kubeturbo validate deployments](https://raw.githubusercontent.com/evat-pm/images/master/KOH-deployments.png?raw=true)
 
-2) Look at the log of the `kubeturbo-release` pod (In `Workloads -> Pods`) to validate that the probe has successfully connected, registered with the Turbo Server, and a full discovery has occurred. 
+2) Navigate to `Workloads -> Pods`. Ensure project is `kubeturbo-operator`. Then click on `kubeturbo-release` pod.
 
-![](https://raw.githubusercontent.com/evat-pm/images/master/KOH-successLog.png?raw=true)
+![](images/validateDeployment-1.png)
 
-3) Validate the target in the Turbonomic Server UI
+3) Then click on `Logs` to validate that the probe has successfully connected, registered with the Turbo Server, and a full discovery has occurred. 
+
+![](images/validateDeployment-2.png)
+
+4) Validate the target in the Turbonomic Server UI
 
 Go to your Turbonomic Server UI -> `Settings` -> `Target Configuration` and you will see a new target display with the name `Kubernetes-<your cluster name>`
 
-![](./images/validateDeployment.png)
+![](./images/validateDeployment-3.png)
 
 ***
 
