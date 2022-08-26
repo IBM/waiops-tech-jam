@@ -46,7 +46,7 @@ Navigate to `Home -> Projects` and click on `Create Project` button. Fill in det
 
 ![](images/kubeturboInstall-3.png)
 
-6) The operator will install and when it's ready you can view the operator (Click on `View Operator`) to then create an instance, which will be your KubeTurbo probe that will monitor and manage this cluster.
+6) The operator will install and when it's ready you can view the operator (Click on `View Operator`) to create an instance, which will be your KubeTurbo probe that will monitor and manage this cluster.
 
 ![](images/kubeturboInstall-4.png)
 
@@ -62,9 +62,45 @@ Navigate to `Home -> Projects` and click on `Create Project` button. Fill in det
 
 Refer to [Configure KubeTurbo Instance](https://github.com/turbonomic/kubeturbo/wiki/OpenShift-Operator-Hub-Details#configure-a-kubeturbo-instance) if you want to use `FORM` option
 
-![](images/kubeTurboCreateInstance-2.png)
+![](images/kubeturboCreateInstance-2.png)
 
-3) Before we can fill in the YAML, we need to get the turbonomic server URL
+3) Replace all the contant in YAML editor view with the YAML config as below. **DO NOT CLICK CREATE YET**
+
+```
+kind: Kubeturbo
+apiVersion: charts.helm.k8s.io/v1
+metadata:
+  name: kubeturbo-release
+  namespace: kubeturbo-operator
+spec:
+  args:
+    sccsupport: '*'
+  image:
+    repository: registry.connect.redhat.com/turbonomic/kubeturbo
+    tag: <turbonomic server version>
+  restAPIConfig:
+    opsManagerPassword: <your turbonomic server password>
+    opsManagerUserName: <your turbonomic server username>
+  serverMeta:
+    turboServer: <your turbonomic server URL, please use the topology-processor URL>
+    version: <your turbonomic server version>
+  targetConfig:
+    targetName: <your cluster name>
+```
+
+![](images/kubeTurboCreateInstance-3.png)
+
+
+4) Now, we need to replace `<your turbonomic server URL, please use the topology-processor URL>` with the actual turbonomic server URL. 
+
+Go to the OCP cluster where turbonomic is installed.
+![](images/arch-2.png)
+
+Navigate to `Networking -> Routes` and select `turbonomic` project. Copy the `Location` in `topology-processor`.
+
+![](images/turboTopologyProcessorRoute.png)
+
+Go back to your YAML editor view in Step 3 earlier. Assign it to `turboServer` value.
 
 
 
