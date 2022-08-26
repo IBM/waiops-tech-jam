@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunktech_academy_aiops_2022=self.webpackChunktech_academy_aiops_2022||[]).push([[520],{4997:function(e,t,r){r.d(t,{tbV:function(){return i}});var n,a=r(3030),c=r(7294),h=["children"],i=c.forwardRef((function(e,t){var r=e.children,i=(0,a._)(e,h);return c.createElement(a.I,(0,a.a)({width:20,height:20,viewBox:"0 0 32 32",xmlns:"http://www.w3.org/2000/svg",fill:"currentColor",ref:t},i),n||(n=c.createElement("path",{d:"M16 14L6 24 7.4 25.4 16 16.8 24.6 25.4 26 24zM4 8H28V10H4z"})),r)}))}}]);
-//# sourceMappingURL=5ca00d41-ba55daa01d357abbcdd2.js.map
