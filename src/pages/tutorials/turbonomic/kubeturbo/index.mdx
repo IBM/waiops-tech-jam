@@ -11,7 +11,11 @@ description: Deployment of Kubeturbo
 
 ## 4-1: Prerequisites
 
-1) As a cluster administrator, create a project in the OCP cluster where KubeTurbo will be deployed. Navigate to `Home -> Projects` and click on `Create Project` button. Fill in details as below.
+1) As a cluster administrator, create a project in the OCP cluster where KubeTurbo will be deployed. 
+
+![](images/arch-1.png)
+
+Navigate to `Home -> Projects` and click on `Create Project` button. Fill in details as below.
 
 - Name: `kubeturbo-operator`
 - Display Name: `Operator Hub based deployment of kubeturbo`
@@ -38,31 +42,31 @@ description: Deployment of Kubeturbo
 
 ![](images/kubeturboInstall-2.png)
 
-5) Click on `Approve` button when `Manual approval required` prompt.
+5) Click on `Approve` button when `Manual approval required` prompted.
 
 ![](images/kubeturboInstall-3.png)
 
-5) The operator will install
+6) The operator will install and when it's ready you can view the operator (Click on `View Operator`) to then create an instance, which will be your KubeTurbo probe that will monitor and manage this cluster.
 
-![](https://raw.githubusercontent.com/evat-pm/images/master/KOH-installing.png?raw=true)
-
-and when ready you can view the operator to then create an instance, which will be your KubeTurbo probe that will monitor and manage this cluster.
-
-![](https://raw.githubusercontent.com/evat-pm/images/master/KOH-viewOperator.png?raw=true)
+![](images/kubeturboInstall-4.png)
 
 ***
 
 ## 4-3:  Configure Kubeturbo Instance
 
-1) When viewing the deployed operator, create an instance:
+1) When viewing the deployed operator, click on `Create instance`:
 
-![](https://raw.githubusercontent.com/evat-pm/images/master/KOH-createInstance.png?raw=true)
+![](images/kubeturboCreateInstance-1.png)
 
-2) To configure this instance you can use either the `FORM` or `YAML` input option. The instructions in this lab contains only steps using `YAML` option. Click on `YAML` option.
+2) To configure this instance click on `YAML` option.
 
 Refer to [Configure KubeTurbo Instance](https://github.com/turbonomic/kubeturbo/wiki/OpenShift-Operator-Hub-Details#configure-a-kubeturbo-instance) if you want to use `FORM` option
 
-![](https://raw.githubusercontent.com/evat-pm/images/master/KOH-formOrYaml.png?raw=true)
+![](images/kubeTurboCreateInstance-2.png)
+
+3) Before we can fill in the YAML, we need to get the turbonomic server URL
+
+
 
 The minimum parameters required to be defined for KubeTurbo via YAML are summarized here:
 
