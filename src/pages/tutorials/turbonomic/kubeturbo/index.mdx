@@ -64,7 +64,7 @@ Refer to [Configure KubeTurbo Instance](https://github.com/turbonomic/kubeturbo/
 
 ![](images/kubeturboCreateInstance-2.png)
 
-3) Replace all the contant in YAML editor view with the YAML config as below. **DO NOT CLICK CREATE YET**
+3) Replace all the contant in YAML editor view with the YAML config as below. **DO NOT CLICK CREATE YET!!**
 
 ```
 kind: Kubeturbo
@@ -90,7 +90,6 @@ spec:
 
 ![](images/kubeTurboCreateInstance-3.png)
 
-
 4) Now, we need to replace `<your turbonomic server URL, please use the topology-processor URL>` with the actual turbonomic server URL. 
 
 Go to the OCP cluster where turbonomic is installed.
@@ -102,7 +101,7 @@ Navigate to `Networking -> Routes` and select `turbonomic` project. Copy the `Lo
 
 Go back to your YAML editor view in Step 3 earlier. Assign it to `turboServer` value.
 
-
+![](images/kubeTurboCreateInstance-4.png)
 
 The minimum parameters required to be defined for KubeTurbo via YAML are summarized here:
 
