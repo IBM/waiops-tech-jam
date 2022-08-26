@@ -252,6 +252,11 @@ These parameters are added to the settings.hcl file in the section with the othe
 
 > **WARNING: Be aware that turning on features (especially BETA ones) may heavily impact backend performance. DO NOT turn on features you don't need**
 
+Before using vi to edit the settings.hcl file, make a backup of the file by typing:  
+```sh
+cp settings.hcl settings.hcl.bak
+```
+
 In your lab enviroment, we want you to add the following feature flags.  Since you don't have access to a VMware environment, it doesn't make sense to enable that feature flag.
 ```yaml
 feature "infraCustomDashboards" {

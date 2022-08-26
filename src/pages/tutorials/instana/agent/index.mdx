@@ -89,7 +89,7 @@ Notice that there are a few other options including the use of different java ve
 
 Next, select the checkbox next to **"Install and start as service"**.  This will setup the systemctl autostart process and will also start the Agent immediately after it is installed.
 
-Finally, copy and paste the curl command into the terminal window with the SSH session to the target server.
+Finally, copy and paste the curl command into the terminal window.
 
 The install will progress and you will see an output similar to the screen capture shown below.
 
@@ -146,6 +146,8 @@ The next step is to install the Instana Monitoring into the OpenShift Cluster th
 
 Throughout this lab, we will be using the "oc" command to run commands within OpenShift.  The "oc" command is similar to kubectl for other versions of Kubernetes.  There are
 some minor syntax differences.
+
+The commands documented below should be executed from the control node.
 
 To install Instana agent on OpenShift cluster you need to authenticate to the OCP cluster with appropriate permissions (cluster admin role). In the lab environment, the **control node** is already logged into the cluster.  But, we need to make sure you are logged into the **manage to** cluster and not the **manage from** cluster.  Issue the following command:
 ```sh
@@ -242,6 +244,8 @@ where **<POD NAME\>** is one of the pods listed in the previous command.
 
 ## 3-6:  Configuring Proxy
 
+<span style="color:red">This section is here for informational purposes.  There are no steps to execute.</span>
+
 If there is no direct connectivity for the Instana agent you may need to setup a proxy. There are 2 connections with 2 different locations for configuration:
 
 - Connection to **Instana Backend** - defined in *INSTANA-AGENT-DIR*/etc/instana/com.instana.agent.main.sender.Backend.cfg
@@ -255,7 +259,9 @@ For backend connectivity you have to define *INSTANA_AGENT_PROXY_* variables. Fo
 
 ## 3-7:  Configuring Instana Agent
 
-There are multiple ways to configure Instana agent. Settings related to agent functionality reside in `configuration.yaml` file located by default in `/opt/instana/agent/etc/instana` directory. However, other settings related to agent environment sits in other *.cfg files.
+<span style="color:red">This section is here for informational purposes.  There are no steps to execute.</span>
+
+There are multiple ways to configure Instana agent. These instructions apply to the Instana Agent installed on a traditioanl server.   Instructions would be different for docker or kubernetes versions of the Agent.  Settings related to agent functionality reside in `configuration.yaml` file located by default in `/opt/instana/agent/etc/instana` directory. However, other settings related to agent environment sits in other *.cfg files.
 
 > **&#9888; HINT: Agent will actually read and use ANY yaml file in that directory.**
 
@@ -269,13 +275,17 @@ For host based installation you can update `configuration.yaml` and agent should
 
 ## 3-8:  Agent Configuration Troubleshooting
 
-The first place to look when the agent does not start properly or does not work as expected is agent log file. By default it is located in `/opt/instana/agent/data/log/agent.log`
+<span style="color:red">This section is here for informational purposes.  There are no steps to execute.</span>
 
-In case of Kubernetes based deployment you have to look at logs of `instana-agent` pods running in `instana-agent` namespace.
+The first place to look when the agent does not start properly or does not work as expected is agent log file. By default it is located in `/opt/instana/agent/data/log/agent.log` . This is the path for a traditional server.
+
+In case of Kubernetes based deployment you have to look at logs of `instana-agent` pods running in `instana-agent` namespace.  
 
 ***
 
 ## 4-9:  Configuring GitOps for Agents
+
+<span style="color:red">This section is here for informational purposes.  There are no steps to execute.</span>
 
 If you don't want to modify the Instana agent configuration files for each agent locally, you can setup a centralized git repositoy for configuration files and instruct Instana agent to use these files. To accomplish that, follow the steps from the [documentation](https://www.ibm.com/docs/en/obi/current?topic=configuration-git-based-management#git-based-configuration-management).
 

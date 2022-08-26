@@ -42,7 +42,9 @@ You'll notice that there are instructions for installing **Robot Shop** into a n
 
 We have documented the steps below, so there is no need to refer to the GitHub instructions.
 
-Within the control node, make sure you are in the **jammer** user's home directory **(/home/jammer)**.
+Login to the **control node** to execute the following steps.
+
+Make sure you are in the **jammer** user's home directory **(/home/jammer)**.
 
 Clone the GitHub repository by typing:
 ```sh
@@ -57,6 +59,11 @@ cd robot-shop/K8s
 ```
 
 Within the control node, you are already logged into the OpenShift cluster and can begin issuing **oc** commands.
+
+Double check to make sure you are logged into the **manage to** OpenShift cluster.  To do that, run **oc get projects** and grep for qotd.  You should see the qotd and qotd-load projects listed:
+```sh
+oc get pods | grep qotd
+```
 
 Create an OpenShift **project (workspace)** for the **Robot Shop** application by issuing the following commnand:
 ```sh
@@ -73,7 +80,7 @@ oc adm policy add-scc-to-user privileged -z default -n robot-shop
 
 Install the **Robot Shop** by issuing the following helm command. You'll need to replace \<EUM Key\> with the **key** value that you obtained in section 3.2 from the Instana user interface and <Reporting URL\> is the **reportingURL** you obtained in section 4.2.
 
-Note:  When you specify the **Reporting URL**, do not include the trailing slash \(/\).
+<span style="color:red">Note:  When you specify the **Reporting URL**, do not include the trailing slash \(/\).</span>
 
 ```sh
 helm install robot-shop --set openshift=true  --set eum.key=<EUM Key> --set eum.url=<Reporting URL> -n robot-shop helm
@@ -115,7 +122,7 @@ oc get route
 
 The result should look similar to:   **web-robot-shop.<cluster domain\>**
 
-Paste the route into a browser and you'll see the Robot Shop user interface.
+Paste the route into a browser and you'll see the Robot Shop user interface.  Within your browser, make sure you specify http instead of https.
 
 
 ***
