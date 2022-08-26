@@ -5,11 +5,19 @@ description: Integrate Instana to get application performance data for business 
 
 ## Connect Turbonomic and Instana
 
+In this section, we going to integrate instana to get application performance data for business critical application.
+
+![](images/arch-1.png)
+
 1) In the Instana console, go to `Settings -> Team Settings page -> API Tokens`. Click on `Add API Token` to create an API key from Instana
 
 ![](images/addApiToken.png)
 
-2) In the create API token page, enter the token name, e.g. `Turbonomic API Token`. Copy the API token generated which will be used later. Enable the permissions as below:
+2) In the create API token page, enter the token name, e.g. `Turbonomic API Token`. Copy the API token generated which will be used later. 
+
+![](images/apiToken-1.png)
+
+Then scroll down to `Permissions` section to enable the permissions as below:
 
 - Access to audit log
 - Access to token and session timeout settings
@@ -17,6 +25,8 @@ description: Integrate Instana to get application performance data for business 
 - Access to on prem license usage
 - Access to account and billing information
 - Service & endpoint mapping
+
+![](images/apiToken-2.png)
 
 3) In the Turbonomic console, go to `Settings -> Target Configuration`.
 
