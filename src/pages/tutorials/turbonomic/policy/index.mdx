@@ -93,7 +93,48 @@ web-5476dc8495-qphxc              1/1     Running             0              14h
 
 ![](images/robotShopLoad-1.png)
 
-## 6-3:  Set Up Policies In Turbonomic
+***
+
+## 6-3:  Create Groups
+
+Groups
+- Groups are collection of like entities.
+- Groups can be used any place where you can scope
+- Some groups are automatically created
+
+Now we first need to create the group containing RobotShop business application.
+
+1) Click on `Settings -> Groups`
+
+![](images/groups-1.png)
+
+2) Click on `NEW GROUP`
+
+![](images/groups-2.png)
+
+3) Click on `Business Application`
+
+![](images/groups-3.png)
+
+4) Enter the group name as `Robot Shop Group` and select `Dynamic` type
+
+```
+Static vs Dynamic
+- use Dynamic groups if there is criteria which can define your group
+- use Static groups when
+  - You do not expect membership to ever change
+  - There are no criteria that can be used to define the group
+```
+
+![](images/groups-4.png)
+
+5) Click on `ADD FILTER` and select `NAME`
+
+6) Select filter `Equals` and enter the regular expression `.*robot.*`. Click `Apply` button
+
+![](images/groups-5.png)
+
+## 6-4:  Set Up Policies In Turbonomic
 
 1) Go to Turbonomic UI and click on `Settings`:
 
