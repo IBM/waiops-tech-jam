@@ -92,6 +92,8 @@ spec:
 
 4) Now, we need to replace `<your turbonomic server URL, please use the topology-processor URL>` with the actual turbonomic server URL. 
 
+**How to get the Turbonomic Server URL?**
+
 Go to the OCP cluster where turbonomic is installed.
 ![](images/arch-2.png)
 
@@ -105,51 +107,31 @@ Go back to your YAML editor view in Step 3 earlier. Assign it to `turboServer` v
 
 5) Next, replace the `<your turbonomic server version>` with the actual turbonomic server version.
 
-Go to the OCP cluster where turbonomic is installed.
+**How to get the Turbonomic Server Version?**
+
+Go back the OCP cluster where turbonomic is installed.
 ![](images/arch-2.png)
 
-Navigate to `Networking -> Routes` and select `turbonomic` project. Click on the `Location` in 
+Navigate to `Networking -> Routes` and select `turbonomic` project. Click on the `Location` in `api`.
 
+![](images/turboApiRoute.png)  
 
+It will bring up the Turbonomic UI page as below. Check the version in the page.
 
+![](images/checkTurboVersion.png)
 
+Go back to your YAML editor view in Step 3 earlier. Assign it to 
 
+- `image` -> `tag` value
+- `serverMeta` -> `version` value  
 
+![](images/kubeturboCreateInstance-5.png)
 
-The minimum parameters required to be defined for KubeTurbo via YAML are summarized here:
+6) Then replace the values of `<your turbonomic server password>` and `<your turbonomic server username>` with the credentials that you have used to login Turbonomic UI in Section 2.5 earlier.
 
-```
-spec:
-  args:
-    sccsupport: '*'
-  image:
-    repository: registry.connect.redhat.com/turbonomic/kubeturbo
-    tag: <turbonomic server version>
-  restAPIConfig:
-    opsManagerPassword: <your turbonomic server password>
-    opsManagerUserName: <your turbonomic server username>
-  serverMeta:
-    turboServer: <your turbonomic server URL, please use the topology-processor URL>
-    version: <your turbonomic server version>
-  targetConfig:
-    targetName: <your cluster name>
-```
+![](images/kubeturboCreateInstance-6.png)
 
-**NOTE: These parameters required in the yaml if your KubeTurbo installed version is different than the Turbonomic server version. If it's the same, you can remove these parameters**
-
-```
-spec:
-  image:
-    #supply your private repo and specific product version here
-    repository: registry.connect.redhat.com/turbonomic/kubeturbo
-    tag: 8.5.2
-```
-
-**FAQ:**
-- To get turbonomic server version: You can see the version in Turbonomic UI login page or under `Settings -> Updates`
-- To get the turbo server `topology-processor` URL, you can go to the OpenShift Console UI (where your turbonomic is installed) under `Networking-> Routes` and select the turbonomic project. Copy the `Location` in `topology-processor`
-
-3) When you have applied your configuration you will see that you have created an instance, or custom resource, called `kubeturbo-release`:
+7) When you have applied your configuration you will see that you have created an instance, or custom resource, called `kubeturbo-release`:
 
 ![](https://raw.githubusercontent.com/evat-pm/images/master/KOH-instanceCreated.png?raw=true)
 
