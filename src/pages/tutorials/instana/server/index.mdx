@@ -78,11 +78,25 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 
  ```
 
- Note:  There is a **Show more** button on the dialog.  Make sure you copy all of the commands and verify that docker is installed and running.  You can issue **docker ps** command to confirm that it is installed and running.
+ Note:  There is a **Show more** button on the dialog.  Make sure you click the **Show more** button to see all of the commands.
   ![](images/prereqs.png)
 
-Next, create the following directories and/or filesystems that will be used for the Instana datastores (/mnt/metrics, /mnt/traces, /mnt/data).  Ideally, these directories/filesystems 
-will be setup on fast storage volumes.
+Make sure you copy all of the commands.  After the commands have executed, verify that docker is installed and running.  You can issue **docker ps** command to confirm that it is installed and running.  If docker is running, you should see output similar to what's shown below.
+![](images/docker.png)
+
+Next, we want to pin the major version of Instana so that we don't get updates during the lab.
+Issue the following command to pin the Instana version.
+
+```sh
+cat >/etc/apt/preferences.d/instana-console <<EOF
+Package: instana-console
+Pin: version 231-1
+Pin-Priority: 1000
+EOF
+
+```  
+
+Next, create the following directories and/or filesystems that will be used for the Instana datastores (/mnt/metrics, /mnt/traces, /mnt/data).  Ideally, these directories/filesystems should be setup on fast storage volumes because the datastores are very I/O intensive.
 ```sh
 mkdir /mnt/metrics
 mkdir /mnt/traces
@@ -104,15 +118,21 @@ You are now ready to start the installation of the Instana Server.
 
 Run the following commands to install the Instana Server.  These commands will vary depending on which Linux platform you are using for your installation.
 
-Begin by installing the Instana package
+Begin by installing the Instana package by issuing the following commands. Make sure the command is successful before proceding to the next command.
 ```sh
 echo "deb [arch=amd64] https://self-hosted.instana.io/apt generic main" > /etc/apt/sources.list.d/instana-product.list
+```
+```sh
 wget -qO - "https://self-hosted.instana.io/signing_key.gpg" | apt-key add -
+```
+```sh
 apt-get update -y
+```
+```sh
 apt-get upgrade -y
+```
+```sh
 apt-get install instana-console -y
-ls instana
-
 ```
 
 This will install the "instana" command on the server.
@@ -122,8 +142,6 @@ Next, run the **instana init** command to install the Instana server.  You will 
 ```sh
 instana init
 ```
-
-<span style="color:red">If the instana command is not found, rerun the previous block of commands one at a time and make sure to execute the "apt-get install instana-console -y" command.</span>
 
 When you run the **instana init** command, it generates a file named settings.hcl in your current directory.  It is important to save this file.  The settings.hcl file contains the configuration settings for your deployment.  It can be used to enable additional features and make other configuration settings in the future.
 
@@ -147,7 +165,9 @@ The next step is to enter your **download key**.  Use the same key as your **age
 Next, enter your **sales key**.  This will be provided to you by the lab proctors.
 ![](images/salesKey.png)
 
-When you are prompted for the fully qualified hostname of the server.  Normally, you would enter a fully qualified hostname, but these servers are not in DNS.  Instead, enter the **IP address** of the server.  If you are not sure what the IP address is, you can edit the /etc/netplan/50-cloud-init.yaml file and look for the **eth1** section and look for **addresses**
+Next, you will be prompted for the fully qualified hostname of the server.  Normally, you would enter a fully qualified hostname, but these servers are not in DNS.  
+<span style="color:red">Instead of specifying the hostname, enter the **IP address** of the Instana server. </span>
+If you are not sure what the IP address is, you cat the /etc/hosts file and find the instana hostname and IP address.
 ![](images/hostname.png)
 
 You will now be prompted for the path where your data will be stored.  The default path is /mnt/data.  Press **Enter** to accept the default value.
@@ -163,21 +183,20 @@ You will be prompted for the location of the Instana logs.  Press **Enter** to a
 ![](images/logs.png)
 
 Finally, you will be prompted for the path to your signed certificate file.  If desired, you can create your own.  If you don't provide one, the installer will generate a certificate.
-Press **Enter** and let Instana generate a certificate.
+Press **Enter** and let Instana generate a self-signed certificate.  If you were deploying at a customer site and the customer wanted to user CA signed certificates, this is the step where you would specify the existing certificat.
 ![](images/certificate.png)
 
-You will be prompted for the private key file. For this lab, press **Enter** and have the install generate the key file.
+You will be prompted for the private key file. For this lab, press **Enter** and have the install generate the key file for the self-signed certificate.
 ![](images/key.png)
 
-Instana will now begin the installation process.  It will take 30 to 60 minutes to complete the installation process.
+Instana will now begin the installation process.  It will take 20 to 30 minutes to complete the installation process.
 
-At the end of the installation, you will be shown a username of **admin@instana.local** and a **password**.   Save the username and password.  You can use these credentials to Login
-to the Instana user interface.
+At the end of the installation, you will be shown the URL to access the Instana server and a username of **admin@instana.local** and a **password**.   Save this information so that you can use it later to login to the Instana user interface.
 
 The output should look something like this:
 ![](images/installSuccess.png)
 
-Save the username (E-Mail) and password so that you can reuse it later.
+If you forget the password, you can use the following command to reset the admin@instana.local password:   **instana configure admin -p <password for admin\>**
 
 ***
 
@@ -227,7 +246,23 @@ Following the initial install of your Instana server, there are optional configu
 
 Follow the steps below to configure the SMTP settings and enable some additional feature flags.
 
-1. Edit `settings.hcl` file according to the [documentation](https://www.ibm.com/docs/en/obi/current?topic=installer-enabling-feature-flags). The **settings.hcl** file will be located in the same directory where you issued the **instana init** command.  Some common feature flags available are:
+1. Edit `settings.hcl` file according to the [documentation](https://www.ibm.com/docs/en/obi/current?topic=installer-enabling-feature-flags). The **settings.hcl** file will be located in the same directory where you issued the **instana init** command.  
+
+These parameters are added to the settings.hcl file in the section with the other feature flags.  Search in the settings.hcl file for **feature**.  Then, add any additional feature flags that are desired in that section of the file.  They can be place anywhere within the **feature** section of the file.
+
+> **WARNING: Be aware that turning on features (especially BETA ones) may heavily impact backend performance. DO NOT turn on features you don't need**
+
+In your lab enviroment, we want you to add the following feature flags.  Since you don't have access to a VMware environment, it doesn't make sense to enable that feature flag.
+```yaml
+feature "infraCustomDashboards" {
+  enabled = true
+}
+feature "infraEntityExplore" {
+  enabled = true
+}
+```
+
+Note:  There are other feature flags that you should be aware of, <span style="color:red"> but do not add these into the settings.hcl file</span>.  Here are some common feature flags available are:
 
 ```yaml
 feature "vsphereEnabled" {
@@ -253,21 +288,7 @@ feature "infraEntityExplore" {
 }
 ```
 
-These parameters are added to the settings.hcl file in the section with the other feature flags.  Search in the settings.hcl file for **feature**.  Then, add any additional feature flags that are desired in that section of the file.  They can be place anywhere within the **feature** section of the file.
-
-> **WARNING: Be aware that turning on features (especially BETA ones) may heavily impact backend performance. DO NOT turn on features you don't need**
-
-In your lab enviroment, we want you to add the following feature flags.  Since you don't have access to a VMware environment, it doesn't make sense to enable that feature flag.
-```yaml
-feature "infraCustomDashboards" {
-  enabled = true
-}
-feature "infraEntityExplore" {
-  enabled = true
-}
-```
-
-Next, search for the **smtp** section in the settings.hcl file.   Modify the smtp section to look something like this:
+Next, search for the **smtp** section in the settings.hcl file.   Modify the smtp section to look something like this.  We recommend that you edit the paramters rather than copy/paste this section.  It is easy to make a mistake with the spacing when doing a copy/paste.
 ```sh
   smtp {
     from      = "server@instana.com"
@@ -280,7 +301,7 @@ Next, search for the **smtp** section in the settings.hcl file.   Modify the smt
   }
   ```
 
-Replace **<root password\>** with the root password of the Instana server.  If you want, you can replace the **from** parameter with any Email address that you like.  The **from** Email address is what you will see when you see as the sender of an Email alert from Instana.
+Replace **<jammer password\>** with the jammer password of the Instana server that was provided by the lab proctors.  If you want, you can replace the **from** parameter with any Email address that you like.  The **from** Email address is what you will see when you see as the sender of an Email alert from Instana.  All of the rest of the parameters should match what you see on the screen.
 
 Save the changes in the settings.hcl file.
 
