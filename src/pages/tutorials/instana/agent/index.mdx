@@ -127,6 +127,8 @@ docker run command and past it into the terminal window.
 
   ![](images/dockerInstall.png)
 
+This will install the Instana Agent as a docker container running on the Instana Server machine. 
+
 If you issue a **docker ps** command, you'll see that there is a new docker container running. This container is the Instana agent.
 ```sh
 docker ps
@@ -135,7 +137,7 @@ docker ps
   ![](images/agentContainer.png)
 
 
-This will install the Instana Agent as a docker container running on the Instana Server machine.   It will begin to collect host metrics and will discover the various technologies like 
+Once installed, the Agent will begin to collect host metrics and will discover the various technologies like 
 Cassandra, ClickHouse, ElasticSearch, Nginx, Node.js, and more.  Many of these technologies will be monitored automatically without the need for configuration.  In some cases, the sensors need to be configured in order to see the performance metrics.
 
 ***
@@ -147,7 +149,7 @@ The next step is to install the Instana Monitoring into the OpenShift Cluster th
 Throughout this lab, we will be using the "oc" command to run commands within OpenShift.  The "oc" command is similar to kubectl for other versions of Kubernetes.  There are
 some minor syntax differences.
 
-The commands documented below should be executed from the control node.
+The commands documented below should be executed from the **control node**.  If you are not logged on already, ssh to the **control node**.
 
 To install Instana agent on OpenShift cluster you need to authenticate to the OCP cluster with appropriate permissions (cluster admin role). In the lab environment, the **control node** is already logged into the cluster.  But, we need to make sure you are logged into the **manage to** cluster and not the **manage from** cluster.  Issue the following command:
 ```sh
@@ -186,7 +188,20 @@ Enter a name for the Cluster and Zone - this will allow you to find your Agent a
 
 Next, click the "Download" button to download the yaml file.  The yaml file has been configured specifically to connect to your Instana backend environment and will contain the **Cluster** name and **Zone** name that you previously specified.
 
-In the terminal session where you are authenticated to your OCP cluster you can now install the downloaded yaml file. This will install the Instana Agent as a daemonset within the OpenShift cluster.  The process is nearly identical for other versions of Kubernetes.
+The configuration.yaml file will be downloaded to your laptop.  You must copy this file to the **control node**.  Or, if you have **oc** installed on your laptop, you can login to the **manage to** cluster and run the commands from your laptop.  
+
+Let's copy the file to the **control node**.
+
+From your **Downloads** folder on your laptop, run the following command:
+```sh
+scp -i <path to id_rsa file> configuration.yaml jammer@<IP address of control node>:/home/jammer
+```
+
+This will place the configuration.yaml file in jammer's home directory on the **control node**.
+
+In the terminal session on the **control node**, you can now install the downloaded yaml file. This will install the Instana Agent as a daemonset within the OpenShift cluster.  The process is nearly identical for other versions of Kubernetes.
+
+Make sure you are in jammer's home directory (/home/jammer) when you issue this command.
 
 To install the Agent using the yaml file, type:  
 ```sh
@@ -283,7 +298,7 @@ In case of Kubernetes based deployment you have to look at logs of `instana-agen
 
 ***
 
-## 4-9:  Configuring GitOps for Agents
+## 3-9:  Configuring GitOps for Agents
 
 <span style="color:red">This section is here for informational purposes.  There are no steps to execute.</span>
 
