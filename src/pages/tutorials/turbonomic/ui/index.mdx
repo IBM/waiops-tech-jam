@@ -5,7 +5,8 @@ description:
 
 <AnchorLinks>
   <AnchorLink>3-1: Turbonomic UI</AnchorLink>
-  <AnchorLink>3-2: Business Application Drill Down</AnchorLink>
+  <AnchorLink>3-2: Key Terminology</AnchorLink>
+  <AnchorLink>3-3: Business Application Drill Down</AnchorLink>
 </AnchorLinks>
 
 ## 3-1:  Turbonomic UI
@@ -28,7 +29,22 @@ On this home page, there are widgets for `Top Business Applications`, `Top Busin
 
 ***
 
-## 3-2:  Business Application Drill Down
+## 3-2:  Key Terminology
+
+Some of terminology which we should be familiar when discussing Turbonomic:
+
+![](images/keyTerminology-1.png)
+
+- `Business Application` - a logical grouping of Business Transactions, Services, Application Components, and other elements of the application model that work together to compose a complete application as end-users would view it.
+- `Business Transaction` - represents a capability within your Business Application that fulfills a response to a user-initiated request. Its performance directly impacts user experience.
+- `Service` - represents one or several Application Components that perform a defined, measurable function as part of an internal or user-initiated request. It is consumed by internal parts of the application (e.g. database)
+- `Application Component` - a software component, application code, or a unit of processing within a Service that consumes resources to enable it to perform its function for the Business Application
+
+`Actions` are recommended for Application Components or underlying Infrastructure and propagated up the stack.
+
+***
+
+## 3-3:  Business Application Drill Down
 
 Click on `Robot Shop` application from the `Top Business Applications` widget.
 
