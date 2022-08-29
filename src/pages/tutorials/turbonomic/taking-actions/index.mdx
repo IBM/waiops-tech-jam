@@ -4,19 +4,11 @@ description: Taking Actions
 ---
 
 <AnchorLinks>
-  <AnchorLink>7-1: Introduction</AnchorLink>
-  <AnchorLink>7-2: Manage Performance of Your Application</AnchorLink>
-  <AnchorLink>7-3: Summary</AnchorLink>
+  <AnchorLink>7-1: Manage Performance of Your Application</AnchorLink>
+  <AnchorLink>7-2: Summary</AnchorLink>
 </AnchorLinks>
 
-## 7-1:  Introduction
-
-- Turbonomic defines a set of default policies for each entity type however users can define their own policies for each entity in supply chain based on business requirements. 
-- Policies define business rules to control how analyzes resource allocation, how it displays resource status, and how it recommends or executes actions.
-
-***
-
-## 7-2:  Manage Performance of Your Application
+## 7-1:  Manage Performance of Your Application
 
 1) Open your Instana dashboard. Navigate to `Platform -> Kubernetes`. 
 ![](images/action-1.png)
@@ -35,11 +27,15 @@ description: Taking Actions
 
 ![](images/action-4.png)
 
-6) You will noticed either yellow or red and green sections of the circles on `Container Cluster` section of the Business Application Tree on the left side of the screen. 
+6) Here, we can see come key application metrics provided by Instana – e.g. response time and transaction and how they have evolved over time. Turbonomic uses that data to provided actionable insights based on that data in the form of recommended actions you could take to improve performance and/or improve efficiency. 
+
+You will noticed either yellow or red and green sections of the circles on `Container Cluster` section of the Business Application Tree on the left side of the screen. 
 
 ![](images/action-5.png)
 
 7) Click that circle and it will take you to a screen like this below. You will notice that there are `Pending Actions` that Turbonomic suggests will improve the performance and efficiency of the application.
+
+Turbonomic does not recommend actions for a Business Application, Transactions, or Services, but it does recommend actions for the underlying Application Components and infrastructure entities, thus providing visibility into the risks that have a direct impact on the Business Application's performance.
 
 ![](images/action-6.png)
 
@@ -55,7 +51,7 @@ description: Taking Actions
 
 ***
 
-## 7-3:  Summary
+## 7-2:  Summary
 
 In this section, you have learned to execute actions based on Turbonomic recommendations.
 
