@@ -71,7 +71,7 @@ oc adm policy add-scc-to-user privileged -z default -n robot-shop
 
 ```
 
-Install the **Robot Shop** by issuing the following helm command. You'll need to replace \<EUM Key\> with the **key** value that you obtained in section 3.2 from the Instana user interface and <Reporting URL\> is the **reportingURL** you obtained in section 3.2.
+Install the **Robot Shop** by issuing the following helm command. You'll need to replace \<EUM Key\> with the **key** value that you obtained in section 3.2 from the Instana user interface and <Reporting URL\> is the **reportingURL** you obtained in section 4.2.
 
 Note:  When you specify the **Reporting URL**, do not include the trailing slash \(/\).
 
@@ -103,7 +103,7 @@ If some of the pods show **0/1** instead of **1/1** in the READY column or the p
 
 Finally, if you want to bring up the Robot Shop user interface, you need to expose the service as a route.   Issue the following command:
 ```sh
-oc expose service website
+oc expose service web
 
 ```
 
