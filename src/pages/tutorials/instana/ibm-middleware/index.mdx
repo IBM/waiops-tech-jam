@@ -5,15 +5,12 @@ description: Configure the Quote of the Day Application and Install/Configure Mo
 
 <AnchorLinks>
   <AnchorLink>5-1: Introduction</AnchorLink>
-  <AnchorLink>5-2: Installing the Instana agents</AnchorLink>
-  <AnchorLink>
-    5-3: Configure Quote of the Day Application to use MQ & ACE
-  </AnchorLink>
-  <AnchorLink>5-4: Configure ACE and MQ for Resource Monitoring</AnchorLink>
-  <AnchorLink>5-5: Configure ACE and MQ for Tracing</AnchorLink>
-  <AnchorLink>5-6: Configure the ACE and MQ Sensors</AnchorLink>
-  <AnchorLink>5-7: Further Configuration</AnchorLink>
-  <AnchorLink>5-8: Summary</AnchorLink>
+  <AnchorLink>5-2: Configure Quote of the Day Application to use MQ & ACE</AnchorLink>
+  <AnchorLink>5-3: Configure ACE and MQ for Resource Monitoring</AnchorLink>
+  <AnchorLink>5-4: Configure ACE and MQ for Tracing</AnchorLink>
+  <AnchorLink>5-5: Configure the ACE and MQ Sensors</AnchorLink>
+  <AnchorLink>5-6: Further Configuration</AnchorLink>
+  <AnchorLink>5-7: Summary</AnchorLink>
 </AnchorLinks>
 
 ## 5-1: Introduction
@@ -26,24 +23,7 @@ In this section, you will find guidence about configuring and using Instana with
 
 ---
 
-## 5-2: Installing the Instana agents
-
-In this portion of the lab, you will be updating "Quote of the Day" hybrid application to use ACE and MQ, and configuring the Instana to monitor the whole application. That includes configuration of the MQ and ACE sensors.
-
-This tutorial won't provide you a detailed step-by-step instructions for simple tasks - it is assumed that you are familiar with basics of Instana.
-
-1. Open the browser to login to the Instana user interface. Credentials for your instance you can find in the [Environments](../../general/teams) section.
-
-2. Login through SSH to the MQ/ACE virtual machine. You can ssh from the control node. Then use sudo to switch to the root user:
-
-```sh
-sudo -i
-
-```
-
----
-
-## 5-3: Configure Quote of the Day Application to use MQ & ACE
+## 5-2: Configure Quote of the Day Application to use MQ & ACE
 
 The **"Quote of the Day"** application has been installed for you on the **manage-to** OpenShift cluster. For more information about the **Quote of the Day** application, you can go to this GitLab location: https://gitlab.com/quote-of-the-day/quote-of-the-day (It is not necessary to go there, but you might be interested in learning more about the application.)
 
@@ -78,7 +58,11 @@ This will open a "vi" session. Scroll down within the file to line 49. You shoul
 ```
 
 You need to modify those lines to look like the following. You need to add a "value" parameter that contains the SUPPLY_CHAIN_URL for the ACE flow. The flow within the
-ACE server is **"http://&lt;acemq_ipaddress&gt;:7081/supplychain/v1/order"**. This is what you need to use for the SUPPLY_CHAIN_URL value. You'll need to change the value for the SUPPLY_CHAIN_SIMULATE to "false" to disable the simulation. When you are done, the lines should look like this:
+ACE server is **"http://&lt;acemq_ipaddress&gt;:7081/supplychain/v1/order"**. This is what you need to use for the SUPPLY_CHAIN_URL value, but replace **<acemq_ipaddress>** with the IP address of your ACE/MQ server. 
+
+You'll also need to change the value for the SUPPLY_CHAIN_SIMULATE to "false" to disable the simulation. 
+
+When you are done, the lines should look like this:
 
 ```sh
         - name: SUPPLY_CHAIN_URL
@@ -97,23 +81,23 @@ Type **":wq"** to save your changes and exit the file.
 
 As soon as you save your changes, OpenShift will automatically redeploy the **"qotd-engraving"** pod with the updated configuration. To verify that the changes were applied successfully, let's check the application UI.
 
-Type `oc get route -n qotd` to get the route for the application. Then, in the browser, open this URL and click the “Order Engraving”. Then, click again “Order Engraving” button. If successful, you’ll see “Order successfully placed.”
+Type `oc get route -n qotd` to get the route for the application. Then, in the browser, open this URL and click the “Order Engraving” button. Then, click again the “Order Engraving” button. If successful, you’ll see “Order successfully placed.”
 
 ![](images/2022-05-30-12-04-59.png)
 
 ---
 
-## 5-4: Configure ACE and MQ for Resource Monitoring
+## 5-3: Configure ACE and MQ for Resource Monitoring
+
+<span style="color:red">
+  {" "}
+  This section is for informational purposes only.  In your lab environment, these steps have already been performed.
+</span>
 
 This section of the lab will help you understand how IBM MQ and IBM App Connect Enterprise (ACE) need to be configured for monitoring. There are certain configuration settings within MQ and ACE that are required in order to get the
 monitoring KPIs. The key KPI's that need to be enabled are Resource Stats and Flow Stats. The requirements are documented in the [sensor configuration guide](https://www.ibm.com/docs/en/obi/223?topic=technologies-monitoring-app-connect-enterprise#monitoring-ibm-app-connect-enterprise) that is online. You'll see links to those guides further down in this document.
 
 Note: Typically, these steps are performed by the MQ and ACE admins, so you don't need to know the step by step procedure. But, you do need to tell the MQ/ACE admins what the monitoring requirements are.
-
-<span style="color:red">
-  {" "}
-  In your lab environment, these steps have already been performed.
-</span>
 
 ---
 
@@ -209,13 +193,15 @@ quit
 
 ---
 
-## 5-5: Configure ACE and MQ for Tracing
+## 5-4: Configure ACE and MQ for Tracing
+
+<span style="color:red">The steps in this section have already been performed in your environment. The instructions found here are for informational purposes.</span>
 
 In addition to the "Resource Monitoring" KPIs, additional settings are required to enable Tracing within IBM MQ and ACE. It is important that you understand this process since Tracing is typically not enabled by default in most IBM MQ and ACE environments. In this section, we've documented the steps.
 
 Note: Typically, these steps are performed by the MQ and ACE admins, so you don't need to know the step by step procedure.
 
-This section is simply going to describe the process. <span style="color:red">You do not need to perform these steps.</span> The procedure is well documented within the Instana online documentation. You will find a **Tracing** section within the sensor documentation.
+This section is simply going to describe the process.  The procedure is well documented within the Instana online documentation. You will find a **Tracing** section within the sensor documentation.
 
 For ACE, you perform the following steps
 
@@ -240,14 +226,18 @@ Note: Even though the TAR files for ACE and MQ look similar, they are unique for
 
 ---
 
-## 5-6: Configure the ACE and MQ Sensors
+## 5-5: Configure the ACE and MQ Sensors
 
-In this section, you will perform these commands as root on the ACE/MQ server. From the control node, ssh to the ACE/MQ server. Then, use sudo to switch to the root user.
+In this section, you will perform these commands as root on the ACE/MQ server. 
+
+From the control node, ssh to the ACE/MQ server. 
 
 ```sh
-ssh <IP of ACE/MQ server\>
+ssh jammer@mqace
 
 ```
+
+Then, use sudo to switch to the root user.
 
 ```sh
 sudo -i
@@ -268,13 +258,11 @@ The **com.instana.agent.main.sender.Backend.cfg** file contains information on w
 
 We are going to be editing the configuration.yaml file. This file contains all of the configuration settings for the sensors.
 
-Edit configuration.yaml using either "vi"
+Edit configuration.yaml using either "vi" or use other editor like `nano` if you prefer.
 
 ```sh
 vi configuration.yaml
 ```
-
-or use other editor like `nano` if you prefer.
 
 **------------IMPORTANT------------**  
 yaml files are very strict about indentation. Each line within the file must be indented by 0, 2, 4, 6, etc. spaces. Do not use tabs and do not indent by odd numbers
@@ -292,7 +280,7 @@ There are multiple options for configuring the sensor. The information shown mat
 
 - If ACE is configured for MQTT, the configuration will be different than if ACE is configured to use MQ.
 - The configuration will be different if you are doing remote monitoring vs. local.
-- Pay careful attention to the required vs. optional parameters. For example, in some environments the MQ Channel Authenticatio is disabled and you don't need to specify credentials.
+- Pay careful attention to the required vs. optional parameters. For example, in some environments the MQ Channel Authentication is disabled and you don't need to specify credentials.
 
 Edit the **IBM ACE** section of the file so that it looks like this. If you want, you can copy this text and replace the entire section. Or, you can change the
 individual parameters.
@@ -316,14 +304,16 @@ Note: The markdown documentation only shows 9 rows of text, but there are more r
 
 ![](images/ACEyaml.png)
 
-In the example above, **QM1** is the Queue Manager name. **BK1** is the name of the Integration Server. **ACE.SVRCONN** is the channel that the sensor will conect to in order to query the performance KPIs. The username of **mqm** is the admin username for MQ, but the sensor does not require administrative permissions.
+In the example above, **QM1** is the Queue Manager name. **BK1** is the name of the Integration Server. **ACE.SVRCONN** is the channel that the sensor will conect to in order to query the performance KPIs. The username of **mqm** is the admin username for MQ, but the sensor does not require administrative permissions.  Any valid MQ user can be specified as long as it has permissions to connect to the channel.
 
 Next, you will need to edit the MQ sensor settings. Scroll further down in the file until you find the section titled "IBM MQ". You will be editing this section of
 the configuration to match the settings of the MQ server. There are a number of mandatory and optional parameters. For more information on the configuration settings,
 see the online documentation: [link](https://www.ibm.com/docs/en/obi/current?topic=technologies-monitoring-mq)
 
 Edit the **IBM MQ** section of the file so that it looks like this. If you want, you can copy this text and replace the entire section. Or, you can change the
-individual parameters.
+individual parameters. 
+
+When you paste this information, you must **replace <mqm password\> with the password provided by the lab proctor**.
 
 ```sh
 # IBM MQ
@@ -334,15 +324,15 @@ com.instana.plugin.ibmmq:
     QM1:
       channel: 'ACE.SVRCONN' # Remote administration channel
       username: 'mqm'
-      password: '\<mqm password\>'
+      password: '<mqm password>'
 ```
 
 ---
 
-## 5-7: Further Configuration
+## 5-6: Further Configuration
 
 First, let's change the **Zone** name within the file. This is similar to the Zone that you specified when installing the Docker and OpenShift monitoring Agents. Scroll down until you see the section titled "Hardware & Zone". Uncomment the 3 lines of text starting with
-`com.instana.plugin.generic.hardware`. By default the "availability-zone" parameter is set to "Datacenter A /Rack 42". Change the value to **Quote of the Day**
+`com.instana.plugin.generic.hardware`. By default the "availability-zone" parameter is set to "Datacenter A /Rack 42". Change the value to **ACE and MQ**
 
 The section of the configuration.yaml file should look as follows:
 
@@ -350,7 +340,7 @@ The section of the configuration.yaml file should look as follows:
 # Hardware & Zone
 com.instana.plugin.generic.hardware:
   enabled: true # disabled by default
-  availability-zone: 'Quote of the Day'
+  availability-zone: 'ACE and MQ'
 ```
 
 In addition to configuring the **Zone** name, you can specify tags within the configuration.yaml file. Search for the section within the configuration.yaml file titled **Host**. Within that section, you see a section for tags. By default this section will be commented out. Uncomment the **com.instana.plugin.host** section and specify some tags. For example, add a **production** tag to indicate that this system is a production server. And, add a **QOTD** tag to indicate that it supports the **Quote of the Day** application. Add a **Dallas** tag to indicate the the server resides in Dallas, Texas.
@@ -374,7 +364,7 @@ Note: Zones and Tags can be used for a number of purposes within instana:
 - Build custom dashboards using the tags or zone names
   and more...
 
-By default, Instana will monitoring key processes that are related to the applications/middleware that are being monitoring. It will also monitor processes that are consuming large amounts of CPU or Memory. Sometimes, customers want to ensure that specific processes are monitoring. Let's edit the configuration.yaml file to specify some key proccesses on this ACE/MQ server. Seach within the configuration.yaml file for **com.instana.plugin.process**
+By default, Instana will monitor key processes that are related to the applications/middleware that are being monitored. It will also monitor processes that are consuming large amounts of CPU or Memory. Sometimes, customers want to ensure that specific processes are monitoring. Let's edit the configuration.yaml file to specify some key proccesses on this ACE/MQ server. Seach within the configuration.yaml file for **com.instana.plugin.process**
 
 The section will be commented out by default. Uncomment the section and specify the following processes for monitoring **(crond, amqzmgr0, runmqlsr)**. One process is the cron daemon, which customers frequently want to monitor. The other two process are related to IBM MQ. The section should look like this:
 
@@ -402,9 +392,9 @@ The main install log file is /opt/instana/agent/data/log/agent.log
 
 ---
 
-## 5-8: Summary
+## 5-7: Summary
 
-You learned how to configure the Instana sensor for IBM App Connect Enterprise (ACE) and IBM MQ.
+You learned how to configure the Instana sensor for IBM App Connect Enterprise (ACE) and IBM MQ.  This includes customization such as defining tags, defining a zone, and identifying specific processes to monitor.
 
 Now, proceed to section 6 where you will explore Instana.
 
