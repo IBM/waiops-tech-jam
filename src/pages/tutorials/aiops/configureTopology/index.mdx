@@ -25,7 +25,7 @@ Topology group templates are used to create groups of resources. Resource groups
 
 The exact topology group template is useful for when you have a specific collection of resources that are unique in your environment that may be of particular importance. Perhaps you want to be able to find this group of resources quickly and easily, or visualise them on a wall screen.
 
-The tag-based topology allows you to define a group of resources based on one or more common tags. These resources don't have to be connected; they simply need to have the tag in order to be included. Tags can be added to resources via Rules set up in the GUI, or via the tags parameter if creating topology via the File or REST Observers.
+The tag-based topology allows you to define a group of resources based on a common tag. These resources don't have to be connected; they simply need to have the common tag in order to be included. Tags can be added to resources via topology Rules set up in the GUI, or via the tags parameter if creating topology via the File or REST Observers.
 
 The Dynamic template is probably the most versatile of the three topology group templates. Using an example of a set of resources you want to group, the dynamic topology group template will automatically find other groups of resources that follow the same "recipe" as the example you give. As you expose the resources and relationships in the view, the template builder records the steps, and then uses this recipe to find other similar groups of resources.
 
@@ -33,27 +33,26 @@ The Dynamic template is probably the most versatile of the three topology group 
 
 In this exercise, we will create a template for a specific group of resources for our router (router1) and its connected resources.
 
-Navigate to: **Administration → Topology configuration → Group templates**
+Navigate to: **Administration > Topology configuration > Group templates**
 
-Click on **Create a new template** and select **Exact template**.
+Click on **Create a new template** and then select **Exact template**.
 
 You will be presented with a **Template builder** window. From here, use the following steps to configure an exact template sample:
 
-* Give the template a name and provide a brief description.
+* Give the template a name and provide a brief description
 * Choose the **Resource group type: network**
 * Add a **Resource group naming pattern prefix** for the resulting group's name: **ROUTER-**
-* Enable **Correlate event groups on topologies from this template** if you want to correlate events across these resources.
-* Type **router1** in the search box: **Search for a resource to get started** and hit Enter.
-* Choose **router1** from the list of resources.
-* Change the view to 1 hop and click **Render**.
-* Click **Save template & generate resource group**.
+* Enable **Correlate event groups on topologies from this template** if you want to correlate events across these resources
+* Type **router1** in the search box: **Search for a resource to get started** and hit Enter
+* Choose **router1** from the list of resources
+* Change the view to 1 hop and click **Render**
+* Click **Save template & generate resource group**
 
 You should have something like the following:
 
-
 ![](images/exact.png)
 
-After returning to the Resource group templates screen, you will see your saved template:
+After returning to the **Resource group templates** screen, you will see your saved template:
 
 ![](images/resourcegroup.png)
 
@@ -67,31 +66,31 @@ If you click on the name **ROUTER-router1**, you will be able to view the topolo
 
 ![](images/router1.png)
 
-**NOTE**: if you have enabled event correlation across this group of resources and receive events from these resources, they will be automatically correlated.
+**NOTE**: if you have enabled event correlation across this group of resources and receive events from these resources, the events will be correlated automatically.
 
 ## 6-3: Create a tag based topology template
 
-n this exercise, we will create a template for group of resources based on their common tag. Note that it's possible to include resources from multiple different tags, but we will just focus on one in this exercise.
+In this exercise, we will create a template for group of resources based on their common tag.
 
-Navigate to: **Administration → Topology configuration → Group templates**
+Navigate to: **Administration > Topology configuration > Group templates**
 
 Click on **Create a new template** and select **Tag based template**.
 
 You will be presented with a **Template builder** window. From here, use the following steps to configure an tag based template sample:
 
-* Give the template a name and provide a brief description.
+* Give the template a name and provide a brief description
 * Choose the **Resource group type: compute**
 * Add a **Resource group name** for the name of the group of resources: **WAIOpsDemoAssets**
-* Enable **Correlate event groups on topologies from this template** if you want to correlate events across these resources.
-* Type **WAIOpsDemo** in the search box: **Search for a tag to get started** and hit Enter.
-* Check **WAIOpsDemo** from the list of available tags and then click the **Resources** tab to see the list of matching resources.
-* Click **Save template & generate resource group**.
+* Enable **Correlate event groups on topologies from this template** if you want to correlate events across these resources
+* Type **WAIOpsDemo** in the search box: **Search for a tag to get started** and hit Enter
+* Check **WAIOpsDemo** from the list of available tags and then click the **Resources** tab to see the list of matching resources
+* Click **Save template & generate resource group**
 
 You should have something like the following:
 
 ![](images/tagbased.png)
 
-After returning to the **Resource group templates screen**, you will see your saved template:
+After returning to the **Resource group templates** screen, you will see your saved template:
 
 ![](images/tagbasedsearch.png)
 
@@ -99,7 +98,7 @@ If you navigate to Resource management and search for **WAIOpsDemoAssets** , you
 
 ![](images/tagresourcegrp.png)
 
-If you click on the name WAIOpsDemoAssets , you will be able to view the topology group, which consists of 8 resources:
+If you click on the name **WAIOpsDemoAssets** , you will be able to view the topology group, which consists of 8 resources:
 
 ![](images/tagrouter.png)
 
@@ -118,19 +117,19 @@ E:{"_toUniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807-app2","_edgeType":"ru
 ```
 Use the steps included in the previous module to import this file into the Event Manager system and create a new File Observer job to ingest the topology data.
 
-Navigate to: **Administration → Topology configuration → Group templates**
+Navigate to: **Administration > Topology configuration > Group templates**
 
 Click on **Create a new template** and select **Dynamic template**.
 
 You will be presented with a **Template builder** window. From here, use the following steps to configure an tag based template sample:
 
-* Give the template a name and provide a brief description.
+* Give the template a name and provide a brief description
 * Choose the **Resource group type: compute**
 * Add a **Resource group naming pattern** prefix for the resulting group's name: **APPSERVER-**
-* Enable **Correlate event groups on topologies from this template** if you want to correlate events across these resources.
-* Type **computer1000** in the search box: **Search for a resource to get started** and hit Enter.
-* Choose **computer1000** from the list of available resources.
-* Right-click on computer1000 and select **Follow Relationship → runsOn** which will expose the applications **webserver** and **billing**.
+* Enable **Correlate event groups on topologies from this template** if you want to correlate events across these resources
+* Type **computer1000** in the search box: **Search for a resource to get started** and hit Enter
+* Choose **computer1000** from the list of available resources
+* Right-click on computer1000 and select **Follow Relationship → runsOn** which will expose the applications **webserver** and **billing**
 
 You should have something like the following:
 
@@ -138,9 +137,9 @@ You should have something like the following:
 
 Continue with the following steps:
 
-* Scroll down on the left side and note that the template has been recording your actions to build a "recipe" for the template.
-* Add a tag to the list of starting seeds if you want to restrict the items matched by this template to just those tagged with specific tags.
-* Continue to scroll down and click **Save template & generate resource group**.
+* Scroll down on the left side and note that the template has been recording your actions to build a "recipe" for the template
+* Add a tag to the list of starting seeds if you want to restrict the items matched by this template to just those tagged with specific tags
+* Continue to scroll down and click **Save template & generate resource group**
 
 ![](images/dynamic_def.png)
 
@@ -152,7 +151,7 @@ You should see that the dynamic template builder has found two groups of resourc
 
 SQL can be injected into the ObjectServer to generate test events that will match the topology groups created in previous steps. 
 
-create sample_events.sh as below:
+Create a local file called `sample_events.sh` on the machine you are running your terminal session from and paste in the following contents:
 
 ```sh
 #!/bin/bash
@@ -168,7 +167,7 @@ exit
 EOF
 
 ```
-Copy event generating script to ObjectServer pod
+Use the following command to copy your new script to the ObjectServer pod in your OpenShift cluster:
 
 ```sh
 cat sample_events.sh | oc exec -i evtmanager-ncoprimary-0 -- sh -c "cat > /tmp/sample_events.sh"
@@ -178,27 +177,29 @@ cat sample_events.sh | oc exec -i evtmanager-ncoprimary-0 -- sh -c "cat > /tmp/s
 oc exec -it evtmanager-ncoprimary-0 bash -- sh -c "chmod +x /tmp/sample_events.sh"
 ```
 
-Next, execute script to inject synthetic events and view the outcome:
+Finally, use the following command to execute the script, to inject synthetic events into the system:
 
 ```sh
 oc exec -it evtmanager-ncoprimary-0 bash -- /tmp/sample_events.sh
 ```
 
-You can ignore message "Warning: Failed to find tar in the following directories : /bin /usr/bin" 
+You can ignore the message: `Warning: Failed to find tar in the following directories : /bin /usr/bin`
 
-After completing these steps, waiting a few moments and refreshing the Event viewer, you should see a group containing your four events. If you click on the **Correlation Information** button, and then one of the buttons in the topology-based correlation column, you'll see a preview of the topology based group that has caused the correlation of these events:
+After completing these steps, waiting a few moments and refresh your Event Viewer. You should see a group containing the events generated by your script. If you click on the **Correlation Information** button, and then one of the buttons in the topology-based correlation column, you'll see a preview of the topology based group that has caused the correlation of these events:
 
 ![](images/correlation.png)
 
 ## 6-6: View results in Topology Dashboard
 
+Navigate to: **Resource management > Resource groups**. Browse your defined groups and click on the small heart icon to the right of each on a selection of the groups. Favourite some groups that have some associated underlying events. You'll notice that your favourite groups of resources automatically appear at the top of the screen.
+
+Navigate to: **Dashboards > Topology dashboard**. This will open the topology dashboard with any groups of resources you have made a favourite.
+
 ![](images/topo_dashboard.png)
 
-Note how two of the groupings have a red and orange halo of colour around them. This is because of the underlying events we created in the previous step, that have now been associated with some of the underlying resources. If you click on the groupings, it will show you a preview of the topology group, and a summary of **Status severity breakdown**, as well as **Topology churn**. Clicking on **Open full view** will take you into the full topology view for the selected topology group, where you can then get a fuller view of the affected topology resources.
-
+Note how two of the groupings have a red and orange halo of colour around them. This is because of the underlying events we created in the previous step, that have now been associated with some of the underlying resources. If you click on one of the groupings, it will show you a preview of the topology group, and a summary of **Status severity breakdown**, as well as **Topology churn**. Clicking on **Open full view** will take you into the full topology view for the selected topology group, where you can then get a fuller view of the affected topology resources.
 
 You have now completed this module and are ready for module "Configure scope-based grouping".
-
 
 [Reference Blog](https://community.ibm.com/community/user/aiops/blogs/zane-bray1/2022/04/26/getting-started-with-watson-aiops-event-manager-57)
 
