@@ -15,7 +15,7 @@ description: Define scope-based event grouping policies
 
 This module considers a second method of doing event correlation: scope-based event grouping. Scope-based event grouping is based on a basic premise that events occurring at the "same place", and at the "same time" are likely related.
 
-For example, if a remote cell site has a power failure, there will likely be alarms generated from equipment there, along with building management alarms, and so on, in a short space of time. In this case, the scope would be the remote location, and the time window might be, say, a 10 minute window. Another example is where there is a hardware failure in one of the servers that contribute to the provision of a service, such as an application or website. This failure may result in alarms being generated from the dependent parts. In this case, the scope would be the common application or service name, and the scope might be, say, a 5 minute window.
+For example, if a remote cell site has a power failure, there will likely be alarms generated from equipment there, along with building management alarms, and so on, in a relatively short space of time. In this case, the scope might be the remote location, and the time window might be, say, a 10 minute window. Another example is where there is a hardware failure in one of the servers that contribute to the provision of a service, such as an application or website. This failure may result in alarms being generated from the dependent parts. In this case, the scope might be the common application or service name, and the scope might be, say, a 5 minute window.
 
 Scope-based grouping is provided by Watson for AIOps Event Manager so that operations teams can input local knowledge on how events should be grouped. A UI is provided so that scope-based event **grouping policies** can be created and maintained.
 
@@ -23,21 +23,19 @@ In practice, scope-based event grouping is very powerful and yields tremendous e
 
 By the end of this module, you will have created two scope-based event grouping policies, injected some test events and observed the grouping. The second example will include overlap with a topology-based event correlation scenario in the previous module to demonstrate so-called "super grouping".
 
-
 ## 7-2: Create a scope-based event grouping policy to group by Service
 
 Log in to Watson for AIOps Event Manager and navigate to: **Netcool WebGUI**.
 
-Navigate to: **Insights → Scope Based Grouping**
+Navigate to: **Insights > Scope Based Grouping**
 
 Complete the following steps to create a policy based on common application name:
 
-
 * Click on: **Create policy**
 * Give the policy a name - eg: **GroupByService**
-* Complete the Description field with something appropriate - eg: Policy to group events by common service name.
-* Leave the **Priority** field set to 1.
-* The default **Datasource** should already be checked.
+* Complete the Description field with something appropriate - eg: "Policy to group events by common service name"
+* Leave the **Priority** field set to 1
+* The default **Datasource** should already be checked
 * From the **Events** section, select: **Specify conditions**
 * Set **Condition 1** to: **Service** field **Is not empty**
 * Set the **Action** parameter to define the scope: set it to **Service**
@@ -50,7 +48,7 @@ You should end up with something like the following:
 
 ## 7-3: Inject some sample Service events
 
-Create scope_events.sh using below script to insert sample events. Please ensure you current OCP project is "noi" before executing the scripts below.
+Create a new local file and call it `scope_events.sh` and paste the following content into it:
 
 ```sh
 #!/bin/bash
@@ -74,7 +72,7 @@ EOF
 
 ```
 
-Copy event generating script to ObjectServer pod
+Next, use the following command to copy your new script to the ObjectServer pod and set its file permissions:
 
 ```sh
 cat scope_events.sh | oc exec -i evtmanager-ncoprimary-0 -- sh -c "cat > /tmp/scope_events.sh"
@@ -84,13 +82,13 @@ cat scope_events.sh | oc exec -i evtmanager-ncoprimary-0 -- sh -c "cat > /tmp/sc
 oc exec -it evtmanager-ncoprimary-0 bash -- sh -c "chmod +x /tmp/scope_events.sh"
 ```
 
-Now execute this script to simulate events.
+Finally, use the following commands to execute this script to generate the example events:
 
 ```sh
 oc exec -it evtmanager-ncoprimary-0 bash -- /tmp/scope_events.sh
 ```
 
-You can ignore message "Warning: Failed to find tar in the following directories : /bin /usr/bin" 
+You can ignore the message: `Warning: Failed to find tar in the following directories : /bin /usr/bin`
 
 You should end up with something like the following:
 
@@ -100,29 +98,29 @@ You should end up with something like the following:
 
 Log in to Watson for AIOps Event Manager and navigate to: Netcool WebGUI.
 
-Navigate to: **Insights → Scope Based Grouping**
+Navigate to: **Insights > Scope Based Grouping**
 
 Complete the following steps to create a policy based on common geographic location:
 
 * Click on: **Create policy**
 * Give the policy a name - eg: **GroupByLocation**
-* Complete the Description field with something appropriate - eg: Policy to group events by common location.
-* Leave the **Priority** field set to 1.
-* The default **Datasource** should already be checked.
+* Complete the Description field with something appropriate - eg: Policy to group events by common location
+* Leave the **Priority** field set to 1
+* The default **Datasource** should already be checked
 * From the **Events** section, select: **Specify conditions**
 * Set **Condition 1** to: **Location** field **Is not empty**
 * Set the **Action** parameter to define the scope: set it to **Location**
 * Set the **Time Window** to 300 seconds (5 minutes)
-* Set the **Enabled** toggle switch to **On** and **Save**.
+* Set the **Enabled** toggle switch to **On** and **Save**
 
 You should end up with something like the following:
 ![](images/Scope2.png)
 
-NOTE: The Priority specifies the order in which the Policies will be tried. Once a scope-based event grouping Policy matches and the scope is set for an event, all subsequent Policies will be skipped. If two policies have the same Priority value (as in this case), the execution order is indeterminate.
+**NOTE:** The Priority specifies the order in which the Policies will be tried. Once a scope-based event grouping Policy matches and the scope is set for an event, all subsequent Policies will be skipped. If two policies have the same Priority value (as in this case), the execution order is indeterminate.
 
 ## 7-5: Inject some sample Location events
 
-Create super_group_events.sh using below script to insert sample events. Please ensure your current OCP project is "noi" before executing the scripts below.
+Create a new local file and call it `super_group_events.sh` and paste the following content into it:
 
 ```sh
 #!/bin/bash
@@ -149,7 +147,7 @@ exit
 EOF
 ```
 
-Copy event generating script to ObjectServer pod
+Next, use the following command to copy your new script to the ObjectServer pod and set its file permissions:
 
 ```sh
 cat super_group_events.sh | oc exec -i evtmanager-ncoprimary-0 -- sh -c "cat > /tmp/super_group_events.sh"
@@ -158,13 +156,11 @@ cat super_group_events.sh | oc exec -i evtmanager-ncoprimary-0 -- sh -c "cat > /
 ```sh
 oc exec -it evtmanager-ncoprimary-0 bash -- sh -c "chmod +x /tmp/super_group_events.sh"
 ```
-
-Now execute this script to simulate events.
+Finally, use the following commands to execute this script to generate the example events:
 
 ```sh
 oc exec -it evtmanager-ncoprimary-0 bash -- /tmp/super_group_events.sh
 ```
-
 You will observe three groups of events merged together: two created by topology-based event grouping, and one created by scope-based event grouping.
 
 **NOTE:** You may need to wait a few seconds and refresh the event view before the grouping is visible.
@@ -174,8 +170,7 @@ Select any event and run the tool from the Alert Viewer. You should end up with 
 ![](images/events2.png)
 
 You can click on the grouping buttons on the right to inspect the details of the group. Topology-based grouping will show a preview of the topology that has effected the grouping. Note how you have events grouped together by both topology-based grouping and scope-based grouping in the "super group". The events from computer1000 and computer1001 are found in both the topology-based correlation template groups, as well as the scope-based event grouping policy. Hence these events are members of two different group types, and so the two groups are automatically merged together due to these common events.
+
 You have now completed this module and are ready for the next module "Enable optional grouping features".
-
-
 
 [Reference Blog](https://community.ibm.com/community/user/aiops/blogs/zane-bray1/2022/06/27/getting-started-with-watson-aiops-event-manager-67)
