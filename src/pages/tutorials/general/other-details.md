@@ -7,15 +7,60 @@ description: Other details
 
 ![](images/overview-env.png)
 
+# How to access environment
 
-## Use SSH Keys with PuTTY on Windows
+- [Linux and Mac Users](#linux-and-mac-users)
+- [Windows Users](#windows-users)
+
+## Linux and Mac Users
+
+### Connect to Server with Private Key
+
+1) Search for the `Terminal app` and open
+
+2) Update your *id_rsa* file permissions to avoid SSH permission errors
+
+```
+chmod 600 <path-to-key-file>/id_rsa
+```
+
+3) Access your control node using your provided SSH key: 
+
+```
+ssh -i <path-to-your-key> <user>@<control node IP address>
+```
+
+## Windows Users
+
+- For Windows 10 or higher, it's recommended to use [Windows PowerShell](#1-windows-powershell)
+- For Windows users who are on lower than Windows 10, you can use [PuTTY](#2-putty)
+
+### 1. Windows PowerShell
+
+1) To open PowerShell, press `Windows+X`, and then click `Windows PowerShell`.
+
+![](images/windowspowershell-1.png)
+
+2) Access your control node using your provided SSH key:
+
+```
+ssh -i <path-to-your-key> <user>@<control node IP address>
+```
+
+Example:
+
+![](images/windowspowershell-2.png)
+
+### 2. PuTTY
+
+Use SSH Keys with PuTTY on Windows
 
 Requirements:
 
 - Install PuTTY and PuTTYgen from the [PuTTY Download Page](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
 - Remote server accessible over OpenSSH
 
-### Use Existing Public And Private Keys
+#### Use Existing Public And Private Keys
 
 1) If you have an existing OpenSSH public and private key, copy the `id_rsa` key to your Windows desktop. 
 
@@ -35,7 +80,7 @@ Requirements:
 
 If the public key is already appended to the `authorized_keys` file on the remote SSH server, then proceed to [Connect to Server with Private Key](#connect-to-server-with-private-key).
 
-### Connect to Server with Private Key
+#### Connect to Server with Private Key
 
 1) Close the PuTTYgen tool and open `PuTTY`
 
