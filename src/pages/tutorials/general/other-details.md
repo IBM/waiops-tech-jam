@@ -5,7 +5,7 @@ description: Other details
 
 # Environmental Information
 
-Environment info
+![](images/overview-env.png)
 
 
 ## Use SSH Keys with PuTTY on Windows
