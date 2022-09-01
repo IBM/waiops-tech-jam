@@ -80,7 +80,7 @@ Requirements:
 
 If the public key is already appended to the `authorized_keys` file on the remote SSH server, then proceed to [Connect to Server with Private Key](#connect-to-server-with-private-key).
 
-### Connect to Server with Private Key
+#### Connect to Server with Private Key
 
 1) Close the PuTTYgen tool and open `PuTTY`
 
