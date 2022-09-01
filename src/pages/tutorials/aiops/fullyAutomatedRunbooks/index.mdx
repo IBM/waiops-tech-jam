@@ -104,7 +104,7 @@ g) Test REST interface, OMNIbus password and port from the step (e) and step (d)
  
 
 ```sh
-curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"select count(*) from alerts.status\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://<ClusterHostname>:<nodeport from Step d>/objectserver/restapi/sql/factory
+curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"select count(*) from alerts.status\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://<ClusterHostname>:<nodeport from Step (d)>/objectserver/restapi/sql/factory
 ```
 
 Output:
