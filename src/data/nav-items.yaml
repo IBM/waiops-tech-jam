@@ -1,9 +1,7 @@
 - title: General
   pages:
-    - title: Architecture
-      path: /tutorials/general/architecture
-    - title: Other Details
-      path: /tutorials/general/other-details
+    - title: Environment
+      path: /tutorials/general/environment
 - title: Watson AIOps
   pages:
     - title: 1 - Introduction
