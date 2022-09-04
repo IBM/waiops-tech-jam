@@ -47,6 +47,8 @@ Navigate to:  **Administration → Integration with other systems > automation t
 
 Copy the public key to ~/.ssh/authorized_keys  for jammer user on the remote host (control node) where we want to execute the command.
 
+Click on "Save", go back to "Automation type", then the "Script" status will be "Connected".
+
 **IMPORTTANT**  :  When you add the generated public key to your control node, be very careful not to edit the configured public key or you will lock yourself out of your control node.
 
 ***
@@ -64,7 +66,7 @@ Script :
 ```sh
 echo "Restarting the apache2 service"
 sudo systemctl restart apache2
-sudo systemctl status apache2 | grep Active
+sudo systemctl status apache2
 ```
 ***
 Automation Parameters:
@@ -99,21 +101,13 @@ Publish runbook by clicking ** Actions > Publish **
 Triggers are used to associate runbook to the alerts.  It looks for events in which their Summary fields match the string pattern.
 For more information on triggers : https://www.ibm.com/docs/en/noi/1.6.5?topic=triggers-create-trigger
 
-![](images/RB_Create_Trigger.png)
-
-
-![](images/RB_Create_Trigger_assign_RB.png)
-
-***
-
-## 11-6: Test runbook
-
 Connect to Control node.
 
 Install & start apache2 service on control node.
 
 ```sh
-sudo apt install apache2
+sudo apt install net-tools -y
+sudo apt install apache2 -y
 sudo systemctl start apache2
 sudo systemctl status apache2
 ```
@@ -131,11 +125,29 @@ sudo systemctl status apache2
 oc exec -it evtmanager-ncoprimary-0 -- /bin/bash -c '/opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -pass $OMNIBUS_ROOT_PWD'
 ```
 
+Run "ifconfig" to capture eth0 IP address.
+
 ```sh
-insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOST>:<PORT> is DOWN');
+ifconfig
+```
+
+Replace the <HOSTNAME> with the Control Node eth0 IP address in below command.
+
+```sh
+insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOST>:80 is DOWN');
 go
 ```
 
+![](images/RB_Create_Trigger.png)
+
+
+![](images/RB_Create_Trigger_assign_RB.png)
+
+Click on "Save".
+
+***
+
+## 11-6: Test runbook
 
 Launch Alert Viewer and check alert with Summary = "API Server on HOST is DOWN". There should be a runbook associated with this alert automatically.
 

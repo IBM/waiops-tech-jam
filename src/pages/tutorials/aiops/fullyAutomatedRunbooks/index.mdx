@@ -208,7 +208,11 @@ Login into OCP cluster and simulate corresponding alert
 oc exec -it evtmanager-ncoprimary-0 -- /bin/bash -c '/opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -pass $OMNIBUS_ROOT_PWD'
 ```
 
+Replace the <HOSTNAME> with the Control Node eth0 IP address captured in 11-5 in below command.
+
 ```sh
+delete from alerts.status where Summary like 'API Server'
+go
 insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOST>:<PORT> is DOWN');
 go
 ```
