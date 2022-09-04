@@ -131,7 +131,7 @@ Run "ifconfig" to capture eth0 IP address.
 ifconfig
 ```
 
-Replace the '<HOSTNAME>' with the Control Node eth0 IP address in below command.
+Replace the '\<HOSTNAME\>' with the Control Node eth0 IP address in below command.
 
 ```sh
 insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOST>:80 is DOWN');
