@@ -208,7 +208,7 @@ Login into OCP cluster and simulate corresponding alert
 oc exec -it evtmanager-ncoprimary-0 -- /bin/bash -c '/opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -pass $OMNIBUS_ROOT_PWD'
 ```
 
-Replace the <HOSTNAME> with the Control Node eth0 IP address captured in 11-5 in below command.
+Replace the '\<HOSTNAME\>' with the Control Node eth0 IP address captured in 11-5 in below command.
 
 ```sh
 delete from alerts.status where Summary like 'API Server'
