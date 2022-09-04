@@ -99,7 +99,7 @@ oc delete networkpolicy evtmanager-ibm-netcool-prod-network-policy
 g) Test REST interface, OMNIbus password and port from the step (e) and step (d) are used to test the REST interface using curl. 
 
 
- Cluster name is : `<Your cluster ingressdomain>`
+ Cluster name is : `<Your cluster ingressdomain>` like "tech-jam-xxx.containers.appdomain.cloud".
 
  
 
@@ -129,7 +129,7 @@ Output:
 
 Create an automation "Update Journal" with two additional parameters "alertid" and "message". 
 
-Navigate to: ** Automations→ Runbooks → Automations → Create Automation **
+Navigate to: ** Automations → Runbooks → Automations → Create Automation **
 
 ![](images/FRB_create_automation.png)
 
@@ -147,7 +147,7 @@ Save automation "Update Journal".
 
 ## 12-4: Update Runbook - add a step to update the journal
 
-Navigate to: ** Automations→ Runbooks →  Library →  Edit runbook "Restart API Service" **
+Navigate to: ** Automations → Runbooks →  Library →  Edit runbook "Restart API Service" **
 
 ![](images/FRB_update_runbook0.png)
 
@@ -167,7 +167,7 @@ Save the automation step parameter mapping and publish the runbook.
 
 ## 12-5: Update Trigger to set Execution Automatic
 
-** Automations→ Runbooks → Triggers -> Edit Trigger "Restart API Service" **
+** Automations → Runbooks → Triggers -> Edit Trigger "Restart API Service" **
 
 Update Runbook execution from "Manual" to "Automatic".
 
@@ -250,6 +250,8 @@ sudo systemctl status apache2
 It should return running status , as runbook automatically started this service 
 
 ![](images/FRB_result_output.png)
+
+Also you can view the runbook execution history in "Automations → Runbooks → Execution" tab.
 
 Now you have a fully automated runbook functional in your environment.
 
