@@ -152,7 +152,16 @@ This is the hostname (evtmanager-proxy.noi.svc) that we are going to use in the 
 
 **c) Add the following entry to the interfaces file**
 
-Edit the interfaces file located in: `$NCHOME/etc/omni.dat` and add the following entry to the end of the file:
+Switch to user scadmin to perform the following tasks.
+
+Edit the interfaces file located in: `$NCHOME/etc/omni.dat` 
+
+```sh
+sudo su - scadmin
+export NCHOME=/home/scadmin/IBM/tivoli/netcool
+vi $NCHOME/etc/omni.dat
+```
+Add the following entry to the end of the file:
 
 ```sh
 [ROKS_AGG_P]
