@@ -128,7 +128,11 @@ cd /opt/IBM/scanalytics/analytics/bin
 ./admin.sh show -t=BIGBLUE
 ```
 
-This will show all of the configurable options for the BIGBLUE topic. The aggregation interval is "system.aggregation.interval". You can see it is currently set to 15 minutes. To change it to 5 minutes, issue the following command:
+This will show all of the configurable options for the BIGBLUE topic. 
+
+_Note: If the above command does not show an entry for 'system.aggregation.interval', and only shows a couple of entries, delete the topic and re-create it. There appears to be an environmental problem where the topic sometimes does not get created properly._
+
+The aggregation interval is "system.aggregation.interval". You can see it is currently set to 15 minutes. To change it to 5 minutes, issue the following command:
 
 ```sh
 ./admin.sh set -t=BIGBLUE system.aggregation.interval 5
