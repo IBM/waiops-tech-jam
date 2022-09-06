@@ -18,7 +18,7 @@ Before we begin with Metric Manager, we will start the installation of AI Manage
 
 If you missed yesterday's Event Manager labs, you will need to log in to your cluster and follow the first part of **step 5** of **Lab 2**, where you import the yaml to create the catalog source: 
 
-https://ibm.github.io/waiops-tech-jam/tutorials/aiops/installation#2-5:-install-the-watson-for-aiops-event-manager-operator
+https://ibm.github.io/waiops-tech-jam/tutorials/aiops/installation#2-5:-install-the-cloud-pak-for-watson-aiops-event-manager-operator
 
 If your cluster already has the catalog source installed, you may proceed.
 
@@ -50,10 +50,14 @@ oc project cp4waiops
 
 Next, issue the following command to create the secret:
 
-**Important:** Do not change the name of the secret, you must use the name _ibm-entitlement-key_
+**Important:** Do not change the name of the secret, you **MUST** use the name _ibm-entitlement-key_
 
 ```sh
- oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-password=\<your entitlement key\> --docker-server=cp.icr.io --namespace=cp4waiops
+oc create secret docker-registry ibm-entitlement-key \
+--docker-username=cp \
+--docker-password='<Your Entitlement Key>' \
+--docker-server=cp.icr.io \
+--namespace=cp4waiops
 ```
 
 ## 2-3: Install the Watson AIOps AI Manager Operator

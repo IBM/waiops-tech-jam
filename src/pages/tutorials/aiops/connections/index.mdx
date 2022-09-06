@@ -85,10 +85,10 @@ oc get service -o yaml evtmanager-proxy -n noi | grep nodePort
 ```
 The output will look something like :
 
-`
+```console
     nodePort: 30846
     nodePort: 31746
-`
+```
 
 
 From the output above, you can see that the nodeports have been deployed on ports **30846** for the primary ObjectServer and **31846** for the backup. These are the port numbers that are externally accessible to the cluster and are what your Netcool Probe (or in-bound Netcool Gateway) will use to connect.
@@ -133,7 +133,7 @@ For more information on this step, see the following documentation link: [https:
 
 Now that we have the proxy service hostname, the nodeport of the primary ObjectServer, and the cluster's certificate, we are ready to configure the on-premise Netcool/OMNIbus Probe to connect to the Event Manager running in OCP.
 
-**a) Log in to the Netcool/OMNIbus Probe server:**
+**a) Log in to the Netcool/OMNIbus Probe server from your Control Node:**
 
 ```sh
 ssh pi-template
@@ -143,10 +143,15 @@ ssh pi-template
 
 ```sh
 sudo vi /etc/hosts
-
 ```
 
-`10.20.30.40 evtmanager-proxy.noi.svc`
+Append following entry:
+`<cluster IP address from 3.3(a)> evtmanager-proxy.noi.svc`
+
+For example:
+```
+10.20.30.40 evtmanager-proxy.noi.svc
+```
 
 This is the hostname (evtmanager-proxy.noi.svc) that we are going to use in the `omni.dat` interfaces file shortly.
 

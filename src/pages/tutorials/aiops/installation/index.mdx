@@ -55,7 +55,7 @@ Next click on Create cluster and use the following to create and deploy your clu
 * Choose the **Worker zone** in a city that is closest to you.
 * Under **Worker pool**, click **Change flavor** and select a worker node configuration that matches or exceeds that listed above.
 * Leave the **Worker pool name** as **default, Encrypt local disk** if you like, and you can leave **Master service endpoint** as **Public endpoint only**.
-* Choose **OpenShift 4.8.x** for your **Orchestration service** type and version.
+* Choose **OpenShift 4.8.x** or **OpenShift 4.10.x** for your **Orchestration service** type and version.
 * Select your **OCP entitlement** from the drop-down, and modify your **Cluster name** if you like.
 * Click **Create** to create your OpenShift cluster. Provisioning should take around 20 minutes or so.
 
@@ -122,7 +122,11 @@ oc project noi
 Prepare a command like the following, that uses your entitlement key to create a registry secret.
 
 ```sh
-oc create secret docker-registry noi-registry-secret --docker-username=cp --docker-password=aAbBcCdDeEfFgGhHiIjJ0k1l2m3n4o5p6q7r8s9t0 --docker-server=cp.icr.io --namespace=noi
+oc create secret docker-registry noi-registry-secret \
+--docker-username=cp \
+--docker-password='<Your Entitlement Key>' \
+--docker-server=cp.icr.io \
+--namespace=noi
 ```
 
 **NOTES:**
@@ -249,6 +253,7 @@ Click on the secret, and scroll to the bottom of the page to the **Data** sectio
 The access URL for your Event Manager instance is in the format:
 
 `https://netcool-<deployment-name>.<ingress-subdomain>`
+> `<deployment-name>` is the instance name when you create NOI instance in the step 2-6, default name is `evtmanager` if you didn't change it.
 
 For example:
 
