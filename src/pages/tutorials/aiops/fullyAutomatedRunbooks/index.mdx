@@ -99,12 +99,12 @@ oc delete networkpolicy evtmanager-ibm-netcool-prod-network-policy
 g) Test REST interface, OMNIbus password and port from the step (e) and step (d) are used to test the REST interface using curl. 
 
 
- Cluster name is : `<Your cluster ingressdomain>`
+ Cluster name is : `<Your cluster ingressdomain>` like "tech-jam-xxx.containers.appdomain.cloud".
 
  
 
 ```sh
-curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"select count(*) from alerts.status\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://<ClusterHostname>:30100/objectserver/restapi/sql/factory
+curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"select count(*) from alerts.status\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://<ClusterHostname>:<nodeport from step d>/objectserver/restapi/sql/factory
 ```
 
 Output:
@@ -129,7 +129,7 @@ Output:
 
 Create an automation "Update Journal" with two additional parameters "alertid" and "message". 
 
-Navigate to: ** Automations→ Runbooks → Automations → Create Automation **
+Navigate to: ** Automations → Runbooks → Automations → Create Automation **
 
 ![](images/FRB_create_automation.png)
 
@@ -147,7 +147,7 @@ Save automation "Update Journal".
 
 ## 12-4: Update Runbook - add a step to update the journal
 
-Navigate to: ** Automations→ Runbooks →  Library →  Edit runbook "Restart API Service" **
+Navigate to: ** Automations → Runbooks →  Library →  Edit runbook "Restart API Service" **
 
 ![](images/FRB_update_runbook0.png)
 
@@ -167,7 +167,7 @@ Save the automation step parameter mapping and publish the runbook.
 
 ## 12-5: Update Trigger to set Execution Automatic
 
-** Automations→ Runbooks → Triggers -> Edit Trigger "Restart API Service" **
+** Automations → Runbooks → Triggers -> Edit Trigger "Restart API Service" **
 
 Update Runbook execution from "Manual" to "Automatic".
 
@@ -208,7 +208,11 @@ Login into OCP cluster and simulate corresponding alert
 oc exec -it evtmanager-ncoprimary-0 -- /bin/bash -c '/opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -pass $OMNIBUS_ROOT_PWD'
 ```
 
+Replace the '\<HOSTNAME\>' with the Control Node eth0 IP address captured in 11-5 in below command.
+
 ```sh
+delete from alerts.status where Summary like 'API Server'
+go
 insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOST>:<PORT> is DOWN');
 go
 ```
@@ -246,6 +250,8 @@ sudo systemctl status apache2
 It should return running status , as runbook automatically started this service 
 
 ![](images/FRB_result_output.png)
+
+Also you can view the runbook execution history in "Automations → Runbooks → Execution" tab.
 
 Now you have a fully automated runbook functional in your environment.
 

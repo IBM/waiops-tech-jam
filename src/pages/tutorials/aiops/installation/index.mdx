@@ -8,7 +8,7 @@ description: Deploy IBM Cloud Pak for Watson AIOps Event Manager onto OpenShift
   <AnchorLink>2-2: Create your OpenShift cluster on IBM Cloud</AnchorLink>
   <AnchorLink>2-3: Obtain your Entitlement key </AnchorLink>
   <AnchorLink>2-4: Prepare your OpenShift cluster</AnchorLink>
-  <AnchorLink>2-5: Install the Watson for AIOps Event Manager Operator</AnchorLink>
+  <AnchorLink>2-5: Install the Cloud Pak for Watson AIOps Event Manager Operator</AnchorLink>
   <AnchorLink>2-6: Deploy an instance of Watson for AIOps Event Manager</AnchorLink>
   <AnchorLink>2-7: Locate your login details and log in to Watson for AIOps Event Manager</AnchorLink>
 </AnchorLinks>
@@ -163,7 +163,7 @@ spec:
 
 **NOTE:** It is essential to ensure the indentation is correctly copied over.
 
-On the main left menu, navigate to **Administration > Cluster Settings**. Under **Global Configuration > OperatorHub > Sources**, verify that the `ibm-operator-catalog` CatalogSource object is present.
+On the main left menu, navigate to **Administration > Cluster Settings**. Under **Configuration > OperatorHub > Sources**, verify that the `ibm-operator-catalog` CatalogSource object is present.
 
 **NOTE:** It can take a few minutes to pull down the entire catalogue list, but you should end up with around 221 in the **# of Operators** column and show a READY status.
 
@@ -254,6 +254,23 @@ For example:
 
 `https://netcool-evtmanager.tech-jam-dal12-08-manage-d8e5ccad3849ed39158bb0b911cc2b44-0000.us-south.containers.appdomain.cloud`
 
+To get access URL for your Event Manager instance via command line:
+
+```sh
+export EVTMGR_NAMESPACE=noi
+echo "
+URL: https://$(oc get route -n $EVTMGR_NAMESPACE  evtmanager-ibm-hdm-common-ui -o jsonpath={.spec.host})
+User: icpadmin
+Pass: $(oc -n ${EVTMGR_NAMESPACE} get secret evtmanager-icpadmin-secret -o jsonpath='{.data.ICP_ADMIN_PASSWORD}' | base64 --decode)
+"
+```
+
+Or to get the access URL for your Event Manager instance via UI:
+
+Go to your OpenShift UI and navigate to `Networking -> Routes`, select `noi` project and search for `evtmanager-ibm-hdm-common-ui`. Click on the `Location` link to open up the Event Manager:
+
+![event manager url link](images/8_evtmgr_access_url.png) 
+
 Go to your Event Manager login page and log in as **icpadmin**, using the password you just obtained from the secret above.
 
 By default, the **icpadmin** user does not have the full list of roles assigned to it to operate Event Manager capabilities. It is necessary to assign all administrative roles to the icpadmin user before continuing to the next module.
@@ -264,9 +281,19 @@ Use the following steps to set this up:
 * Click on the menu button in the top-left corner of the screen, and select **Netcool WebGUI** from the drop-down menu
 * A new tab will open with the Netcool/WebGUI UI displayed
 * Click on the cog wheel in the top-right hand corner of the screen, and select **User Roles** from the drop-down menu
+
+![user roles option](images/8_user_roles-1.png)
+
 * Click on the **Search** button to bring up all users (this instigates an unfiltered user search)
 * From the list of returned users, click on **icpadmin**
 * Check all available **Roles** in the list, then scroll to the bottom of the page, and click **Save**
+
+![select all icpadmin roles](images/8_user_roles-2.png)
+
+Once granted:
+
+![icpadmin roles after saved](images/8_user_roles-3.png)
+
 * Close the Netcool/WebGUI browser tab, then log out of the Event Manager UI, and log back in again (as **icpadmin**)
 * Click on the left menu again and you will now see the full list of menu items
 

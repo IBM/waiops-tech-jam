@@ -62,7 +62,7 @@ Within the control node, you are already logged into the OpenShift cluster and c
 
 Double check to make sure you are logged into the **manage to** OpenShift cluster.  To do that, run **oc get projects** and grep for qotd.  You should see the qotd and qotd-load projects listed:
 ```sh
-oc get pods | grep qotd
+oc get projects | grep qotd
 ```
 
 Create an OpenShift **project (workspace)** for the **Robot Shop** application by issuing the following commnand:
