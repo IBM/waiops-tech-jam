@@ -1,5 +1,5 @@
 ---
-title: 1 - Policies
+title: 6 - Policies
 description: Turbonomic Policies
 ---
 
@@ -13,30 +13,30 @@ description: Turbonomic Policies
   <AnchorLink>6-7: Summary</AnchorLink>
 </AnchorLinks>
 
-## 6-1:  Introduction
+## 6-1: Introduction
 
-- Turbonomic defines a set of default policies for each entity type however users can define their own policies for each entity in supply chain based on business requirements. 
+- Turbonomic defines a set of default policies for each entity type however users can define their own policies for each entity in supply chain based on business requirements.
 - Policies define business rules to control how analyzes resource allocation, how it displays resource status, and how it recommends or executes actions.
 
-***
+---
 
-## 6-2:  Generate RobotShop Website Traffic
+## 6-2: Generate RobotShop Website Traffic
 
-1) Go to the OCP cluster that is running RobotShop application
+1. Go to the OCP cluster that is running RobotShop application
 
 ![](images/arch-1.png)
 
-2) Copy the RobotShop's real route URL. You can get it from `Networking -> Routes` and select `robot-shop` project. Copy the `Location`.
+2. Copy the RobotShop's real route URL. You can get it from `Networking -> Routes` and select `robot-shop` project. Copy the `Location`.
 
 ![](images/robotShopUrl.png)
 
-3) From your command prompt, set the `ROBOTSHOP_URL` to the value copied in previous Step 2.
+3. From your command prompt, set the `ROBOTSHOP_URL` to the value copied in previous Step 2.
 
 ```sh
 export ROBOTSHOP_URL=<robot-shop app's real route URL>
 ```
 
-4) Use Selenium-based `load-gen` from Bright Zheng [here](https://github.com/brightzheng100/robot-shop/tree/selenium-load-gen/selenium) as it generate better traffic for website monitoring. Then run the command below:
+4. Use Selenium-based `load-gen` from Bright Zheng [here](https://github.com/brightzheng100/robot-shop/tree/selenium-load-gen/selenium) as it generate better traffic for website monitoring. Then run the command below:
 
 ```sh
 oc -n robot-shop apply -f - <<EOF
@@ -65,7 +65,7 @@ spec:
 EOF
 ```
 
-5) Verify the `rs-website-load-xxx` pod is created:
+5. Verify the `rs-website-load-xxx` pod is created:
 
 ```sh
 oc get pods -n robot-shop
@@ -91,34 +91,35 @@ user-899b6c7ff-kbrwj              1/1     Running             0              14h
 web-5476dc8495-qphxc              1/1     Running             0              14h
 ```
 
-6) Go to your Instana dashboard and verify that the `Page Views` count for Robot Shop website has increased.
+6. Go to your Instana dashboard and verify that the `Page Views` count for Robot Shop website has increased.
 
 ![](images/robotShopLoad-1.png)
 
-***
+---
 
-## 6-3:  Create Groups
+## 6-3: Create Groups
 
 Groups
+
 - Groups are collection of like entities.
 - Groups can be used any place where you can scope
 - Some groups are automatically created
 
 Now we first need to create the group containing RobotShop business application.
 
-1) Click on `Settings -> Groups`
+1. Click on `Settings -> Groups`
 
 ![](images/groups-1.png)
 
-2) Click on `NEW GROUP`
+2. Click on `NEW GROUP`
 
 ![](images/groups-2.png)
 
-3) Click on `Business Application`
+3. Click on `Business Application`
 
 ![](images/groups-3.png)
 
-4) Enter the group name as `Robot Shop Group` and select `Dynamic` type
+4. Enter the group name as `Robot Shop Group` and select `Dynamic` type
 
 ```
 Static vs Dynamic
@@ -130,94 +131,93 @@ Static vs Dynamic
 
 ![](images/groups-4.png)
 
-5) Click on `ADD FILTER` and select `NAME`
+5. Click on `ADD FILTER` and select `NAME`
 
-6) Select filter `Equals` and enter the regular expression `.*robot.*`. Click `Apply` button
+6. Select filter `Equals` and enter the regular expression `.*robot.*`. Click `Apply` button
 
 ![](images/groups-5.png)
 
-7) Click on `SAVE GROUP`
+7. Click on `SAVE GROUP`
 
 ![](images/groups-6.png)
 
-8) You will see the `Robot Shop Group` newly created.
+8. You will see the `Robot Shop Group` newly created.
 
 ![](images/groups-7.png)
 
-## 6-4:  Set Up Policy
+## 6-4: Set Up Policy
 
-1) Go to Turbonomic UI and click on `Settings`:
+1. Go to Turbonomic UI and click on `Settings`:
 
 ![](images/turboSettings.png)
 
-2) Then choose `Policies`
+2. Then choose `Policies`
 
 ![](images/turboPolicies.png)
 
-3) Then click on `NEW AUTOMATION POLICY`
+3. Then click on `NEW AUTOMATION POLICY`
 
 ![](images/policy-1.png)
 
-4) Select `Business Application` policy for the Robot Shop application.
+4. Select `Business Application` policy for the Robot Shop application.
 
 ![](images/policy-2.png)
 
-5) Fill in the name `Robot Shop Response Time SLO Policy`. Click on `ADD BUSINESS APPLICATION GROUP`. 
+5. Fill in the name `Robot Shop Response Time SLO Policy`. Click on `ADD BUSINESS APPLICATION GROUP`.
 
 ![](images/policy-3.png)
 
-6) Tick on the `Robot Shop Group` and click on `SELECT` button.
+6. Tick on the `Robot Shop Group` and click on `SELECT` button.
 
 ![](images/policy-4.png)
 
-7) Expand `Operational Constraints` section
+7. Expand `Operational Constraints` section
 
-![](images/policy-5.png) 
+![](images/policy-5.png)
 
-8) Select the following operation constraints for Response Time SLO of 1ms
+8. Select the following operation constraints for Response Time SLO of 1ms
 
 ![](images/policy-6.png)
 
 Then click `SAVE AND APPLY` button. With the policy configured, Turbonomic will analyze performance data over time and then provide placement and resource sizing recommendations.
 
-9) The scoped policy you have created can be found in the `Automation Policies`
+9. The scoped policy you have created can be found in the `Automation Policies`
 
 ![](images/policy-7.png)
 
-10) The `Imported Placement Policies` is specifically for imported on-prem policies
+10. The `Imported Placement Policies` is specifically for imported on-prem policies
 
 ![](images/turbo-imported-placement-policies.jpg)
 
-11) The `Defaults` filter represents the policies that govern entire entity types
+11. The `Defaults` filter represents the policies that govern entire entity types
 
 ![](images/turbo-defaults-policy.jpg)
 
-12) Now go back to the Turbonomic dashboard and you will notice there is `SLO Violation` now on Robot Shop application.
+12. Now go back to the Turbonomic dashboard and you will notice there is `SLO Violation` now on Robot Shop application.
 
 ![](images/policy-8.png)
 
-***
+---
 
-## 6-5:  Edit Policy
+## 6-5: Edit Policy
 
 To edit a policy, click on the policy. Example:
 
 ![](images/turbo-edit-policy.jpg)
 
-***
+---
 
-## 6-6:  Delete Policy
+## 6-6: Delete Policy
 
-18) To delete a policy. Example:
+18. To delete a policy. Example:
 
 ![](images/turbo-delete-policy-1.jpg)
 ![](images/turbo-delete-policy-2.jpg)
 
-***
+---
 
-## 6-7:  Summary
+## 6-7: Summary
 
 In this section, you have learned to generate RobotShop Website Traffic, use the policy editor to create group (scoped) policies. Next, we will look at how to take actions.
 
-***
-
+---

@@ -1,5 +1,5 @@
 ---
-title: 1 - Taking Actions
+title: 7 - Taking Actions
 description: Taking Actions
 ---
 
@@ -8,46 +8,46 @@ description: Taking Actions
   <AnchorLink>7-2: Summary</AnchorLink>
 </AnchorLinks>
 
-## 7-1:  Manage Performance of Your Application
+## 7-1: Manage Performance of Your Application
 
-1) Open your Instana dashboard. Navigate to `Platform -> Kubernetes`. 
-![](images/action-1.png)
+1. Open your Instana dashboard. Navigate to `Platform -> Kubernetes`.
+   ![](images/action-1.png)
 
-2) Select your Robot Shop cluster.
+2. Select your Robot Shop cluster.
 
-3) Under `Namespaces` tab, select `robot-shop`. 
+3. Under `Namespaces` tab, select `robot-shop`.
 
 ![](images/action-2.png)
 
-4) Click on `Pods` tab and choose the `Map` view. Analyze the CPU Limits, CPU Requests, Memory Limits, and Memory Requests. For example, here's what the CPU Limits looked like for Robot Shop app before any improvements:
+4. Click on `Pods` tab and choose the `Map` view. Analyze the CPU Limits, CPU Requests, Memory Limits, and Memory Requests. For example, here's what the CPU Limits looked like for Robot Shop app before any improvements:
 
 ![](images/action-3.png)
 
-5) Then go to Turbonomic dashboard and navigate to `Robot Shop` application. 
+5. Then go to Turbonomic dashboard and navigate to `Robot Shop` application.
 
 ![](images/action-4.png)
 
-6) Here, we can see come key application metrics provided by Instana – e.g. response time and transaction and how they have evolved over time. Turbonomic uses that data to provided actionable insights based on that data in the form of recommended actions you could take to improve performance and/or improve efficiency. 
+6. Here, we can see come key application metrics provided by Instana ï¿½ e.g. response time and transaction and how they have evolved over time. Turbonomic uses that data to provided actionable insights based on that data in the form of recommended actions you could take to improve performance and/or improve efficiency.
 
-You will noticed either yellow or red and green sections of the circles on `Container Cluster` section of the Business Application Tree on the left side of the screen. 
+You will noticed either yellow or red and green sections of the circles on `Container Cluster` section of the Business Application Tree on the left side of the screen.
 
 ![](images/action-5.png)
 
-7) Click that circle and it will take you to a screen like this below. You will notice that there are `Pending Actions` that Turbonomic suggests will improve the performance and efficiency of the application.
+7. Click that circle and it will take you to a screen like this below. You will notice that there are `Pending Actions` that Turbonomic suggests will improve the performance and efficiency of the application.
 
 Turbonomic does not recommend actions for a Business Application, Transactions, or Services, but it does recommend actions for the underlying Application Components and infrastructure entities, thus providing visibility into the risks that have a direct impact on the Business Application's performance.
 
 ![](images/action-6.png)
 
-8) Click `SHOW ALL` in the `Pending Actions` section. 
+8. Click `SHOW ALL` in the `Pending Actions` section.
 
 ![](images/action-7.png)
 
-9) Then select the pending actions that are for Robot Shop application. Once they are selected, click on `EXECUTE ACTIONS` to apply the actions.
+9. Then select the pending actions that are for Robot Shop application. Once they are selected, click on `EXECUTE ACTIONS` to apply the actions.
 
 ![](images/action-8.png)
 
-10) Click on `EXECUTE NOW` when a pop up window stating `1 action will be executed`
+10. Click on `EXECUTE NOW` when a pop up window stating `1 action will be executed`
 
 ![](images/action-9.png)
 
@@ -55,13 +55,12 @@ Action successfully executed
 
 ![](images/action-10.png)
 
-11) After a few mins, you can go back to the Instana dashboard to view improvements. You should see that despite changes in resource utilization by the Robot Shop services, response time will either improve or remain the same.
+11. After a few mins, you can go back to the Instana dashboard to view improvements. You should see that despite changes in resource utilization by the Robot Shop services, response time will either improve or remain the same.
 
-***
+---
 
-## 7-2:  Summary
+## 7-2: Summary
 
 In this section, you have learned to execute actions based on Turbonomic recommendations.
 
-***
-
+---
