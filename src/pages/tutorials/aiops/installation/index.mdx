@@ -254,6 +254,23 @@ For example:
 
 `https://netcool-evtmanager.tech-jam-dal12-08-manage-d8e5ccad3849ed39158bb0b911cc2b44-0000.us-south.containers.appdomain.cloud`
 
+To get access URL for your Event Manager instance via command line:
+
+```sh
+export EVTMGR_NAMESPACE=noi
+echo "
+URL: https://$(oc get route -n $EVTMGR_NAMESPACE  evtmanager-ibm-hdm-common-ui -o jsonpath={.spec.host})
+User: icpadmin
+Pass: $(oc -n ${EVTMGR_NAMESPACE} get secret evtmanager-icpadmin-secret -o jsonpath='{.data.ICP_ADMIN_PASSWORD}' | base64 --decode)
+"
+```
+
+Or to get the access URL for your Event Manager instance via UI:
+
+Go to your OpenShift console and navigate to `Networking -> Routes`, select `noi` project and search for `evtmanager-ibm-hdm-common-ui`. Click on the `Location` link to open up the Event Manager:
+
+![](images/evtmgr_access_url.png) 
+
 Go to your Event Manager login page and log in as **icpadmin**, using the password you just obtained from the secret above.
 
 By default, the **icpadmin** user does not have the full list of roles assigned to it to operate Event Manager capabilities. It is necessary to assign all administrative roles to the icpadmin user before continuing to the next module.
