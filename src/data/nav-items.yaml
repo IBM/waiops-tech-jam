@@ -66,13 +66,13 @@
       path: /tutorials/turbonomic/introduction
     - title: 2 - Turbonomic Installation
       path: /tutorials/turbonomic/installation
-    - title: 3 - Integrate Instana
+    - title: 3 - App Data Target
       path: /tutorials/turbonomic/integrate-instana
     - title: 4 - Understanding the UI
       path: /tutorials/turbonomic/ui
-    - title: 5 - Kubeturbo Installation
+    - title: 5 - Kubernetes Data Target
       path: /tutorials/turbonomic/kubeturbo
-    - title: 6 - Setup policy
+    - title: 6 - Configure Policies
       path: /tutorials/turbonomic/policy
     - title: 7 - Taking Actions
       path: /tutorials/turbonomic/taking-actions

@@ -1,22 +1,33 @@
 ---
-title: 3 - Integrate Instana
+title: 3 - App Data Target
 description: Get application performance data for business critical applications
 ---
 
 <AnchorLinks>
-  <AnchorLink>2-1: Introduction</AnchorLink>
-  <AnchorLink>2-2: Ingest application performance data from Instana</AnchorLink>
-  <AnchorLink>2-3: Summary</AnchorLink>
+  <AnchorLink>3-1: Introduction</AnchorLink>
+  <AnchorLink>3-2: Ingest application performance data from Instana</AnchorLink>
+  <AnchorLink>3-3: Summary</AnchorLink>
 </AnchorLinks>
 
-## 2-1: Introduction
+## 3-1: Introduction
 
 Turbonomic Application Resource Management (ARM) is all about ensuring your
 critical business applications are getting the resources they need, when they
 need them, to proactively mitigate against SLO breaches and SLA violations.
 
-To do this, Trubonomic ARM ingests application performance monitoring (APM)
-data from your existing APM solution(s).
+To do this, Trubonomic ARM ingests data from your existing tools to begin the
+process of making recommendations and taking actions across your full stack,
+using it's **patented analytics engine**.
+
+> **Keyword Alert:** A **target** is the term used for your existing solutions
+> and accounts from which Turbonomic ARM will either pull data from, or
+> integrate with to perform actions.
+
+Data ingestion is typically agentless and conducted via REST APIs (with the
+exception of Kubernetes - more on this in a later lab).
+
+For business critical applications, application performance monitoring (APM)
+data is pulled from your existing APM solution(s).
 
 In this section, we are going to integrate Instana to get application
 performance data for the Robot Shop application.
@@ -29,7 +40,7 @@ performance data for the Robot Shop application.
 
 ---
 
-## 2-2: Ingest application performance data from Instana
+## 3-2: Ingest application performance data from Instana
 
 1. In the Instana console:
 
@@ -101,7 +112,7 @@ in the **_Target Configurations_** list in the Turbonomic console settings.
 
 ---
 
-# 2-3: Summary
+# 3-3: Summary
 
 In this portion of the lab, you have learned how to integrate your existing
 APM tools to give Turbonomic ARM a view of your critical buiness applications.
