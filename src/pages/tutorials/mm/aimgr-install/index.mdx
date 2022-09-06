@@ -50,6 +50,8 @@ oc project cp4waiops
 
 Next, issue the following command to create the secret:
 
+**Important:** Do not change the name of the secret, you must use the name _ibm-entitlement-key_
+
 ```sh
  oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-password=\<your entitlement key\> --docker-server=cp.icr.io --namespace=cp4waiops
 ```
