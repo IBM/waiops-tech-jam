@@ -24,7 +24,7 @@ This module focuses on the creation of a simple Semi-automated runbook.
 
 **Scenario:** There is a apache2 server running on HOST . The apache2 process is monitored and configured to generate an alert when the apache2 API service goes UP/DOWN.
 
-**Objective:** Create a runbook to restart apache2 API service and associate it with “apache2 API Service Down” alert.
+**Objective:** Create a runbook to restart apache2 API service and associate it with â€œapache2 API Service Downâ€� alert.
 
 By the end of this module, you will have a fully functional semi-automated runbook ready in the Watson AIOPs Event Manager environment.
  
@@ -39,9 +39,9 @@ By the end of this module, you will have a fully functional semi-automated runbo
 
 For executing runbooks, users need to choose the type of automation provider from  Ansible Tower, SCRIPT or  BigFix.  A connection must be set up to connect to your target endpoints.
 
-The SCRIPT automation provider allows to execute scripts (bash, ksh, perl ) on a target system. In this example, we will use the SCRIPT automation provider to establish an ssh session to target the endpoint. To allow RBA to log in without needing to specify a password, we need to copy RBA's public key into the user’s SSH authorized_keys of the target host. We can get the RBA public key by accessing the Watson AIOps — Event Manager User Interface as follows:
+The SCRIPT automation provider allows to execute scripts (bash, ksh, perl ) on a target system. In this example, we will use the SCRIPT automation provider to establish an ssh session to target the endpoint. To allow RBA to log in without needing to specify a password, we need to copy RBA's public key into the userâ€™s SSH authorized_keys of the target host. We can get the RBA public key by accessing the Watson AIOps â€” Event Manager User Interface as follows:
 
-Navigate to:  **Administration → Integration with other systems > automation type > script > configure**
+Navigate to:  **Administration â†’ Integration with other systems > automation type > script > configure**
 
 ![](images/RB_script_conn_configure.png)
 
@@ -55,9 +55,9 @@ Click on "Save", go back to "Automation type", the "Script" status should be "Co
 
 ## 11-3: Create Automation 
 
-Automation is a unit of programmatic instructions in RBA. Automation can be a script that is run through an SSH session on a remote system, an HTTP(s) API call, a BigFix call, or an Ansible tower Job or Job Workflow call.  A Runbook is formed by combining one or more automation. You can create new automation using Watson AIOps — Event Manager UI as follows:
+Automation is a unit of programmatic instructions in RBA. Automation can be a script that is run through an SSH session on a remote system, an HTTP(s) API call, a BigFix call, or an Ansible tower Job or Job Workflow call.  A Runbook is formed by combining one or more automation. You can create new automation using Watson AIOps â€” Event Manager UI as follows:
 
-Navigate to:  ** Automations → Runbooks → Automations → Create Automation **
+Navigate to:  ** Automations â†’ Runbooks â†’ Automations â†’ Create Automation **
 
 ![](images/RB_Create_automation.png)
 
@@ -79,7 +79,7 @@ Save the automation.
 
 ## 11-4: Create Runbook
 
-Navigate to: ** Automations → Runbooks → Library → Create Runbook **
+Navigate to: ** Automations â†’ Runbooks â†’ Library â†’ Create Runbook **
 
 ![](images/RB_Create_RB.png)
 
@@ -134,11 +134,11 @@ ifconfig
 Replace the '\<HOSTNAME\>' with the Control Node eth0 IP address in below command.
 
 ```sh
-insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOST>:80 is DOWN');
+insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOSTNAME>:80 is DOWN');
 go
 ```
 
-Navigate to: ** Automations → Runbooks → Triggers → Create Trigger **
+Navigate to: ** Automations â†’ Runbooks â†’ Triggers â†’ Create Trigger **
 
 ![](images/RB_Create_Trigger.png)
 
