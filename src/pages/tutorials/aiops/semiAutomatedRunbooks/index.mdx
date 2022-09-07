@@ -134,7 +134,7 @@ ifconfig
 Replace the '\<HOSTNAME\>' with the Control Node eth0 IP address in below command.
 
 ```sh
-insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOST>:80 is DOWN');
+insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOSTNAME>:80 is DOWN');
 go
 ```
 
@@ -172,7 +172,7 @@ sudo systemctl status apache2
 
 It should return running status , as runbook automatically started this service 
 
-![](images/RB_result_output.png)
+![](images/RB_result_apache2_output.png)
 
 ***
 
