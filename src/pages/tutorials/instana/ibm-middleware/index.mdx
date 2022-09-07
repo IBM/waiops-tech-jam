@@ -104,7 +104,12 @@ Note: Typically, these steps are performed by the MQ and ACE admins, so you don'
 ### Verify the ACE configuration
 
 The "Resource Monitoring" KPIs are already enabled in most customer environments. But it is worth validating the configuration. For example, you can use the
-ACE mqsireportresourcestats and mqsireportflowstats commands to view the configuration for ACE.
+ACE `mqsireportresourcestats` and `mqsireportflowstats` commands to view the configuration for ACE.
+
+Become root user on mqace node:
+```sh
+sudo -i
+```
 
 To run the following commands you have to source the `mqsiprofile`:
 
@@ -141,6 +146,11 @@ requires that the output format be set to json vs. XML.
 
 There are fewer requirements for MQ. The sensor will work with the default settings. However, you can have the sensor automatically use thresholds/Events that are
 setup within the MQ server. If you want to use the built in MQ Events, then you need to set **CHLEV** (Channel Events) and **PERFMEV** (Performance Events) to **ENABLED**. To check those settings, you can issue the following commands.
+
+Become root user on mqace node:
+```sh
+sudo -i
+```
 
 HINT: To run the following commands you have to source the `setmqenv` and specify the queue manager name (QM1):
 
@@ -258,6 +268,10 @@ The **com.instana.agent.main.sender.Backend.cfg** file contains information on w
 
 We are going to be editing the configuration.yaml file. This file contains all of the configuration settings for the sensors.
 
+Take a backup before you actually edit the configuration.yaml file:
+```sh
+cp configuration.yaml configuration.yaml.bak
+```
 Edit configuration.yaml using either "vi" or use other editor like `nano` if you prefer.
 
 ```sh
@@ -283,9 +297,11 @@ There are multiple options for configuring the sensor. The information shown mat
 - Pay careful attention to the required vs. optional parameters. For example, in some environments the MQ Channel Authentication is disabled and you don't need to specify credentials.
 
 Edit the **IBM ACE** section of the file so that it looks like this. If you want, you can copy this text and replace the entire section. Or, you can change the
-individual parameters.
+individual parameters.   
 
-```sh
+When you paste this information, you must **replace <mqm password\> with the password provided by the lab proctor**.
+
+```yaml
 # IBM ACE
 com.instana.plugin.ace:
   enabled: true
@@ -297,7 +313,7 @@ com.instana.plugin.ace:
       queuemanagerName: 'QM1'     # Queue Manager name (required for IBM MQ)
       channel: 'ACE.SVRCONN'             # Remote administration channel (required for IBM MQ)
       mqUsername: 'mqm'         # MQ channel authentication's username if security enabled (optional for IBM MQ)
-      mqPassword: '\<mqm password\>'         # MQ channel authentication's password if security enabled (optional for IBM MQ)
+      mqPassword: '<mqm password>'         # MQ channel authentication's password if security enabled (optional for IBM MQ)
 ```
 
 Note: The markdown documentation only shows 9 rows of text, but there are more rows. You can either click the **Show more** button in the bottom right, or you can click on the **Copy** button in the top right corner.
@@ -315,7 +331,7 @@ individual parameters.
 
 When you paste this information, you must **replace <mqm password\> with the password provided by the lab proctor**.
 
-```sh
+```yaml
 # IBM MQ
 com.instana.plugin.ibmmq:
   enabled: true
@@ -336,7 +352,7 @@ First, let's change the **Zone** name within the file. This is similar to the Zo
 
 The section of the configuration.yaml file should look as follows:
 
-```sh
+```yaml
 # Hardware & Zone
 com.instana.plugin.generic.hardware:
   enabled: true # disabled by default
@@ -347,7 +363,7 @@ In addition to configuring the **Zone** name, you can specify tags within the co
 
 Add **production, QOTD, and Dallas** as tags. The configuration.yaml section should look as follows:
 
-```sh
+```yaml
 com.instana.plugin.host:
  tags:
    - 'production'
@@ -368,7 +384,7 @@ By default, Instana will monitor key processes that are related to the applicati
 
 The section will be commented out by default. Uncomment the section and specify the following processes for monitoring **(crond, amqzmgr0, runmqlsr)**. One process is the cron daemon, which customers frequently want to monitor. The other two process are related to IBM MQ. The section should look like this:
 
-```sh
+```yaml
 com.instana.plugin.process:
   processes:
     - 'crond'
@@ -382,7 +398,7 @@ Save and exit the configuration.yaml file. In "vi", type ":wq" to save and exit 
 
 As soon as you save your changes to the file, Instana will detect those changes and will start to implement what you have configured.
 
-At this point, we recommend that you navigate to section 5 of this tutorial **5 - Explore Instana**.
+At this point, we recommend that you navigate to next section of this tutorial **6 - Explore Instana**.
 
 ![](images/exploreInstana.png)
 

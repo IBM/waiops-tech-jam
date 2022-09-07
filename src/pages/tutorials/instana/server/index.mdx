@@ -138,6 +138,10 @@ apt-get install instana-console -y
 
 This will install the "instana" command on the server.
 
+Now let's create the working directory for instana server installation:
+```sh
+mkdir -p /opt/instana && cd /opt/instana
+```
 Next, run the **instana init** command to install the Instana server.  You will be prompted for additional information during the install.
 
 ```sh
@@ -209,24 +213,28 @@ Before attempting to login to your Instana server, activate the license using th
 ## 2-4:  Activate the license
 
 After completing the installation, you must activate the license.
+We suggest you run the following commands in your working directory hence the license file will store here:
+```sh
+cd /opt/instana
+```
 
 Run the following command to download the license:
 ```sh
 instana license download
 ```
-![](images/licenseDownload.png)
+![](images/licenseDownload_opt_instana.png)
 
 Next, import the license to activate your license:
 ```sh
 instana license import
 ```
-![](images/licenseImport.png)
+![](images/licenseImport_opt_instana.png)
 
 You can verify the license by typing:
 ```sh
 instana license verify
 ``` 
-![](images/licenseVerify.png)
+![](images/licenseVerify_opt_instana.png)
 
 
 ***
@@ -257,6 +265,11 @@ Follow the steps below to configure the SMTP settings and enable some additional
 These parameters are added to the settings.hcl file in the section with the other feature flags.  Search in the settings.hcl file for **feature**.  Then, add any additional feature flags that are desired in that section of the file.  They can be place anywhere within the **feature** section of the file.
 
 > **WARNING: Be aware that turning on features (especially BETA ones) may heavily impact backend performance. DO NOT turn on features you don't need**
+
+As we issued **instana init** from the working directory `/opt/instana`, the `settings.hcl` has been created there:
+```sh
+cd /opt/instana
+```
 
 Before using vi to edit the settings.hcl file, make a backup of the file by typing:  
 ```sh
@@ -306,7 +319,7 @@ Next, search for the **smtp** section in the settings.hcl file.   Modify the smt
     host      = "localhost"
     port      = 25
     user      = "jammer"
-    password  = "<jammer password provided by proctors"
+    password  = "<jammer password provided by proctors>"
     use_ssl   = false
     start_tls = false
   }
@@ -355,7 +368,7 @@ apt install instana-console=229-2
 
 Next, upgrade the server by issuing the **instana update** command.  If you are in directory with the settings.hcl file, then you don't need any arguments.  Otherwise, specify the path to the settings.hcl file.
 ```sh
-instana update -f /root/settings.hcl
+instana update -f /opt/instana/settings.hcl
 ```
 When performance the upgrade, the installer automatically pulls down the latest docker containers and gets them up and running on the Instana server.
 
