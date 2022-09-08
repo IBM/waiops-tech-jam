@@ -5,10 +5,11 @@ description: Deployment of Kubeturbo
 
 <AnchorLinks>
   <AnchorLink>5-1: Introduction</AnchorLink>
-  <AnchorLink>5-1: Prerequisites</AnchorLink>
-  <AnchorLink>5-2: Deploy the Operator</AnchorLink>
-  <AnchorLink>5-3: Configure KubeTurbo Instance</AnchorLink>
-  <AnchorLink>5-4: Validate Deployment</AnchorLink>
+  <AnchorLink>5-2: Prerequisites</AnchorLink>
+  <AnchorLink>5-3: Deploy the Operator</AnchorLink>
+  <AnchorLink>5-4: Configure KubeTurbo Instance</AnchorLink>
+  <AnchorLink>5-5: Validate Deployment</AnchorLink>
+  <AnchorLink>5-6: Summary</AnchorLink>
 </AnchorLinks>
 
 ---
@@ -35,7 +36,7 @@ being built out within this site.
 
 ---
 
-## 5-1: Prerequisites
+## 5-2: Prerequisites
 
 The steps in this lab should be performed on the **manage-to** cluster:
 
@@ -58,7 +59,7 @@ The steps in this lab should be performed on the **manage-to** cluster:
 
 ---
 
-## 5-2: Deploy the Operator
+## 5-3: Deploy the Operator
 
 1. Click on `Operators -> OperatorHub`. Ensure the `kubeturbo-operator` project
    is selected in the dropdown.
@@ -96,7 +97,7 @@ The steps in this lab should be performed on the **manage-to** cluster:
 
 ---
 
-## 5-3: Configure Kubeturbo Instance
+## 5-4: Configure Kubeturbo Instance
 
 1. When viewing the deployed operator, click on `Create instance`:
 
@@ -205,7 +206,7 @@ The steps in this lab should be performed on the **manage-to** cluster:
 
 ---
 
-## 5-4: Validate Deployment
+## 5-5: Validate Deployment
 
 You should now see two deployments and two running pods in the namespace:
 
@@ -241,7 +242,7 @@ You should now see two deployments and two running pods in the namespace:
 
 ---
 
-## 5-5: Summary
+## 5-6: Summary
 
 In this portion of the lab, you have learned how to install the KubeTurbo agent
 or probe in a target cluster, which communicates with the remote Turbonomic

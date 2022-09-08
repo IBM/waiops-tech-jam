@@ -61,7 +61,7 @@ make action recommendations that will assure application performance.
 1. On your **control** node, set the `ROBOTSHOP_URL` environment variable:
 
    ```sh
-   export ROBOTSHOP_URL=$(
+   export ROBOTSHOP_URL=http://$(
     oc get route -n robot-shop | grep web | awk '{print $2}'
    )
    ```
@@ -238,7 +238,7 @@ You should now see the `Robot Shop Group` newly created.
 
    ![](images/turbo-defaults-policy.jpg)
 
-1. Now go back to the Turbonomic dashboard and you will notice there is
+1. Now go back to the Turbonomic dashboard. **Wait for about 15 mins** and you will notice there is
    an `SLO Violation` now on the Robot Shop application:
 
    ![](images/policy-8.png)
