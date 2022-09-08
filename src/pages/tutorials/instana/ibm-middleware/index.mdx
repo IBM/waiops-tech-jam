@@ -81,7 +81,7 @@ Type **":wq"** to save your changes and exit the file.
 
 As soon as you save your changes, OpenShift will automatically redeploy the **"qotd-engraving"** pod with the updated configuration. To verify that the changes were applied successfully, let's check the application UI.
 
-Type `oc get route -n qotd` to get the route for the application. Then, in the browser, open this URL and click the “Order Engraving” button. Then, click again the “Order Engraving” button. If successful, you’ll see “Order successfully placed.”
+Type `oc get route -n qotd` to get the route for the application. Then, in the browser, open this URL with http://route and click the “Order Engraving” button. Then, click again the “Order Engraving” button. If successful, you’ll see “Order successfully placed.”
 
 ![](images/2022-05-30-12-04-59.png)
 
