@@ -151,12 +151,12 @@ some minor syntax differences.
 
 The commands documented below should be executed from the **control node**.  If you are not logged on already, ssh to the **control node**.
 
-To install Instana agent on OpenShift cluster you need to authenticate to the OCP cluster with appropriate permissions (cluster admin role). In the lab environment, the **control node** is already logged into the cluster.  But, we need to make sure you are logged into the **manage to** cluster and not the **manage from** cluster.  Issue the following command:
+To install Instana agent on OpenShift cluster you need to authenticate to the OCP cluster with appropriate permissions (cluster admin role). In the lab environment, the **control node** is already logged into the cluster.  But, we need to make sure you are logged into the **Application** cluster and not the **AIOps** cluster.  Issue the following command:
 ```sh
 oc get projects
 ```
 
-Then, look for the **qotd** and **qotd-load** projects.  If you don't see those two projects, then you must login to the correct cluster.  Open the OpenShift user interface for the **manage to** cluster.  Then, click in the upper right corner on the username and select **Copy loging command**
+Then, look for the **qotd** and **qotd-load** projects.  If you don't see those two projects, then you must login to the correct cluster.  Open the OpenShift user interface for the **Application** cluster.  Then, click in the upper right corner on the username and select **Copy loging command**
   ![](images/ocLogin.png)
 
 Then, click on **Display Token**
@@ -188,7 +188,7 @@ Enter a name for the Cluster and Zone - this will allow you to find your Agent a
 
 Next, click the "Download" button to download the yaml file.  The yaml file has been configured specifically to connect to your Instana backend environment and will contain the **Cluster** name and **Zone** name that you previously specified.
 
-The configuration.yaml file will be downloaded to your laptop.  You must copy this file to the **control node**.  Or, if you have **oc** installed on your laptop, you can login to the **manage to** cluster and run the commands from your laptop.  
+The configuration.yaml file will be downloaded to your laptop.  You must copy this file to the **control node**.  Or, if you have **oc** installed on your laptop, you can login to the **Application** cluster and run the commands from your laptop.  
 
 Let's copy the file to the **control node**.
 
