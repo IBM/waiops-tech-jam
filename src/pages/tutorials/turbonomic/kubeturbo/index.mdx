@@ -38,11 +38,11 @@ being built out within this site.
 
 ## 5-2: Prerequisites
 
-The steps in this lab should be performed on the **manage-to** cluster:
+The steps in this lab should be performed on the **Application** OpenShift cluster:
 
 ![](images/arch-1.png)
 
-1. In your browser, navigate to your **manage-to** OpenShift console:
+1. In your browser, navigate to your **Application** OpenShift console:
 
    > You can find and open your OpenShift console from the <a href="https://cloud.ibm.com/kubernetes/clusters?platformType=openshift" target="_blank">IBM Cloud clusters</a> page.
 
@@ -144,7 +144,7 @@ The steps in this lab should be performed on the **manage-to** cluster:
 
    **How to get the Turbonomic Server URL:**
 
-   1. Go to the **manage-from** OCP cluster console, where turbonomic is
+   1. Go to the **AIops** OpenShift cluster console, where turbonomic is
       installed **in another browser tab**:
 
       ![](images/arch-2.png)
@@ -164,7 +164,7 @@ The steps in this lab should be performed on the **manage-to** cluster:
 
    **How to get the Turbonomic Server Version?**
 
-   1. Go back to the **manage-from** OCP cluster where turbonomic is installed:
+   1. Go back to the **AIops** OpenShift cluster where turbonomic is installed:
 
       ![](images/arch-2.png)
 
@@ -193,7 +193,7 @@ The steps in this lab should be performed on the **manage-to** cluster:
 
 1. Then set a cluster name for the `targetName`, e.g.
 
-   - `manage-to-kubeturbo-cluster`.
+   - `application-kubeturbo-cluster`.
 
 1. Finally, click on the `Create` button.
 
@@ -213,7 +213,7 @@ You should now see two deployments and two running pods in the namespace:
 - One is the operator
 - The other is the Kubeturbo probe (release)
 
-1. On your **manage-to** cluster, navigate to `Workloads -> Deployment` and
+1. On your **Application** OpenShift cluster, navigate to `Workloads -> Deployment` and
    select the `kubeturbo-operator` project:
 
    ![Kubeturbo validate deployments](https://raw.githubusercontent.com/evat-pm/images/master/KOH-deployments.png?raw=true)

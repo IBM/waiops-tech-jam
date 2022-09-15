@@ -8,14 +8,14 @@ description: Other details
 The lab environment includes 2 Openshift clusters and 4 VMs.
 
 Openshift clusters:
-1) AIOps cluster: will be used to install IBM Cloud Pak for Watson AIOps Event Manager, AI Manager and Turbonomic. 
-2) Application cluster: will be used to install sample applications include RobotShop, Instana Agent, KubeTurbo Agent. Quote Of The Day is pre-installed.
+1) **AIOps** cluster will be used to install IBM Cloud Pak for Watson AIOps Event Manager, AI Manager and Turbonomic. 
+2) **Application** cluster will be used to install the Instana and KubeTurbo agents and the sample _RobotShop_ application. The _Quote Of The Day_ sample application has been pre-installed.
 
 Virtual Machines:
-1) Control VM: will be used as "Jump Host" to ssh to all other VMs and run "oc" command to manage the 2 Openshift clusters.
-2) Instana VM: will be used to install single self-hosted Instana server.
-3) MQACE VM: IBM middleware (ACE and MQ) are pre-installed.
-4) PI VM: will be used to install IBM Metric Manager (Predictive Insights). DB2, Objectserver, Dash and WebGUI are pre-installed.
+1) **Control** VM will be used as a _Jump Host_ to ssh to all other VMs and run `oc` commands to manage the 2 OpenShift clusters.
+2) **Instana** VM will be used to install a single node self-hosted Instana server.
+3) **MQACE** VM contains the pre-installed IBM ACE and MQ middleware.
+4) **PI** VM will be used to install IBM Metric Manager (Predictive Insights). DB2, Objectserver, Dash and WebGUI are all pre-installed.
 
 Please see the diagram below for details. 
 - Green boxes are pre-installed. 
