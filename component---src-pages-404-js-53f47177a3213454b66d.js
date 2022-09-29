@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunktech_academy_aiops_2022=self.webpackChunktech_academy_aiops_2022||[]).push([[8883],{429:function(e,t,n){n.r(t);var o=n(7294),a=n(9435),c=[{href:"/components/markdown",text:"Markdown"},{href:"/components/Aside",text:"Aside"},{href:"/components/demo",text:"Demo"}];t.default=function(){return o.createElement(a.e9,{links:c})}}}]);
-//# sourceMappingURL=component---src-pages-404-js-53f47177a3213454b66d.js.map

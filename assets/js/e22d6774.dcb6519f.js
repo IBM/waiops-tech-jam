@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkswat_hub=self.webpackChunkswat_hub||[]).push([[8812],{82761:a=>{a.exports=JSON.parse('{"label":"ocp","permalink":"/waiops-tech-jam/blog/tags/ocp","allTagsPath":"/waiops-tech-jam/blog/tags","count":1}')}}]);

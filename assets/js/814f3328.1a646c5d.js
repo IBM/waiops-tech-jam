@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkswat_hub=self.webpackChunkswat_hub||[]).push([[2535],{45641:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Single Node Openshift deployment with Static IP","permalink":"/waiops-tech-jam/blog/single-node-openshift-deployment-with-static-ip"}]}')}}]);
