@@ -1,0 +1,172 @@
+---
+title: 6. Configure Policies
+description: Turbonomic Policies
+sidebar_position: 6
+---
+
+## 6-1: Introduction
+
+Turbonomic defines a set of default policies for each entity type which are used
+to analyze data and make action recommendations.
+
+Ssers can define their own policies for each entity in the supply chain based on
+business requirements.
+
+Policies define business rules to control how Turbonimic
+
+- analyzes resource allocation.
+- displays resource status
+- recommends or executes actions.
+
+In this lab, you will configure an SLO policy for the Robot Shop application to
+understand how Turbonomic ARM uses target data already configured to make action
+recommendations that will assure application performance.
+
+---
+
+## 6-2: Create Groups
+
+In Turbonomic ARM, groups:
+
+- are a collection of like entities.
+- can be used any place where you can scope.
+- are automatically created in some cases.
+
+Now we first need to create the group containing the Robot Shop business
+application.
+
+In the Turbonomic ARM user interface:
+
+1. Click on `Settings -> Groups`:
+
+   ![](images/groups-1.png)
+
+1. Click on `NEW GROUP`:
+
+   ![](images/groups-2.png)
+
+1. Click on `Container Spec`:
+
+   ![](images/groups-3.png)
+
+1. Enter the group name as `Robot Shop Group` and select the `Dynamic` type:
+
+   > **Static vs Dynamic**
+   >
+   > - use Dynamic groups if there is criteria which can define your group.
+   > - use Static groups when:
+   >   - You do not expect membership to ever change.
+   >   - There is no criteria that can be used to define the group.
+
+   ![](images/groups-4.png)
+
+1. Click on `ADD FILTER` and select `Namespace`
+
+1. Select filter `Equals` and enter the regular expression `robot-shop`, then
+   click the `Apply` button:
+
+   ![](images/groups-5.png)
+
+1. Click on the `SAVE GROUP` button:
+
+   ![](images/groups-6.png)
+
+You should now see the `Robot Shop Group` newly created.
+
+![](images/groups-7.png)
+
+---
+
+## 6-3: Setup a Policy
+
+1. Go to the Turbonomic ARM homepage and click on `Settings`:
+
+   ![](images/turboSettings.png)
+
+1. Then choose `Policies`:
+
+   ![](images/turboPolicies.png)
+
+1. Then click on `NEW AUTOMATION POLICY`:
+
+   ![](images/policy-1.png)
+
+1. Select `Container Spec` as the policy type for the Robot Shop application:
+
+   ![](images/policy-2.png)
+
+1. Fill in the name as `Robot Shop Container Spec Policy` and click on
+   `ADD CONTAINER SPEC GROUPS`:
+
+   ![](images/policy-3.png)
+
+1. Select the `Robot Shop Group` checkbox and click on the `SELECT` button.
+
+   ![](images/policy-4.png)
+
+1. Expand the `SCALING CONSTRAINTS` section:
+
+   ![](images/policy-5.png)
+
+1. Configure the scaling constraints as in the image below:
+
+   ![](images/policy-6.png)
+
+1. Then click the `SAVE AND APPLY` button. With the policy configured,
+   Turbonomic will analyze performance data over time and then provide placement
+   and resource sizing recommendations.
+
+1. The scoped policy you have created can be found in the `Automation Policies`
+   category:
+
+   ![](images/policy-7.png)
+
+1. The `Imported Placement Policies` category is specifically for imported
+   on-prem policies:
+
+   ![](images/turbo-imported-placement-policies.jpg)
+
+1. The `Defaults` category represents the policies that govern entire entity
+   types.
+
+   ![](images/turbo-defaults-policy.jpg)
+
+1. Now go back to the Turbonomic dashboard. **Wait for a few minutes** and you
+   will notice there is `ACTIONS` now on the Robot Shop application:
+
+   ![](images/policy-8.png)
+
+---
+
+## 6-4: Editing a Policy
+
+> **Note:** This is for information only, there is no need to actually edit any
+> policy for these labs.
+
+To edit a policy, click on the policy:
+
+![](images/turbo-edit-policy.jpg)
+
+Make your changes and save.
+
+---
+
+## 6-5: Deleting a Policy
+
+> **Important:** This is for information only, do not delete any policy for
+> these labs.
+
+18. To delete a policy:
+
+![](images/turbo-delete-policy-1.jpg) ![](images/turbo-delete-policy-2.jpg)
+
+---
+
+## 6-6: Summary
+
+In this section, you have learned how to create a scoped policy for a container
+spec, in this case to govern an application container spec.
+
+Next, we will look at how to take actions to assure application performance.
+
+---
