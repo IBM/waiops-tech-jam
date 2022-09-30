@@ -98,26 +98,29 @@ oc adm policy add-scc-to-user privileged -z default -n robot-shop
 
 ```
 
-Install the **Robot Shop** by issuing the following helm command. You'll need to
-replace <EUM Key\> with the **key** value that you obtained in section 3.2 from
-the Instana user interface and <Reporting URL\> is the **reportingURL** you
-obtained in section 4.2.
+Install the **Robot Shop** by issuing the following helm command.
 
-<span style={{color: "red"}}>
-  Note: When you specify the **Reporting URL**, do not include the trailing
-  slash ( / ).
-</span>
+:::info
+
+- You'll need to replace <EUM Key\> with the **key** value that you obtained in
+  section 4.2 from the Instana user interface.
+- The <Reporting URL\> is the **reportingURL** you obtained in section 4.2. **Do
+  not include the trailing slash ( / ).**
+
+:::
+
+:::tip Example
+
+`helm install robot-shop --set openshift=true --set eum.key=m-IMxZYFQyW_n7Xo0VRjrw --set eum.url=http://<your server IP\>:2999 -n robot-shop helm`
+
+Notice that there is no slash ( / ) following 2999.
+
+:::
 
 ```sh
 helm install robot-shop --set openshift=true  --set eum.key=<EUM Key> --set eum.url=<Reporting URL> -n robot-shop helm
 
 ```
-
-Example: **helm install robot-shop --set openshift=true --set
-eum.key=m-IMxZYFQyW_n7Xo0VRjrw --set eum.url=http://<your server IP\>:2999 -n
-robot-shop helm**
-
-Notice that there is no slash ( / ) following 2999.
 
 If successful, you should see the results similar to what's shown below.
 ![](images/install.png)

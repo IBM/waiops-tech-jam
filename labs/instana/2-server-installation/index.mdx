@@ -7,12 +7,13 @@ sidebar_position: 2
 
 ## 2-1: Introduction
 
-Instana backand is available as SaaS (prefered option) or self hosted (aka
+Instana backend is available as SaaS (prefered option) or self hosted (aka
 onPrem). For on-premises installation, Instana offers multiple options:
 
 - Single Server **self-hosted** is a Dockerized deployment that does not support
   multi-tenancy. Self-Hosted is what Instana calls its on-premise deployments.
   Of course, on-premise could be deployed into a public cloud, but is not a
+  recommended approach.
 - Two server Dockerized **self-hosted** configuration with the datastores on one
   server and the other components on another. This option is also single-tenant.
 - Small scale kubernetes deployment with the cloud native components running in
@@ -281,6 +282,14 @@ admin\>**
 
 Before attempting to login to your Instana server, activate the license using
 the steps in section 2-4.
+
+:::tip
+
+If at any time you need to
+[restart Instana](https://www.ibm.com/docs/en/instana-observability/current?topic=premises-operations-docker-based-instana#stopping-all-components)
+you can run the `instana stop` and `instana start` commands.
+
+:::
 
 ---
 
