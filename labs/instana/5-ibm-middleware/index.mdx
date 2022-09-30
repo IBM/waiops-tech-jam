@@ -5,7 +5,7 @@ description:
 sidebar_position: 5
 ---
 
-## 5-1: Introduction
+## 5.1: Introduction
 
 Positioning Instana at existing IBM customers often requires presenting Instana
 value proposition in context of other IBM middleware used by the client. In this
@@ -17,7 +17,7 @@ following IBM technologies:
 
 ---
 
-## 5-2: Configure Quote of the Day Application to use MQ & ACE
+## 5.2: Configure Quote of the Day Application to use MQ & ACE
 
 The **"Quote of the Day"** application has been installed for you on the
 **Application** OpenShift cluster. For more information about the **Quote of the
@@ -75,6 +75,12 @@ disable the simulation.
 
 When you are done, the lines should look like this:
 
+:::info Hint
+
+Replace &lt;acemq_ipaddress&gt; with the IP address for your ACEMQ server
+
+:::
+
 ```sh
 - name: SUPPLY_CHAIN_URL
 // This will emphasise
@@ -83,8 +89,6 @@ When you are done, the lines should look like this:
 // This will emphasise
   value: "false"
 ```
-
-HINT: Replace &lt;acemq_ipaddress&gt; with the IP address for your ACEMQ server
 
 Type **":wq"** to save your changes and exit the file.
 
@@ -105,13 +109,13 @@ successfully placed.”
 
 ---
 
-## 5-3: Configure ACE and MQ for Resource Monitoring
+## 5.3: Configure ACE and MQ for Resource Monitoring
 
-<span style={{color: "red"}}>
-  {" "}
-  This section is for informational purposes only. In your lab environment, these
-  steps have already been performed.
-</span>
+:::caution
+
+This section is here for informational purposes. There are no steps to execute.
+
+:::
 
 This section of the lab will help you understand how IBM MQ and IBM App Connect
 Enterprise (ACE) need to be configured for monitoring. There are certain
@@ -121,9 +125,13 @@ Flow Stats. The requirements are documented in the
 [sensor configuration guide](https://www.ibm.com/docs/en/obi/223?topic=technologies-monitoring-app-connect-enterprise#monitoring-ibm-app-connect-enterprise)
 that is online. You'll see links to those guides further down in this document.
 
-Note: Typically, these steps are performed by the MQ and ACE admins, so you
-don't need to know the step by step procedure. But, you do need to tell the
-MQ/ACE admins what the monitoring requirements are.
+:::note
+
+Typically, these steps are performed by the MQ and ACE admins, so you don't need
+to know the step by step procedure. But, you do need to tell the MQ/ACE admins
+what the monitoring requirements are.
+
+:::
 
 ---
 
@@ -146,8 +154,12 @@ To run the following commands you have to source the `mqsiprofile`:
 . /opt/ace-11.0.0.11/server/bin/mqsiprofile
 ```
 
-> **&#9888; HINT: In the commands listed, BK1 is the Integration Node name and
-> would be different if the Integration Node had a different name**
+:::info
+
+In the commands listed, BK1 is the Integration Node name and would be different
+if the Integration Node had a different name
+
+:::
 
 Here are example commands that you can issue to see the ACE configuration:
 
@@ -245,12 +257,13 @@ quit
 
 ---
 
-## 5-4: Configure ACE and MQ for Tracing
+## 5.4: Configure ACE and MQ for Tracing
 
-<span style={{color: "red"}}>
-  The steps in this section have already been performed in your environment. The
-  instructions found here are for informational purposes.
-</span>
+:::caution
+
+This section is here for informational purposes. There are no steps to execute.
+
+:::
 
 In addition to the "Resource Monitoring" KPIs, additional settings are required
 to enable Tracing within IBM MQ and ACE. It is important that you understand
@@ -294,7 +307,7 @@ each middleware component.
 
 ---
 
-## 5-5: Configure the ACE and MQ Sensors
+## 5.5: Configure the ACE and MQ Sensors
 
 In this section, you will perform these commands as root on the ACE/MQ server.
 
@@ -349,12 +362,15 @@ prefer.
 vi configuration.yaml
 ```
 
-**------------IMPORTANT------------** yaml files are very strict about
-indentation. Each line within the file must be indented by 0, 2, 4, 6, etc.
-spaces. Do not use tabs and do not indent by odd numbers of characters. Make
-sure that all of the characters line up vertically within the text. If you see a
-line that is commented out and you need to uncomment it, just remove the single
-"#" character.
+:::warning Important
+
+YAML files are very strict about indentation. Each line within the file must be
+indented by 0, 2, 4, 6, etc. spaces. Do not use tabs and do not indent by odd
+numbers of characters. Make sure that all of the characters line up vertically
+within the text. If you see a line that is commented out and you need to
+uncomment it, just remove the single "#" character.
+
+:::
 
 Within the editor, scroll down to the section titled **"IBM ACE"**
 
@@ -381,8 +397,12 @@ Edit the **IBM ACE** section of the file so that it looks like this. If you
 want, you can copy this text and replace the entire section. Or, you can change
 the individual parameters.
 
+:::caution Important
+
 When you paste this information, you must **replace <mqm password\> with the
 password provided by the lab proctor**.
+
+:::
 
 ```yaml
 # IBM ACE
@@ -423,8 +443,12 @@ Edit the **IBM MQ** section of the file so that it looks like this. If you want,
 you can copy this text and replace the entire section. Or, you can change the
 individual parameters.
 
+:::caution Important
+
 When you paste this information, you must **replace <mqm password\> with the
 password provided by the lab proctor**.
+
+:::
 
 ```yaml
 # IBM MQ
@@ -440,7 +464,7 @@ com.instana.plugin.ibmmq:
 
 ---
 
-## 5-6: Further Configuration
+## 5.6: Further Configuration
 
 First, let's change the **Zone** name within the file. This is similar to the
 Zone that you specified when installing the Docker and OpenShift monitoring
@@ -531,7 +555,7 @@ The main install log file is /opt/instana/agent/data/log/agent.log
 
 ---
 
-## 5-7: Summary
+## 5.7: Summary
 
 You learned how to configure the Instana sensor for IBM App Connect Enterprise
 (ACE) and IBM MQ. This includes customization such as defining tags, defining a

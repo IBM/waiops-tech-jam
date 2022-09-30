@@ -32,26 +32,26 @@ Please see the diagram below for details.
 
 ![](images/overview-env.png)
 
-## How to access environment
+## How to access the environment
 
 - [Linux and Mac Users](#linux-and-mac-users)
 - [Windows Users](#windows-users)
 
 ## Linux and Mac Users
 
-### Connect to Server with Private Key
+### Connect to a Server with a Private Key
 
-1. Search for the `Terminal app` and open
+1. Search for the `Terminal` app and open
 
 2. Update your _id_rsa_ file permissions to avoid SSH permission errors
 
-```
+```sh
 chmod 600 <path-to-key-file>/id_rsa
 ```
 
 3. Access your control node using your provided SSH key:
 
-```
+```sh
 ssh -i <path-to-your-key> <user>@<control node IP address>
 ```
 
@@ -66,7 +66,7 @@ ssh -i <path-to-your-key> <user>@<control node IP address>
 
 1. To open PowerShell, press `Windows+X`, and then click `Windows PowerShell`.
 
-![](images/windowspowershell-1.png)
+![Windows Start Menu](images/windowspowershell-1.png)
 
 2. Access your control node using your provided SSH key:
 
@@ -76,7 +76,7 @@ ssh -i <path-to-your-key> <user>@<control node IP address>
 
 Example:
 
-![](images/windowspowershell-2.png)
+![PowerShell SSH](images/windowspowershell-2.png)
 
 ### 2. PuTTY
 
@@ -97,14 +97,14 @@ Requirements:
 
 3. Click `Conversions` from the PuTTY Key Generator menu and select `Import key`
 
-![](images/puttygen-1.png)
+![PuTTY Key Gen](images/puttygen-1.png)
 
 4. Navigate to the OpenSSH private key and click `Open`.
 
 5. Under `Actions` -> `Save the generated key`, select `Save private key`. You
    can enter **optional** passphrase to protect the private key.
 
-![](images/puttygen-2.png)
+![PuTTY Key Gen](images/puttygen-2.png)
 
 6. Save the private key to the desktop as `id_rsa.ppk`.
 
@@ -118,16 +118,16 @@ remote SSH server, then proceed to
 
 2. Enter the remote server `Host Name (or IP address)` under `Session`.
 
-![](images/putty-1.png)
+![PuTTY connect to server](images/putty-1.png)
 
 3. Navigate to `Connection -> SSH -> Auth`. Click `Browse...` under
    `Authentication parameters` -> `Private key file for authentication`
 
-![](images/putty-2.png)
+![PuTTY private key setting](images/putty-2.png)
 
 4. Locate the `id_rsa.ppk` private key and click `Open`.
 
-![](images/putty-3.png)
+![PuTTY private key setting auth](images/putty-3.png)
 
 5. Finally, click `Open` again to log into the remote server with key pair
    authentication.

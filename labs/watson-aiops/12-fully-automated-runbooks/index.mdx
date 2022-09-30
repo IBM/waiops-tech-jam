@@ -4,7 +4,7 @@ description: How to setup fully automated runbooks with journal update
 sidebar_position: 12
 ---
 
-## 12-1: Overview
+## 12.1: Overview
 
 IBM Runbook Automation can automate procedures that can help IT staff solve
 everyday operational problems and do not require human interaction, thereby
@@ -33,7 +33,7 @@ Watson AIOPs Event Manager environment.
 
 ---
 
-## 12-2: Enable ObjectServer REST Interface
+## 12.2: Enable ObjectServer REST Interface
 
 In order to update event journal runbook sends update via REST API to
 Objectserver. ObjectServer REST interface is disabled out of the box for
@@ -46,9 +46,9 @@ a) Find ConfigMap for the primary ObjectServer
 oc get configmap| grep primary
 ```
 
-You will see output like this :
-
-OUTPUT : evtmanager-objserv-agg-primary-config 2 14d
+```sh title="Example Output:"
+evtmanager-objserv-agg-primary-config 2 14d
+```
 
 b) Edit primary ObjectServer Configmap to enable REST interface in properties.
 
@@ -57,7 +57,7 @@ b) Edit primary ObjectServer Configmap to enable REST interface in properties.
 oc edit configmap evtmanager-objserv-agg-primary-config
 ```
 
-Add this to configmap:
+Add the following to the ConfigMap:
 
 ```sh
 apiVersion: v1
@@ -93,8 +93,8 @@ e) Retrieve OMNIBUS root password :
 oc get secret evtmanager-omni-secret -o go-template='{{range $k,$v := .data}}{{printf "%s: " $k}}{{if not $v}}{{$v}}{{else}}{{$v | base64decode}}{{end}}{{"\n"}}{{end}}'
 ```
 
-f) Please Note : You need to delete 1 network policy in cluster in order to
-successfully run next curl command that connects to ObjectServer REST API
+f) You need to delete 1 network policy in the cluster in order to successfully
+run next curl command that connects to ObjectServer REST API
 
 ```sh
 oc delete networkpolicy evtmanager-ibm-netcool-prod-network-policy
@@ -107,16 +107,18 @@ Cluster name is : `<Your cluster ingressdomain>` like
 "tech-jam-xxx.containers.appdomain.cloud".
 
 ```sh
-curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"select count(*) from alerts.status\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://<ClusterHostname>:<nodeport from step d>/objectserver/restapi/sql/factory
+curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"select count(*) from alerts.status\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' http://<ClusterHostname>:<NodePort from step d>/objectserver/restapi/sql/factory
 ```
 
-Output: { "rowset": { "osname": "AGG_P", "affectedRows": 1, "coldesc": [{
+```sh title="Example Output:"
+{ "rowset": { "osname": "AGG_P", "affectedRows": 1, "coldesc": [{
 "name": "COUNT( * )", "type": "integer", "size": 4 }], "rows": [{ "COUNT( * )":
 110 }] } }
+```
 
 ---
 
-## 12-3: Create automation to update the journal
+## 12.3: Create automation to update the journal
 
 Create an automation "Update Journal" with two additional parameters "alertid"
 and "message".
@@ -137,7 +139,7 @@ Save automation "Update Journal".
 
 ---
 
-## 12-4: Update Runbook - add a step to update the journal
+## 12.4: Update Runbook - add a step to update the journal
 
 Navigate to: ** Automations → Runbooks → Library → Edit runbook "Restart API
 Service" **
@@ -157,7 +159,7 @@ Save the automation step parameter mapping and publish the runbook.
 
 ---
 
-## 12-5: Update Trigger to set Execution Automatic
+## 12.5: Update Trigger to set Execution Automatic
 
 ** Automations → Runbooks → Triggers -> Edit Trigger "Restart API Service" **
 
@@ -172,7 +174,7 @@ Save changes to the trigger.
 
 ---
 
-## 12-6: Test Fully automated Runbook
+## 12.6: Test Fully automated Runbook
 
 Connect to OCP Infra node.
 
@@ -201,8 +203,12 @@ Login into OCP cluster and simulate corresponding alert
 oc exec -it evtmanager-ncoprimary-0 -- /bin/bash -c '/opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -pass $OMNIBUS_ROOT_PWD'
 ```
 
-Replace the '\<HOSTNAME\>' with the Control Node eth0 IP address captured in
-11-5 in below command.
+:::info
+
+Replace '<HOSTNAME\>' with the Control Node eth0 IP address captured in 11-5 in
+below command.
+
+:::
 
 ```sh
 delete from alerts.status where Summary like 'API Server'
@@ -226,8 +232,12 @@ see Runbook parameters under Information, Runbook is set to run automatically.
 Once it starts automatic execution "RunbookStatus" changes to "In Progress" ->
 "Complete"
 
+:::note
+
 For more information on RunbookStatus :
 https://www.ibm.com/docs/en/runbook-automation?topic=events-state-transitions-runbookstatus-field
+
+:::
 
 Click the Event Journal tab:
 
@@ -252,8 +262,12 @@ Execution" tab.
 
 Now you have a fully automated runbook functional in your environment.
 
+:::note
+
 For more details on Runbooks, see the documentation link:
 https://www.ibm.com/docs/en/noi/1.6.5?topic=systems-managing-runbooks-automations
+
+:::
 
 You have now completed this module and learned how to create and configure fully
 automated runbook in Event Manager.

@@ -4,7 +4,7 @@ description: Define scope-based event grouping policies
 sidebar_position: 7
 ---
 
-## 7-1: Overview
+## 7.1: Overview
 
 This module considers a second method of doing event correlation: scope-based
 event grouping. Scope-based event grouping is based on a basic premise that
@@ -38,7 +38,7 @@ policies, injected some test events and observed the grouping. The second
 example will include overlap with a topology-based event correlation scenario in
 the previous module to demonstrate so-called "super grouping".
 
-## 7-2: Create a scope-based event grouping policy to group by Service
+## 7.2: Create a scope-based event grouping policy to group by Service
 
 Log in to Watson for AIOps Event Manager and navigate to: **Netcool WebGUI**.
 
@@ -63,12 +63,12 @@ You should end up with something like the following:
 
 ![](images/Scope1.png)
 
-## 7-3: Inject some sample Service events
+## 7.3: Inject some sample Service events
 
 Create a new local file and call it `scope_events.sh` and paste the following
 content into it:
 
-```sh
+```sh title="scope_events.sh"
 #!/bin/bash
 
 /opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -passwd $OMNIBUS_ROOT_PWD << EOF
@@ -108,14 +108,18 @@ example events:
 oc exec -it evtmanager-ncoprimary-0 bash -- /tmp/scope_events.sh
 ```
 
+:::caution Note
+
 You can ignore the message:
 `Warning: Failed to find tar in the following directories : /bin /usr/bin`
+
+:::
 
 You should end up with something like the following:
 
 ![](images/events.png)
 
-## 7-4: Create a scope-based event grouping policy to group by Location
+## 7.4: Create a scope-based event grouping policy to group by Location
 
 Log in to Watson for AIOps Event Manager and navigate to: Netcool WebGUI.
 
@@ -138,17 +142,21 @@ location:
 
 You should end up with something like the following: ![](images/Scope2.png)
 
-**NOTE:** The Priority specifies the order in which the Policies will be tried.
-Once a scope-based event grouping Policy matches and the scope is set for an
-event, all subsequent Policies will be skipped. If two policies have the same
-Priority value (as in this case), the execution order is indeterminate.
+:::note
 
-## 7-5: Inject some sample Location events
+The Priority specifies the order in which the Policies will be tried. Once a
+scope-based event grouping Policy matches and the scope is set for an event, all
+subsequent Policies will be skipped. If two policies have the same Priority
+value (as in this case), the execution order is indeterminate.
+
+:::
+
+## 7.5: Inject some sample Location events
 
 Create a new local file and call it `super_group_events.sh` and paste the
 following content into it:
 
-```sh
+```sh title="super_group_events.sh"
 #!/bin/bash
 
 
@@ -194,8 +202,12 @@ oc exec -it evtmanager-ncoprimary-0 bash -- /tmp/super_group_events.sh
 You will observe three groups of events merged together: two created by
 topology-based event grouping, and one created by scope-based event grouping.
 
-**NOTE:** You may need to wait a few seconds and refresh the event view before
-the grouping is visible.
+:::info
+
+You may need to wait a few seconds and refresh the event view before the
+grouping is visible.
+
+:::
 
 Select any event and run the tool from the Alert Viewer. You should end up with
 something like the following:

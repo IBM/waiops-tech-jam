@@ -4,7 +4,7 @@ description: Watson AIOps temporal patterns
 sidebar_position: 10
 ---
 
-## 10-1: Overview
+## 10.1: Overview
 
 This module focuses on temporal patterns that group events based on learned
 patterns in time-based relations.
@@ -33,7 +33,7 @@ Unix epoch value.
 
 ---
 
-## 10-2: Create historical data for learning
+## 10.2: Create historical data for learning
 
 In order to understand how Watson AIOps learns temporal patterns, we will
 simulate a sample set of events and train analytics engine on the simulated
@@ -52,7 +52,7 @@ set of events into the ObjectServer. starttime in script is EPOCH conversion for
 the time in history (9AM Jul 1, 2022) so we have a minimum 3-4 weeks of sample
 data generated for machine learning.
 
-```sh
+```sh title="pattern_events_historic.sh"
 #!/bin/bash
 starttime=1656363600
 stamp=$starttime
@@ -124,7 +124,7 @@ done
 
 ---
 
-## 10-3: Insert historical events into event manager
+## 10.3: Insert historical events into event manager
 
 Copy historic event generating script to ObjectServer pod
 
@@ -148,7 +148,7 @@ You can ignore message "Warning: Failed to find tar in the following directories
 
 Once replay is finished ( takes approx 5-6 mins), you can start training.
 
-## 10-4: Run training for temporal patterns
+## 10.4: Run training for temporal patterns
 
 Get image for trainer pod
 
@@ -173,9 +173,11 @@ oc run trainer -it --command=true --restart=Never --env=LICENSE=accept --image=c
 
 ---
 
-## 10-5: Check policies created from learning
+## 10.5: Check policies created from learning
 
-Launch "Policies" using new UI URL. ![](images/LaunchPolicies.png)
+Launch "Policies" using new UI URL.
+
+![](images/LaunchPolicies.png)
 
 Filter policies for temporal patterns.
 
@@ -189,18 +191,26 @@ Check details of Temporal pattern policy by clicking "Preview Policy"
 
 Temporal pattern policies can be edited.
 
+:::note
+
 For more information on Temporal Pattern Policy editing :
 https://www.ibm.com/docs/en/noi/1.6.5?topic=policies-editing
 
-Note: Policy Details UI is only availabel in new UI
+:::
 
-## 10-6: Replay events
+:::info
+
+Policy Details UI is only available in new UI
+
+:::
+
+## 10.6: Replay events
 
 Create pattern_events_live.sh script (as below)  that simulates a set of events
 into the ObjectServer for Location='WINNIPEG'. starttime  is EPOCH conversion
 for current time.
 
-```sh
+```sh title="pattern_events_live.sh"
 #!/bin/bash
 /opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -passwd $OMNIBUS_ROOT_PWD << EOF
 

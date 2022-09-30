@@ -4,7 +4,7 @@ description: Set up webhook integrations in Event Manager
 sidebar_position: 4
 ---
 
-## 4-1: Overview
+## 4.1: Overview
 
 This module focuses on the set up of a webhook integration, so that events can
 be received from a cloud event source. We will configure a generic webhook
@@ -13,10 +13,14 @@ integration with SevOne as an example.
 By the end of this module, you will have configured a webhook to be able to
 receive events from a SevOne system.
 
+:::note
+
 A full list of the incoming event integrations are documented here:
 https://www.ibm.com/docs/en/noi/1.6.5?topic=systems-configuring-incoming-integrations
 
-## 4-2: Create a new generic webhook integration with SevOne
+:::
+
+## 4.2: Create a new generic webhook integration with SevOne
 
 While the event integrations provide a large number of off-the-shelf
 integrations, it is typical that a user will have an event source for which
@@ -34,13 +38,21 @@ The basic steps to creating a generic webhook integration are as follows:
 4. Specify the payload-to-field mappings
 5. Test the integration
 
-**NOTE:** When you create a new webhook integration in Event Manager, it is
-essential to copy the generated webhook URL and save it in a text document for
-future reference. After the integration is saved, there is no way to retrieve
-the URL (although you can regenerate a new one).
+:::caution
+
+When you create a new webhook integration in Event Manager, it is essential to
+copy the generated webhook URL and save it in a text document for future
+reference. After the integration is saved, there is no way to retrieve the URL
+(although you can regenerate a new one).
+
+:::
+
+:::note
 
 In this exercise, it is assumed that the webhook configuration has been done
 already on the SevOne side, and it only awaits the webhook URL.
+
+:::
 
 First, navigate to: **Administration > Integration with other systems**. Click
 on **New integration** and **Configure** a new generic **Webhook** integration:
@@ -105,7 +117,7 @@ Summary: description
 Resource name: deviceName
 Event type: policyName
 * Resolution:  alertState = "Cleared"
-* Sender: Name: "SevOne"
+* Sender: Name: sender
 * URL 1: URL: url
 * URL 1: Description: url
 
@@ -113,13 +125,21 @@ Event type: policyName
 
 ```
 
-**NOTE:** Further information regarding the generic webhook event integration
-can be found here, including a table that maps the integration attributes to
-event fields in the Event Manager event store (Netcool/OMNIbus ObjectServer):
+:::info
+
+Further information regarding the generic webhook event integration can be found
+here, including a table that maps the integration attributes to event fields in
+the Event Manager event store (Netcool/OMNIbus ObjectServer):
 https://www.ibm.com/docs/en/noi/1.6.5?topic=integrations-webhook
 
-**NOTE:** Complex mappings such as the Severity field example above can be
-mapped using JSONATA functions: http://docs.jsonata.org/object-functions.html
+:::
+
+:::info
+
+Complex mappings such as the Severity field example above can be mapped using
+JSONATA functions: http://docs.jsonata.org/object-functions.html
+
+:::
 
 The completed configuration should look something like the following:
 

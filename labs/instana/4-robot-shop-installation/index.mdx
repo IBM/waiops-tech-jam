@@ -4,7 +4,7 @@ description: Install the Robot Shop Application and Setup Website Monitoring
 sidebar_position: 4
 ---
 
-## 4-1: Introduction
+## 4.1: Introduction
 
 In this section of the lab, you will learn how to install the Robot Shop
 application. Robot Shop is pre-configured to include any required configuration
@@ -16,7 +16,7 @@ Experience (EUM) / Real User Monitoring (RUM) data.
 
 ---
 
-## 4-2: Create the Website in Instana
+## 4.2: Create the Website in Instana
 
 If you want to capture EUM/RUM data within Instana, you must first create a
 website within the GUI (or via API). Open the Instana GUI within your browser.
@@ -30,18 +30,22 @@ Then, click the **Add Website** button.
 A dialog containing **javascript** will open. In a more typical application, you
 would follow the instructions on the dialog. You copy/paste the **javascript**
 into the HTML pages. In a containized environment, you would need to rebuild and
-deploy the containers. ![](images/websiteConfig2.png)
+deploy the containers.
+
+![](images/websiteConfig2.png)
 
 Robot Shop has already done some of work for you. When you deploy the
 application, you can pass parameters into the helm install. There are two
 parameters within the **javascript** that we will need to copy and use when we
 install the Robot Shop application. You will need the **key** and the
 **reportingURL**. Either copy those parameters now or leave this dialog open
-that you can retrieve it later. ![](images/websiteConfig.png)
+that you can retrieve it later.
+
+![](images/websiteConfig.png)
 
 ---
 
-## 4-3: Install Robot Shop
+## 4.3: Install Robot Shop
 
 The full installation instructions for **Robot Shop** can be found here:
 https://github.com/instana/robot-shop You'll notice that there are instructions
@@ -98,28 +102,32 @@ oc adm policy add-scc-to-user privileged -z default -n robot-shop
 
 ```
 
-Install the **Robot Shop** by issuing the following helm command. You'll need to
-replace <EUM Key\> with the **key** value that you obtained in section 3.2 from
-the Instana user interface and <Reporting URL\> is the **reportingURL** you
-obtained in section 4.2.
+Install the **Robot Shop** by issuing the following helm command.
 
-<span style={{color: "red"}}>
-  Note: When you specify the **Reporting URL**, do not include the trailing
-  slash ( / ).
-</span>
+:::info
+
+- You'll need to replace <EUM Key\> with the **key** value that you obtained in
+  section 4.2 from the Instana user interface.
+- The <Reporting URL\> is the **reportingURL** you obtained in section 4.2. **Do
+  not include the trailing slash ( / ).**
+
+:::
+
+:::tip Example
+
+`helm install robot-shop --set openshift=true --set eum.key=m-IMxZYFQyW_n7Xo0VRjrw --set eum.url=http://<your server IP\>:2999 -n robot-shop helm`
+
+Notice that there is no slash ( / ) following 2999.
+
+:::
 
 ```sh
 helm install robot-shop --set openshift=true  --set eum.key=<EUM Key> --set eum.url=<Reporting URL> -n robot-shop helm
 
 ```
 
-Example: **helm install robot-shop --set openshift=true --set
-eum.key=m-IMxZYFQyW_n7Xo0VRjrw --set eum.url=http://<your server IP\>:2999 -n
-robot-shop helm**
-
-Notice that there is no slash ( / ) following 2999.
-
 If successful, you should see the results similar to what's shown below.
+
 ![](images/install.png)
 
 Next, change to the robot-shop project within OpenShift by typing:
@@ -136,6 +144,7 @@ oc get pods
 ```
 
 If the install was successful, you'll see the following pods running.
+
 ![](images/pods.png)
 
 If some of the pods show **0/1** instead of **1/1** in the READY column or the
@@ -166,7 +175,7 @@ Within your browser, make sure you specify http instead of https.
 
 ---
 
-## 4-4: Setup Automated Load
+## 4.4: Setup Automated Load
 
 Now that the application is running, you will want to generate some traffic
 against the application.
@@ -190,7 +199,7 @@ oc get pods
 
 ---
 
-## 4-5: Summary
+## 4.5: Summary
 
 In this section, you learned how to install an application that includes
 monitoring and configure it for Website EUM/RUM monitoring.
