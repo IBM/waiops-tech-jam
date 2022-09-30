@@ -8,11 +8,12 @@ Follow the tutorial below to explore some key Instana capabilities including
 monitoring of Kubernetes, monitoring of applications, and monitoring of
 infrastructure.
 
-## 6-1: Explore Kubernetes
+## 6.1: Explore Kubernetes
 
 Open the browser tab for the Instana user interface.
 
 On the left navigation, select **Platforms** and then **Kubernetes**
+
 ![](images/kubernetes.png)
 
 When you select **Platforms** in the classroom environment, you will only see
@@ -23,13 +24,16 @@ technologies when you performed the Instana server installation.
 
 You will see a list of Kubernetes clusters. Look for the Cluster name that you
 chose when you installed the Instana Agent into OpenShift.
+
 ![](images/clusters.png)
 
 Assuming that your cluster shows up properly, click the cluster name to open the
 dashboard.
 
 You should see a screen similar to the one below where you can see overall
-utilization of the Kubernetes cluster. ![](images/cluster.png)
+utilization of the Kubernetes cluster.
+
+![](images/cluster.png)
 
 Select some of the other tabs to explore the Kubernetes monitoring. We recommend
 you look at the Events, Nodes, and Pods tabs. When you select the pods tab, you
@@ -37,6 +41,7 @@ will see a list of all pods running within the cluster.
 
 In the upper right corner, add `qotd` into the search widget. You'll notice that
 it will filter the list to the pods related to the Quote of the Day application.
+
 ![](images/pods.png)
 
 Click on one of the links on the left side and drill into the pod utilization
@@ -44,7 +49,7 @@ details.
 
 ---
 
-## 6-2: Explore the Infrastructure View
+## 6.2: Explore the Infrastructure View
 
 Next, explore the Infrastructure view. To do this, click on the
 **"Infrastructure"** icon on the left side.
@@ -69,6 +74,7 @@ things within the Infrastructure view.
 
 In the bottom right corner, click on some of the icons and explore different
 ways of organizing and filtering the Infrastructure view.
+
 ![](images/filters.png)
 
 Or, you can use the lucene query language in the filter/search bar at the top of
@@ -218,7 +224,7 @@ elements within the MQ sensor or other middleware such as ACE.
 
 ---
 
-## 6-3: Create an Application Perspective for Robot Shop
+## 6.3: Create an Application Perspective for Robot Shop
 
 Before we can investigate Applications within Instana, we need to create an
 **Application Perspective**. This section describes how to define the
@@ -266,7 +272,7 @@ Finally, click the **Create** button to create the application perspective.
 
 ---
 
-## 6-4: Create an Application Perspective for QOTD
+## 6.4: Create an Application Perspective for QOTD
 
 Before we can investigate Applications within Instana, we need to create an
 **Application Perspective**. This section describes how to define the
@@ -328,7 +334,7 @@ is populated).
 
 ---
 
-## 6-5: Explore the Application
+## 6.5: Explore the Application
 
 After creating the application, your screen should have automatically changed
 context to show the Application Perspective that you just defined.
@@ -346,7 +352,9 @@ that make up the application.
 You'll notice a number of tabs across the top of the screen. Explore these tabs.
 In particular, let's take a look at the **"Depedencies"** tab.
 
-Click on the **Dependencies** tab. ![](images/dependencies.png)
+Click on the **Dependencies** tab.
+
+![](images/dependencies.png)
 
 On the dependencies tab, you'll see a full topology of the application services.
 This topology is discovered automatically. You can see transactions flowing
@@ -503,10 +511,23 @@ rates, and more.
 
 ---
 
-## 6-6: Websites and Mobile App Monitoring
+## 6.6: Websites and Mobile App Monitoring
+
+:::note
+
+You should first generate some traffic in the monitored application.
+
+Navigate to the Robot Shop application with the route URL you retrieved in step
+4.3.
+
+The route URL looks like `web-robot-shop.<cluster domain>`
+
+Use the application to buy some Robots.
+
+:::
 
 Next, let's take a look at **Website** and **Mobile Application** Monitoring. In
-this environment, Instana does not include an native mobile applications, but
+this environment, Instana does not include any native mobile applications, but
 know that Instana can gather End User Monitoring (EUM) data from Mobile
 Applications. For now, we'll investigate the website monitoring.
 
@@ -515,8 +536,8 @@ Using the left side navigation, select **Websites & Mobile Apps**
 ![](images/website.png)
 
 You will see a list of websites that are being monitored. In this environment,
-you'll see the **Bee-Travels** application website. Click on the blue link for
-the **Bee-Travels** website to drill down for more details.
+you'll see the **Robot Shop** application website. Click on the blue link for
+the **Robot Shop** website to drill down for more details.
 
 ![](images/websiteQOTD.png)
 
@@ -650,7 +671,7 @@ That completes the Explore section of the lab.
 
 ---
 
-## 6-7: Summary
+## 6.7: Summary
 
 In this exercise you have explored some of the key capabilities within Instana.
 You explored Kubernetes monitoring. You explored the Infrastructure view. You

@@ -4,7 +4,7 @@ description: Use the File Observer to create some sample topology
 sidebar_position: 5
 ---
 
-## 5-1: Overview
+## 5.1: Overview
 
 This module focuses on the initial creation of topology within the Event
 Manager. Topology adds enormous value to your deployment as it provides
@@ -29,13 +29,17 @@ ServiceNow, Dynatrace, or VMware vCenter. Two of the Observers are generic ones:
 the File Observer (for ingesting file-based topology data) and the REST Observer
 (for ingesting topology data programmatically via an API).
 
-**NOTE:** A full list of the topology Observers are documented here:
+:::note
+
+A full list of the topology Observers are documented here:
 https://www.ibm.com/docs/en/nasm/1.1.14?topic=jobs-defining-observer-manually
+
+:::
 
 By the end of this module, you will have created two topology Observer jobs,
 ingested two sets of topology data, and tied them together via a Merge Rule.
 
-## 5-2: Create and copy two sample topology files to the File Observer pod
+## 5.2: Create and copy two sample topology files to the File Observer pod
 
 This first step involves the following tasks:
 
@@ -62,7 +66,7 @@ such as AppDynamics.
 
 Create a new file called infrastructure.txt with the following contents:
 
-```sh
+```sh title="infrastructure.txt"
 V:{"_operation":"InsertReplace","uniqueId":"379177a8-0a6a-4068-817c-d6d6e870437e","matchTokens":["379177a8-0a6a-4068-817c-d6d6e870437e","router1"],"tags":["WAIOpsDemo"],"name":"router1","entityTypes":["router"]}
 V:{"_operation":"InsertReplace","uniqueId":"9c1f90e0-7dc4-40d8-8721-40ea2f3af453","matchTokens":["9c1f90e0-7dc4-40d8-8721-40ea2f3af453","cpu01"],"tags":["WAIOpsDemo"],"name":"cpu01","entityTypes":["cpu"]}
 V:{"_operation":"InsertReplace","uniqueId":"222-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","matchTokens":["222-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","cpu02"],"tags":["WAIOpsDemo"],"name":"cpu02","entityTypes":["cpu"]}
@@ -81,8 +85,14 @@ topology directives, one per line. A line that begins with a **V** represents a
 "Vertex" (or Resource in UI terms). A line that begins with an **E** represents
 an "Edge" (or Relationship in UI terms).
 
+:::note
+
 Other format information can be found here:
 https://www.ibm.com/docs/en/nasm/1.1.14?topic=manually-defining-file-observer-jobs
+
+:::
+
+:::note
 
 Some notes about the Vertex (Resource) properties follow:
 
@@ -116,6 +126,10 @@ Some notes about the Vertex (Resource) properties follow:
   use in the topology view. A resource can have multiple values in the
   entityTypes field, although normally it would just have one entry.
 
+:::
+
+:::note
+
 Some notes about the Edge (Relationship) properties follow:
 
 - \_fromUniqueId and \_toUniqueId: These parameters represent the start and end
@@ -130,9 +144,11 @@ Some notes about the Edge (Relationship) properties follow:
 A list of default Edge types (for the parameter \_edgeType) is documented here:
 https://www.ibm.com/docs/en/nasm/1.1.14?topic=reference-edge-types
 
+:::
+
 Create a second new file called application.txt with the following contents:
 
-```sh
+```sh title="application.txt"
 V:{"_operation":"InsertReplace","uniqueId":"111-379177a8-0a6a-4068-817c-d6d6e870437e","matchTokens":["111-379177a8-0a6a-4068-817c-d6d6e870437e","billing"],"tags":["WAIOpsDemo"],"name":"billing","entityTypes":["application"]}
 V:{"_operation":"InsertReplace","uniqueId":"111-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","matchTokens":["111-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","webserver"],"tags":["WAIOpsDemo"],"name":"webserver","entityTypes":["application"]}
 V:{"_operation":"InsertReplace","uniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807","matchTokens":["111-974d1788-1312-4151-8a62-73fa1854e807","computer1000"],"tags":["WAIOpsDemo"],"name":"computer1000","entityTypes":["computer"]}
@@ -140,14 +156,18 @@ E:{"_toUniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807","_edgeType":"runsOn"
 E:{"_toUniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807","_edgeType":"runsOn","_fromUniqueId":"111-9c1f90e0-7dc4-40d8-8721-40ea2f3af453"}
 ```
 
-## 5-3: Create two File Observer jobs
+## 5.3: Create two File Observer jobs
 
 Log into the Event Manager UI, then navigate to: **Administration → Topology
 Configuration → Observer jobs → Configure**
 
-**NOTE: If you can't find `Topology Configuration` option from the UI, please
-ensure you have enable the roles in
-[2.7 Locate your login details and log in to Watson for AIOps Event Manager](https://ibm.github.io/waiops-tech-jam/tutorials/aiops/installation/#2-7:-locate-your-login-details-and-log-in-to-watson-for-aiops-event-manager)**
+:::info
+
+If you can't find `Topology Configuration` option from the UI, please ensure you
+have enable the roles in
+[2.7 Locate your login details and log in to Watson for AIOps Event Manager](http://localhost:3000/waiops-tech-jam/labs/watson-aiops/installation/#27-locate-your-login-details-and-log-in-to-watson-for-aiops-event-manager)
+
+:::
 
 Click on Add a new job and then choose File → Configure to create a new File
 Observer job.
@@ -157,7 +177,11 @@ you created in step 5.2 - ie. infrastructure.txt and click Save:
 
 ![](images/infrajob.png)
 
-**NOTE:** The Provider will be automatically populated when you click Save.
+:::note
+
+The Provider will be automatically populated when you click Save.
+
+:::
 
 Repeat the process by creating a second File Observer job for the
 applications.txt file.
@@ -177,13 +201,17 @@ should see nine results come back under the Resources tab:
 
 ![](images/resources.png)
 
-**NOTE:** There are two resources in the list called "computer1000". One is from
-the topology segment ingested from the infrastructure.txt file and the other one
-is from the topology segment ingested from the application.txt file. We will be
+:::note
+
+There are two resources in the list called "computer1000". One is from the
+topology segment ingested from the infrastructure.txt file and the other one is
+from the topology segment ingested from the application.txt file. We will be
 merging these two Resources together shortly, via a Merge Rule.
 
-Click on router1 and it will open the topology view. Increase the number of hops
-to 2 and click Render and you should see something like the following:
+:::
+
+Click on **router1** and it will open the topology view. Increase the number of
+hops to 2 and click **Render** and you should see something like the following:
 
 ![](images/router.png)
 
@@ -194,7 +222,7 @@ representation of the topology segment created by ingesting that file.
 You are now ready to perform the final step, that being to create a Merge Rule
 to tie the two topology segments together via the common resource.
 
-## 5-4: Create a Merge Rule to tie the topology together
+## 5.4: Create a Merge Rule to tie the topology together
 
 This final step is where the topology data coming from the application topology
 source is mapped onto the topology data coming from the infrastructure
@@ -251,8 +279,12 @@ Use the following to create your new Merge Rule:
   to either include or exclude the set of Resources from the rule. In this case,
   we will leave both of these sections blank.
 
-**NOTE:** It is good practice to specify an appropriate set of Conditions for
-your rules, to ensure they only get applied to things they're meant to.
+:::note
+
+It is good practice to specify an appropriate set of Conditions for your rules,
+to ensure they only get applied to things they're meant to.
+
+:::
 
 When finished creating your new Merge Rule, click Save and return to the
 Observer jobs page: Administration → Topology Configuration → Observer jobs.
@@ -261,14 +293,18 @@ Click on the Run (Play button icon) to run your two jobs again. The data will be
 reprocessed in light of the new rule information, and any Resources that match
 the rule will have the merge operation made against them.
 
-**NOTE:** The merge will not happen unless the affected jobs are re-run.
+:::info
+
+The merge will not happen unless the affected jobs are re-run.
+
+:::
 
 To verify the merge was successful, navigate back to Resource management from
-the left menu, but this time search for computer1000. This time you will see
+the left menu, but this time search for **computer1000**. This time you will see
 just one instance in the list of Resources called computer1000 whereas before
-you would have seen two. Click on computer1000, change the hop view to 2 and
-click Render. You should see something like the following, showing the combined
-topology segments:
+you would have seen two. Click on **computer1000**, change the hop view to **2**
+and click **Render**. You should see something like the following, showing the
+combined topology segments:
 
 ![](images/computer.png)
 
@@ -281,4 +317,8 @@ we defined.
 You have now completed this module and are ready for next module "Configure
 topology templates".
 
+:::note
+
 [Reference Blog](https://community.ibm.com/community/user/aiops/blogs/zane-bray1/2022/04/25/getting-started-with-watson-aiops-event-manager-47)
+
+:::
