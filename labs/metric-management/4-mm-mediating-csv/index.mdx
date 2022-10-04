@@ -7,7 +7,7 @@ description:
 sidebar_position: 4
 ---
 
-## 4-1: **Introduction**
+## 4.1: **Introduction**
 
 The Metric Manager can consume data in four primary ways: Modelling/Mediating
 data that is in CSV format, Modelling/Mediating data that resides in a database
@@ -24,10 +24,10 @@ We will create a Metric Manager topic to receive this data, create a model for
 this data with the Mediation Tool, deploy that model, then start the topic and
 start ingesting the data.
 
-## 4-2: **Creating a topic**
+## 4.2: **Creating a topic**
 
 To create a topic, open a terminal window and run the following commands as user
-scadmin on pi VM:
+**scadmin** on pi VM:
 
 ```sh
 cd /opt/IBM/scanalytics/analytics/bin
@@ -55,7 +55,7 @@ completed successfully if you wish.
 ./admin.sh delete_topic TEST
 ```
 
-## 4-3: **Topic configuration**
+## 4.3: **Topic configuration**
 
 ### Topic configuration considerations
 
@@ -182,10 +182,14 @@ cd /opt/IBM/scanalytics/analytics/bin
 
 This will show all of the configurable options for the BIGBLUE topic.
 
-_Note: If the above command does not show an entry for
-'system.aggregation.interval', and only shows a couple of entries, delete the
-topic and re-create it. There appears to be an environmental problem where the
-topic sometimes does not get created properly._
+:::caution
+
+If the above command does not show an entry for **system.aggregation.interval**,
+and only shows a couple of entries, delete the topic and re-create it. There
+appears to be an environmental problem where the topic sometimes does not get
+created properly.
+
+:::
 
 The aggregation interval is "system.aggregation.interval". You can see it is
 currently set to 15 minutes. To change it to 5 minutes, issue the following
@@ -242,7 +246,7 @@ topic command:
 
 Topic configuration is complete!
 
-## 4-4: **Creating a model to ingest CSV**
+## 4.4: **Creating a model to ingest CSV**
 
 The Mediation Tool is the component you will use to model the data contained
 within the CSV files so that Metric Manager can ingest, process, learn, and
@@ -336,11 +340,15 @@ and each line contains only one metric. When you model the CSV file, and select
 the metric column, it will show all of the available unique metric names as
 available, and you can include/exclude metrics as needed._
 
-_Note: If you need to ingest files in both skinny and wide format, you must
-create separate data sources for each type, as you cannot match skinny and wide
-formats in a single project. You can deploy multiple CSV data sources to a
-single topic, but they must be done as the same deployment action – that is you
-must multi-select the data sources, then select "deploy model"._
+:::note
+
+If you need to ingest files in both skinny and wide format, you must create
+separate data sources for each type, as you cannot match skinny and wide formats
+in a single project. You can deploy multiple CSV data sources to a single topic,
+but they must be done as the same deployment action – that is you must
+multi-select the data sources, then select "deploy model".
+
+:::
 
 ### Configure the filesystem details.
 
@@ -384,13 +392,17 @@ As such, change the time format to "yyyyMMdd-HHmm"
 
 The files provided are in GMT already so we can leave the timezone as it is.
 
-_Note: It is important to be cognizant of the timezone of the data and configure
-this appropriately, so that the analytics can properly learn the differences
-between weekday and weekend behavior patterns, as well as proper correlation of
-metrics across all CSV files. In many cases the timezone of the data you work
-with will be GMT, but you may run into cases where they are provided in some
-local time zone. Make sure that you verify with the customer what timezone the
-data timestamps are in._
+:::info
+
+It is important to be cognizant of the timezone of the data and configure this
+appropriately, so that the analytics can properly learn the differences between
+weekday and weekend behavior patterns, as well as proper correlation of metrics
+across all CSV files. In many cases the timezone of the data you work with will
+be GMT, but you may run into cases where they are provided in some local time
+zone. Make sure that you verify with the customer what timezone the data
+timestamps are in.
+
+:::
 
 Once all the File System Details options have been configured, click the "Test
 Matching". You should get green checkmarks for the files in our directory
@@ -664,7 +676,7 @@ To save the model:
 
 ![](images/Picture45.png)
 
-## 4-5: Deploying the model
+## 4.5: Deploying the model
 
 Next, to deploy the model, right-click on the BIGBLUE.pamodel title under the
 TECHJAM2022 project, and select **Deploy Model**:
@@ -696,7 +708,7 @@ After the KPI count is complete, click **Yes** to deploy the model to the topic:
 After the deployment completes successfully, exit the mediation tool to return
 to the command line.
 
-## 4-6: **Ingesting CSV data for machine learning**
+## 4.6: **Ingesting CSV data for machine learning**
 
 ### Start the topic
 

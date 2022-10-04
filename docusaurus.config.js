@@ -41,13 +41,13 @@ const config = {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/IBM/waiops-tech-jam",
+          editUrl: "https://github.com/IBM/waiops-tech-jam/tree/main",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/IBM/waiops-tech-jam",
+          editUrl: "https://github.com/IBM/waiops-tech-jam/tree/main",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -165,11 +165,24 @@ const config = {
           },
           {
             className: "code-block-error-line",
-            line: "This will error",
+            line: "highlight-next-line-error",
+            block: {start: "highlight-error-start", end: "highlight-error-end"},
+          },
+          {
+            className: "code-block-correct-line",
+            line: "highlight-next-line-correct",
+            block: {
+              start: "highlight-correct-start",
+              end: "highlight-correct-end",
+            },
           },
           {
             className: "code-block-emphasis-line",
-            line: "This will emphasise",
+            line: "highlight-next-line-emphasise",
+            block: {
+              start: "highlight-emphasis-start",
+              end: "highlight-emphasis-end",
+            },
           },
         ],
       },

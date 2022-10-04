@@ -16,8 +16,11 @@
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
-  --emphasis-code-highlight-main: #e6f6e6;
-  --emphasis-code-highlight-accent: #003100;
+  --correct-code-highlight-main: #e6f6e6;
+  --correct-code-highlight-accent: #003100;
+
+  --emphasis-code-highlight-main: #fff8e6;
+  --emphasis-code-highlight-accent: #e6a700;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -31,8 +34,11 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 
-  --emphasis-code-highlight-main: #003100;
-  --emphasis-code-highlight-accent: #009400;
+  --correct-code-highlight-main: #003100;
+  --correct-code-highlight-accent: #009400;
+
+  --emphasis-code-highlight-main: #4d3800;
+  --emphasis-code-highlight-accent: #e6a700;
 }
 
 .code-block-error-line {
@@ -41,6 +47,14 @@
   margin: 0 calc(-1 * var(--ifm-pre-padding));
   padding: 0 var(--ifm-pre-padding);
   border-left: 3px solid #ff000080;
+}
+
+.code-block-correct-line {
+  background-color: var(--correct-code-highlight-main);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+  border-left: 3px solid var(--correct-code-highlight-accent);
 }
 
 .code-block-emphasis-line {

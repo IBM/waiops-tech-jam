@@ -4,7 +4,7 @@ description: Deployment of Kubeturbo
 sidebar_position: 5
 ---
 
-## 5-1: Introduction
+## 5.1: Introduction
 
 Turbonomic ARM is generally agentless and pulls data from configured targets
 using APIs.
@@ -14,18 +14,18 @@ complex and dynamic environment, an agent component is deployed onto target
 Kubernetes and OpenShift cluster which then send data to the Turbonomic ARM
 server.
 
-The <a href="https://github.com/turbonomic/kubeturbo/wiki" target="_blank">
-kubeturbo GitHub wiki</a> contains a wealth of information about installation,
-configuration, troubleshooting, and more.
+The [kubeturbo GitHub wiki](https://github.com/turbonomic/kubeturbo/wiki)
+contains a wealth of information about installation, configuration,
+troubleshooting, and more.
 
-The content of this section follows the recommended <a
-href="https://github.com/turbonomic/kubeturbo/wiki/OpenShift-Operator-Hub-Details" target="_blank">OpenShift
-deployment</a> procedure and provides contextual instruction in relation to the
-lab environment being built out within this site.
+The content of this section follows the recommended
+[OpenShift deployment](https://github.com/turbonomic/kubeturbo/wiki/OpenShift-Operator-Hub-Details)
+procedure and provides contextual instruction in relation to the lab environment
+being built out within this site.
 
 ---
 
-## 5-2: Prerequisites
+## 5.2: Prerequisites
 
 The steps in this lab should be performed on the **Application** OpenShift
 cluster:
@@ -34,9 +34,13 @@ cluster:
 
 1. In your browser, navigate to your **Application** OpenShift console:
 
-   > You can find and open your OpenShift console from the
-   > <a href="https://cloud.ibm.com/kubernetes/clusters?platformType=openshift" target="_blank">IBM
-   > Cloud clusters</a> page.
+   :::tip
+
+   You can find and open your OpenShift console from the
+   [IBM Cloud clusters](https://cloud.ibm.com/kubernetes/clusters?platformType=openshift)
+   page.
+
+   :::
 
 1. As a cluster administrator, create a project in the OCP cluster where
    KubeTurbo will be deployed:
@@ -51,14 +55,18 @@ cluster:
 
 ---
 
-## 5-3: Deploy the Operator
+## 5.3: Deploy the Operator
 
 1. Click on `Operators -> OperatorHub`. Ensure the `kubeturbo-operator` project
    is selected in the dropdown.
 
 1. Search for `kubeturbo` and select the `Certified` KubeTurbo operator:
 
-   > **Note:** Do not use Community edition.
+   :::warning
+
+   Do not use Community edition.
+
+   :::
 
    ![](images/searchKubeturboCertified.png)
 
@@ -89,7 +97,7 @@ cluster:
 
 ---
 
-## 5-4: Configure Kubeturbo Instance
+## 5.4: Configure Kubeturbo Instance
 
 1. When viewing the deployed operator, click on `Create instance`:
 
@@ -97,15 +105,25 @@ cluster:
 
 1. To configure this instance click on the `YAML view` option:
 
-   > **Note:** Refer to
-   > <a href="https://github.com/turbonomic/kubeturbo/wiki/OpenShift-Operator-Hub-Details#configure-a-kubeturbo-instance" target="_blank">Configure
-   > KubeTurbo Instance</a> for more information on the `Form view` option.
-   > **For this lab, use the `YAML view` option**.
+   :::info
+
+   Refer to
+   [Configure KubeTurbo Instance](https://github.com/turbonomic/kubeturbo/wiki/OpenShift-Operator-Hub-Details#configure-a-kubeturbo-instance)
+   for more information on the `Form view` option.
+
+   For this lab, use the `YAML view` option.
+
+   :::
 
    ![](images/kubeturboCreateInstance-2.png)
 
-1. Replace all the content in the YAML editor view with the YAML config below,
-   but **DO NOT CLICK CREATE YET!!**
+1. Replace all the content in the YAML editor view with the YAML config below
+
+   :::warning
+
+   **DO NOT CLICK CREATE YET!!**
+
+   :::
 
    ```
    kind: Kubeturbo
@@ -199,7 +217,7 @@ cluster:
 
 ---
 
-## 5-5: Validate Deployment
+## 5.5: Validate Deployment
 
 You should now see two deployments and two running pods in the namespace:
 
@@ -234,7 +252,7 @@ You should now see two deployments and two running pods in the namespace:
 
 ---
 
-## 5-6: Summary
+## 5.6: Summary
 
 In this portion of the lab, you have learned how to install the KubeTurbo agent
 or probe in a target cluster, which communicates with the remote Turbonomic

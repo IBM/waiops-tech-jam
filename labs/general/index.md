@@ -58,9 +58,9 @@ ssh -i <path-to-your-key> <user>@<control node IP address>
 ## Windows Users
 
 - For Windows 10 or higher, it's recommended to use
-  [Windows PowerShell](#1.-windows-powershell)
+  [Windows PowerShell](#1-windows-powershell)
 - For Windows users who are on lower than Windows 10, you can use
-  [PuTTY](#2.-putty)
+  [PuTTY](#2-putty)
 
 ### 1. Windows PowerShell
 

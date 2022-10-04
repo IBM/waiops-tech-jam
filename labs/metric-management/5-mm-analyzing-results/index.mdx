@@ -6,7 +6,7 @@ description:
 sidebar_position: 5
 ---
 
-## 5-1: Lab Introduction
+## 5.1: Lab Introduction
 
 In our previous lab, we configured a Metric Manager topic to receive data, we
 built a data model based on CSV files, we deployed the model to our topic, and
@@ -14,21 +14,26 @@ we ran extraction to allow the Metric Manager to ingest the data and learn the
 behavior. Now that we have run our data through the system for analysis and
 machine learning, we will review the results of the metric analysis.
 
-## 5-2: Accessing the dashboard
+## 5.2: Accessing the dashboard
 
 To view the results of the ingestion and analysis, open Firefox from the Desktop
 menu:
 
 ![](images/lab4-Picture49.png)
 
-Login as ncoadmin / **<span style={{color: "green"}}><LAB PASSWORD\></span>**:
+Login as **ncoadmin** / **<span style={{color: "green"}}><LAB
+PASSWORD\></span>**:
 
 ![](images/lab4-Picture50.png)
 
-(note, if you don't see the above login screen when opening up Firefox, click on
-the "IBM Dashboard Application Services Hub" bookmark in the bookmarks bar).
+:::note
 
-## 5-3: The anomaly search view
+If you don't see the above login screen when opening up Firefox, click on the
+"IBM Dashboard Application Services Hub" bookmark in the bookmarks bar.
+
+:::
+
+## 5.3: The anomaly search view
 
 From the main Dashboard window, find the "Snowflake" icon in the left menu pane,
 click on it, and select "Service Diagnosis Anomaly Search":
@@ -51,10 +56,11 @@ UI doing a live search for resources as you type. Try this by typing in
 Take note of how it auto-fills the resource information per the resources that
 are in the system. In this case, we have two resources:
 
--"details" which would likely have "node-level", metrics (aggregate CPU
-utilization, for example). -"details:DB_SAN1" is a more specific component of
-the node "details", and indicates metrics for that particular sub-component (in
-this case, the disk DB_SAN1).
+- "**details**" which would likely have "node-level", metrics (aggregate CPU
+  utilization, for example).
+- "**details:DB_SAN1**" is a more specific component of the node "details", and
+  indicates metrics for that particular sub-component (in this case, the disk
+  DB_SAN1).
 
 You can also filter by metric name as well.
 
@@ -70,7 +76,7 @@ all of the multi-level, grouped anomaly alerts:
 
 ![](images/lab4-Picture53.png)
 
-## 5-4: Launching anomaly details
+## 5.4: Launching anomaly details
 
 Next, find the anomaly that indicates **ResponseTime is Higher than expected**
 for the **productpage-v1** resource, and select **Launch** (may be in a
@@ -204,7 +210,7 @@ surmise that the disk saturation is limiting the number of database
 transactions, which is, in turn, causing a serious performance problem for the
 application.
 
-## 5-5: Viewing alarms in Event Manager
+## 5.5: Viewing alarms in Event Manager
 
 Next, we will look at the alarms in Event Manager that were generated for these
 anomalies. Anomaly alerts are generated through the use of a stdin probe that is
@@ -246,9 +252,9 @@ sub-groups of metrics as well:
 
 ![](images/lab4-Picture67.png)
 
-## 5-6: Metric search
+## 5.6: Metric search
 
-You can perform aribitrary searches for resource / metric combinations.
+You can perform arbitrary searches for resource / metric combinations.
 
 Click on the "Snowflake" icon in the left menu, and select **Service Diagnosis
 Metric Search**.
@@ -267,13 +273,13 @@ gives way to...
 
 ![](images/lab4-add5.png)
 
-Searching for aribitrary metrics allows you to view the behaviour of metrics
+Searching for arbitrary metrics allows you to view the behaviour of metrics
 **without** them necessarily being anomalous, which can come in handy if you
 want to ensure that a given metric is being collected, and also in situations
 where someone needs evidence that a metric or set of metrics of interest are
 acting within their learned baselines.
 
-## 5-7: Anomaly distribution dashboard
+## 5.7: Anomaly distribution dashboard
 
 Finally, there is also an anomaly distribution dashboard that shows the time
 frame of anomalies received, the number of anomalies that occurred for each time

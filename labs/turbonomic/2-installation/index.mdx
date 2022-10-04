@@ -4,16 +4,14 @@ description: Operator Based Installation of Turbonomic on OpenShift
 sidebar_position: 2
 ---
 
-## 2-1: Introduction
+## 2.1: Introduction
 
 Installing Turbonomic platform in your OpenShift cluster:
 
 ![](images/overview-1.png)
 
-The
-<a href="https://github.com/turbonomic/t8c-install/wiki" target="_blank">t8c-install</a>
-repository contains information about installation methods, sizing, architecture
-and more.
+The [t8c-install](https://github.com/turbonomic/t8c-install/wiki) repository
+contains information about installation methods, sizing, architecture and more.
 
 The instructions in this lab are streamlined and contextual versions of the
 information from the above repository, designed to get up and running quickly
@@ -21,10 +19,14 @@ and build out a lab or demo environment in OpenShift running in IBM Cloud.
 
 ---
 
-## 2-2: Prerequisites
+## 2.2: Prerequisites
 
-> **Important:** Perform this installation procedure from your **control** node
-> as the **jammer** user.
+:::caution Important
+
+Perform this installation procedure from your **control** node as the **jammer**
+user.
+
+:::
 
 1. Login into the **AIops** OpenShift Console UI and get your login token:
 
@@ -76,7 +78,7 @@ You are now ready to deploy the operator
 
 ---
 
-## 2-3: Deploy the Operator
+## 2.3: Deploy the Operator
 
 1. Create the operator service account:
 
@@ -116,24 +118,32 @@ You are now ready to deploy the operator
    t8c-operator-fdd8b8c94-dhrt4   1/1     Running   0          72s
    ```
 
-   > **Note:** Type `Ctrl-C` to exit the watch loop.
+   :::note
+
+   Type `Ctrl-C` to exit the watch loop.
+
+   :::
 
 Next, we are going to configure the Turbonomic instance.
 
 ---
 
-## 2-4: Configure the Turbonomic Instance: Custom Resource
+## 2.4: Configure the Turbonomic Instance: Custom Resource
 
 1. Set the storage class:
+
+   :::note
+
+   The lab instructions assume you using
+   [Red Hat OpenShift on IBM Cloud](https://cloud.ibm.com/docs/openshift?topic=openshift-getting-started).
+   For other OpenShift environments, use `oc get storageclass` to select a
+   storage class that is available in your environment.
+
+   :::
 
    ```sh
    export STORAGE_CLASS=ibmc-block-gold
    ```
-
-   > **Note:** The lab instructions assume you using
-   > [Red Hat OpenShift on IBM Cloud](https://cloud.ibm.com/docs/openshift?topic=openshift-getting-started).
-   > For other OpenShift environments, use `oc get storageclass` to select a
-   > storage class that is available in your environment.
 
 1. Apply a custom resource file to launch Turbonomic:
 
@@ -175,7 +185,11 @@ Next, we are going to configure the Turbonomic instance.
    oc get pods -n ${NS} -w
    ```
 
-   > **Note:** Type `Ctrl-C` to exit the watch loop.
+   :::note
+
+   Type `Ctrl-C` to exit the watch loop.
+
+   :::
 
    Ensure all the pods:
 
@@ -184,7 +198,7 @@ Next, we are going to configure the Turbonomic instance.
 
    **Example output only (Do not copy and paste into your terminal):**
 
-   ```
+   ```sh
    NAME                                   READY   STATUS    RESTARTS      AGE
    action-orchestrator-55bbb96fd8-bxv59   1/1     Running   2 (14m ago)   17m
    api-6d876bd5c8-ntpc9                   1/1     Running   0             17m
@@ -209,7 +223,7 @@ Next, we are going to configure the Turbonomic instance.
 
 ---
 
-## 2-5: Launch the Turbonomic User interface
+## 2.5: Launch the Turbonomic User interface
 
 You are now ready to open a browser and login to the Turbonomic user interface.
 
@@ -233,18 +247,20 @@ You are now ready to open a browser and login to the Turbonomic user interface.
 
 ---
 
-## 2-6: License Configuration
+## 2.6: License Configuration
 
 Once logged in, the setup wizard will prompt you to import the license key:
 
 ![](images/license1.png)
 
-> **Note:**
->
-> - If attending a scheduled Tech Jam, your lab proctors will provide you the
->   license file.
-> - If following these instructions offline outside a scheduled Tech Jam, the
->   license file can be found within your downloaded software archive.
+:::note
+
+- If attending a scheduled Tech Jam, your lab proctors will provide you the
+  license file.
+- If following these instructions offline outside a scheduled Tech Jam, the
+  license file can be found within your downloaded software archive.
+
+:::
 
 1. Click on `LET'S GO` button.
 
@@ -257,7 +273,7 @@ Once logged in, the setup wizard will prompt you to import the license key:
 
 ---
 
-## 2-7: Summary
+## 2.7: Summary
 
 In this portion of the lab, you have learned how to install Turbonomic on
 OpenShift.
