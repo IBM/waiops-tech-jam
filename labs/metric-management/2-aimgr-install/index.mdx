@@ -4,20 +4,22 @@ description: How to install a small deployment of AI Manager
 sidebar_position: 2
 ---
 
-## 2-1: Introduction
+:::warning Prerequisite
+
+If you missed yesterday's Event Manager labs, you will need to log in to your
+cluster and follow the first part of **step 5** of **Lab 2**,
+[where you import the yaml to create the catalog source](https://ibm.github.io/waiops-tech-jam/labs/watson-aiops/installation/#25-install-the-cloud-pak-for-watson-aiops-event-manager-operator)
+
+If your cluster already has the catalog source installed, you may proceed.
+
+:::
+
+## 2.1: Introduction
 
 Before we begin with Metric Manager, we will start the installation of AI
 Manager, as this can take 90 minutes or so to complete.
 
-If you missed yesterday's Event Manager labs, you will need to log in to your
-cluster and follow the first part of **step 5** of **Lab 2**, where you import
-the yaml to create the catalog source:
-
-https://ibm.github.io/waiops-tech-jam/tutorials/aiops/installation#2-5:-install-the-cloud-pak-for-watson-aiops-event-manager-operator
-
-If your cluster already has the catalog source installed, you may proceed.
-
-## 2-2: Create a namespace for the Watson AIOps AI Manager install
+## 2.2: Create a namespace for the Watson AIOps AI Manager install
 
 In the OpenShift UI, navigate to Projects:
 
@@ -27,18 +29,18 @@ Then, in the upper-right corner click "Create Project":
 
 ![](images/Picture2.png)
 
-Call your project "cp4waiops":
+Call your project `cp4waiops`:
 
 ![](images/Picture3.png)
 
 Once your project is created, you will need to go to the command line of your
-control node and change the project to 'cp4waiops', then create an entitlement
+control node and change the project to _cp4waiops_, then create an entitlement
 secret so the images for the AI Manager can be pulled. First, login to the
 following link and copy your entitlement key:
 
 [https://myibm.ibm.com/products-services/containerlibrary](https://myibm.ibm.com/products-services/containerlibrary)
 
-Change your project to 'cp4waiops':
+Change your project to **cp4waiops**:
 
 ```sh
 oc project cp4waiops
@@ -46,21 +48,40 @@ oc project cp4waiops
 
 Next, issue the following command to create the secret:
 
-**Important:** Do not change the name of the secret, you **MUST** use the name
+:::warning
+
+Do not change the name of the secret, you **MUST** use the name
 _ibm-entitlement-key_
+
+:::
 
 ```sh
 oc create secret docker-registry ibm-entitlement-key \
 --docker-username=cp \
---docker-password='<Your Entitlement Key>' \
+//highlight-next-line-emphasise
+--docker-password='<Your_Entitlement_Key>' \
 --docker-server=cp.icr.io \
 --namespace=cp4waiops
 ```
 
-## 2-3: Install the Watson AIOps AI Manager Operator
+:::tip
+
+You can reuse the secret you used to successfully install NOI when you
+[prepared your OpenShift cluster](http://localhost:3000/waiops-tech-jam/labs/watson-aiops/installation/#24-prepare-your-openshift-cluster)
+in the Watson AIOps lab. The following command will copy the secret from the
+_noi_ namespace into the _cp4waiops_ namespace with the new name
+_ibm-entitlement-key_.
+
+```shell
+kubectl get secret noi-registry-secret --namespace=noi -o yaml | sed 's/namespace: .*/namespace: cp4waiops/' | sed 's/name: .*/name: ibm-entitlement-key/' | kubectl apply -f -
+```
+
+:::
+
+## 2.3: Install the Watson AIOps AI Manager Operator
 
 Navigate to "Operator Hub", and change the project at the top of the page to
-your 'cp4waiops' project. Then, in the search box under "All Items", type in "ai
+your _cp4waiops_ project. Then, in the search box under "All Items", type in "ai
 manager":
 
 ![](images/Picture4.png)
@@ -69,10 +90,14 @@ Click on the "IBM Cloud Pak for Watson AIOps AI Manager" tile:
 
 ![](images/Picture5.png)
 
-** NOTE: DO NOT USE THE WATSION AIOPS AI MANAGER TILE, THE TILE MUST BE TITLED
-"IBM Cloud Pak for Watson AIOps AI Manager"**
+:::warning
 
-Next, double-check that the "Project" you are in is 'cp4waiops', and click the
+DO NOT use the _Watson AIOps AI Manager tile_, you must use the tile labeled
+**IBM Cloud Pak for Watson AIOps AI Manager**
+
+:::
+
+Next, double-check that the "Project" you are in is _cp4waiops_, and click the
 "Install" button:
 
 ![](images/Picture6.png)
@@ -80,13 +105,13 @@ Next, double-check that the "Project" you are in is 'cp4waiops', and click the
 In the next screen, you will leave the version at 3.4, but change the
 Installation mode to "A specific namespace on the cluster". Verify that the
 Installed Namespace says cp4waiops. If not, using the drop down box select
-'cp4waiops'. Then click "Install".
+_cp4waiops_. Then click "Install".
 
 When the operator installation is complete, select "View Operator":
 
 ![](images/Picture7.png)
 
-## 2-4: Install an instance of AI Manager
+## 2.4: Install an instance of AI Manager
 
 Now that the operator is installed, you can create instances of the AI Manager.
 From the Operator view, click on the "Create instance" Link in the AI Manager

@@ -4,32 +4,35 @@ description: How to install Metric Manager
 sidebar_position: 3
 ---
 
-## 3-1: Lab Introduction
+## 3.1: Lab Introduction
 
 In this lab, you will be installing the various components that make up the
 VM-based Metric Manager (formerly Predictive Insights) solution, as well as
 installing the latest Interim Fix (IFIX5), and the REST Mediation Service, which
 will be used in an upcoming lab.
 
+:::caution Prerequisite
+
 You will need to use VNC to access the UI of your VM. If you don't already have
-VNC installed, you can download the RealVNC VNC Viewer for your operating system
-at the following link:
+VNC installed, you can download the RealVNC VNC Viewer for your MacOS, Windows
+or Linux OS at
+[RealVNC Downloads](https://www.realvnc.com/en/connect/download/viewer/).
 
-<a href="https://www.realvnc.com/en/connect/download/viewer/" target="_blank">
-  RealVNC Downloads
-</a>
+:::
 
-MacOS, Window, and Linux clients are avaialable.
+:::caution Prerequisite
 
 For the execution of the labs, you will need the following passwords, provided
 to you by your lab proctor at the beginning of the session: <br/>
 
-**<span style={{color: "green"}}><VNC PASSWORD\></span>** <br/> **<span
-style={{color: "green"}}><LAB PASSWORD\></span>** <br/> **<span
-style={{color: "green"}}><DEFAULT CASSANDRA PASSWORD\></span>** <br/> **<span
-style={{color: "green"}}><CASSANDRA PASSWORD\></span>**
+- **<VNC PASSWORD\>**
+- **<LAB PASSWORD\>**
+- **<DEFAULT CASSANDRA PASSWORD\>**
+- **<CASSANDRA PASSWORD\>**
 
-## 3-2: Accessing your Metric Manager lab environment
+:::
+
+## 3.2: Accessing your Metric Manager lab environment
 
 Open your VNC Viewer and create a new connection (File -> New Connection)
 
@@ -55,7 +58,7 @@ the desktop background and select **Open Terminal** to open a terminal session.
 
 You are now prepared to proceed with the installation of Metric Manager.
 
-## 3-3: Installing IBM Streams
+## 3.3: Installing IBM Streams
 
 Metric Manager uses IBM Streams as its core ingestion/analytics engine. As such,
 the Streams software must be installed prior to installing the Metric Manager.
@@ -73,7 +76,7 @@ Streams install:
 
 ![](images/lab2-Picture3.png)
 
-Click through the Introduction screen, and accept the licenes agreement. When
+Click through the Introduction screen, and accept the license agreement. When
 you come to the installation directory screen, change the installation path from
 the scadmin home directory to " **/opt/IBM/InfoSphere_Streams**":
 
@@ -114,14 +117,18 @@ JAVA_HOME=/opt/IBM/InfoSphere_Streams/4.2.0.3/java
 export PATH JAVA_HOME
 ```
 
-**Alternatively, you can run the following command to append these lines to the
-scadmin user's .bashrc file. Be careful here and make a backup incase you
-accidentally overwrite the file instead of append:**
+:::tip
+
+Alternatively, you can run the following command to append these lines to the
+scadmin user's .bashrc file. Be careful here and make a backup in case you
+accidentally overwrite the file instead of append:
 
 ```sh
 cp ~/.bashrc ~/.bashrc-BAK
 cat /home/scadmin/PI-Installables/bashrc >> ~/.bashrc
 ```
+
+:::
 
 Once you have modified the scadmin user's .bashrc, re-source the new .bashrc by
 issuing the following command (or close/re-open the terminal window). You should
@@ -137,7 +144,7 @@ been set up:
 
 `IBM Streams environment variables have been set.`
 
-## 3-4: Installing Metric Manager (Predictive Insights)
+## 3.4: Installing Metric Manager (Predictive Insights)
 
 To install Metric Manager, DB2 needs to be running. From the command line
 window, issue the following command to start DB2:
@@ -234,10 +241,14 @@ systemctl start netcoolwebgui
 And click **Validate** again. If you continue to have issues, consult a lab
 proctor.
 
-_Note: it is possible to integrate the on-prem version of MM with NOI/Watson
-AIOps Event Manager running on OCP. Contact Jason Cress /
+:::note
+
+It is possible to integrate the on-prem version of MM with NOI/Watson AIOps
+Event Manager running on OCP. Contact Jason Cress /
 [jcress@us.ibm.com](mailto:jcress@us.ibm.com) for instructions on how this
-integration is achieved._
+integration is achieved.
+
+:::
 
 The next screen, "UI Configuration", will require the following changes:
 
@@ -297,9 +308,13 @@ following screen indicating that the installation was successful:
 
 ![](images/lab2-Picture22.png)
 
-_Note: if you see an orange icon with a message indicating the install completed
-with warnings, please continue the labs. We will be rebuilding the topic after
-the install of ifix5_
+:::note
+
+If you see an orange icon with a message indicating the install completed with
+warnings, please continue the labs. We will be rebuilding the topic after the
+install of _ifix5_.
+
+:::
 
 Click **Finish** to, and then select **File -\> Exit** to exit the installer and
 return to your terminal.
@@ -320,13 +335,17 @@ Delete the TEST topic that we created during the installation:
 You have completed the installation of Metric Manager. In the next section, you
 will install the latest update.
 
-## 3-5: Installing Metric Manager Interim Fix 5
+## 3.5: Installing Metric Manager Interim Fix 5
+
+:::info
 
 The latest fix pack for Metric Manager is always available on the IBM Fix
 Central site. As of this writing, the latest available fix is IFIX5. It provides
 fixes for the core analytics, the UI, and installs a new version of Streams.
 Finally, it provides an update to the REST/Kafka mediation components, which we
 will work with in an upcoming lab.
+
+:::
 
 To install the latest IFIX, you will run the updates from the command line using
 the following steps:
@@ -427,27 +446,32 @@ And run the update UI script:
 
 :::danger
 
-# ** !!! DANGER, WILL ROBINSON !!! **
-
-:::
+## ** !!! DANGER, WILL ROBINSON !!! **
 
 The next portion of the installation will prompt you for 14 values. You must be
 _deliberate_ in entering these values, and you must enter them as shown below.
 The interim fix installation script does not verify the values you enter here,
 and even though the prompts suggest default values, the defaults will not be
-accepted. **Please ensure that you enter the correct values as listed below!**
+accepted.
 
-JazzSM/WebGUI host: `pi-template.Hybrid-Squad.cloud` JazzSM base directory:
-`/home/scadmin/IBM/JazzSM` JazzSM profile directory:
-`/home/scadmin/IBM/JazzSM/profile` permission to start JazzSM: `Y` JazzSM/WAS
-server: `server1` WebGUI base directory:
-`/home/scadmin/IBM/netcool/gui/omnibus_webgui` JazzSM/WebGUI non-secure port:
-`16310` JazzSM/WebGUI secure port: `16311` WebGUI Admin username: `ncoadmin`
-ncoadmin's password: `<LAB PASSWORD>` Predictive Insights UI host:
-`pi-template.Hybrid-Squad.cloud` Predictive Insights UI base folder:
-`/opt/IBM/scanalytics/UI` Predictive Insights installer folder:
-`/opt/IBM/scanalytics/install_scadmin` Predictive Insights UI non-secure port:
-`9999`
+:::
+
+**Please ensure that you enter the correct values as listed below!**
+
+- JazzSM/WebGUI host: `pi-template.Hybrid-Squad.cloud`
+- JazzSM base directory: `/home/scadmin/IBM/JazzSM`
+- JazzSM profile directory: `/home/scadmin/IBM/JazzSM/profile`
+- permission to start JazzSM: `Y`
+- JazzSM/WAS server: `server1`
+- WebGUI base directory: `/home/scadmin/IBM/netcool/gui/omnibus_webgui`
+- JazzSM/WebGUI non-secure port: `16310`
+- JazzSM/WebGUI secure port: `16311`
+- WebGUI Admin username: `ncoadmin`
+- ncoadmin's password: `<LAB PASSWORD>`
+- Predictive Insights UI host: `pi-template.Hybrid-Squad.cloud`
+- Predictive Insights UI base folder: `/opt/IBM/scanalytics/UI`
+- Predictive Insights installer folder: `/opt/IBM/scanalytics/install_scadmin`
+- Predictive Insights UI non-secure port: `9999`
 
 ![](images/lab2-Picture26.png)
 
@@ -511,7 +535,7 @@ You should be presented with the following window:
 
 If you receive an error, consult your lab proctor.
 
-## 3-6: Installing the REST Mediation Service
+## 3.6: Installing the REST Mediation Service
 
 Now that both the Core and UI components of Metric Manager are updated, our last
 step for install is to install the REST mediation service. Close firefox, return

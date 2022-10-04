@@ -4,15 +4,15 @@ description: Turbonomic Policies
 sidebar_position: 6
 ---
 
-## 6-1: Introduction
+## 6.1: Introduction
 
 Turbonomic defines a set of default policies for each entity type which are used
 to analyze data and make action recommendations.
 
-Ssers can define their own policies for each entity in the supply chain based on
+Users can define their own policies for each entity in the supply chain based on
 business requirements.
 
-Policies define business rules to control how Turbonimic
+Policies define business rules to control how Turbonomic
 
 - analyzes resource allocation.
 - displays resource status
@@ -24,7 +24,7 @@ recommendations that will assure application performance.
 
 ---
 
-## 6-2: Create Groups
+## 6.2: Create Groups
 
 In Turbonomic ARM, groups:
 
@@ -51,12 +51,14 @@ In the Turbonomic ARM user interface:
 
 1. Enter the group name as `Robot Shop Group` and select the `Dynamic` type:
 
-   > **Static vs Dynamic**
-   >
-   > - use Dynamic groups if there is criteria which can define your group.
-   > - use Static groups when:
-   >   - You do not expect membership to ever change.
-   >   - There is no criteria that can be used to define the group.
+   :::info Static vs Dynamic
+
+   - use Dynamic groups if there is criteria which can define your group.
+   - use Static groups when:
+     - You do not expect membership to ever change.
+     - There is no criteria that can be used to define the group.
+
+   :::
 
    ![](images/groups-4.png)
 
@@ -71,13 +73,13 @@ In the Turbonomic ARM user interface:
 
    ![](images/groups-6.png)
 
-You should now see the `Robot Shop Group` newly created.
+   You should now see the `Robot Shop Group` newly created.
 
-![](images/groups-7.png)
+   ![](images/groups-7.png)
 
 ---
 
-## 6-3: Setup a Policy
+## 6.3: Setup a Policy
 
 1. Go to the Turbonomic ARM homepage and click on `Settings`:
 
@@ -138,10 +140,14 @@ You should now see the `Robot Shop Group` newly created.
 
 ---
 
-## 6-4: Editing a Policy
+## 6.4: Editing a Policy
 
-> **Note:** This is for information only, there is no need to actually edit any
-> policy for these labs.
+:::caution
+
+This is for information only, there is no need to actually edit any policy for
+these labs.
+
+:::
 
 To edit a policy, click on the policy:
 
@@ -151,7 +157,7 @@ Make your changes and save.
 
 ---
 
-## 6-5: Deleting a Policy
+## 6.5: Deleting a Policy
 
 > **Important:** This is for information only, do not delete any policy for
 > these labs.
@@ -162,7 +168,7 @@ Make your changes and save.
 
 ---
 
-## 6-6: Summary
+## 6.6: Summary
 
 In this section, you have learned how to create a scoped policy for a container
 spec, in this case to govern an application container spec.

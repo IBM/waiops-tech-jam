@@ -7,32 +7,43 @@ description:
 sidebar_position: 7
 ---
 
-## 7-1: Introduction
+## 7.1: Introduction
 
 The Watson AIOps Metric Anomaly Detection feature is intended to be the
 replacement for the VM-based Metric Manager. While it doesn't quite have feature
 parity with the VM based solution currently,
 
-**Some of the items that the MAD component will improve on over the VM solution
-are:**
+Some of the items that the MAD component will improve on over the VM solution
+are:
 
-**_Current GA release (3.4.1)_**<br/> High Availability<br/> Support multiple
-aggregation interval<br/> Runs on OpenShift<br/> Horizontally scalable<br/> Easy
-install<br/> Off-the-shelf Instana connector<br/> Seamless, modern user
-experience<br/> **_Future releases_**<br/> Multi-tenancy<br/> Data quality
-analysis<br/>
+- **_Current GA release (3.4.1)_**
+  - High Availability
+  - Support multiple aggregation interval
+  - Runs on OpenShift
+  - Horizontally scalable
+  - Easy install
+  - Off-the-shelf Instana connector
+  - Seamless, modern user experience
+- **_Future releases_**
+  - Multi-tenancy
+  - Data quality analysis<br/>
 
-**Features that are currently missing in MAD vs. VM Metric Manager:<br/>**
-Metric search (future enhancement)<br/> Anomaly search (future enhancement)<br/>
-Current off-the-shelf mediators/integrations are incompatible (future
-enhancement)<br/>
+Features that are currently missing in MAD vs. VM Metric Manager:
+
+- Metric search (future enhancement)
+- Anomaly search (future enhancement)<br/> Current off-the-shelf
+  mediators/integrations are incompatible (future enhancement)<br/>
+
+:::info
 
 It is possible to install MAD in either Watson AIOps Event Manager deployment,
 or in Watson AIOps AI Manager deployment. We went with AI Manager to give you
 exposure to that installation and to allow you to familiarize yourselves with
 the UI.
 
-## 7-2: Verify the Watson AIOps AI Manager installation
+:::
+
+## 7.2: Verify the Watson AIOps AI Manager installation
 
 At the beginning of the day, you started an install of Watson AIOps AI Manager.
 In general, a deployment of AI Manager runs around 90 minutes or so. Before we
@@ -52,7 +63,7 @@ OK for AIManager, AIOpsEdge, and ASM respectively:
 
 ![](images/Picture1.png)
 
-## 7-3: Generating an API key
+## 7.3: Generating an API key
 
 For this lab we will be sending in metric data through the Watson AIOps REST
 API. Any interaction with the Watson AIOps API must be authenticated by either a
@@ -111,7 +122,7 @@ copied in the previous step:
 ZENAPIKEY=$(echo "admin:<YOUR API KEY>" |base64); echo $ZENAPIKEY
 ```
 
-## 7-4: Sending training data to the Watson AIOps API
+## 7.4: Sending training data to the Watson AIOps API
 
 First we will obtain the training/display files we will use to demonstrate
 training/anomaly detection. SCP the following training and display files. Use
@@ -148,7 +159,7 @@ _< HTTP/1.1 200 OK_
 
 Followed by several lines summarizing the completed session.
 
-## 7-5: Confirm that the training data was received
+## 7.5: Confirm that the training data was received
 
 Much like we saw in the on-prem Metric Manager, data that is send in via the
 REST interface is placed on a Kafka topic and inserted into a Cassandra
@@ -199,7 +210,7 @@ were found within the data that we sent to the REST interface. The mr_id is the
 link between the resource/metric combination, and the metric value in the
 dt_metric_value table.
 
-## 7-6: Running the training job
+## 7.6: Running the training job
 
 Now that we have data in the system, we can kick off a training job. Return to
 the Watson AIOps interface in your browser, and from the main screen, click on
@@ -242,7 +253,7 @@ deployed:
 
 ![](images/Picture15.png)
 
-## 7-7: Sending anomalous data
+## 7.7: Sending anomalous data
 
 We split the data into two parts to illustrate training and anomaly generation.
 In this step, we will send our anomalous data in. This will be in the same
@@ -253,7 +264,7 @@ send our "display" metric data into the REST API of MAD.
 curl -k -v -X POST "https://${METRICROUTE}/aiops/api/app/metric-api/v1/metrics" --header 'Content-Type: application/json' --header "Authorization: ZenApiKey ${ZENAPIKEY}" --header 'X-TenantID: cfd95b7e-3bc7-4006-a4a8-a73a79c71255' --data @BookInfoJson-display-20220804-0000\_\_20220806-1200.json
 ```
 
-## 7-8: Viewing the results
+## 7.8: Viewing the results
 
 To view the results of our analysis, return to the Watson AIOps interface, and
 from the main menu click on "Stories and Alerts".
@@ -340,7 +351,7 @@ view the metric data for the current metric for that date:
 
 ![](images/Picture26.png)
 
-## 7-9: Lab summary
+## 7.9: Lab summary
 
 In this lab, you verified the installation of Watson AIOps, learned how to send
 metric data into the Watson AIOps metric API, learned how to perform training,
