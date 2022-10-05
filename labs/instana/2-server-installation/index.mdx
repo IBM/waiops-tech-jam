@@ -194,6 +194,13 @@ Now let's create the working directory for instana server installation:
 mkdir -p /opt/instana && cd /opt/instana
 ```
 
+Make sure to prepare Instana server IP address - it will be needed during the installation. You can find it by typing below command:
+
+```sh
+cat /etc/hosts
+```
+![](images/instana-server-ip.png)
+
 Next, run the **instana init** command to install the Instana server. You will
 be prompted for additional information during the install.
 
@@ -365,7 +372,7 @@ Open a firefox browser. Other browsers can be used, but you would need to setup
 the server as a trusted URL due to the self-signed certificate.
 
 Enter an HTTPS URL with the IP address of the Instana server. You would have
-seen this URL at the end of step 2.3. Example: https://\<IP address\>
+seen this URL at the end of step 2.3. Example: https://\<IP address\>/
 
 When prompted, enter the username and password that you saved earlier. The
 username is **admin@instana.local**
@@ -474,8 +481,8 @@ instana update -f ./settings.hcl
 
 ```
 
-It will take a little while for the configuration changes to take effect. Read
-section 1-7 while the configuration changes are being applied.
+It will take a little while for the configuration changes to take effect. [Read
+section 2-7](#27-upgrading-the-instana-server) while the configuration changes are being applied.
 
 ---
 
