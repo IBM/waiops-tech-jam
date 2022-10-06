@@ -20,7 +20,7 @@ select **Alert Channel**
 ![](images/alertChannel2.png)
 
 The screen will change to show the **Alert Channels**. Since this is a new
-install of Instana, there are no **Alert Channels** define.
+install of Instana, there are no **Alert Channels** defined.
 
 The next step will be to define an **Alert Channel**. In the upper left portion
 of the screen, click on the **Add Alert Channel** dropdown and select **Email**
@@ -45,12 +45,24 @@ Here are the steps for setting up the **Email** channel.
   meaningful. For example, if the **Alert Channel** will be used to notify the
   MQ admins, call it something MQ related such as **MQ Email Channel**
 - Enter the email address to notify. Notice that there is an **Add Email** link
-  on the right side if you want to add multiple Email addresses.
+  on the right side if you want to add multiple Email addresses. For the lab purpose,
+  please use **jammer@localhost** email - Instana will be able to send email to your
+  localhost email server
+
+![](images/003-administer_instana.png)
+
 - Next, click the **Test Channel** button. This will attempt to send a test
   Email to the address you specified. You'll see whether the Instana server has
-  access to the Email destination.
-- After successfully testing the **Alert Channel**, click the **Create button to
-  save the **Alert Channel\*\*
+  access to the Email destination. In order to check an email in Instana lab server,
+  login as **jammer** user to your Instana server and type "mail" command as presented
+  below:
+
+![](images/005-mail-instana.png)
+
+  This will show one email received from Instana to jammer@localhost email box.
+
+- After successfully testing the **Alert Channel**, click the **Create** button to
+  save the **Alert Channel**
 
 ---
 
@@ -183,7 +195,7 @@ On the left side of the screen, select the **"Settings"** gear.
 
 The Settings menu provides access to most of the administrative tasks within
 Instana. You'll notice menus for Events, Alerts, Alert Channels, API Tokens,
-Users, Groups, Log Managemnet Integration, and more
+Users, Groups, Log Management Integration, and more.
 
 Select **"Events"**
 
@@ -316,7 +328,7 @@ A **Dynamic Focus Query** can be a complex expression using AND, OR, NOT, etc.
 to filter to a subset of the entities. These queries are build using the
 **Lucene** query language. For more information on the **Lucene** query
 language, see the project documentation.
-[Lucenes Query Language](https://www.ibm.com/docs/en/instana-observability/current?topic=instana-filtering-dynamic-focus)
+[Lucene's Query Language](https://www.ibm.com/docs/en/instana-observability/current?topic=instana-filtering-dynamic-focus)
 
 ---
 
@@ -332,7 +344,7 @@ the **System Rule**
 
 ![](images/systemEvent.png)
 
-Next, select the scope. Choose **Selected Enties Only (Dynamic Focus Query)**.
+Next, select the scope. Choose **Selected Entities Only (Dynamic Focus Query)**.
 
 In the **Dynamic Focus Query**, you are going to specify something a little
 different. Instead of choosing **Entity.type:host**, we are going to use
