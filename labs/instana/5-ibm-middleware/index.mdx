@@ -9,7 +9,7 @@ sidebar_position: 5
 
 Positioning Instana at existing IBM customers often requires presenting Instana
 value proposition in context of other IBM middleware used by the client. In this
-section, you will find guidence about configuring and using Instana with the
+section, you will find guidance about configuring and using Instana with the
 following IBM technologies:
 
 - MQ
@@ -216,7 +216,7 @@ You first need to run the **"runmqsc"** command.
 ```
 
 The **runmqsc** command won't prompt you with a cursor. That's okay. Just start
-typing the coomands.
+typing the commands.
 
 Within the runmqsc command prompt you can issue other MQ commands. Type the
 following commands:
@@ -427,7 +427,7 @@ can click on the **Copy** button in the top right corner.
 
 In the example above, **QM1** is the Queue Manager name. **BK1** is the name of
 the Integration Server. **ACE.SVRCONN** is the channel that the sensor will
-conect to in order to query the performance KPIs. The username of **mqm** is the
+connect to in order to query the performance KPIs. The username of **mqm** is the
 admin username for MQ, but the sensor does not require administrative
 permissions. Any valid MQ user can be specified as long as it has permissions to
 connect to the channel.
@@ -516,7 +516,7 @@ By default, Instana will monitor key processes that are related to the
 applications/middleware that are being monitored. It will also monitor processes
 that are consuming large amounts of CPU or Memory. Sometimes, customers want to
 ensure that specific processes are monitoring. Let's edit the configuration.yaml
-file to specify some key proccesses on this ACE/MQ server. Seach within the
+file to specify some key processes on this ACE/MQ server. Search within the
 configuration.yaml file for **com.instana.plugin.process**
 
 The section will be commented out by default. Uncomment the section and specify
@@ -547,8 +547,8 @@ At this point, we recommend that you navigate to next section of this tutorial
 ![](images/exploreInstana_6.png)
 
 In the **Explore Instana** section, we'll begin by confirming that the ACE and
-MQ monitoring are working propererly. If they are not, come back to this section
-and double check your configuraion.yaml settings and check that there are no
+MQ monitoring are working properly. If they are not, come back to this section
+and double check your configuration.yaml settings and check that there are no
 obvious errors in the log file.
 
 The main install log file is /opt/instana/agent/data/log/agent.log
