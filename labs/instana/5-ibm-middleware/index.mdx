@@ -270,8 +270,12 @@ to enable Tracing within IBM MQ and ACE. It is important that you understand
 this process since Tracing is typically not enabled by default in most IBM MQ
 and ACE environments. In this section, we've documented the steps.
 
-Note: Typically, these steps are performed by the MQ and ACE admins, so you
-don't need to know the step by step procedure.
+:::note
+
+Typically, these steps are performed by the MQ and ACE admins, so you don't need
+to know the step by step procedure.
+
+:::
 
 This section is simply going to describe the process. The procedure is well
 documented within the Instana online documentation. You will find a **Tracing**
@@ -302,8 +306,12 @@ The MQ procedure is similar.
 In the lab environment, these steps have already been performed. If you want,
 you can examine the files and directories specified above.
 
-Note: Even though the TAR files for ACE and MQ look similar, they are unique for
-each middleware component.
+:::note
+
+Even though the TAR files for ACE and MQ look similar, they are unique for each
+middleware component.
+
+:::
 
 ---
 
@@ -419,16 +427,10 @@ com.instana.plugin.ace:
       mqPassword: "<mqm password>" # MQ channel authentication's password if security enabled (optional for IBM MQ)
 ```
 
-Note: The markdown documentation only shows 9 rows of text, but there are more
-rows. You can either click the **Show more** button in the bottom right, or you
-can click on the **Copy** button in the top right corner.
-
-![](images/ACEyaml.png)
-
 In the example above, **QM1** is the Queue Manager name. **BK1** is the name of
 the Integration Server. **ACE.SVRCONN** is the channel that the sensor will
-connect to in order to query the performance KPIs. The username of **mqm** is the
-admin username for MQ, but the sensor does not require administrative
+connect to in order to query the performance KPIs. The username of **mqm** is
+the admin username for MQ, but the sensor does not require administrative
 permissions. Any valid MQ user can be specified as long as it has permissions to
 connect to the channel.
 
@@ -506,11 +508,15 @@ com.instana.plugin.host:
 It is possible to specify tags for the Docker and OpenShift versions of the
 Instana Agent, but we are not going to cover that in this lab.
 
-Note: Zones and Tags can be used for a number of purposes within instana:
+:::info
+
+Zones and Tags can be used for a number of purposes within instana:
 
 - Search for systems within the UI or via the APIs
 - Assign thresholds to systems with a specific tag or zone name
 - Build custom dashboards using the tags or zone names and more...
+
+:::
 
 By default, Instana will monitor key processes that are related to the
 applications/middleware that are being monitored. It will also monitor processes
@@ -532,8 +538,12 @@ com.instana.plugin.process:
     - "runmqlsr"
 ```
 
-Note: There is also a section in the configuration.yaml file where you can
-specify processes that you want to ignore. Search for **com.instana.ignore**.
+:::note
+
+There is also a section in the configuration.yaml file where you can specify
+processes that you want to ignore. Search for **com.instana.ignore**.
+
+:::
 
 Save and exit the configuration.yaml file. In "vi", type ":wq" to save and exit
 the file.
