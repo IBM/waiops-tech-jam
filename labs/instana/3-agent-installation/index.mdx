@@ -212,8 +212,9 @@ you are not logged on already, ssh to the **control node**.
 
 To install Instana agent on OpenShift cluster you need to authenticate to the
 OCP cluster with appropriate permissions (cluster admin role). In the lab
-environment, the **control node** is already logged into the cluster. But, we
-need to make sure you are logged into the **Application** cluster and not the
+environment, the **control node** is already logged into the cluster and the
+user group has the necessary permissions. But, we need to make sure you are
+logged into the **Application** cluster and not the
 **AIOps** cluster. Issue the following command:
 
 ```sh
@@ -221,18 +222,52 @@ oc get projects
 ```
 
 Then, look for the **qotd** and **qotd-load** projects. If you don't see those
-two projects, then you must login to the correct cluster. Open the OpenShift
-user interface for the **Application** cluster. Then, click in the upper right
-corner on the username and select **Copy loging command**
+two projects, then you must login to the correct cluster. Check the current
+context with the command:
 
-![](images/ocLogin.png)
+``` sh
+oc config current-context
+```
 
-Then, click on **Display Token**
+The output should be similar to:
 
-Copy the login command and paste it into the terminal window on the control
-node.
+``` text
+tech-jam-dal10-04-manage-to/ccljdtjd00i4gbvqat00/admin
+```
 
-![](images/loginCommand.png)
+where in according to the Lab stand architecture we have to use cluster
+tech-jam-dal10-04-**manage-to** as the **Application** cluster for Instana
+agent installation.
+
+In case, if the current cluster is different, then we need to connect to
+**Application** cluster, for that check the name of the correct cluster 
+it should have "to" prefix in it's name:
+
+``` sh
+oc config get-contexts
+```
+
+copy correct name of the cluster:
+
+``` text
+CURRENT   NAME                                                       CLUSTER                                              AUTHINFO                     NAMESPACE
+          tech-jam-dal10-04-manage-from/ccljdu9d0tn57qnqat0g/admin   tech-jam-dal10-04-manage-from/ccljdu9d0tn57qnqat0g   admin/ccljdu9d0tn57qnqat0g   default
+*         tech-jam-dal10-04-manage-to/ccljdtjd00i4gbvqat00/admin     tech-jam-dal10-04-manage-to/ccljdtjd00i4gbvqat00     admin/ccljdtjd00i4gbvqat00   default
+```
+
+in our case the correct name is "tech-jam-dal10-04-**manage-to**/ccljdtjd00i4gbvqat00/admin",
+use it to switch to needed context with the command:
+
+``` sh
+oc config use-context tech-jam-dal10-04-manage-to/ccljdtjd00i4gbvqat00/admin
+```
+
+Now, the output of "oc config current-context" should point to correct cluster,
+with manage-to in it's name:
+
+``` text
+tech-jam-dal10-04-manage-to/ccljdtjd00i4gbvqat00/admin
+```
 
 Follow the steps below to install the Agent into the cluster:
 
