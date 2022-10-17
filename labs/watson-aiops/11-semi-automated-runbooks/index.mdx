@@ -149,18 +149,17 @@ sudo systemctl stop apache2
 sudo systemctl status apache2
 ```
 
-```sh
-oc exec -it evtmanager-ncoprimary-0 -- /bin/bash -c '/opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -pass $OMNIBUS_ROOT_PWD'
-```
-
 Run "ifconfig" to capture eth0 IP address.
 
 ```sh
 ifconfig
 ```
 
-Replace the '\<HOSTNAME\>' with the Control Node eth0 IP address in below
-command.
+```sh
+oc exec -it evtmanager-ncoprimary-0 -- /bin/bash -c '/opt/IBM/tivoli/netcool/omnibus/bin/nco_sql -server AGG_P -user root -pass $OMNIBUS_ROOT_PWD'
+```
+
+Replace the '\<HOSTNAME\>' with the Control Node eth0 IP address from previous command in below command.
 
 ```sh
 insert into alerts.status (Identifier,Severity,Type,AlertGroup,Node,FirstOccurrence,LastOccurrence,Manager,Class,Summary) values('Demo API Server <HOSTNAME> 1',5,1,'Demo','<HOSTNAME>',getdate,getdate,'Tivoli EIF Probe',6601,'API Server on <HOSTNAME>:80 is DOWN');

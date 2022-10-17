@@ -130,7 +130,7 @@ Navigate to: ** Automations → Runbooks → Automations → Create Automation *
 Script:
 
 ```sh
-curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"exec jinsert($alertid,0, getdate, '$message')\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' "http://10.17.71.136:30100/objectserver/restapi/sql/factory"
+curl -k -u root:<OMNIBUS password from step e> -X POST -d "{ \"sqlcmd\": \"exec jinsert($alertid,0, getdate, '$message')\" }" -H 'Accept: application/json' -H 'Content-Type: application/json' "http://<ClusterHostname>:<NodePort from step d>/objectserver/restapi/sql/factory"
 ```
 
 ![](images/FRB_create_automation_params.png)
@@ -239,11 +239,9 @@ https://www.ibm.com/docs/en/runbook-automation?topic=events-state-transitions-ru
 
 :::
 
-Click the Event Journal tab:
+Open Event information for this alert to which runbook is associated. Click the Timeline tab:
 
 Runbook execution status and result are updated for this event.
-
-![](images/FRB_journal_updated.png)
 
 You can check if the system automatically restarted the service.
 
