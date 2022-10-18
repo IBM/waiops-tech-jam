@@ -428,9 +428,13 @@ cp settings.hcl settings.hcl.bak
 
 In your lab enviroment, we want you to add the following feature flags.
 
-```yaml
-feature "infraCustomDashboards" { enabled = true } feature "infraEntityExplore"
-{ enabled = true }
+```java
+feature "infraCustomDashboards" {
+  enabled = true
+} 
+feature "infraEntityExplore" {
+  enabled = true
+}
 ```
 
 :::info
@@ -439,12 +443,28 @@ Note: There are other feature flags that you should be aware of, <span
 style={{color: "red"}}> but do not add these into the settings.hcl file</span>.
 Here are some common feature flags available are:
 
-```yaml
-feature "vsphereEnabled" { enabled=true } feature "zhmcEnabled" { enabled=true }
-feature "phmcEnabled" { enabled=true } feature "beeinstana" { enabled=true }
-feature "smartAlertsLogsBlueprintEnabled" { enabled=true } feature
-"infraCustomDashboards" { enabled = true } feature "infraEntityExplore" {
-enabled = true }
+```java
+feature "vsphereEnabled" {
+  enabled=true
+} 
+feature "zhmcEnabled" {
+  enabled=true
+}
+feature "phmcEnabled" {
+  enabled=true
+}
+feature "beeinstana" {
+  enabled=true
+}
+feature "smartAlertsLogsBlueprintEnabled" {
+  enabled=true
+}
+feature "infraCustomDashboards" {
+  enabled = true
+}
+feature "infraEntityExplore" {
+  enabled = true
+}
 ```
 
 :::
@@ -474,7 +494,7 @@ rest of the parameters should match what you see on the screen.
 
 Save the changes in the settings.hcl file.
 
-2. Run `instana update -f ./settings.hcl` to apply changes.
+1. Run `instana update -f ./settings.hcl` to apply changes.
 
 ```sh
 instana update -f ./settings.hcl
