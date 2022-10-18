@@ -194,11 +194,13 @@ Now let's create the working directory for instana server installation:
 mkdir -p /opt/instana && cd /opt/instana
 ```
 
-Make sure to prepare Instana server IP address - it will be needed during the installation. You can find it by typing below command:
+Make sure to prepare Instana server IP address - it will be needed during the
+installation. You can find it by typing below command:
 
 ```sh
 cat /etc/hosts
 ```
+
 ![](images/instana-server-ip.png)
 
 Next, run the **instana init** command to install the Instana server. You will
@@ -439,12 +441,28 @@ Note: There are other feature flags that you should be aware of, <span
 style={{color: "red"}}> but do not add these into the settings.hcl file</span>.
 Here are some common feature flags available are:
 
-```yaml
-feature "vsphereEnabled" { enabled=true } feature "zhmcEnabled" { enabled=true }
-feature "phmcEnabled" { enabled=true } feature "beeinstana" { enabled=true }
-feature "smartAlertsLogsBlueprintEnabled" { enabled=true } feature
-"infraCustomDashboards" { enabled = true } feature "infraEntityExplore" {
-enabled = true }
+```hcl
+feature "vsphereEnabled" {
+  enabled=true
+}
+feature "zhmcEnabled" {
+  enabled=true
+}
+feature "phmcEnabled" {
+  enabled=true
+}
+feature "beeinstana" {
+  enabled=true
+}
+feature "smartAlertsLogsBlueprintEnabled" {
+  enabled=true
+}
+feature "infraCustomDashboards" {
+  enabled = true
+}
+feature "infraEntityExplore" {
+  enabled = true
+}
 ```
 
 :::
@@ -481,8 +499,9 @@ instana update -f ./settings.hcl
 
 ```
 
-It will take a little while for the configuration changes to take effect. [Read
-section 2-7](#27-upgrading-the-instana-server) while the configuration changes are being applied.
+It will take a little while for the configuration changes to take effect.
+[Read section 2-7](#27-upgrading-the-instana-server) while the configuration
+changes are being applied.
 
 ---
 
