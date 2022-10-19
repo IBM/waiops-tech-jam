@@ -206,7 +206,7 @@ Run training with algorithm related-events to learn temporal policies from
 historic data. This will generate temporal policies.
 
 ```sh
-oc run trainer -it --command=true --restart=Never --env=LICENSE=accept --image=cp.icr.io/cp/noi/ea-events-tooling:15.0.0-20220913140046BST --overrides='{"apiVersion":"v1", "spec":{"imagePullSecrets":[{"name":"noi-registry-secret"}]}}' runTraining.sh -- -r evtmanager -a related-event
+oc run trainer -it --command=true --restart=Never --env=LICENSE=accept --image=cp.icr.io/cp/noi/ea-events-tooling:15.0.0-20220913140046BST --overrides='{"apiVersion":"v1", "spec":{"imagePullSecrets":[{"name":"noi-registry-secret"}]}}' runTraining.sh -- -r evtmanager -a related-events
 ```
 
 ![](images/TrainingSuccess.png)
