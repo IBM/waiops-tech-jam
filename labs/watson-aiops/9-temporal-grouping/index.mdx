@@ -69,13 +69,14 @@ Login into OCP cluster using oc login.
 
 Create test_events_historic.sh script (as below)  that simulates multiple
 instances of set of events into the ObjectServer. starttime in script is EPOCH
-conversion for the time in history (9AM Jul 1, 2022) so we have a minimum 3-4
+conversion for the time in history (30 days in past) so we have a minimum 3-4
 weeks of sample data generated for machine learning.
 
 ```sh title="test_events_historic.sh"
 #!/bin/bash
-starttime=1656666000
+
 today=`date +%s`
+starttime=$today-30*86400
 
 for (( i=0; i<=3; i++ ))
 do
@@ -205,7 +206,7 @@ Run training with algorithm related-events to learn temporal policies from
 historic data. This will generate temporal policies.
 
 ```sh
-oc run trainer -it --command=true --restart=Never --env=LICENSE=accept --image=cp.icr.io/cp/noi/ea-events-tooling:14.0.0-20220614134620BST --overrides='{"apiVersion":"v1", "spec":{"imagePullSecrets":[{"name":"noi-registry-secret"}]}}' runTraining.sh -- -r evtmanager -a related-events
+oc run trainer -it --command=true --restart=Never --env=LICENSE=accept --image=cp.icr.io/cp/noi/ea-events-tooling:15.0.0-20220913140046BST --overrides='{"apiVersion":"v1", "spec":{"imagePullSecrets":[{"name":"noi-registry-secret"}]}}' runTraining.sh -- -r evtmanager -a related-events
 ```
 
 ![](images/TrainingSuccess.png)
@@ -218,7 +219,7 @@ oc delete pod trainer
 ```
 
 ```sh
-oc run trainer -it --command=true --restart=Never --env=LICENSE=accept --image=cp.icr.io/cp/noi/ea-events-tooling:14.0.0-20220614134620BST --overrides='{"apiVersion":"v1", "spec":{"imagePullSecrets":[{"name":"noi-registry-secret"}]}}' runTraining.sh -- -r evtmanager -a seasonal-events
+oc run trainer -it --command=true --restart=Never --env=LICENSE=accept --image=cp.icr.io/cp/noi/ea-events-tooling:15.0.0-20220913140046BST --overrides='{"apiVersion":"v1", "spec":{"imagePullSecrets":[{"name":"noi-registry-secret"}]}}' runTraining.sh -- -r evtmanager -a seasonal-events
 ```
 
 ![](images/TrainingSuccess.png)
@@ -260,7 +261,9 @@ conversion for current time.
 
 ```sh title="test_events_live.sh"
 #!/bin/bash
-starttime=1656666000
+
+today=`date +%s`
+starttime=$today-30*86400
 stamp=$starttime
 
 for (( i=4; i<=4; i++ ))
