@@ -100,9 +100,21 @@ You are now ready to deploy the operator
 
 1. Launch the operator pod:
 
-   ```sh
-   oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/operator.yaml -n ${NS}
-   ```
+   Go to your OpenShift Console UI, and click on `Operators -> OperatorHub`. Ensure the `turbonomic` project
+   is selected in the dropdown.
+   
+   ![](images/turbo-operator-1.png)
+
+1. Select and click on the `Install` button:
+
+   ![](images/turbo-operator-2.png)
+
+1. Select options as below:
+
+   - Ensure `Installed Namespace` is set to `turbonomic`
+     - Click the `Install` button.
+
+   ![](images/turbo-operator-3.png)
 
 1. Wait for the operator to become available (status = running with 1/1 ready).
    Check the status using:
@@ -162,7 +174,7 @@ Next, we are going to configure the Turbonomic instance.
          fsGroup: ${FSGROUP}
        storageClassName: ${STORAGE_CLASS}
        storageSelector: false
-       tag: 8.4.4
+       tag: 8.6.2
      openshiftingress:
        enabled: true
      kubeturbo:
