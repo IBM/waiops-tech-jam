@@ -32,13 +32,12 @@ cluster:
 
 ![](images/arch-1.png)
 
-1. In your browser, navigate to your **Application** OpenShift console:
+1. In your browser, navigate to your **Apps** Single Node OpenShift console:
 
    :::tip
 
-   You can find and open your OpenShift console from the
-   [IBM Cloud clusters](https://cloud.ibm.com/kubernetes/clusters?platformType=openshift)
-   page.
+   You can use the bookmark called **Apps SNO Dashboard** or use the URL
+   `https://console-openshift-console.apps.sno.techzone.lan`
 
    :::
 
@@ -155,10 +154,9 @@ cluster:
 
    **How to get the Turbonomic Server URL:**
 
-   1. Go to the **AIops** OpenShift cluster console, where turbonomic is
-      installed **in another browser tab**:
-
-      ![](images/arch-2.png)
+   1. Go to the **AIOps OCP Dashboard** bookmark or browse to
+      `https://console-openshift-console.apps.ocp.techzone.lan` in another
+      browser tab:
 
    1. Navigate to `Networking -> Routes`, select the `turbonomic` project and
       copy the `Location` for `topology-processor`:
@@ -175,9 +173,7 @@ cluster:
 
    **How to get the Turbonomic Server Version?**
 
-   1. Go back to the **AIops** OpenShift cluster where turbonomic is installed:
-
-      ![](images/arch-2.png)
+   1. Go back to the **AIOps OCP Dashboard** where turbonomic is installed:
 
    1. Navigate to `Networking -> Routes`, select the `turbonomic` project and
       copy the `Location` value for the `api` route:
@@ -187,7 +183,7 @@ cluster:
    1. It will bring up the Turbonomic UI page as below. Check the version listed
       at the bottom of the page.
 
-      ![](images/checkTurboVersion.png)
+      ![](images/turbo-login-version.png)
 
    1. Go back to your YAML editor view in Step 3 earlier. Assign the value to:
 
@@ -208,7 +204,7 @@ cluster:
 
 1. Finally, click on the `Create` button.
 
-   ![](images/kubeturboCreateInstance-7.png)
+   ![](images/completed-kubeturbo-form.png)
 
 1. When you have applied your configuration you will see that you have created
    an instance, or custom resource, called `kubeturbo-release`:
@@ -240,6 +236,9 @@ You should now see two deployments and two running pods in the namespace:
 1. Then click on `Logs` to validate that the probe has successfully connected,
    registered with the Turbo Server, and a full discovery has occurred:
 
+   You can also use the search field to search for
+   `Probe registration succeeded.`
+
    ![](images/validateDeployment-2.png)
 
 1. Validate the target in the Turbonomic Server UI
@@ -248,7 +247,7 @@ You should now see two deployments and two running pods in the namespace:
      you will see a new target listed with the name
      `Kubernetes-<your cluster name>`
 
-     ![](./images/validateDeployment-3.png)
+     ![](./images/validate-deployment-by-name.png)
 
 ---
 

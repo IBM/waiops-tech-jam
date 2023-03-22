@@ -6,9 +6,7 @@ sidebar_position: 2
 
 ## 2.1: Introduction
 
-Installing Turbonomic platform in your OpenShift cluster:
-
-![](images/overview-1.png)
+Installing Turbonomic platform in your OpenShift cluster.
 
 The [t8c-install](https://github.com/turbonomic/t8c-install/wiki) repository
 contains information about installation methods, sizing, architecture and more.
@@ -23,33 +21,28 @@ and build out a lab or demo environment in OpenShift running in IBM Cloud.
 
 :::caution Important
 
-Perform this installation procedure from your **control** node as the **jammer**
-user.
+Perform this installation procedure from the bastion host (Guacamole) as the
+admin user. If you are unsure you can open a new terminal tab or window.
 
 :::
 
-1. Login into the **AIops** OpenShift Console UI and get your login token:
-
-   - From the OpenShift console, click your username in the top-right.
-   - Select the _Copy login command_ menu item.
-   - From the new tab that opens, copy the login command from the **Log in with
-     this token** section.
-   - Paste the copied command into your SSH terminal on your control node and
-     press enter to login.
-
-   Validate you are logged into the correct cluster - you should see **6
-   nodes**:
+1. Run the following command to check your cluster access
 
    ```sh
-   oc get nodes
+   export KUBECONFIG=kubeconfig-aiops
+   oc get nodes --kubeconfig kubeconfig-aiops
    ```
+
+   You should see output like the below with multiple master and worker nodes
+
+   ![aiops-cluster-check](images/aiops-cluster-check.png)
 
 1. From your command prompt, issue the following command to create the
    namespace:
 
    ```sh
    export NS=turbonomic
-   oc create namespace ${NS}
+   oc create namespace ${NS} --kubeconfig kubeconfig-aiops
    ```
 
 1. The Turbonomic application will create PVs. To have the services access their
@@ -57,7 +50,7 @@ user.
 
    ```sh
    export FSGROUP=$(
-       oc get ns ${NS} -o yaml | \
+       oc get ns ${NS} -o yaml --kubeconfig kubeconfig-aiops | \
        grep uid-range | \
        awk '{print $2}' | \
        awk -F '/' '{print $1}'
@@ -71,7 +64,7 @@ user.
      you can run `oc version` command):
 
      ```sh
-     oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/config/crd/bases/charts.helm.k8s.io_xls.yaml
+     oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/config/crd/bases/charts.helm.k8s.io_xls.yaml --kubeconfig kubeconfig-aiops
      ```
 
 You are now ready to deploy the operator
@@ -80,29 +73,26 @@ You are now ready to deploy the operator
 
 ## 2.3: Deploy the Operator
 
-1. Create the operator service account:
+1. Create the operator service account, cluster role and cluster role binding:
 
    ```sh
-   oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/service_account.yaml -n ${NS}
+   oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/service_account.yaml -n ${NS} --kubeconfig kubeconfig-aiops
+   oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/cluster_role.yaml -n ${NS} --kubeconfig kubeconfig-aiops
+   oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/cluster_role_binding.yaml -n ${NS} --kubeconfig kubeconfig-aiops
    ```
 
-1. Create the cluster role:
+1. Go to your OpenShift AIOps Console UI by either selecting the bookmark
+   **AIOps OCP Dashboard** or navigating to
+   `https://console-openshift-console.apps.ocp.techzone.lan`
 
-   ```sh
-   oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/cluster_role.yaml -n ${NS}
-   ```
-
-1. Create the role binding:
-
-   ```sh
-   oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/cluster_role_binding.yaml -n ${NS}
-   ```
+   Advance through any certificate warnings you may get.
 
 1. Launch the operator pod:
 
-   Go to your OpenShift Console UI, and click on `Operators -> OperatorHub`. Ensure the `turbonomic` project
-   is selected in the dropdown. Search for `turbonomic platform` and select the `Certified` operator
-   
+   Click on `Operators -> OperatorHub`. Ensure the `turbonomic` project is
+   selected in the dropdown. Search for `turbonomic platform` and select the
+   `Certified` operator
+
    ![](images/turbo-operator-1.png)
 
 1. Select and click on the `Install` button:
@@ -120,7 +110,7 @@ You are now ready to deploy the operator
    Check the status using:
 
    ```sh
-   oc get pods -n ${NS} -w
+   oc get pods -n ${NS} -w --kubeconfig kubeconfig-aiops
    ```
 
    Example output:
@@ -146,21 +136,19 @@ Next, we are going to configure the Turbonomic instance.
 
    :::note
 
-   The lab instructions assume you using
-   [Red Hat OpenShift on IBM Cloud](https://cloud.ibm.com/docs/openshift?topic=openshift-getting-started).
-   For other OpenShift environments, use `oc get storageclass` to select a
-   storage class that is available in your environment.
+   You can view your available storage classes using `oc get storageclass`. For
+   this lab we will be using `ocs-storagecluster-ceph-rbd`.
 
    :::
 
    ```sh
-   export STORAGE_CLASS=ibmc-block-gold
+   export STORAGE_CLASS=ocs-storagecluster-ceph-rbd
    ```
 
 1. Apply a custom resource file to launch Turbonomic:
 
    ```sh
-   cat << EOF | oc -n ${NS} apply -f -
+   cat << EOF | oc -n ${NS} --kubeconfig kubeconfig-aiops apply -f -
    apiVersion: charts.helm.k8s.io/v1
    kind: Xl
    metadata:
@@ -194,7 +182,7 @@ Next, we are going to configure the Turbonomic instance.
    minutes. Use the command below to check the status of the deployment.
 
    ```sh
-   oc get pods -n ${NS} -w
+   oc get pods -n ${NS} -w --kubeconfig kubeconfig-aiops
    ```
 
    :::note
@@ -239,23 +227,31 @@ Next, we are going to configure the Turbonomic instance.
 
 You are now ready to open a browser and login to the Turbonomic user interface.
 
-1. Get the Turbonomic UI route after the deployment completes:
+1. Open the Turbonomic UI in your browser by using either the bookmark called
+   **Turbonomic Inc.** or get the Turbonomic UI route after the deployment
+   completes:
+
+   :::note
+
+   Advance through any certificate warnings you may get.
+
+   :::
 
    ```sh
-   oc get route -n ${NS} | grep api | awk '{print $2}'
+   oc get route -n ${NS} --kubeconfig kubeconfig-aiops | grep api | awk '{print $2}'
    ```
-
-1. Open the Turbonomic UI in your browser using the URL retrieved from the
-   previous step.
 
 1. The first time you log in to Turbonomic, you will be prompted to create a
    password for the `administrator` user:
 
    ![](images/firstTimeLogin.png)
 
-   - Set this to something secure and memorable.
+   - Set the password to `Passw0rd`
    - Save the password for future logins.
    - Click on the `Create Account` button.
+
+1. If you are prompted with a _Share Analytics and usage information_ modal you
+   can leave it unchecked and select **SAVE AND CONTINUE**.
 
 ---
 
@@ -274,10 +270,21 @@ Once logged in, the setup wizard will prompt you to import the license key:
 
 :::
 
+1. From the **Guacamole** host create a file called `turbo-license` and copy the
+   contents of the license file provided by your lab proctors into it.
+
+   ```sh
+   cat << EOF > ~/turbo-license.lic
+   <license file contents>
+   EOF
+   ```
+
 1. Click on `LET'S GO` button.
 
-1. Click on `IMPORT LICENSE` button and drag the license file provided by your
-   lab proctors into `Enter License` box.
+1. Click on `IMPORT LICENSE` button and browse for the newly created license
+   file in the Home directory.
+
+   ![](images/turbo-license.png)
 
 1. Then click on `Save` button. You will see the page below if it's successful:
 
