@@ -5,35 +5,40 @@ description: Architecture of the Environments
 
 # Environmental Information
 
-The lab environment includes 2 Openshift clusters and 4 VMs.
+The lab environment includes 2 Openshift clusters and 3 VMs.
 
 Openshift clusters:
 
-1. **AIOps** cluster will be used to install IBM Cloud Pak for Watson AIOps
-   Event Manager, AI Manager and Turbonomic.
-2. **Application** cluster will be used to install the Instana and KubeTurbo
-   agents and the sample _RobotShop_ application. The _Quote Of The Day_ sample
-   application has been pre-installed.
+1. **AIOps** cluster will be used to install Turbonomic.
+2. **Apps** cluster will be used to install the Instana and KubeTurbo agents and
+   the sample _RobotShop_ application. The _Quote Of The Day_ sample application
+   has been pre-installed.
 
 Virtual Machines:
 
-1. **Control** VM will be used as a _Jump Host_ to ssh to all other VMs and run
-   `oc` commands to manage the 2 OpenShift clusters.
+1. **Guacamole** VM will be used as the _bastion_ host into the network with
+   access to all other components. You can use this host to ssh to all other VMs
+   and run `oc` commands to manage the 2 OpenShift clusters.
 2. **Instana** VM will be used to install a single node self-hosted Instana
    server.
 3. **MQACE** VM contains the pre-installed IBM ACE and MQ middleware.
-4. **PI** VM will be used to install IBM Metric Manager (Predictive Insights).
-   DB2, Objectserver, Dash and WebGUI are all pre-installed.
 
 Please see the diagram below for details.
 
-- Green boxes are pre-installed.
-- You will install components in blue boxes.
+- IBM MQ, IBM ACE and Quote of the Day have been pre-installed.
+- You will install all remaining components in during this lab.
 
-![](images/overview-env.png)
+![architecture](images/architecture-instana-turbo.png)
 
 ## How to access the environment
 
+:::info
+
+To be completed with Tech Zone details
+
+:::
+
+<!--
 - [Linux and Mac Users](#linux-and-mac-users)
 - [Windows Users](#windows-users)
 
@@ -130,4 +135,4 @@ remote SSH server, then proceed to
 ![PuTTY private key setting auth](images/putty-3.png)
 
 5. Finally, click `Open` again to log into the remote server with key pair
-   authentication.
+   authentication. -->
