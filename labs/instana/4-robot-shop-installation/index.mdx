@@ -21,6 +21,11 @@ Experience (EUM) / Real User Monitoring (RUM) data.
 If you want to capture EUM/RUM data within Instana, you must first create a
 website within the GUI (or via API). Open the Instana GUI within your browser.
 
+If you are still on the **Installing Instana Agents** screen, select the **Go to
+Instana!** button.
+
+![](images/go-to-instana.png)
+
 On left side navigation, select **Websites & Mobile Apps**. You'll see a dialog
 where you can enter a Website Name. Enter **Robot Shop** as the website name.
 Then, click the **Add Website** button.
@@ -34,7 +39,7 @@ and deploy the containers.
 
 ![](images/websiteConfig2.png)
 
-Robot Shop has already done some of work for you. When you deploy the
+Robot Shop has already done some of the work for you. When you deploy the
 application, you can pass parameters into the helm install. There are two
 parameters within the **javascript** that we will need to copy and use when we
 install the Robot Shop application. You will need the **key** and the
@@ -56,6 +61,23 @@ we'll be following those steps.
 We have documented the steps below, so there is no need to refer to the GitHub
 instructions.
 
+:::info Important
+
+The following should be run from the bastion host (admin@bastion-gym-lan). Check
+to make sure you are in the right place by running the following:
+
+```sh
+oc cluster-info --kubeconfig kubeconfig-apps
+```
+
+You should see the following output, specifically the url
+`https:api.sno.techzone.lan:6443`. If you don't try opening a new tab or
+terminal window and trying again.
+
+![check-cluster](images/check-cluster.png)
+
+:::
+
 Login to the **control node** to execute the following steps.
 
 Make sure you are in the **jammer** user's home directory **(/home/jammer)**.
@@ -64,43 +86,37 @@ Clone the GitHub repository by typing:
 
 ```sh
 git clone https://github.com/instana/robot-shop.git
-
 ```
 
 change directory into the **robot-shop/K8s** directory
 
 ```sh
 cd robot-shop/K8s
-
-```
-
-Within the control node, you are already logged into the OpenShift cluster and
-can begin issuing **oc** commands.
-
-Double check to make sure you are logged into the **Application** OpenShift
-cluster. To do that, run **oc get projects** and grep for qotd. You should see
-the qotd and qotd-load projects listed:
-
-```sh
-oc get projects | grep qotd
 ```
 
 Create an OpenShift **project (workspace)** for the **Robot Shop** application
 by issuing the following command:
 
 ```sh
-oc adm new-project robot-shop
-
+oc adm new-project robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
 Next, setup **privileges** within the cluster for the **Robot Shop** application
 by issuing the following two commands:
 
 ```sh
-oc adm policy add-scc-to-user anyuid -z default -n robot-shop
-oc adm policy add-scc-to-user privileged -z default -n robot-shop
-
+oc adm policy add-scc-to-user anyuid -z default -n robot-shop --kubeconfig ~/kubeconfig-apps
+oc adm policy add-scc-to-user privileged -z default -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
+
+Robot Shop requires a persistent volume for Redis. Create a PV and PVC for use
+by redis:
+
+```sh
+oc create -f ~/robot-shop-pv.yaml --kubeconfig ~/kubeconfig-apps
+```
+
+![pv pvc created](images/pv-pvc-created.png)
 
 Install the **Robot Shop** by issuing the following helm command.
 
@@ -115,56 +131,57 @@ Install the **Robot Shop** by issuing the following helm command.
 :::
 
 ```sh
-helm install robot-shop --set openshift=true --set eum.key=<EUM Key> --set eum.url=<Reporting URL> -n robot-shop helm
-
+helm install robot-shop \
+--set openshift=true \
+--set eum.key=<EUM Key> \
+--set eum.url=<Reporting URL> \
+-n robot-shop helm \
+--kubeconfig ~/kubeconfig-apps
 ```
 
 If successful, you should see the results similar to what's shown below.
 
-![](images/install.png)
+![](images/robot-shop-helm-install.png)
 
-Next, change to the robot-shop project within OpenShift by typing:
-
-```sh
-oc project robot-shop
-
-```
-
-Check whether the pods are running by typing:
+Check whether the Robot Shop pods are running by typing:
 
 ```sh
-oc get pods
+oc get pods -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
 If the install was successful, you'll see the following pods running.
 
-![](images/pods.png)
+:::info
 
 If some of the pods show **0/1** instead of **1/1** in the READY column or the
 pods aren't in a **Running** state, wait a couple more minutes and issue the
-**oc get pods** command again. It can take as much as 7 or 8 minutes before all
+**oc get pods** command again. It can **take as much as 15 minutes** before all
 of the pods are running. If you don't want to wait, you can proceed to the next
 steps.
+
+:::
+
+![](images/robot-shop-success-pods.png)
 
 Finally, if you want to bring up the Robot Shop user interface, you need to
 expose the service as a route. Issue the following command:
 
 ```sh
-oc expose service web
-
+oc expose service web -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
 Now, issue the **oc get route** command to get the route to the application.
 
 ```sh
-oc get route
-
+oc get route -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
 The result should look similar to: **web-robot-shop.<cluster domain\>**
 
-Paste the route into a browser and you'll see the Robot Shop user interface.
-Within your browser, make sure you specify http instead of https.
+![](images/expose-robot-shop.png)
+
+Paste the route into firefox (make sure you specify http instead of https) or
+select the **Robot Shop** bookmark if you copied the bookmarks.
 
 ---
 
@@ -176,19 +193,30 @@ against the application.
 Within the same directory, issue the following command to install the load
 generation pod.
 
+:::tip
+
+Make sure you are still in the directory `/home/admin/robot-shop/K8s`
+
+:::
+
 ```sh
-oc apply -f load-deployment.yaml
+oc apply -f load-deployment.yaml -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
 Run the **oc get pods** command. You should see an additional pod named **load**
 running within the project.
 
 ```sh
-oc get pods
-
+oc get pods -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
-![](images/load.png)
+![robot shop load](images/robot-shop-load.png)
+
+You can now navigate back to the home directory ready for the next section
+
+```sh
+cd ~
+```
 
 ---
 
