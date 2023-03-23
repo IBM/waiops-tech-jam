@@ -44,7 +44,7 @@ Virtual Machines:
 We recommend using Google Chrome to access the bastion host.
 
 If prompted by your browser to allow copy/paste when connection to the Bastion
-host we recommend answering yes.
+host we recommend allowing.
 
 :::
 

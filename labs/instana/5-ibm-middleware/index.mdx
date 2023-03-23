@@ -34,10 +34,11 @@ For the containerized portion of the application, some technologies are
 automatically instrumented for monitoring. In addition, the load generation tool
 is continuously running transactions against the application.
 
-Let's verify that things are running. Issue the **oc get pods** command against
-the **qotd** namespace/project.
+Let's verify that things are running. From the bastion host issue the **oc get
+pods** command against the **qotd** namespace/project.
 
 ```sh
+cd ~
 oc get pods -n qotd --kubeconfig kubeconfig-apps
 ```
 
@@ -100,9 +101,10 @@ As soon as you save your changes, OpenShift will automatically redeploy the
 **"qotd-engraving"** pod with the updated configuration. To verify that the
 changes were applied successfully, let's check the application UI.
 
-If you copied the bookmarks select **Quote of the Day** otherwise find the URL
-by running the command `oc get route -n qotd --kubeconfig kubeconfig-apps` and
-opening the URL with open this URL with http:// in front.
+If you copied the bookmarks open a new tab in Firefox and select the **Quote of
+the Day** bookmark. You can manually find the URL by running the command
+`oc get route -n qotd --kubeconfig kubeconfig-apps` and opening the URL with
+open this URL with http:// in front.
 
 Once opened click the “Order Engraving” button.
 
@@ -329,18 +331,16 @@ middleware component.
 
 In this section, you will perform these commands as root on the ACE/MQ server.
 
-From the control node, ssh to the ACE/MQ server.
+From the bastion host ssh to the ACE/MQ server.
 
 ```sh
 ssh jammer@mqace
-
 ```
 
 Then, use sudo to switch to the root user.
 
 ```sh
 sudo -i
-
 ```
 
 After installing an Instana Agent, one of the first things you want to do is set
@@ -561,17 +561,11 @@ the file.
 As soon as you save your changes to the file, Instana will detect those changes
 and will start to implement what you have configured.
 
-At this point, we recommend that you navigate to next section of this tutorial
-**6 - Explore Instana**.
+:::tip
 
-![](images/exploreInstana_6.png)
+The main log file is `/opt/instana/agent/data/log/agent.log`
 
-In the **Explore Instana** section, we'll begin by confirming that the ACE and
-MQ monitoring are working properly. If they are not, come back to this section
-and double check your configuration.yaml settings and check that there are no
-obvious errors in the log file.
-
-The main install log file is /opt/instana/agent/data/log/agent.log
+:::
 
 ---
 
@@ -581,6 +575,9 @@ You learned how to configure the Instana sensor for IBM App Connect Enterprise
 (ACE) and IBM MQ. This includes customization such as defining tags, defining a
 zone, and identifying specific processes to monitor.
 
-Now, proceed to section 6 where you will explore Instana.
+In the next section, **Explore Instana**, we'll begin by confirming that the ACE
+and MQ monitoring are working properly. If they are not, come back to this
+section and double check your configuration.yaml settings and check that there
+are no obvious errors in the log file.
 
 ---

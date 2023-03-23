@@ -20,8 +20,6 @@ processes. Some of the available options are listed below:
 
 All above mentioned methods are accessible via the wizard on the Instana UI
 
-![](images/2022-05-21-17-46-38.png)
-
 :::caution
 
 If the Instana user interface is not available, go back and look at the command
@@ -30,15 +28,6 @@ configuration parameters. The command may still be running. The user interface
 won't be available until the update is complete.
 
 :::
-
-You begin by choosing the platform where you will be installing the agent. Then
-you can selected the **Technology** dropdown and choose from a list of
-installation options. For example, on Linux, you can choose a automatic
-**one-liner** installation, RPM, or TAR file installation. For
-OpenShift/kubernetes, you have multiple options including operator, helm, and
-yaml installs.
-
-![](images/2022-05-21-17-48-04.png)
 
 :::caution Important
 
@@ -102,31 +91,52 @@ When prompted if you want to continue connecting, type: `yes`
 ssh jammer@mqace
 ```
 
+Change the hostname of the machine for easy future reference:
+
+:::note
+
+You wont see any change until you complete the next step.
+
+:::
+
+```sh
+sudo hostname mqace
+```
+
 Then use sudo to switch to root:
 
 ```sh
 sudo -i
 ```
 
-In Instana UI, select the **"Stan"** the robot icon in the upper left corner
+Refer back to Firefox where the **Installing Instana Agents** (shown below) page
+should now be open.
 
-![](images/stan.png)
+![instana-default-login](images/instana-default-login.png)
 
-Next, click the **"Deploy Agent"** button near the upper right corner.
+:::tip
+
+If you are not on the **Installing Instana Agents** page select the **"Stan"**
+robot icon in the upper left corner and click the **"Deploy Agent"** button near
+the upper right corner.
 
 ![](images/DeployAgent.png)
 
-A window will open with a list of different environments where you can install
-the Instana Agent. This is a Linux server, so select Linux on the left side of
-the screen.
+:::
+
+A list of different environments where you can install the Instana Agent is
+shown. This is a Linux server, so select Linux on the left side of the screen.
 
 ![](images/linuxInstall.png)
 
-Just to see what your options are, select the **"Technology"** dropdown list to
-see the different ways that you can install the Instana Agent. You'll notice
-that you can perform rpm installs or simply download a tar file. But, the
-easiest method is the default one, **"Automatic Installation (One-Liner)"**.
-Select that option in the dropdown list.
+Then you can selected the **Technology** dropdown and choose from a list of
+installation options. For example, on Linux, you can choose a automatic
+**one-liner** installation, RPM, or TAR file installation. For
+OpenShift/kubernetes, you have multiple options including operator, helm, and
+yaml installs. The easiest method is the default, **"Automatic Installation
+(One-Liner)"**. Select that option in the dropdown list.
+
+![](images/2022-05-21-17-48-04.png)
 
 Notice that there are a few other options including the use of different java
 versions, static vs. dynamic agents, etc. Leave the default settings.
@@ -140,7 +150,18 @@ Finally, copy and paste the curl command into the terminal window and answer
 
 ![](images/instana-install-result.png)
 
-At this point the Agent is installed and up and running.
+At this point the Agent is installed and up and running. You can confirm this by
+running:
+
+```sh
+ps -ef | grep instana
+```
+
+You should see a process running, the short version looks like this:
+
+```sh
+root       22012       1 99 12:35 ?        00:00:11 /opt/instana/agent/jvm/bin/java
+```
 
 The Agent will automatically start monitoring the operating system and start
 discovering key processes and middleware. In many cases it will automatically
@@ -176,8 +197,6 @@ In the Instana UI, from the **Installing Instana Agents** screen select
 
 If you aren't still on the **Installing Instana Agents** screen you can get
 there by selecting the **"Stan"** robot icon in the upper left corner
-
-![](images/stan.png)
 
 and clicking the **"Deploy Agent"** button near the upper right corner.
 
@@ -233,12 +252,13 @@ Kubernetes. There are some minor syntax differences.
 
 :::
 
-Open another tab in your terminal so you are back on the local bastion host
+**Open another tab in your terminal** so you are back on the local bastion host
 (admin@bastion-gym-lan).
 
 Check to make sure you are in the right place by running the following:
 
 ```sh
+cd ~
 oc cluster-info --kubeconfig kubeconfig-apps
 ```
 
@@ -290,15 +310,15 @@ You will see output similar to what's shown below
 
 ![helm install](images/helm-install.png)
 
-Next, view the running agent pods:
+Next, view a list of the pods that are running in the agent namespace. There
+will be one pod for each worker node in your target cluster. This SNO instance
+only has one worker node so you will only see one pod running.
 
 ```sh
 oc get pods -n instana-agent --kubeconfig kubeconfig-apps
 ```
 
-This will provide a list of the pods that are running in the agent namespace
-(project). There will be one pod for each worker node in your target cluster.
-This SNO instance only has one worker node so you will only see one pod running.
+![running agent pods](images/agent-pod-running.png)
 
 :::info
 
@@ -307,8 +327,6 @@ the cluster, monitoring will automatically get added to the new Worker Node.
 Check, if the instana-agent pods are running.
 
 :::
-
-![running agent pods](images/agent-pod-running.png)
 
 If there are no pods running, wait a minute and issue the "oc get pods" command
 again. This completes the installation of Instana agent on OpenShift cluster.
