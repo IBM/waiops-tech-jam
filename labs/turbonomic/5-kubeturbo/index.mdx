@@ -12,7 +12,7 @@ using APIs.
 The exception to this is the Kubernetes platform. Since Kubernetes is highly
 complex and dynamic environment, an agent component is deployed onto target
 Kubernetes and OpenShift cluster which then send data to the Turbonomic ARM
-server.
+server, this agent is called **Kubeturbo**.
 
 The [kubeturbo GitHub wiki](https://github.com/turbonomic/kubeturbo/wiki)
 contains a wealth of information about installation, configuration,
@@ -27,10 +27,11 @@ being built out within this site.
 
 ## 5.2: Prerequisites
 
-The steps in this lab should be performed on the **Application** OpenShift
-cluster:
+The steps in this lab should be performed on the **Apps** OpenShift cluster to
+install the **KubeTurbo** agent. It will be configured to connect to the
+Turbonomic server.
 
-![](images/arch-1.png)
+![architecture-kubeturbo-agent](images/architecture-kubeturbo.png)
 
 1. In your browser, navigate to your **Apps** Single Node OpenShift console:
 

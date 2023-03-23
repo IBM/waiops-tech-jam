@@ -81,6 +81,11 @@ are recommended in restrictive network setups.
 
 ## 3.2: Installing Instana Agent on a Linux VM
 
+We will start by installing the Instana Agent on the Linux VM that is running
+IBM MQ and IBM ACE.
+
+![architecture-agent-mqace-vm](images/architecture-agent-mqace-vm.png)
+
 You will be installing the Instana Agent on the ACE/MQ server that has been
 provisioned for you for this lab. Open a new terminal tab by selecting **File**
 -> **New Tab**.
@@ -149,6 +154,8 @@ the need to provide credentials for accessing those applications.
 
 Next, you will install the Instana agent on the Instana server.
 
+![architecture-agent-mqace-vm](images/architecture-agent-instana-vm.png)
+
 You can navigate back to your first tab still logged into the **instana** host
 or from a terminal ssh to the Instana server again:
 
@@ -215,6 +222,8 @@ configured in order to see the performance metrics.
 The next step is to install the Instana Agent into the **Apps** OpenShift
 Cluster that we'll be using to host our demo applications _Robot Shop_ and
 _Quote of the Day_.
+
+![architecture-agent-ocp](images/architecture-agent-ocp.png)
 
 :::tip
 
