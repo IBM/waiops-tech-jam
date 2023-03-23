@@ -26,11 +26,15 @@ and build out a lab or demo environment in OpenShift running in IBM Cloud.
 Perform this installation procedure from the bastion host (Guacamole) as the
 admin user. If you are unsure you can open a new terminal tab or window.
 
+The instructions in this guide use environment variables so it is important that
+you use the same terminal prompt for the duration of the guide.
+
 :::
 
-1. Run the following command to check your cluster access
+1. Run the following commands to check your cluster access
 
    ```sh
+   cd ~
    export KUBECONFIG=kubeconfig-aiops
    oc get nodes --kubeconfig kubeconfig-aiops
    ```
@@ -62,12 +66,17 @@ admin user. If you are unsure you can open a new terminal tab or window.
 1. Create the Custom Resource Definition (CRD) to allow Turbo operator to deploy
    all the necessary resources
 
-   - For Kubernetes version 1.22 and higher (To check the Kubernetes version,
-     you can run `oc version` command):
+   :::tip
 
-     ```sh
-     oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/config/crd/bases/charts.helm.k8s.io_xls.yaml --kubeconfig kubeconfig-aiops
-     ```
+   This is for Kubernetes version 1.22 and higher. When performing this step on
+   another cluster you can check the Kubernetes version of OCP using the
+   `oc version` command.
+
+   :::
+
+   ```sh
+   oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/config/crd/bases/charts.helm.k8s.io_xls.yaml --kubeconfig kubeconfig-aiops
+   ```
 
 You are now ready to deploy the operator
 
