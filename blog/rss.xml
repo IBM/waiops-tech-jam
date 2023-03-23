@@ -4,7 +4,7 @@
         <title>IBM AIOps Automation SWAT Blog</title>
         <link>https://github.com/waiops-tech-jam/blog</link>
         <description>IBM AIOps Automation SWAT Blog</description>
-        <lastBuildDate>Thu, 23 Mar 2023 10:50:48 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 23 Mar 2023 14:00:27 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[Single Node Openshift deployment with Static IP]]></title>
             <link>https://github.com/waiops-tech-jam/blog/single-node-openshift-deployment-with-static-ip</link>
             <guid>https://github.com/waiops-tech-jam/blog/single-node-openshift-deployment-with-static-ip</guid>
-            <pubDate>Thu, 23 Mar 2023 10:50:48 GMT</pubDate>
+            <pubDate>Thu, 23 Mar 2023 14:00:27 GMT</pubDate>
             <description><![CDATA[This article explains to you how to deploy the Single Node Openshift with Static IP, since there is no detailed introduction in openshift official documentation. An automatic deployment tool also included for vmware provisioning.]]></description>
             <content:encoded><![CDATA[<p>Starting from openshift v4.9, RedHat announced the support for single node
 cluster deployment. OpenShift Container Platform on a single node is a
