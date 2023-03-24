@@ -348,7 +348,7 @@ daemonset, number of pods should be equal to number of nodes in your cluster).
 If pods are running, you can examine the logs of one of the pods. Type:
 
 ```sh
-oc logs <POD NAME> -c instana-agent --kubeconfig kubeconfig-apps
+oc logs <POD NAME> -c instana-agent -n instana-agent --kubeconfig kubeconfig-apps
 ```
 
 where **<POD NAME\>** is one of the pods listed in the previous command.
