@@ -22,20 +22,70 @@ These have already been installed for us, ready to be configured on the
 
 ---
 
-## 5.2: Configure Quote of the Day Application to use MQ & ACE
+## 5.2: Start MQ & ACE
+
+From the terminal tab **root@mqace** check the current status of MQ and ACE by
+running the following:
+
+:::tip
+
+If you closed the **mqace** tab you can get back to it by opening a new tab and
+running the following commands:
+
+```sh
+ssh jammer@mqace
+sudo -i
+```
+
+:::
+
+```sh
+/opt/mqm/bin/dspmq -m QM1 -o all
+source /opt/ace-11.0.0.11/server/bin/mqsiprofile
+/opt/ace-11.0.0.11/server/bin/mqsilist
+```
+
+If MQ and ACE is running the output will look like this:
+
+![ace-mq-status](images/ace-mq-status.png)
+
+If either of the above are not in a running state execute the following script:
+
+:::note
+
+The script will take approximately 5 minutes to complete.
+
+:::
+
+```sh
+./demo-middleware.sh
+```
+
+Once complete you can run the status check again and confirm MQ and ACE are
+running.
+
+```sh
+/opt/mqm/bin/dspmq -m QM1 -o all
+/opt/ace-11.0.0.11/server/bin/mqsilist
+```
+
+## 5.3: Configure Quote of the Day Application to use MQ & ACE
 
 The **"Quote of the Day"** application has been installed for you on the
 **Application** OpenShift cluster. For more information about the **Quote of the
-Day** application, you can go to this GitLab location:
-https://gitlab.com/quote-of-the-day/quote-of-the-day (It is not necessary to go
-there, but you might be interested in learning more about the application.)
+Day** application, you can go to the
+[GitLab repository](https://gitlab.com/quote-of-the-day/quote-of-the-day), it is
+not necessary to go there, but you might be interested in learning more about
+the application.
 
 For the containerized portion of the application, some technologies are
 automatically instrumented for monitoring. In addition, the load generation tool
-is continuously running transactions against the application.
+is continuously running transactions against the application. Let's verify that
+things are running.
 
-Let's verify that things are running. From the bastion host issue the **oc get
-pods** command against the **qotd** namespace/project.
+From the **bastion host** (_admin@bastion-gym-lan_, open a new tab if you are
+unsure) issue the **oc get pods** command against the **qotd**
+namespace/project.
 
 ```sh
 cd ~
@@ -115,7 +165,7 @@ successfully placed.”
 
 ---
 
-## 5.3: Configure ACE and MQ for Resource Monitoring
+## 5.4: Configure ACE and MQ for Resource Monitoring
 
 :::warning Information Only
 
@@ -269,7 +319,7 @@ quit
 
 ---
 
-## 5.4: Configure ACE and MQ for Tracing
+## 5.5: Configure ACE and MQ for Tracing
 
 :::warning Information Only
 
@@ -327,7 +377,7 @@ middleware component.
 
 ---
 
-## 5.5: Configure the ACE and MQ Sensors
+## 5.6: Configure the ACE and MQ Sensors
 
 In this section, you will perform these commands as root on the ACE/MQ server.
 
@@ -390,7 +440,7 @@ uncomment it, just remove the single "#" character.
 
 :::
 
-Within the editor, scroll down to the section titled **"IBM ACE"**
+Within the editor, scroll down to the section titled **"# IBM ACE"**
 
 You will need to uncomment the required entries and change the parameters to
 match the ACE/MQ configuration on this server. If you read the description on
@@ -451,9 +501,9 @@ number of mandatory and optional parameters. For more information on the
 configuration settings, see the online documentation:
 [link](https://www.ibm.com/docs/en/obi/current?topic=technologies-monitoring-mq)
 
-Edit the **IBM MQ** section of the file so that it looks like this. If you want,
-you can copy this text and replace the entire section. Or, you can change the
-individual parameters.
+Edit the **# IBM MQ** section of the file so that it looks like this. If you
+want, you can copy this text and replace the entire section. Or, you can change
+the individual parameters.
 
 :::caution Important
 
@@ -476,14 +526,16 @@ com.instana.plugin.ibmmq:
 
 ---
 
-## 5.6: Further Configuration
+## 5.7: Further Configuration
 
 First, let's change the **Zone** name within the file. This is similar to the
 Zone that you specified when installing the Docker and OpenShift monitoring
-Agents. Scroll down until you see the section titled "Hardware & Zone".
-Uncomment the 3 lines of text starting with
-`com.instana.plugin.generic.hardware`. By default the "availability-zone"
-parameter is set to "Datacenter A /Rack 42". Change the value to **ACE and MQ**
+Agents.
+
+Scroll down until you see the section titled **# Hardware & Zone**. Uncomment
+the 3 lines of text starting with `com.instana.plugin.generic.hardware`. By
+default the "availability-zone" parameter is set to "Datacenter A /Rack 42".
+Change the value to **ACE and MQ**
 
 The section of the configuration.yaml file should look as follows:
 
@@ -495,24 +547,23 @@ com.instana.plugin.generic.hardware:
 ```
 
 In addition to configuring the **Zone** name, you can specify tags within the
-configuration.yaml file. Search for the section within the configuration.yaml
-file titled **Host**. Within that section, you see a section for tags. By
-default this section will be commented out. Uncomment the
-**com.instana.plugin.host** section and specify some tags. For example, add a
-**production** tag to indicate that this system is a production server. And, add
-a **QOTD** tag to indicate that it supports the **Quote of the Day**
-application. Add a **Dallas** tag to indicate the the server resides in Dallas,
-Texas.
+configuration.yaml file.
 
-Add **production, QOTD, and Dallas** as tags. The configuration.yaml section
-should look as follows:
+Search for the section within the configuration.yaml file titled **# Host**.
+Within that section, you see a section for tags. By default this section will be
+commented out. Uncomment the **com.instana.plugin.host** section and specify
+some tags. Add the following:
+
+- **production** tag to indicate that this system is a production server.
+- **QOTD** tag to indicate that it supports the _Quote of the Day_ application.
+- **Tokyo** tag to indicate the the server resides in Tokyo.
 
 ```yaml
 com.instana.plugin.host:
   tags:
     - "production"
     - "QOTD"
-    - "Dallas"
+    - "Tokyo"
 ```
 
 It is possible to specify tags for the Docker and OpenShift versions of the
@@ -532,13 +583,14 @@ By default, Instana will monitor key processes that are related to the
 applications/middleware that are being monitored. It will also monitor processes
 that are consuming large amounts of CPU or Memory. Sometimes, customers want to
 ensure that specific processes are monitoring. Let's edit the configuration.yaml
-file to specify some key processes on this ACE/MQ server. Search within the
-configuration.yaml file for **com.instana.plugin.process**
+file to specify some key processes on this ACE/MQ server.
+
+Search within the configuration.yaml file for **# Custom processes**
 
 The section will be commented out by default. Uncomment the section and specify
-the following processes for monitoring **(crond, amqzmgr0, runmqlsr)**. One
-process is the cron daemon, which customers frequently want to monitor. The
-other two process are related to IBM MQ. The section should look like this:
+the following processes for monitoring. One process is the cron daemon, which
+customers frequently want to monitor. The other two process are related to IBM
+MQ. The section should look like this:
 
 ```yaml
 com.instana.plugin.process:
@@ -561,15 +613,22 @@ the file.
 As soon as you save your changes to the file, Instana will detect those changes
 and will start to implement what you have configured.
 
+After a few minutes you will see the updates displayed in the Instana UI on the
+**Infrastructure Page**
+
 :::tip
 
-The main log file is `/opt/instana/agent/data/log/agent.log`
+The main Instana agent log file is located at
+`/opt/instana/agent/data/log/agent.log`. You can watch the log output to see the
+agent discovering entities and potentially any errors or warnings it encounters.
 
 :::
 
+![ibm-mq-ace-instana](images/ibm-mq-ace-instana.png)
+
 ---
 
-## 5.7: Summary
+## 5.8: Summary
 
 You learned how to configure the Instana sensor for IBM App Connect Enterprise
 (ACE) and IBM MQ. This includes customization such as defining tags, defining a
