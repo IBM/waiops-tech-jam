@@ -119,7 +119,7 @@ oc create -f ~/robot-shop-pv.yaml --kubeconfig ~/kubeconfig-apps
 
 ![pv pvc created](images/pv-pvc-created.png)
 
-Install the **Robot Shop** by issuing the following helm command.
+Install the **Robot Shop** by issuing the following helm command:
 
 :::info
 
@@ -131,14 +131,28 @@ Install the **Robot Shop** by issuing the following helm command.
 
 :::
 
-```sh
-helm install robot-shop \
---set openshift=true \
---set eum.key=<EUM Key> \
---set eum.url=<Reporting URL> \
--n robot-shop helm \
---kubeconfig ~/kubeconfig-apps
-```
+1. Set your key value:
+
+   ```sh
+   export EUM_KEY="<your-instana-key>"
+   ```
+
+1. Set your reporting URL:
+
+   ```sh
+   export REPORTING_URL="<your-instana-reporting-url>"
+   ```
+
+1. Deploy Robot Shop:
+
+   ```sh
+   helm install robot-shop \
+   --set openshift=true \
+   --set eum.key=${EUM_KEY} \
+   --set eum.url=${REPORTING_URL} \
+   -n robot-shop helm \
+   --kubeconfig ~/kubeconfig-apps
+   ```
 
 If successful, you should see the results similar to what's shown below.
 

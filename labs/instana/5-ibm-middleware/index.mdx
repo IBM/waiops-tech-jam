@@ -148,8 +148,16 @@ Type **":wq"** to save your changes and exit the file.
 ```
 
 As soon as you save your changes, OpenShift will automatically redeploy the
-**"qotd-engraving"** pod with the updated configuration. To verify that the
-changes were applied successfully, let's check the application UI.
+**"qotd-engraving"** pod with the updated configuration.
+
+Wait for the `qotd-engraving` pod rollout to complete:
+
+```sh
+oc rollout status deployment qotd-engraving -n qotd --kubeconfig kubeconfig-apps
+```
+
+To verify that the changes were applied successfully, let's check the
+application UI.
 
 If you copied the bookmarks open a new tab in Firefox and select the **Quote of
 the Day** bookmark. You can manually find the URL by running the command
