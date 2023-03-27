@@ -5,8 +5,10 @@
 /build
 
 # Generated files
+.cache
 .docusaurus
 .cache-loader
+public/
 
 # Misc
 .DS_Store
