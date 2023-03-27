@@ -119,24 +119,24 @@ Install the **Robot Shop** by issuing the following helm command:
 
 :::info
 
-- **<EUM Key\>** is the **key** you obtained in section 4.2 from the Instana
-  user interface. Example: `m-IMxZYFQyW_n7Xo0VRjrw`.
-- **<Reporting URL\>** is the _reportingURL_ you obtained in section 4.2. **Do
-  not include the trailing slash ( / ) following 2999.** Example:
-  `http://<your_server_ip>:2999`.
+- **<your-instana-reporting-url\>** is the _reportingURL_ you obtained in
+  section 4.2. **Do not include the trailing slash ( / ) following 2999.**
+  Example: `http://192.168.252.60:2999`.
+- **<your-instana-key\>** is the **key** you obtained in section 4.2 from the
+  Instana user interface. Example: `m-IMxZYFQyW_n7Xo0VRjrw`.
 
 :::
-
-1. Set your key value:
-
-   ```sh
-   export EUM_KEY="<your-instana-key>"
-   ```
 
 1. Set your reporting URL:
 
    ```sh
    export REPORTING_URL="<your-instana-reporting-url>"
+   ```
+
+1. Set your key value:
+
+   ```sh
+   export EUM_KEY="<your-instana-key>"
    ```
 
 1. Deploy Robot Shop:
@@ -164,11 +164,11 @@ If the install was successful, you'll see the following pods running.
 
 :::info
 
-If some of the pods show **0/1** instead of **1/1** in the READY column or the
-pods aren't in a **Running** state, wait a couple more minutes and issue the
-**oc get pods** command again. It can **take as much as 15 minutes** before all
-of the pods are running. If you don't want to wait, you can proceed to the next
-steps.
+If some of the pods (for example _ratings_ or _shipping_) show **0/1** instead
+of **1/1** in the READY column or the pods aren't in a **Running** state, wait a
+couple more minutes and issue the **oc get pods** command again. It can **take
+as much as 15 minutes** before all of the pods are running. If you don't want to
+wait, you can proceed to the next steps.
 
 :::
 
@@ -181,7 +181,8 @@ expose the service as a route. Issue the following command:
 oc expose service web -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
-Now, issue the **oc get route** command to get the route to the application.
+You can issue the **oc get route** command to get the route to the application.
+This route has already been saved as a bookmark called _Robot Shop_.
 
 ```sh
 oc get route -n robot-shop --kubeconfig ~/kubeconfig-apps
@@ -191,12 +192,60 @@ The result should look similar to: **web-robot-shop.<cluster domain\>**
 
 ![](images/expose-robot-shop.png)
 
-Paste the route into firefox (make sure you specify http instead of https) or
-select the **Robot Shop** bookmark if you copied the bookmarks.
+Open a new Firefox tab and select the **Stan's Robot Shop** bookmark, or if
+pasting the route into firefox make sure you specify http instead of https. You
+will see the Robot Shop application.
+
+![](images/stans-robot-shop.png)
 
 ---
 
 ## 4.4: Setup Automated Load
+
+Now that the application is running, you will want to generate some traffic
+against the Robot-Shop application.
+
+Issue the following command to install the load generation pod.
+
+```sh
+cat <<EOF | oc create --kubeconfig ~/kubeconfig-apps -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rs-website-load
+  namespace: robot-shop
+  labels:
+    service: rs-website-load
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: rs-website-load
+  template:
+    metadata:
+      labels:
+        service: rs-website-load
+    spec:
+      containers:
+      - name: rs-website-load
+        env:
+          - name: HOST
+            value: "http://web:8080/"
+        image: brightzheng100/rs-website-load:latest
+EOF
+```
+
+Run the **oc get pods** command.
+
+```sh
+oc get pods -n robot-shop --kubeconfig ~/kubeconfig-apps
+```
+
+You should now see an additional pod named **rs-website-load-\*** running within
+the project.
+
+<!---
+The below is only required for the bundled robot-shop loadgen
 
 Now that the application is running, you will want to generate some traffic
 against the application.
@@ -204,13 +253,8 @@ against the application.
 Within the same directory, issue the following command to install the load
 generation pod.
 
-:::tip
-
-Make sure you are still in the directory `/home/admin/robot-shop/K8s`
-
-:::
-
 ```sh
+cd /home/admin/robot-shop/K8s
 oc apply -f load-deployment.yaml -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
@@ -223,11 +267,7 @@ oc get pods -n robot-shop --kubeconfig ~/kubeconfig-apps
 
 ![robot shop load](images/robot-shop-load.png)
 
-You can now navigate back to the home directory ready for the next section
-
-```sh
-cd ~
-```
+-->
 
 ---
 
