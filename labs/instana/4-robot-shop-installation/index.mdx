@@ -7,12 +7,15 @@ sidebar_position: 4
 ## 4.1: Introduction
 
 In this section of the lab, you will learn how to install the Robot Shop
-application. Robot Shop is pre-configured to include any required configuration
-changes needed to enable monitoring. Some technologies such as java don't
-require any configuration, but others require monitor configuration changes so
-that the application can be monitored. During the install, you will also specify
-the required information that is necessary for Instana to monitor the End User
-Experience (EUM) / Real User Monitoring (RUM) data.
+application.
+
+Robot Shop is pre-configured with changes needed to enable Instana monitoring.
+Some technologies such as java don't require any configuration, but others
+require configuration changes so the application can be monitored.
+
+During the install, you will also specify the required information that is
+necessary for Instana to monitor the End User Experience (EUM) / Real User
+Monitoring (RUM) data.
 
 ---
 
@@ -20,11 +23,6 @@ Experience (EUM) / Real User Monitoring (RUM) data.
 
 If you want to capture EUM/RUM data within Instana, you must first create a
 website within the GUI (or via API). Open the Instana GUI within your browser.
-
-If you are still on the **Installing Instana Agents** screen, select the **Go to
-Instana!** button.
-
-![](images/go-to-instana.png)
 
 On left side navigation, select **Websites & Mobile Apps**. You'll see a dialog
 where you can enter a Website Name. Enter **Robot Shop** as the website name.
@@ -34,8 +32,7 @@ Then, click the **Add Website** button.
 
 A dialog containing **javascript** will open. In a more typical application, you
 would follow the instructions on the dialog. You copy/paste the **javascript**
-into the HTML pages. In a containerized environment, you would need to rebuild
-and deploy the containers.
+into the HTML pages.
 
 ![](images/websiteConfig2.png)
 
@@ -56,22 +53,22 @@ We will install Robot Shop on the Single Node OpenShift **Apps** cluster.
 
 ![install-robot-shop-architecture](images/architecture-robot-shop.png)
 
-The full installation instructions for **Robot Shop** can be found here:
-https://github.com/instana/robot-shop You'll notice that there are instructions
-for installing **Robot Shop** into a number of different environments including
-docker, kubernetes, and OpenShift. This lab uses an OpenShift environment, so
-we'll be following those steps.
+The full installation instructions for **Robot Shop** can be found
+[here](https://github.com/instana/robot-shop). You'll notice that there are
+instructions for installing **Robot Shop** into a number of different
+environments including docker, kubernetes, and OpenShift. This lab uses an
+OpenShift environment, so we'll be following those steps.
 
 We have documented the steps below, so there is no need to refer to the GitHub
 instructions.
 
 :::info Important
 
-The following should be run from the bastion host (admin@bastion-gym-lan). Check
-to make sure you are in the right place by running the following:
+The following should be run from the bastion host (**admin@bastion-gym-lan**).
+Check to make sure you are in the right place by running the following:
 
 ```sh
-oc cluster-info --kubeconfig kubeconfig-apps
+cd ~ && oc cluster-info --kubeconfig kubeconfig-apps
 ```
 
 You should see the following output, specifically the url
@@ -85,8 +82,7 @@ terminal window and trying again.
 Clone the GitHub repository by typing:
 
 ```sh
-cd ~
-git clone https://github.com/instana/robot-shop.git
+cd ~ && git clone https://github.com/instana/robot-shop.git
 ```
 
 change directory into the **robot-shop/K8s** directory
@@ -119,7 +115,7 @@ oc create -f ~/robot-shop-pv.yaml --kubeconfig ~/kubeconfig-apps
 
 ![pv pvc created](images/pv-pvc-created.png)
 
-Install the **Robot Shop** by issuing the following helm command.
+Install the **Robot Shop** by issuing the following helm command:
 
 :::info
 
@@ -131,14 +127,28 @@ Install the **Robot Shop** by issuing the following helm command.
 
 :::
 
-```sh
-helm install robot-shop \
---set openshift=true \
---set eum.key=<EUM Key> \
---set eum.url=<Reporting URL> \
--n robot-shop helm \
---kubeconfig ~/kubeconfig-apps
-```
+1. Set your key value:
+
+   ```sh
+   export EUM_KEY="<your-instana-key>"
+   ```
+
+1. Set your reporting URL:
+
+   ```sh
+   export REPORTING_URL="<your-instana-reporting-url>"
+   ```
+
+1. Deploy Robot Shop:
+
+   ```sh
+   helm install robot-shop \
+   --set openshift=true \
+   --set eum.key=${EUM_KEY} \
+   --set eum.url=${REPORTING_URL} \
+   -n robot-shop helm \
+   --kubeconfig ~/kubeconfig-apps
+   ```
 
 If successful, you should see the results similar to what's shown below.
 

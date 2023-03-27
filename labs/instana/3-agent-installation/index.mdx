@@ -116,9 +116,9 @@ should now be open.
 
 :::tip
 
-If you are not on the **Installing Instana Agents** page select the **"Stan"**
-robot icon in the upper left corner and click the **"Deploy Agent"** button near
-the upper right corner.
+If you aren't on the **Installing Instana Agents** screen you can get there by
+selecting the **"Stan"** robot icon in the upper left corner and then clicking
+the **"Deploy Agent"** button near the upper right corner.
 
 ![](images/DeployAgent.png)
 
@@ -145,8 +145,10 @@ after it is installed.
 
 ![](images/linuxInstall.png)
 
-Finally, copy and paste the curl command into the terminal window and answer
-**y** when prompted. Once complete you will see the below:
+Finally, copy and paste the curl command into the **root@mqace** terminal window
+and answer `y` when prompted.
+
+Once complete you will see the below:
 
 ![](images/instana-install-result.png)
 
@@ -195,10 +197,9 @@ In the Instana UI, from the **Installing Instana Agents** screen select
 
 :::tip
 
-If you aren't still on the **Installing Instana Agents** screen you can get
-there by selecting the **"Stan"** robot icon in the upper left corner
-
-and clicking the **"Deploy Agent"** button near the upper right corner.
+If you aren't on the **Installing Instana Agents** screen you can get there by
+selecting the **"Stan"** robot icon in the upper left corner and then clicking
+the **"Deploy Agent"** button near the upper right corner.
 
 ![](images/DeployAgent.png)
 
@@ -206,21 +207,15 @@ and clicking the **"Deploy Agent"** button near the upper right corner.
 
 At the top of the page you will see an entry box where you can specify a
 **Zone**. Specify a zone name such as **instana**. Then, copy the docker run
-command and past it into the terminal window.
-
-:::caution
-
-Make sure you are pasting it into the **root@instana** vm.
-
-:::
+command and paste it into the **root@instana** terminal window.
 
 ![](images/dockerInstall.png)
 
 This will install the Instana Agent as a docker container running on the Instana
 Server machine.
 
-Once complete if you issue a **docker ps** command, you'll see that there is a
-new docker container running. This container is the Instana agent.
+Once complete you can issue a **docker ps** command, you'll see there is a new
+Instana agent container running.
 
 ```sh
 docker ps | grep agent
@@ -253,7 +248,7 @@ Kubernetes. There are some minor syntax differences.
 :::
 
 **Open another tab in your terminal** so you are back on the local bastion host
-(admin@bastion-gym-lan).
+**admin@bastion-gym-lan**.
 
 Check to make sure you are in the right place by running the following:
 
@@ -292,9 +287,9 @@ Select the dropdown list next to the word **"Technology"**. Notice that there
 are multiple options for installing the Agent. Choose the **"Helm chart"**
 option from the list.
 
-Set the **Cluster name** to `SNO` and the **Agent Zone** name to
-`Quote of the Day` since this OCP cluster will be used for the **Quote of the
-Day** application. Setting these values will allow you to find your Agent and
+Set the **Cluster name** to `SNO` and the **Agent Zone** name to `Demo Apps`
+since this OCP cluster will be used for the Quote of the Day and Robot Shop demo
+application. Setting these values will allow you to find your Agent and
 Kubernetes Cluster within the user interface and not get confused by data coming
 in from other agents.
 
@@ -311,7 +306,7 @@ You will see output similar to what's shown below
 ![helm install](images/helm-install.png)
 
 Next, view a list of the pods that are running in the agent namespace. There
-will be one pod for each worker node in your target cluster. This SNO instance
+will be one pod for each worker node in your target cluster. This SNO cluster
 only has one worker node so you will only see one pod running.
 
 ```sh
@@ -324,38 +319,72 @@ oc get pods -n instana-agent --kubeconfig kubeconfig-apps
 
 The Agent is deployed as a daemonset so that if a new Worker Node is added to
 the cluster, monitoring will automatically get added to the new Worker Node.
-Check, if the instana-agent pods are running.
 
 :::
 
-If there are no pods running, wait a minute and issue the "oc get pods" command
-again. This completes the installation of Instana agent on OpenShift cluster.
+This completes the installation of Instana agent on OpenShift cluster.
 
 ---
 
-## 3.5: Troubleshooting Instana Agent Installation on Kubernetes Cluster
+## 3.5: View Instana Agents in the Instana UI
 
-If you don't see your cluster in Instana UI after a couple of minutes, you need
-to troubleshoot the Instana Agent. From a terminal window with connection to
-your OCP cluster, issue the following command:
+From the **Installing Instana Agents** screen, select the **Go to Instana!**
+button.
+
+![](images/go-to-instana.png)
+
+Select **Infrastructure** from the left navigation menu.
+
+![](images/select-infra-from-home.png)
+
+You should see 3 nodes reporting. The **Instana VM**, the **MQACE VM** and the
+**Single Node OpenShift (SNO) VM**.
+
+:::note
+
+In an upcoming section we will learn how to update the name of the zone where
+the _MQACE_ VM resides.
+
+:::
+
+![](images/show-three-clusters.png)
+
+## 3.6: Troubleshooting Instana Agent Installation on Linux
+
+If you cannot see the **Instana** or **MQACE** hosts in the Instana UI you
+should read the Instana agent logs on the respective agent host located at
+`/opt/instana/agent/data/log/agent.log`. Look for the current status and any
+warnings or errors that may be shown.
+
+## 3.7: Troubleshooting Instana Agent Installation on Kubernetes Cluster
+
+If you don't see the **SNO host** in the **Demo Apps** zone after a couple of
+minutes, you need to troubleshoot the Instana Agent.
+
+:::caution Important
+
+The following must be done from a terminal window on the bastion host
+(**admin@bastion-gym-lan**)
+
+:::
+
+Check to make sure that all pods are running. Since Instana agent runs as a
+DaemonSet the number of pods should be equal to number of nodes in your cluster,
+in this case one.
 
 ```sh
 oc get pods -n instana-agent --kubeconfig kubeconfig-apps
 ```
 
-Check to make sure that all pods are running (since Instana agent runs as
-daemonset, number of pods should be equal to number of nodes in your cluster).
-If pods are running, you can examine the logs of one of the pods. Type:
+You can check the Instana Agent pod logs by running:
 
 ```sh
-oc logs <POD NAME> -c instana-agent --kubeconfig kubeconfig-apps
+oc logs $(oc get pods -n instana-agent -o custom-columns=POD:.metadata.name --no-headers --kubeconfig kubeconfig-apps) -n instana-agent -c instana-agent --kubeconfig kubeconfig-apps
 ```
-
-where **<POD NAME\>** is one of the pods listed in the previous command.
 
 ---
 
-## 3.6: Configuring Proxy
+## 3.8: Configuring Proxy
 
 :::warning Information Only
 
@@ -381,7 +410,7 @@ variables.
 
 ---
 
-## 3.7: Configuring Instana Agent
+## 3.9: Configuring Instana Agent
 
 :::warning Information Only
 
@@ -424,7 +453,7 @@ applied, make sure that it's not a formatting error
 
 ---
 
-## 3.8: Agent Configuration Troubleshooting
+## 3.10: Agent Configuration Troubleshooting
 
 :::warning Information Only
 
@@ -442,7 +471,7 @@ In case of Kubernetes based deployment you have to look at logs of
 
 ---
 
-## 3.9: Configuring GitOps for Agents
+## 3.11: Configuring GitOps for Agents
 
 :::warning Information Only
 
