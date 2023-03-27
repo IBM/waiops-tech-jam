@@ -6,6 +6,12 @@ description:
 sidebar_position: 1
 ---
 
+:::warning
+
+This lab is not part of the April Tech Jam.
+
+:::
+
 Welcome to the Watson for AIOps Event Manager tutorial series.
 
 ![](images/Intro.png)

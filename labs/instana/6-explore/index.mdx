@@ -22,8 +22,8 @@ flags** that can be enabled to add in other technologies like **VMware**,
 **Power HMC**, and **Z HMC**. You saw the **feature flags** for those
 technologies when you performed the Instana server installation.
 
-You will see a list of Kubernetes clusters. Look for the Cluster name that you
-chose when you installed the Instana Agent into OpenShift.
+You will see a list of Kubernetes clusters. In this environment there is only
+the SNO cluster that we installed the OCP Instana Agent onto.
 
 ![](images/clusters.png)
 
@@ -36,13 +36,14 @@ utilization of the Kubernetes cluster.
 ![](images/cluster.png)
 
 Select some of the other tabs to explore the Kubernetes monitoring. We recommend
-you look at the Events, Nodes, and Pods tabs. When you select the pods tab, you
-will see a list of all pods running within the cluster.
+you look at the **Events**, **Nodes**, and **Pods** tabs. When you select the
+pods tab, you will see a list of all pods running within the cluster.
 
-In the upper right corner, add `qotd` into the search widget. You'll notice that
-it will filter the list to the pods related to the Quote of the Day application.
+In the upper right corner of the **Pods** tab, add `qotd` into the search
+widget. You'll notice that it will filter the list to the pods related to the
+Quote of the Day application.
 
-![](images/pods.png)
+![](images/qotd-pods.png)
 
 Click on one of the links on the left side and drill into the pod utilization
 details.
@@ -54,19 +55,22 @@ details.
 Next, explore the Infrastructure view. To do this, click on the
 **"Infrastructure"** icon on the left side.
 
-![](images/2022-05-27-18-16-43.png)
+![](images/infra-zones.png)
 
 You'll notice that there is a square surrounding the **"towers"** with the zone
 names that you specified. The square is a **"zone"**. If you recall, you
-specified a zone name when you performed the install of the Instana Agent. The
-towers contained within the zones represents the OpenShift worker node, the
-Instana server, and the virtual machine running ACE and MQ.
+specified a zone name when you performed the install of the Instana Agent or
+specified a zone name in the Instana Aganet configuration file. The towers
+contained within the zones represents the OpenShift SNO cluster, the Instana
+server, and the virtual machine running ACE and MQ.
 
-HINT: If you cannot see 5 hosts in your zones, then one of the Agents is not
-connecting properly. There should be 3 OpenShift worker nodes, the Instana
-server, and the ACE/MQ server. If you see a host show up in the **Undefined
-Zone**, it means that you did not specify a zone name in the Agent
-configuration.
+:::note
+
+If you cannot see 3 zones with a host in each then one of the Agents is not
+connecting properly. If you see a host show up in the _'Undefined Zone'_, it
+means that you did not specify a zone name in the Agent configuration.
+
+:::
 
 In a large environment, it can be difficult to find the server or zone that you
 are looking for. Fortunately, there are a number of ways that you can search for
@@ -95,7 +99,7 @@ qualified hostname\>
 One you have specified the filter, you'll see that the infrastructure view is
 filtered to just a single server that matches your search.
 
-![](images/hostQuery.png)
+![](images/host-query.png)
 
 There are many other types of queries that can be executed using the
 filter/search bar. For example, you can specify AND, OR, and NOT conditions. You
@@ -105,25 +109,24 @@ documentation found here:
 
 Clear the filter at the top of the page by clicking on the **X**
 
-Next, flyover the tower that represents either the Instana server or the
-OpenShift worker node. These two towers are taller. They are taller because
-there are more discovered entities running on those servers.
+Next, flyover the tower that represents the Instana server. This tower is taller
+because there are more discovered entities running on it.
 
-![](images/student6Flyover.png)
+![](images/instana-flyover.png)
 
 You'll notice that a number of components were automatically discovered and are
 instrumented for monitoring.
 
 Next, flyover the ACE/MQ tower.
 
-![](images/student6Flyover2.png)
+![](images/mqace-flyover.png)
 
 This is the ACE and MQ server. You can see the MQ and ACE components along with
 a discovered JVM, and more.
 
 Next, click on the **"Comparison Table"** near the top of the page.
 
-![](images/2022-05-27-18-19-43.png)
+![](images/comparison-table.png)
 
 This table shows a sortable and searchable list of the Hosts that make up this
 environment. You can quickly find hosts consuming high CPU, high memory, or have
@@ -155,23 +158,24 @@ Flyover the ACE/MQ server again until you see a list of all discovered Entities.
 If you only see 1 entity, move your mouse to one of the corners of the tower.
 Once you see all of the entities, click your mouse. You'll see a dialog open
 
-![](images/2022-05-27-18-22-34.png)
+![](images/mqace-close-up.png)
 
 Use the scroll bar to scroll down. You'll notice that you see each of the types
 of Entities that were discovered. Expand the MQ entity type and you'll see the
 Queue Manager that was discovered.
 
-![](images/2022-05-27-18-24-50.png)
+![](images/mq-ace-open-modal.png)
 
 It is possible to click on either the "Open Dashboard" button or the links for
 the individual entities. If you clicked, you could navigate to either the Host
 operating system metrics or the specific middleware entity.
 
-Click on the "Open Dashboard" button and we'll examine the Host Agent dashboard.
+Click on the **Open Dashboard** button and we'll examine the Host Agent
+dashboard.
 
 After you click on the button you'll see a screen that looks like this:
 
-![](images/2022-05-27-18-26-49.png)
+![](images/mq-ace-host-dashboard.png)
 
 You can see fine grained metric data for the Host operating system. Most metrics
 are gathered at 1 second granularity. This can be very valuable in diagnosing
@@ -195,20 +199,20 @@ Scroll down and explore the other metrics on the page.
 As you scroll down the page, you'll notice a section on the left side of the
 screen that contains a list of Entity types that were discovered. This is the
 same list that you saw earlier on the Infrastructure view. By placing these
-links in context and leveraging the relationships that are discovered by Instana,
-it makes it easier to diagnose problems.
+links in context and leveraging the relationships that are discovered by
+Instana, it makes it easier to diagnose problems.
 
-![](images/2022-05-27-18-26-15.png)
+![](images/mq-ace-host-mq-sidebar.png)
 
 Expand the IBM MQ Queue Manager section and select the link for the
-**QM1@&lt;your-mqace-server&gt;** queue manager
+**QM1@mqace** queue manager
 
 You will navigate to the dashboard for the MQ Queue Manager. Scroll down the
 page and examine the metrics. There are many tables that contain links that
 would allow you to drill into the listener, topics, queues, channels, and more.
 Let's focus on the Channels. Scroll down to the table labeled **"Channels"**.
 
-![](images/2022-05-27-18-29-06.png)
+![](images/mq-channels.png)
 
 Click on the blue text on the left to drill into the Channel. Examine the
 Channel metrics on the page.
@@ -217,7 +221,7 @@ Next, look at the top of the screen. You'll notice that this is a breadcrumb
 that allows you to navigate back to where you were earlier in your navigation.
 It is also possible to use the back button in your browser.
 
-![](images/2022-05-27-18-39-59.png)
+![](images/mq-channel-breadcrumbs.png)
 
 If time permits at the end of the lab, you can explore some of the other
 elements within the MQ sensor or other middleware such as ACE.
@@ -254,19 +258,25 @@ Perspective"** button
 
 ![](images/newApplication.png)
 
-Switch to the Advanced View Mode in the upper right corner. Then complete the
-definition to look like below. First, type in **kubernetes** and then select
-**namespace**. Then, click in the **value** field. You'll notice that when you
-click on it, the field is pre-populated with **kubernetes namespaces** that have
-applications being monitored. Select the **robot-shop** namespace.
+**Switch to the Advanced Mode** in the upper right corner. Complete the
+definition to look like below.
+
+First, give the Application Perspective the name `Robot Shop`.
+
+Add a filter, type in **kubernetes** and then select **namespace**. Then, click
+in the **value** field. You'll notice that when you click on it, the field is
+pre-populated with kubernetes namespaces that have applications being monitored.
+Select the **robot-shop** namespace.
+
+Next select **All downstream services**. This selection will allow the
+application perspective to limit the scope to all transactions within the
+_robot-shop_ kubernetes namespace.
 
 ![](images/addRobotShop.png)
 
-This selection will allow the **application perspective** to limit the scope to
-all transactions within the **robot-shop** kubernetes namespace.
+Scroll down further in the dialog and select to include **All Calls**.
 
-Scroll down further in the dialog and select to include **All Calls** within the
-dashboard.
+![](images/all-downstream-services.png)
 
 Finally, click the **Create** button to create the application perspective.
 
@@ -274,26 +284,14 @@ Finally, click the **Create** button to create the application perspective.
 
 ## 6.4: Create an Application Perspective for QOTD
 
-Before we can investigate Applications within Instana, we need to create an
-**Application Perspective**. This section describes how to define the
+We can now repeat a similar process to the previous section to configure an
 **Application Perspective** for the **Quote of the Day** application.
 
-**Application Perspectives** allow you to group together a number of different
-services and endpoints into dashboard that shows the health and performance of a
-business application. In this section, you will create and **Application
-Perspective** for the **Quote of the Day** application.
+On the left hand navigation, select **"Applications"**.
 
-On the left hand navigation, select **"Applications"**. You will see a screen
-open up that contains a list of all applications that are defined in the
-environment. Initially, this list maybe almost empty showing just **All
-Services** generic bucket.
-
-The next thing you are going to do is define an application. You will see an
-**"Add"** button in the bottom right corner.
+Click the **"Add"** button in the bottom right corner.
 
 ![](images/add.png)
-
-Click the **"Add"** button
 
 A dialog will open with two options (one if Smart Alerts feature is not enabled
 yet on your server). We'll examine the "Global Smart Alerts" in the
@@ -302,31 +300,48 @@ Perspective"** button
 
 ![](images/newApplication.png)
 
-Swich to the Advanced View Mode in the upper right corner. Then complete the
-definition to look like below. As you add filters, you'll notice that Instana
-automatically populates the fields like the service name. As you add filters,
-notice that you need to add a combination of AND and OR conditions to achieve
-the results that you want.
+**Swich to the Advanced Mode** in the upper right corner. Then complete the
+definition to look like below.
+
+As you add filters, you'll notice that Instana automatically populates the
+fields like the service name. As you add filters, notice that you need to add a
+combination of **AND** and **OR** conditions to achieve the results that you
+want.
+
+:::note
+
+Pay close attention to the filters. The last filter is a **not equal** filter.
+
+:::
 
 ![](images/2022-05-27-18-48-03.png)
 
-What this Application Perspective is doing is the following. We are including
-the MQ Service by matching any service that contains the Queue Manager Name of
-QM1. We're including any service that includes the name of our ACE Integration
-Server named BK1. We're including any transactions that are in the **qotd**
-kubernetes **namespace** where the Quote of the Day application is installed.
-Using namespaces makes it very easy to build **Application Perspectives** for
-cloud native applications. Finally we added a filter to filter **OUT** any trace
-that has an endpoint name of **GET /health**. The **GET /health** requests are
-the readiness probes (heartbeating) that happens within kubernetes to ensure the
-pods are healthy. These transactions are not part of the application, so we want
-to exclude them.
+What this Application Perspective is doing is the following:
 
-Note: In these lab environments, the systems are fairly slow and the service
-names, kubernetes namespace, and endpoint name may not be available yet. For
-example, if you start typing kubernetes and can't find it, you can use an
-alternative method of defining the application. Add a filter with Service->Name
-contains **qotd** as shown below ![](images/alternative.png)
+- We are including the MQ Service by matching any service that contains the
+  Queue Manager Name of QM1.
+- We're including any service that includes the name of our ACE Integration
+  Server named BK1.
+- We're including any transactions that are in the **qotd** kubernetes
+  **namespace** where the Quote of the Day application is installed. Using
+  namespaces makes it very easy to build **Application Perspectives** for cloud
+  native applications.
+- Finally we added a filter to **filter OUT** any trace that has an endpoint
+  name of **GET /health**. The **GET /health** requests are the readiness probes
+  (heartbeating) that happens within kubernetes to ensure the pods are healthy.
+  These transactions are not part of the application, so we want to exclude
+  them.
+
+:::note
+
+If the lab environments are slow and the service names, kubernetes namespace,
+and endpoint name may not be available yet. For example, if you start typing
+kubernetes and can't find it, you can use an alternative method of defining the
+application. Add a filter with Service->Name contains **qotd** as shown below
+
+![](images/alternative.png)
+
+:::
 
 You have now created an Application Perspective. In the next section, you'll
 explore the application (it can take few minutes before the data for application
@@ -345,9 +360,9 @@ start to see metrics in the widgets.
 
 ![](images/2022-05-27-18-51-01.png)
 
-On this page you can see the golden signals which include transaction volumes,
-the number of erroneous calls, and latency. You'll also see the top services
-that make up the application.
+On this page you can see the golden signals which include **transaction
+volumes**, the **number of erroneous calls**, and **latency**. You'll also see
+the top services that make up the application.
 
 You'll notice a number of tabs across the top of the screen. Explore these tabs.
 In particular, let's take a look at the **"Dependencies"** tab.
@@ -364,24 +379,18 @@ ends in **BK1:EG2**. BK1 is the ACE Integration Node and EG2 is the ACE
 Integration Server. The QM1 node in the topology is the MQ Queue Manager named
 **"QM1"**.
 
-![](images/dependencies2.png)
-
-In the example below, you'll notice that there are red alerts on the screen due
-to an Event triggering against the queue manager. In your environment, you may
-not see errors or warnings.
+![](images/qotd-dependencies-map.png)
 
 Fly your mouse over the **QM1** node. Flying over any node in the dependency
 graph will show you a summary of the traces going through that service. You'll
 see the percentage of calls that are erroneous and the latency of the calls.
 
-![](images/flyoverQM.png)
+![](images/flyover-qm.png)
 
 Click on the **"QM1"** node. Notice that there are 3 options that would allow
 you to navigate to the MQ dashboard, the transaction Flow within MQ, or analyze
 the transaction calls through MQ. For now, we'll skip this navigation, but we
 suggest you explore those options later.
-
-![](images/dependenciesMQ.png)
 
 Click on **"Upstream/Downsteam"** near the top of the page. This will allow you
 to see a list of Upstream and Downstream services for the application.
@@ -401,10 +410,13 @@ built analytics uses this data to automatically group multiple related
 Close the **Stack** dialog by either clicking on the **Stack** button or
 somewhere else on the background of the Instana GUI.
 
-Note: There are a few other tabs on this screen that you can explore on your
-own. For now, we're going to focus on the **Services**.
+:::note
 
-Click on the Services Tab
+There are a few other tabs on this screen that you can explore on your own.
+
+:::
+
+Click on the **Services tab**
 
 ![](images/2022-05-27-18-57-07.png)
 
@@ -431,6 +443,8 @@ taking place within the qotd-engraving service. At the top, there is a summary
 of all calls in terms of transaction rates, return codes, erroneous calls, and
 latency.
 
+![](images/analyze-qotd-engraving.png)
+
 On the right side, click the arrow to expand the list of qotd-engraving **"POST
 /order"** calls. Instana is capturing 100% of the transactions so that you don't
 miss intermittent problems that might be occurring in the environment.
@@ -442,29 +456,32 @@ Select one of the requests
 You are now looking at the tracing data for a single transaction. At the top of
 the screen, you will see a summary of the latency, sub-calls and timeline. On
 the right side of the screen, you'll see the details and stack trace.
+
 ![](images/call1.png)
 
 Scroll down and you will see the service endpoint list
 
-![](images/call2.png)
+![](images/qotd-engraving-service-endpoint-list.png)
 
 Finally, scroll to the bottom of the screen and you will see a detailed call
-stack. The call stack gives you the timing and sequence of the call going
-through the application.
+stack **Calls**. The call stack gives you the timing and sequence of the call
+going through the application.
 
-Note: If errors were captured in the logs, they would be shown at the bottom of
-the screen, below the call stack.
+:::note
 
-![](images/call3.png)
+If errors were captured in the logs, they would be shown at the bottom of the
+screen, below the call stack.
+
+:::
 
 If you select the text on the left or the timeline bar, the **"Details & Stack
-Trace"** context will change.
+Trace"** context to the right of the page will change.
+
+![](images/engraving-calls.png)
 
 Explore the different types of calls going through this transaction by selecting
 the individual call. When you select an entry, examine the detailed information
 on the right.
-
-![](images/callStack.png)
 
 You should notice that different request types are color coded differently. Blue
 represents the HTTP requests going through an App Server or java process. Orange
@@ -473,13 +490,13 @@ represents a database call. And green represents a messaging call (ACE and MQ).
 When you select the Node.js App Server requests, you'll see the **StackTrace**
 on the right hand side. Within the **StackTrace**, click one of the URLs.
 
-![](images/stackTrace.png)
+![](images/open-stacktrace.png)
 
 When you click on the link, Instana will decompile the code and show you the
 lines of code. The exact line of code that is executing will be highlighted in
 yellow.
 
-![](images/lineOfCode.png)
+![](images/line-of-code.png)
 
 Click the **X** in the upper right corner to close the dialog.
 
@@ -488,7 +505,7 @@ msgFlowTransaction, and postOrder) you will see key information including the
 flow name, Integration Node, Integration Server, IP address, and more on the
 right side of the screen.
 
-![](images/ace.png)
+![](images/ace-analyse.png)
 
 When you select the MQ portion of the call stack, you'll see key information
 related to the MQ environment on the right. The information includes the Queue
@@ -500,14 +517,14 @@ you will navigate to the Queue page of the MQ sensor for the CP4I.DEMO.API.Q
 queue. Instana places these links in context to make it easier to diagnose
 problems.
 
-![](images/mq.png)
+![](images/mq-link.png)
 
 Earlier, you explored the Queue Manager and the MQ Channels. You're now looking
 at the queue that is being used by this application. You'll notice key
 information like the oldest message on the queue, queue depth, input/output
 rates, and more.
 
-![](images/queue1.png)
+![](images/queue-one.png)
 
 ---
 
@@ -515,21 +532,16 @@ rates, and more.
 
 :::note
 
-You should first generate some traffic in the monitored application.
-
-Navigate to the Robot Shop application with the route URL you retrieved in step
-4.3.
-
-The route URL looks like `web-robot-shop.<cluster domain>`
-
-Use the application to buy some Robots.
+When you installed Robot Shop you also installed a load generator. The load
+generator is a bot accessing the Robot Shop web application and mimics real
+users so that you can see metrics collected by Instana.
 
 :::
 
 Next, let's take a look at **Website** and **Mobile Application** Monitoring. In
-this environment, Instana does not include any native mobile applications, but
-know that Instana can gather End User Monitoring (EUM) data from Mobile
-Applications. For now, we'll investigate the website monitoring.
+this environment, Instana does not include any native mobile applications,
+however you should know that Instana can gather End User Monitoring (EUM) data
+from Mobile Applications too. For now, we'll investigate the website monitoring.
 
 Using the left side navigation, select **Websites & Mobile Apps**
 
@@ -539,12 +551,12 @@ You will see a list of websites that are being monitored. In this environment,
 you'll see the **Robot Shop** application website. Click on the blue link for
 the **Robot Shop** website to drill down for more details.
 
-![](images/websiteQOTD.png)
+![](images/click-robot-shop-eum.png)
 
 Explore the additional data available within the website monitoring by clicking
 on some of the other tabs.
 
-![](images/websiteTabs.png)
+![](images/robot-shop-dash.png)
 
 Next, explore the **Filters** that you see at the top of the screen.
 
@@ -558,28 +570,32 @@ identifying whether specific network locations, browser, or OS's are having
 performance problems. If you want to see typical EUM data, you can look at one
 of the IBM sales or Business Partner demo environments.
 
-At the top of the screen, click on the \*_Analyze Page Loads_ button
+At the top of the screen, click on the **Analyze Page Loads** button
 
 ![](images/analyzePageLoads.png)
 
 You will see a detailed list of the web requests grouped by URL path.
 
-Select the **Group** icon next to one of the URL paths. This will give you a
-page that is filtered to the transactions for just that single URL path. As with
-Tracing, Instana is capturing 100% of the web transactions.
+Select the **Group** icon next to one of the URL paths (robot-shop only has
+one). This will give you a page that is filtered to the transactions for just
+that single URL path. As with Tracing, Instana is capturing 100% of the web
+transactions.
 
-![](images/websiteGroup.png)
+![](images/robot-shop-focus-group.png)
 
-Next, select one of the requests. You will see a detailed page showing the EUM
-data and more. At the top of the page, you'll notice that you can see the user
-that made the request. This sensitive data can be omitted by Instana if the
-customer desires. You'll also see the Browser version and operating system that
-was used to access the web page. Depending on the environment, you'll also see
-geolocation data for where the person accessed the application. In some cases
-the private IP addresses are not mapped and the **User Location** data will be
-empty.
+Next, select one of the requests.
 
-![](images/EUM.png)
+![](images/robot-shop-select-req.png)
+
+You will see a detailed page showing the EUM data and more. At the top of the
+page, you'll notice that you can see the user that made the request. This
+sensitive data can be omitted by Instana if the customer desires. You'll also
+see the Browser version and operating system that was used to access the web
+page. Depending on the environment, you'll also see geolocation data for where
+the person accessed the application. In some cases the private IP addresses are
+not mapped and the **User Location** data will be empty.
+
+![](images/robot-shop-eum-req.png)
 
 Scroll down on the page and you'll see a detailed breakdown of the request
 including timings for the key page content.
@@ -587,7 +603,7 @@ including timings for the key page content.
 Expand one of the entries on the right by clicking the down arrow to view more
 details.
 
-![](images/webTrace.png)
+![](images/robot-shop-web-trace.png)
 
 We are not going to do it for this lab, but if you click on the **View Backend
 Trace** button, you can investigate the backend trace data that you saw earlier
@@ -610,7 +626,7 @@ applications, or profiles. For now, close the dialog and we'll analyze the
 
 ![](images/typeOfCalls.png)
 
-One of the key Instana capabilities is **unbounded analytics**. This allows you
+One of the key Instana capabilities is **Unbounded Analytics**. This allows you
 to apply ad-hoc queries to easily find the data you are looking for. On the
 screen, you'll see a couple of different ways that you can query/filter the
 metrics.
@@ -619,7 +635,7 @@ One the left side, you'll see a number of about of the box filters. Expand the
 dropdown arrows to see the options. Then, select one of the checkboxes to filter
 the data.
 
-![](images/filterOptions.png)
+![](images/analytics-filter-qotd.png)
 
 Now, uncheck the checkbox to remove the filter.
 
@@ -665,7 +681,7 @@ locking the current time range, when the link it opened, it will take the person
 to a view with the exact same time range that you are looking at. Otherwise,
 they are taken to the most recent time range.
 
-![](images/link.png)
+![](images/get-page-link.png)
 
 That completes the Explore section of the lab.
 

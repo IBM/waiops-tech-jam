@@ -49,7 +49,8 @@ If MQ and ACE is running the output will look like this:
 
 ![ace-mq-status](images/ace-mq-status.png)
 
-If either of the above are not in a running state execute the following script:
+Care fully check the output and compare it to the screenshot above. If either of
+the above are **not in a running state** for you execute the following script:
 
 :::note
 
@@ -177,7 +178,8 @@ successfully placed.”
 
 :::warning Information Only
 
-This section is here for informational purposes. There are no steps to execute.
+This section 5.4 is here for informational purposes. There are no steps to
+execute.
 
 :::
 
@@ -219,6 +221,12 @@ sudo -i
 ```
 
 To run the following commands you have to source the `mqsiprofile`:
+
+:::note
+
+You might see _'mqsiprofile repetition disallowed'_, this can be safely ignored.
+
+:::
 
 ```sh
 . /opt/ace-11.0.0.11/server/bin/mqsiprofile
@@ -331,7 +339,8 @@ quit
 
 :::warning Information Only
 
-This section is here for informational purposes. There are no steps to execute.
+This section 5.5 is here for informational purposes. There are no steps to
+execute.
 
 :::
 
@@ -389,15 +398,17 @@ middleware component.
 
 In this section, you will perform these commands as root on the ACE/MQ server.
 
-From the bastion host ssh to the ACE/MQ server.
+From the bastion host ssh to the ACE/MQ server and become root.
+
+:::note
+
+If you already have a terminal open to **root@mqace** you can use that and skip
+to the next step.
+
+:::
 
 ```sh
 ssh jammer@mqace
-```
-
-Then, use sudo to switch to the root user.
-
-```sh
 sudo -i
 ```
 
