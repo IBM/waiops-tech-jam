@@ -6,16 +6,16 @@ sidebar_position: 7
 
 ## 7.1: Manage Performance of Your Application
 
-1. Open your Instana dashboard. Navigate to `Platform -> Kubernetes`.
-   ![](images/action-1.png)
+1. Open your **Instana dashboard** and navigate to **Platform** ->
+   **Kubernetes**. ![](images/action-1.png)
 
-1. Select your Robot Shop cluster.
+1. Select your **SNO cluster**.
 
-1. Under the `Namespaces` tab, select `robot-shop`.
+1. Under the **Namespaces** tab, select **robot-shop**.
 
    ![](images/action-2.png)
 
-1. Click on the `Pods` tab and choose the `Map` view:
+1. Click on the **Pods tab** and choose the **Map** view:
 
    - Analyze the CPU Limits, CPU Requests, Memory Limits, and Memory Requests.
 
@@ -24,12 +24,12 @@ sidebar_position: 7
 
    ![](images/action-3.png)
 
-1. Then go to the Turbonomic ARM dashboard and navigate to the `Robot Shop`
+1. Then go to the Turbonomic ARM dashboard and navigate to the **Robot Shop**
    application:
 
    ![](images/action-4.png)
 
-1. Here, we can see come key application metrics provided by Instana, e.g.
+1. Here, we can see some key application metrics provided by Instana, e.g.
    response time and transactions and how they have evolved over time.
 
    - Turbonomic uses this data to provided actionable insights in the form of
@@ -37,34 +37,38 @@ sidebar_position: 7
      efficiency.
 
    - You will notice either green, red or yellow segments of the circles on
-     `Container Cluster` section of the Business Application Tree on the left
+     **Container Cluster** section of the Business Application Tree on the left
      side of the screen (the **supply chain**).
 
    ![](images/action-5.png)
 
 1. Click that circle and it will take you to a screen like below:
 
-   - You will notice that there are `Pending Actions` that Turbonomic suggests
+   - You will notice that there are **Pending Actions** that Turbonomic suggests
      will improve the performance and efficiency of the application:
 
    ![](images/action-6.png)
 
-   > **Note:** Turbonomic does not recommend actions for a Business Application,
-   > Transactions, or Services, but it does recommend actions for the underlying
-   > Application Components and infrastructure entities, thus providing
-   > visibility into the risks that have a direct impact on the Business
-   > Application's performance.
+   :::note
 
-1. Click `SHOW ALL` in the `Pending Actions` section:
+   Turbonomic does not recommend actions for a Business Application,
+   Transactions, or Services, but it does recommend actions for the underlying
+   Application Components and infrastructure entities, thus providing visibility
+   into the risks that have a direct impact on the Business Application's
+   performance.
+
+   :::
+
+1. Click **SHOW ALL** in the **Pending Actions** section:
 
    ![](images/action-7.png)
 
 1. Then select the pending actions that are for the Robot Shop application. Once
-   they are selected, click on `EXECUTE ACTIONS` to apply the actions:
+   they are selected, click on **EXECUTE ACTIONS** to apply the actions:
 
    ![](images/action-8.png)
 
-1. Click on `EXECUTE NOW` on the resulting pop up window:
+1. Click on **EXECUTE NOW** on the resulting pop up window:
 
    ![](images/action-9.png)
 
