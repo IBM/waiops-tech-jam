@@ -24,14 +24,15 @@ and build out a lab or demo environment in OpenShift.
 :::caution Important
 
 Perform this installation procedure from the bastion host (Guacamole) as the
-admin user. If you are unsure you can open a new terminal tab or window.
+admin user. If you are unsure you can open a new terminal tab or terminal
+window.
 
 The instructions in this guide use environment variables so it is important that
 you use the same terminal prompt for the duration of the guide.
 
 :::
 
-1. Run the following commands to check your cluster access
+1. Run the following commands to check you are in the right place:
 
    ```sh
    cd ~
@@ -96,7 +97,19 @@ You are now ready to deploy the operator
    **AIOps OCP Dashboard** or navigating to
    `https://console-openshift-console.apps.ocp.techzone.lan`
 
-   Advance through any certificate warnings you may get.
+   :::note
+
+   Advance through the certificate warnings, on for the ocp-console and another
+   for the OAuth server.
+
+   ![](images/advance-cert-warning.png)
+
+   :::
+
+1. Login to the OCP Console using the credentials provided in IBM Tech Zone.
+
+   The username will be **kubeadmin** and the password is the value of **_OCP
+   Cluster Admin Password_**
 
 1. Launch the operator pod:
 

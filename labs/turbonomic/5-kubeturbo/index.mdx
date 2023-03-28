@@ -40,10 +40,16 @@ Turbonomic server.
    You can use the bookmark called **Apps SNO Dashboard** or use the URL
    `https://console-openshift-console.apps.sno.techzone.lan`
 
+   Double check and make sure you see the text **sno** in your URL.
+
    :::
 
-1. As a cluster administrator, create a project in the OCP cluster where
-   KubeTurbo will be deployed:
+1. Login to the OCP Console using the credentials provided in IBM Tech Zone.
+
+   The username will be **kubeadmin** and the password is the value of **_SNO
+   Cluster Admin Password_**
+
+1. Create a project in the OCP cluster where KubeTurbo will be deployed:
 
    1. Navigate to `Home -> Projects` and click on the `Create Project` button.
    1. Fill in details as below:
@@ -57,40 +63,47 @@ Turbonomic server.
 
 ## 5.3: Deploy the Operator
 
-1. Click on `Operators -> OperatorHub`. Ensure the `kubeturbo-operator` project
-   is selected in the dropdown.
+1. Click on **Operators** -> **OperatorHub**. Ensure the **kubeturbo-operator**
+   project is selected in the dropdown.
 
-1. Search for `kubeturbo` and select the `Certified` KubeTurbo operator:
+1. Search for `kubeturbo` and select the **Certified** KubeTurbo operator:
 
    :::warning
 
-   Do not use Community edition.
+   You must use the **Certified Kubeturbo Operator**.
 
    :::
 
    ![](images/searchKubeturboCertified.png)
 
-1. Select and click on the `Install` button:
+1. Select and click on the **Install** button:
 
    ![](images/kubeturboInstall-1.png)
 
 1. Select options as below:
 
-   - Set `Update approval` as `Manual`:
+   - Select **A specific namespace on the cluster**
+   - Set the **Installed Namespace** to **kubeturbo-operator**
+   - Set **Update approval** to **Manual**:
 
-     - **Automatic update is not recommended if you are not also automatically
-       updating the Turbonomic Server.**
-     - Click the `Install` button.
+     :::tip
+
+     Automatic updates are not recommended if you are not also automatically
+     updating the Turbonomic Server
+
+     :::
+
+   - Click the **Install** button.
 
    ![](images/kubeturboInstall-2.png)
 
-1. Click on the `Approve` button when the `Manual approval required` prompt
+1. Click on the **Approve** button when the _Manual approval required_ prompt
    appears:
 
    ![](images/kubeturboInstall-3.png)
 
 1. The operator will install and when it's ready you can view the operator
-   (Click on `View Operator`) to create an instance, which will be your
+   (Click on **View Operator**) to create an instance, which will be your
    KubeTurbo agent (or probe) that will monitor and manage this cluster:
 
    ![](images/kubeturboInstall-4.png)
@@ -99,11 +112,11 @@ Turbonomic server.
 
 ## 5.4: Configure Kubeturbo Instance
 
-1. When viewing the deployed operator, click on `Create instance`:
+1. When viewing the deployed operator, click on **Create instance**:
 
    ![](images/kubeturboCreateInstance-1.png)
 
-1. To configure this instance click on the `YAML view` option:
+1. To configure this instance click on the **YAML view** option:
 
    :::info
 
@@ -111,7 +124,7 @@ Turbonomic server.
    [Configure KubeTurbo Instance](https://github.com/turbonomic/kubeturbo/wiki/OpenShift-Operator-Hub-Details#configure-a-kubeturbo-instance)
    for more information on the `Form view` option.
 
-   For this lab, use the `YAML view` option.
+   For this lab, use the **YAML view** option.
 
    :::
 
@@ -149,9 +162,8 @@ Turbonomic server.
 
    ![](images/kubeturboCreateInstance-3.png)
 
-1. Now, replace the text
-   `<your turbonomic server URL, please use the topology-processor URL>` with
-   the actual turbonomic server URL:
+1. Now, replace the text **<your turbonomic server URL, please use the
+   topology-processor URL>** with the actual turbonomic server URL:
 
    **How to get the Turbonomic Server URL:**
 
@@ -159,13 +171,13 @@ Turbonomic server.
       `https://console-openshift-console.apps.ocp.techzone.lan` in another
       browser tab:
 
-   1. Navigate to `Networking -> Routes`, select the `turbonomic` project and
-      copy the `Location` for `topology-processor`:
+   1. Navigate to **Networking** -> **Routes**, select the **turbonomic project
+      and copy the **Location** for **topology-processor\*\*:
 
       ![](images/turboTopologyProcessorRoute.png)
 
    1. Go back to your YAML editor view in Step 3 earlier. Assign it as the
-      `turboServer` value:
+      **turboServer** value:
 
       ![](images/kubeturboCreateInstance-4.png)
 
@@ -176,8 +188,8 @@ Turbonomic server.
 
    1. Go back to the **AIOps OCP Dashboard** where turbonomic is installed:
 
-   1. Navigate to `Networking -> Routes`, select the `turbonomic` project and
-      copy the `Location` value for the `api` route:
+   1. Navigate to **Networking** -> **Routes**, select the **turbonomic
+      project** and **click** the **Location** value for the **api** route:
 
       ![](images/turboApiRoute.png)
 
@@ -188,8 +200,8 @@ Turbonomic server.
 
    1. Go back to your YAML editor view in Step 3 earlier. Assign the value to:
 
-      - `image` -> `tag` value
-      - `serverMeta` -> `version` value
+      - **image** -> **tag** value
+      - **serverMeta** -> **version** value
 
       ![](images/kubeturboCreateInstance-5.png)
 
@@ -199,16 +211,18 @@ Turbonomic server.
 
    ![](images/kubeturboCreateInstance-6.png)
 
-1. Then set a cluster name for the `targetName`, e.g.
+1. Then set a cluster name for the **targetName**, e.g.
 
    - `application-kubeturbo-cluster`.
 
-1. Finally, click on the `Create` button.
+   Your config should now look similar to the below:
 
    ![](images/completed-kubeturbo-form.png)
 
+1. Finally, click on the **Create** button.
+
 1. When you have applied your configuration you will see that you have created
-   an instance, or custom resource, called `kubeturbo-release`:
+   an instance, or custom resource, called **kubeturbo-release**:
 
    ![](images/kubeturboCreateInstance-8.png)
 
@@ -216,39 +230,58 @@ Turbonomic server.
 
 ## 5.5: Validate Deployment
 
-You should now see two deployments and two running pods in the namespace:
+You can now check to see that you have two deployments and two running pods in
+the **kubeturbo-operator** namespace:
 
 - One is the operator
 - The other is the Kubeturbo probe (release)
 
-1. On your **Application** OpenShift cluster, navigate to
-   `Workloads -> Deployment` and select the `kubeturbo-operator` project:
+1. On your **Apps SNO** OpenShift cluster, navigate to **Workloads** ->
+   **Deployment** and select the **kubeturbo-operator** project:
 
    ![Kubeturbo validate deployments](https://raw.githubusercontent.com/evat-pm/images/master/KOH-deployments.png?raw=true)
 
-1. Navigate to `Workloads -> Pods` and select the `kubeturbo-operator` project:
+1. Navigate to **Workloads** -> **Pods** again in the **kubeturbo-operator**
+   project:
 
    ![](https://raw.githubusercontent.com/evat-pm/images/master/KOH-runningPods.png?raw=true)
 
-1. Then click on the `kubeturbo-release` pod.
+1. Then click on the **kubeturbo-release** pod.
 
    ![](images/validateDeployment-1.png)
 
-1. Then click on `Logs` to validate that the probe has successfully connected,
-   registered with the Turbo Server, and a full discovery has occurred:
+1. Then click on **Logs** to validate that the probe has successfully registered
+   by searching the logs for `Probe registration succeeded`
 
-   You can also use the search field to search for
-   `Probe registration succeeded.`
-
-   ![](images/validateDeployment-2.png)
+   ![](images/turbo-probe-registration-success.png)
 
 1. Validate the target in the Turbonomic Server UI
 
-   - Go to your Turbonomic Server UI -> `Settings` -> `Target Configuration` and
-     you will see a new target listed with the name
-     `Kubernetes-<your cluster name>`
+   - Go to your **Turbonomic Server UI** -> **Settings** -> **Target
+     Configuration** and you will see a new target listed with the name
+     **Kubernetes-{your_cluster_name}**
 
      ![](./images/validate-deployment-by-name.png)
+
+1. Finally validate that **Kubeturbo** is discovering the **SNO Cluster VM** and
+   that the **Robot Shop** application is running on it.
+
+   - Navigate to the **Robot Shop** _Business Application_
+
+     ![](./images/nav-to-kubeturbo-check.png)
+
+   - Confirm the SNO **Virtual Machine** is discovered and displayed in the
+     Turbo Supply Chain.
+
+     :::note
+
+     If you don't see it yet give the system some time to process. This can take
+     up to 10 minutes to show. In the meantime you can read the Kubeturbo
+     container logs to view the current status.
+
+     :::
+
+     ![](./images/verify-turbo.png)
 
 ---
 
