@@ -250,13 +250,10 @@ the **kubeturbo-operator** namespace:
 
    ![](images/validateDeployment-1.png)
 
-1. Then click on **Logs** to validate that the probe has successfully connected,
-   registered with the Turbo Server, and a full discovery has occurred:
+1. Then click on **Logs** to validate that the probe has successfully registered
+   by searching the logs for `Probe registration succeeded`
 
-   You can also use the search field to search for
-   `Probe registration succeeded.`
-
-   ![](images/validateDeployment-2.png)
+   ![](images/turbo-probe-registration-success.png)
 
 1. Validate the target in the Turbonomic Server UI
 
@@ -265,6 +262,26 @@ the **kubeturbo-operator** namespace:
      **Kubernetes-{your_cluster_name}**
 
      ![](./images/validate-deployment-by-name.png)
+
+1. Finally validate that **Kubeturbo** is discovering the **SNO Cluster VM** and
+   that the **Robot Shop** application is running on it.
+
+   - Navigate to the **Robot Shop** _Business Application_
+
+     ![](./images/nav-to-kubeturbo-check.png)
+
+   - Confirm the SNO **Virtual Machine** is discovered and displayed in the
+     Turbo Supply Chain.
+
+     :::note
+
+     If you don't see it yet give the system some time to process. This can take
+     up to 10 minutes to show. In the meantime you can read the Kubeturbo
+     container logs to view the current status.
+
+     :::
+
+     ![](./images/verify-turbo.png)
 
 ---
 
