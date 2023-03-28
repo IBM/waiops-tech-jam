@@ -54,6 +54,37 @@ and sign in with your IBM ID.
 All access to the environment is behind the Bastion host running RHEL named
 **Guacamole**.
 
+## Validate cluster readiness
+
+These lab environments are deployed on scale using automation, often just a few
+hours prior to the start of a Tech Jam event.
+
+As such, it is best to ensure that OpenShift cluster provisioning has fully
+completed on your allocated lab environment:
+
+1. On your bastion node (**Guacamole**), open a terminal session:
+
+   ![open-terminal](images/open-terminal.png)
+
+1. Paste and execute the following commands in the terminal session:
+
+   ```sh
+   /home/admin/approve-csrs-custom.sh /home/admin/kubeconfig-aiops
+   /home/admin/approve-csrs-custom.sh /home/admin/kubeconfig-apps
+   ```
+
+   :::tip
+
+   Remember to press `Enter` once the second script appears on the command line
+   for it to execute as well.
+
+   :::
+
+This procedure ensures your cluster nodes are ready by approving any outstanding
+certificate signing requests. Your output should be similar to:
+
+![Approve CSRs](images/approve-csrs.png)
+
 ## Import bookmarks on Guacamole
 
 To make it easier to navigate to different applications a _bookmarks.html_ file
