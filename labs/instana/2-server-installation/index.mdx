@@ -165,6 +165,15 @@ mkdir /mnt/traces
 mkdir /mnt/data
 ```
 
+Finally, ensure the required packages are installed for SMTP configuration later
+in this lab:
+
+```sh
+debconf-set-selections <<< "postfix postfix/mailname string localhost"
+debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Local only'"
+apt-get install --assume-yes postfix mailutils
+```
+
 You are now ready to start the installation of the Instana Server.
 
 ---
