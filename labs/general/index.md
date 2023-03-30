@@ -49,10 +49,51 @@ host we recommend allowing.
 :::
 
 You should have received an email with a link to IBM Tech Zone. Click the link
-and sign in with your IBM ID.
+and sign in with your IBM ID. You should see a page similar to the below:
+
+![attendee-page](images/attendee-page.png)
+
+Under **Your environment** enter the password provided by your lab proctors and
+select **Submit password**
 
 All access to the environment is behind the Bastion host running RHEL named
 **Guacamole**.
+
+## Important Tips
+
+### Copy & Paste
+
+If you are a **Windows user** be mindful that there are no new lines inserted
+unintentionally when copying and pasting commands to the Terminal. If you have
+this issue consider opening the lab guide within Guacamole or use the **gedit
+Text Editor** to remove any extra new lines before pasting the command in the
+terminal.
+
+You can open a new **Text Editor (gedit)** document by:
+
+1. Selecting **Activities** at the top left of the screen on the _Guacamole_
+   host.
+1. Entering the search term `text`
+1. Selecting the **Text Editor** application
+
+![](images/open-text-edit.png)
+
+### Default Text Editor
+
+Throughout the lab you will be required to edit kubernetes manifests. By default
+you will use the **vi** editor. If you would prefer use the graphical text
+editor **gedit** you can do so by:
+
+- Setting your default kubernetes editor on the _Guacamole_ host
+  (admin@bastion-gym-lan):
+
+  ```sh
+  # For the current shell
+  export KUBE_EDITOR=/bin/gedit
+
+  # More permanent change (open a new tab or window after making the change)
+  echo "export KUBE_EDITOR=/bin/gedit" >> ~/.bashrc
+  ```
 
 ## Validate cluster readiness
 
@@ -80,10 +121,10 @@ completed on your allocated lab environment:
 
    :::
 
-This procedure ensures your cluster nodes are ready by approving any outstanding
-certificate signing requests. Your output should be similar to:
+   This procedure ensures your cluster nodes are ready by approving any
+   outstanding certificate signing requests. Your output should be similar to:
 
-![Approve CSRs](images/approve-csrs.png)
+   ![Approve CSRs](images/approve-csrs.png)
 
 ## Import bookmarks on Guacamole
 
