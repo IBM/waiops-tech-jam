@@ -67,14 +67,6 @@ ports for SaaS are slightly different.
 
 :::
 
-:::caution A note on copy & paste
-
-Be mindful when copying and pasting commands that extra characters or new lines
-are not copied by accident. Remove any extra characters or new lines before
-executing the command.
-
-:::
-
 From the Bastion host (named **Guacamole**), open a terminal window by selecting
 **Activities** at the top left of the screen and then the terminal icon.
 
@@ -137,6 +129,13 @@ If docker is running, you should see output similar to what's shown below.
 Next, we want to pin the major version of Instana so that we don't get updates
 during the lab. Issue the following command to pin the Instana version.
 
+:::note Copy & paste
+
+Be mindful when copying and pasting to ensure no extra lines are inserted by
+first copying the command to a text document.
+
+:::
+
 ```sh
 cat >/etc/apt/preferences.d/instana-console <<EOF
 Package: instana-console
@@ -167,6 +166,13 @@ mkdir /mnt/data
 
 Finally, ensure the required packages are installed for SMTP configuration later
 in this lab:
+
+:::note Copy & paste
+
+Be mindful when copying and pasting to ensure no extra lines are inserted by
+first copying the command to a text document.
+
+:::
 
 ```sh
 debconf-set-selections <<< "postfix postfix/mailname string localhost"

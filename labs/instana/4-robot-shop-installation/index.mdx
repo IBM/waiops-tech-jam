@@ -154,10 +154,16 @@ If successful, you should see the results similar to what's shown below.
 
 ![](images/robot-shop-helm-install.png)
 
-Check whether the Robot Shop pods are running by typing:
+Check the status of the Robot Shop deployment by watching the pods:
+
+:::note
+
+Type `Ctrl-C` to exit the watch loop.
+
+:::
 
 ```sh
-oc get pods -n robot-shop --kubeconfig ~/kubeconfig-apps
+oc get pods -n robot-shop -w --kubeconfig kubeconfig-aiops
 ```
 
 If the install was successful, you'll see the following pods running.
@@ -165,10 +171,10 @@ If the install was successful, you'll see the following pods running.
 :::info
 
 If some of the pods (for example _ratings_ or _shipping_) show **0/1** instead
-of **1/1** in the READY column or the pods aren't in a **Running** state, wait a
-couple more minutes and issue the **oc get pods** command again. It can **take
-as much as 15 minutes** before all of the pods are running. If you don't want to
-wait, you can proceed to the next steps.
+of **1/1** in the READY column or the pods aren't yet in a **Running** state you
+may need to wait a little longer. It can **take as much as 15 minutes** before
+all of the pods are running. If you don't want to wait, you can proceed to the
+next steps.
 
 :::
 
