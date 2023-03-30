@@ -63,10 +63,10 @@ All access to the environment is behind the Bastion host running RHEL named
 
 ### Copy & Paste
 
-If you are a Windows user be mindful that new lines are not inserted
+If you are a **Windows user** be mindful that there are no new lines inserted
 unintentionally when copying and pasting commands to the Terminal. If you have
 this issue consider opening the lab guide within Guacamole or use the **gedit
-Text Editor** to remove any extra new lines before executing the command in the
+Text Editor** to remove any extra new lines before pasting the command in the
 terminal.
 
 You can open a new **Text Editor (gedit)** document by:
