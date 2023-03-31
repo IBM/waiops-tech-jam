@@ -37,28 +37,6 @@ Virtual Machines:
 
 ![architecture](images/architecture-instana-turbo.png)
 
-## Accessing your environment
-
-:::tip
-
-We recommend using Google Chrome to access the bastion host.
-
-If prompted by your browser to allow copy/paste when connection to the Bastion
-host we recommend allowing.
-
-:::
-
-You should have received an email with a link to IBM Tech Zone. Click the link
-and sign in with your IBM ID. You should see a page similar to the below:
-
-![attendee-page](images/attendee-page.png)
-
-Under **Your environment** enter the password provided by your lab proctors and
-select **Submit password**
-
-All access to the environment is behind the Bastion host running RHEL named
-**Guacamole**.
-
 ## Important Tips
 
 ### Copy & Paste

@@ -20,7 +20,8 @@ sidebar_position: 7
    - Analyze the CPU Limits, CPU Requests, Memory Limits, and Memory Requests.
 
    For example, here's what the CPU Limits look like for Robot Shop app before
-   taking any Turbonomic ARM recommended actions:
+   taking any Turbonomic ARM recommended actions, take notice of the **payment**
+   pod which is configured with 200m:
 
    ![](images/action-3.png)
 
@@ -79,7 +80,8 @@ sidebar_position: 7
 1. After a few minutes, you can go back to the Instana dashboard to view the
    result of taking the actions:
 
-   - Repeat step 4 to view the changes.
+   - Repeat step 4 to view the changes. Previously the **payment** pod was
+     configured with 200m.
 
    ![](images/payment-increase.png)
 
