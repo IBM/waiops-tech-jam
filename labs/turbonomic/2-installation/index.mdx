@@ -115,7 +115,7 @@ You are now ready to deploy the operator
 
    Click on `Operators -> OperatorHub`. Ensure the `turbonomic` project is
    selected in the dropdown. Search for `turbonomic platform` and select the
-   `Certified` operator
+   **Certified** operator
 
    ![](images/turbo-operator-1.png)
 
@@ -161,7 +161,7 @@ Next, we are going to configure the Turbonomic instance.
    :::note
 
    You can view your available storage classes using `oc get storageclass`. For
-   this lab we will be using `ocs-storagecluster-ceph-rbd`.
+   this lab we will be using **ocs-storagecluster-ceph-rbd**.
 
    :::
 
@@ -297,9 +297,16 @@ Once logged in, the setup wizard will prompt you to import the license key:
 1. From the **Guacamole** host create a file called `turbo-license` and copy the
    contents of the license file provided by your lab proctors into it.
 
+   :::note
+
+   It is recommended to use a text editor to modify the following command before
+   pasting it into the Terminal.
+
+   :::
+
    ```sh
    cat << EOF > ~/turbo-license.lic
-   <license file contents>
+   <replace_this_with_license_file_contents>
    EOF
    ```
 
