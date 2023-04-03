@@ -49,22 +49,24 @@ Here are the steps for setting up the **Email** channel.
 
 - Enter a name for the alert. The name can be anything, but should be
   meaningful. For example, if the Alert Channel will be used to notify the MQ
-  admins, like in this case call it something MQ related such as **MQ Email
-  Channel**
+  admins, like in this case call it something MQ related such as
+  `MQ Email Channel`
 - Enter the email address to notify. Notice that there is an **Add Email** link
   on the right side if you want to add multiple Email addresses. For the lab
-  purpose, please use **jammer@localhost** email - Instana will be able to send
+  purpose, please use `jammer@localhost` email - Instana will be able to send
   email to your localhost email server
 
 ![](images/003-administer_instana.png)
 
-- Next, click the **Test Channel** button. This will attempt to send a test
-  Email to the address you specified. You'll see whether the Instana server has
-  access to the Email destination. In order to check an email in Instana lab
-  server, login as **jammer** user to your Instana server and type "mail"
-  command as presented below:
+Next, click the **Test Channel** button. This will attempt to send a test Email
+to the address you specified. You'll see whether the Instana server has access
+to the Email destination.
 
-![](images/005-mail-instana.png)
+Check for the test email on the Instana server. Login to the Instana server in a
+new Terminal tab using `ssh jammer@instana`. Once logged in use the `mail`
+command as presented below to view the jammer users inbox:
+
+![](images/test-mail-instana.png)
 
 This will show one email received from **server@instana.com** to the
 **jammer@localhost** email box.
@@ -78,22 +80,21 @@ save the **Alert Channel**
 
 ## 7.2: Create an Analytics Based Smart Alert
 
-In this section, you will create an analytics based **"Smart Alert"** to detect
+In this section, you will create an analytics based **Smart Alert** to detect
 abnormal behavior within an application.
 
-Click on **Applications** and then, select the **"Quote of the Day"**
-application.
+Click on **Applications** and then, select the **Quote of the Day** application.
 
 ![](images/applications-qotd.png)
 
-Click on **"Add Smart Alert"** in the lower right corner.
+Click on **Add Smart Alert** in the lower right corner.
 
 ![](images/smartAlert.png)
 
 There is a simple and an advanced mode. We'll be using the advanced mode which
 allows you to see all of the capabilities.
 
-In the upper right corner of the dialog, select **"Switch to Advanced Mode"**
+In the upper right corner of the dialog, select **Switch to Advanced Mode**
 
 ![](images/advanced.png)
 
@@ -105,7 +106,7 @@ Alerts**
 - HTTP Status Codes
 - Throughput (both high and low numbers of calls)
 
-Leave the default of **"Slow Calls"**
+Leave the default of **Slow Calls**
 
 ![](images/slowCalls.png)
 
@@ -168,8 +169,8 @@ raised.
 
 ![](images/options3.png)
 
-There is also an option to select an **"Alert Channel"**. In the previous
-section, you created an Email Alert Channel.
+There is also an option to select an **Alert Channel**. In the previous section,
+you created an Email Alert Channel.
 
 Select the **Select Alert Channels** button. A dialog will open with the Alert
 Channel that you created earlier. Select the channel.
@@ -210,7 +211,7 @@ application. To see the **Smart Alert** that you just created, click on the
 Now, let's examine how a more traditional threshold is created and used in
 conjunction with Alert Channels.
 
-On the left side of the screen, select the **"Settings"** gear.
+On the left side of the screen, select the **Settings** gear.
 
 ![](images/events.png)
 
@@ -218,9 +219,9 @@ The Settings menu provides access to most of the administrative tasks within
 Instana. You'll notice menus for Events, Alerts, Alert Channels, API Tokens,
 Users, Groups, Log Management Integration, and more.
 
-Select **"Events"**
+Select **Events**
 
-Once you click on **"Events"**, you will see a list of 300+ Events that are
+Once you click on **Events**, you will see a list of 300+ Events that are
 defined as out of the box thresholds within Instana. If you want to filter the
 list, you can do that in a number of ways via the drop down lists at the top of
 the page.
@@ -230,12 +231,12 @@ the page.
 Notice that you can filter based on the Event type, severity, entity type,
 state, or simply enter a keyword filter.
 
-Select the **"Entity Type"** dropdown list and type **"IBM MQ"** into the field.
+Select the **Entity Type** dropdown list and type `IBM MQ` into the field.
 You'll notice that a few different options show up. Each of the options is an
 Entity Type. You can filter on the Events related to the IBM MQ Queue Manager,
 Queue, Channel, etc.
 
-Select **"IBM MQ Queue Manager"** from the dropdown list.
+Select **IBM MQ Queue Manager** from the dropdown list.
 
 ![](images/qmEvents.png)
 
@@ -246,7 +247,7 @@ status, publish/subscribe engine status, and more.
 
 Let's create a new Event now.
 
-At the top of the screen, select the **"+ New Event"** link.
+At the top of the screen, select the **+ New Event** link.
 
 ![](images/newEvent.png)
 
@@ -270,32 +271,36 @@ interval.
 
 Now, scroll down a little further and fill in the remaining options.
 
-In the **"Condition"** section, select the dropdown and choose **"Built-in
-Metrics"**. Most of your thresholds will be written against these **Built-in
+In the **Condition** section, select the dropdown and choose **Built-in
+Metrics**. Most of your thresholds will be written against these **Built-in
 Metrics**.
 
 ![](images/newEvent2.png)
 
-The choice of "Custom metrics" would only apply to custom metrics that are being
-fed into Instana. The "System Rules" are a specialized set of rules for doing
-thing like detecting that an entity is **"offline"**.
+:::info
 
-Once you select **"Built-in Metrics"** another dropdown list will appear. The
-new dropdown list is asking for the **"Entity type"** that you are going to
-write your threshold against.
+The choice of _Custom metrics_ would only apply to custom metrics that are being
+fed into Instana. The _System Rules_ are a specialized set of rules for doing
+thing like detecting that an entity is _offline_.
 
-In the **"Entity type"** dropdown, select **"IBM MQ Queue"**. Notice that you
-can type in letters such as "IBM MQ" to filter the list.
+:::
+
+Once you select **Built-in Metrics** another dropdown list will appear. The new
+dropdown list is asking for the **Entity type** that you are going to write your
+threshold against.
+
+In the **Entity type** dropdown, select **IBM MQ Queue**. Notice that you can
+type in letters such as `IBM MQ` to filter the list.
 
 ![](images/newEvent3.png)
 
-After specifying an **"Entity type"**, a new dropdown appears with a list of
-available **"Metrics"**. Select the **"Metric"** dropdown and choose **"Depth >
-Queue Depth Percentage"**.
+After specifying an **Entity type**, a new dropdown appears with a list of
+available **Metrics**. Select the **Metric** dropdown and choose **Depth > Queue
+Depth Percentage**.
 
 ![](images/newEvent4.png)
 
-After making your select, some new dropdowns appear on the screen looking for
+After selecting the _Metric_ some new dropdowns appear on the screen looking for
 the following information:
 
 - Time Window: This is the duration that you want to monitor and evaluate
@@ -305,8 +310,8 @@ the following information:
 - Percentage - This field is actually different depending on the metric you are
   evaluating. In this case, you are evaluating a metric that is a percentage.
 
-In the dropdowns, choose **"60 s"** for the time window, **"max"** for the
-Aggregation, **">"** for the Operator, and **"90"** for the Percentage.
+In the dropdowns, choose **60 s** for the time window, **max** for the
+Aggregation, **>** for the Operator, and **90** for the Percentage.
 
 ![](images/newEvent5.png)
 
@@ -314,24 +319,23 @@ This will cause the threshold to evaluate the **Queue Depth Percent** for 60
 seconds and determine whether the maximum value during that interval exceeded
 90%. If it did exceed 90%, then the Event will trigger.
 
-Now you have to select the **"Scope"** that this threshold will apply to. Select
+Now you have to select the **Scope** that this threshold will apply to. Select
 the dropdown list.
 
 ![](images/allEntities.png)
 
 In the dropdown list, you'll see the following options:
 
-- You have the option of applying this threshold to an **"Application
-  Perspective"**. This would limit the scope of the threshold to a specific
+- You have the option of applying this threshold to an **Application
+  Perspective**. This would limit the scope of the threshold to a specific
   application.
-- You can use a **"Dynamic Focus Query"** to filter to a specific list of MQ
+- You can use a **Dynamic Focus Query** to filter to a specific list of MQ
   Queues.
-- Or, you can have your threshold apply to **"All Available Entities"**.
+- Or, you can have your threshold apply to **All Available Entities**.
 
-Let's make this a global Event and choose the **"All Available Entities"**
-option.
+Let's make this a global Event and choose the **All Available Entities** option.
 
-Click the **"Create"** button to save your new Event.
+Click the **Create** button to save your new Event.
 
 :::tip
 
@@ -377,11 +381,11 @@ Select **System Rules** as the **Source** under _2. Condition_. Then, select
 Next, select the scope. Choose **Selected Entities Only (Dynamic Focus Query)**.
 
 In the **Dynamic Focus Query**, you are going to specify something a little
-different. Instead of choosing **Entity.type:host**, we are going to use
-**entity.selfType:host**. The reason for this is that **entity.type:host** will
-filter on all of the hosts, but will also include the child entities that are
-running on the host. We only want to detect that the **Host** is offline.
-Therefore, we are going to specify **entity.selfType:host**.
+different. Instead of entering **entity.type:host**, we are going to use
+**entity.selfType:host**. The reason for this is that the former will filter on
+all of the hosts, but will also include the child entities that are running on
+the host. We only want to detect that the **Host** is offline. Therefore, we are
+going to specify `entity.selfType:host`.
 
 Copy and post the string into the Event definition.
 
@@ -417,51 +421,50 @@ Alerts are used to notify people and teams via various Alert Channels. You
 previously reviewed the options for Alert Channels. The Alerts will be sent to
 one or more Alert Channels that you select.
 
-Select **"Settings"** on the left side navigation. Then select **"Alerts"**
+Select **Settings** on the left side navigation. Then select **Alerts**
 
 ![](images/alerts.png)
 
-Click on the **"+ New Alert"** link
+Click on the **+ New Alert** link
 
 ![](images/newAlert.png)
 
-Give the new **"Alert"** a name. Normally, the **Alert** name is something
+Give the new **Alert** a name. Normally, the **Alert** name is something
 meaningful to indicate who will be notified and the type of events being sent.
 For example, **MQ Alerts**
 
-Select the dropdown labeled **"Alert on Event(s)"**
-![](images/alertOnEvents.png)
+Select the dropdown labeled **Alert on Event(s)** ![](images/alertOnEvents.png)
 
 You will see that there are multiple options. You can setup an Alert for a
 particular Entity Type. For example, you might setup an Alert for all Oracle
 Database Events.
 
-In your case, select **"Alert on Event(s)"**. This option allows you to select a
+In your case, select **Alert on Event(s)**. This option allows you to select a
 specific list of Events to forward to an Alert Channel(s).
 
-Further down on the page, select the **"Add Events"** link.
+Further down on the page, select the **Add Events** link.
 
 ![](images/addEvent.png)
 
 Initially, you will see a list of ALL Events.
 
-Let's filter the list to just a specific **Entity Type**. Select the **"Entity
-Type"** dropdown list and select **"IBM MQ Queue"**
+Let's filter the list to just a specific **Entity Type**. Select the **Entity
+Type** dropdown list and select **IBM MQ Queue**
 
 ![](images/filterQueue.png)
 
 You will now see a filtered list of Events related to IBM MQ Queues. Find the
 Event you created in the previous section and select the checkbox. Then, select
-the **"Add 1 Event"** button at the bottom.
+the **Add 1 Event** button at the bottom.
 
 ![](images/choose-custom-event.png)
 
 You will now see the 1 selected Event listed.
 
-Scroll down to the **"Scope"** section. This determines which Entities this
-Alert will apply to.
+Scroll down to the **Scope** section. This determines which Entities this Alert
+will apply to.
 
-Select the **"Apply on"** dropdown list. You'll see that you can choose one of 3
+Select the **Apply on** dropdown list. You'll see that you can choose one of 3
 options:
 
 - Application Perspective: This option allows you to limit the scope of the
@@ -471,12 +474,12 @@ options:
 - All Available Entities: The Alert would apply to any Entity that triggered the
   Event threshold.
 
-Select the **"Selected Entities Only"** option
+Select the **Selected Entities Only** option
 
 ![](images/selectedEntities.png)
 
 A new widget will appear on the right side of the screen asking you to specify
-the **"Dynamic Focus Query"**
+the **Dynamic Focus Query**
 
 In the entry field, enter the lucene query that will filter to the queue that is
 used for the **Quote of the Day** application. In this case, we are looking for
@@ -498,10 +501,10 @@ reduce the **Grace Period** to **10s** and the **Queue Depth Percentage** to
 
 :::
 
-Next, click on the **"+ Add Alert Channels"** link
+Next, click on the **+ Add Alert Channels** link
 
-A dialog will open with a list of available **"Alert Channels"**. Select the
-Alert Channel that you created earlier.
+A dialog will open with a list of available **Alert Channels**. Select the Alert
+Channel that you created earlier.
 
 Then, click the **Add 1 Channel** button.
 
@@ -512,8 +515,6 @@ custom payloads by adding Key/Value pairs. We're going to skip that section.
 
 Finally, click the **Create** button to save your Alert.
 
-![](images/saveAlert.png)
-
 That completes this section of the lab.
 
 ---
@@ -521,8 +522,8 @@ That completes this section of the lab.
 ## 7.6: Summary
 
 At this point, you have created an Event and an Alert for that Event. The next
-time the custom **"Event"** that you created triggers, an **"Alert"** will be
-sent to the **Alert Channel**. In this case, a Email will be sent.
+time the custom **Event** that you created triggers, an **Alert** will be sent
+to the **Alert Channel**. In this case, a Email will be sent.
 
 In this section of the lab, you learned how to create a Smart Alert, a
 traditional Alert (Event), and learned how these Alerts are routed to the

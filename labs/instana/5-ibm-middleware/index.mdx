@@ -45,12 +45,25 @@ source /opt/ace-11.0.0.11/server/bin/mqsiprofile
 /opt/ace-11.0.0.11/server/bin/mqsilist
 ```
 
-If MQ and ACE is running the output will look like this:
+If MQ (QM1) and ACE (BK1) are both ready the output will look like this:
 
 ![ace-mq-status](images/ace-mq-status.png)
 
-Care fully check the output and compare it to the screenshot above. If either of
-the above are **not in a running state** for you execute the following script:
+Carefully compare your output to the screenshot above.
+
+:::note
+
+You can ignore the status; _Integration node 'IBNODE' on queue manager 'QM1' is
+stopped_. We are only interested in:
+
+- _QNAME(QM1) STATUS(Running)_
+- _Integration node 'BK1' with default queue manager 'QM1' and administration
+  URI 'http://mqace:4414' is running._
+
+:::
+
+If either of the above red highlighted boxes are **not in a running state** run
+the following script:
 
 :::note
 
@@ -62,8 +75,8 @@ The script will take approximately 5 minutes to complete.
 ./demo-middleware.sh
 ```
 
-Once complete you can run the status check again and confirm MQ and ACE are
-running.
+Once complete you can run the status check again and confirm MQ and ACE are both
+running by comparing your output to the above screenshot.
 
 ```sh
 /opt/mqm/bin/dspmq -m QM1 -o all
@@ -199,8 +212,6 @@ what the monitoring requirements are.
 
 :::
 
----
-
 ### Verify the ACE configuration
 
 The "Resource Monitoring" KPIs are already enabled in most customer
@@ -262,8 +273,6 @@ Stats"** are enabled. The product requires that the output format be set to json
 vs. XML.
 
 ![](images/flowstats.png)
-
----
 
 ### Verify the MQ configuration
 
@@ -640,6 +649,11 @@ After a few minutes you will see the updates displayed in the Instana UI on the
 The main Instana agent log file is located at
 `/opt/instana/agent/data/log/agent.log`. You can watch the log output to see the
 agent discovering entities and potentially any errors or warnings it encounters.
+
+If you haven't seen updates in the Instana UI after 5 minutes you can try
+adjusting your time range filter. Select a shorter range or enable **Live**.
+
+![](images/lastMinute.png)
 
 :::
 

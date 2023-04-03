@@ -64,8 +64,14 @@ In the Turbonomic ARM user interface:
 
 1. Click on **ADD FILTER** and select **Namespace**
 
-1. Select filter **Equals** and enter the expression `robot-shop`. Make sure no
-   other checkboxes are selected then click the **Apply** button:
+1. Select filter **Equals** and enter the expression `robot-shop` then click the
+   **Apply** button:
+
+   :::caution
+
+   Untick any other checkboxes that are selected.
+
+   :::
 
    ![](images/groups-5.png)
 
@@ -135,7 +141,21 @@ In the Turbonomic ARM user interface:
 
 1. Now go back to the Turbonomic dashboard by clicking the green **on** at the
    top left of the page. **Wait for up to 10 minutes** and you will notice there
-   are **ACTIONS** now on the Robot Shop application:
+   are **Actions** now:
+
+   :::info
+
+   Each environment may be performing a little differently to others. Depending
+   on the environment you may see either _Global Pending Action_ or _Business
+   Application Action_ or both.
+
+   As long as you see at least one of these, you can proceed with the lab.
+
+   If required you can increase the load on the Robot Shop application by
+   scaling the _load generator_. From the bastion node run
+   `oc scale --replicas=2 deployment rs-website-load -n robot-shop --kubeconfig ~/kubeconfig-apps`.
+
+   :::
 
    ![](images/policy-8.png)
 

@@ -163,7 +163,7 @@ Type `Ctrl-C` to exit the watch loop.
 :::
 
 ```sh
-oc get pods -n robot-shop -w --kubeconfig kubeconfig-aiops
+oc get pods -n robot-shop -w --kubeconfig ~/kubeconfig-apps
 ```
 
 If the install was successful, you'll see the following pods running.
@@ -173,8 +173,8 @@ If the install was successful, you'll see the following pods running.
 If some of the pods (for example _ratings_ or _shipping_) show **0/1** instead
 of **1/1** in the READY column or the pods aren't yet in a **Running** state you
 may need to wait a little longer. It can **take as much as 15 minutes** before
-all of the pods are running. If you don't want to wait, you can proceed to the
-next steps.
+all of the pods are running. If you don't want to wait, you can exit the watch
+and proceed to the next steps.
 
 :::
 
