@@ -85,6 +85,37 @@ certificate signing requests. Your output should be similar to:
 
 ![Approve CSRs](images/approve-csrs.png)
 
+## Update your clusters Global Pull Secret
+
+Set the pull secret username and password:
+
+:::caution
+
+Get the `<pull-secret-user>` and `<pull-secret-pass>` from your lab proctors.
+
+:::
+
+```sh
+export USER="<pull-secret-user>"
+export PASS="<pull-secret-pass>"
+```
+
+Update the pull secret by running the following commands:
+
+:::note
+
+These commands use the above set variables. There is no need to edit them.
+
+:::
+
+```sh
+oc get secret/pull-secret -n openshift-config --kubeconfig ~/kubeconfig-apps --template='{{index .data ".dockerconfigjson" | base64decode}}' > pullSecret
+
+oc registry login --kubeconfig ~/kubeconfig-apps --registry="docker.io" --auth-basic="${USER}:${PASS}" --to=pullSecret
+
+oc set data secret/pull-secret -n openshift-config --kubeconfig ~/kubeconfig-apps --from-file=.dockerconfigjson=pullSecret
+```
+
 ## Import bookmarks on Guacamole
 
 To make it easier to navigate to different applications a _bookmarks.html_ file
