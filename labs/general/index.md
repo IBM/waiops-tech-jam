@@ -70,7 +70,7 @@ editor **gedit** you can do so by:
   export KUBE_EDITOR=/bin/gedit
 
   # More permanent change (open a new tab or window after making the change)
-  echo "export KUBE_EDITOR=/bin/gedit" >> ~/.bashrc
+  echo "export KUBE_EDITOR=/bin/gedit -w" >> ~/.bashrc
   ```
 
 ## Validate cluster readiness
