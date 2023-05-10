@@ -254,7 +254,7 @@ Check to make sure you are in the right place by running the following:
 
 ```sh
 cd ~
-oc cluster-info --kubeconfig kubeconfig-apps
+oc cluster-info 
 ```
 
 You should see the following output, specifically the url
@@ -262,6 +262,12 @@ You should see the following output, specifically the url
 terminal window and trying again.
 
 ![check-cluster](images/check-cluster.png)
+
+Check if the cluster is Ready.
+
+```sh
+oc get nodes --kubeconfig kubeconfig-apps
+```
 
 Follow the steps below to install the Agent into the cluster:
 
