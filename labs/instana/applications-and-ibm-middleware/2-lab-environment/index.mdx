@@ -1,0 +1,52 @@
+---
+title: 2. Environment Setup
+description: Turbonomic lab environment setup
+sidebar_position: 2
+---
+
+## Requesting an environment as an Individual
+
+If you are an IBMer or IBM Business Partner you can request an environment for
+yourself on [IBM Tech Zone](https://techzone.ibm.com).
+
+Navigate to the
+[Jam-in-a-Box](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops)
+collection. You will need to Sign in with your IBM ID.
+
+![jam-in-a-box](../../../_common/images/jam-in-a-box.png)
+
+Select **Environments** from the left navigation menu and select **Reserve**.
+
+![reserve-env](../../../_common/images/reserve-env.png)
+
+Select when you would like to reserve the environment for.
+
+![reserve-env-schedule](../../../_common/images/reserve-env-schedule.png)
+
+Fill in the reservation details and select **Submit**
+
+![create-reservation](../../../_common/images/create-reservation.png)
+
+You will receive an email with your environment details provisioning has
+completed.
+
+Once you have your environment details, navigate to the **OCP Console** URL that
+looks similar to:
+
+```sh
+https://remote.cloud.techzone.ibm.com/guacamole/#/?username=000-000000-0000&password=00000
+```
+
+You will see a page similar to the below. Expand the _twisties_ and select the
+**Remote Desktop** connection to connect to your _Apache Guacamole_ bastion
+node.
+
+![access-guacamole](../../../_common/images/access-guacamole.png)
+
+All access to the environment is behind this RHEL Guacamole Bastion host named
+**bastion-gym-lan**.
+
+![guacamole](../../../_common/images/guacamole.png)
+
+If you see the bastion hosts desktop environment you can proceed to
+[the labs](/waiops-tech-jam/labs/general/).

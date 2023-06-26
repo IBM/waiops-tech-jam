@@ -1,5 +1,36 @@
 ## Lab Snippets
 
+### Manually update your clusters Global Pull Secret
+
+Set the pull secret username and password:
+
+:::caution
+
+Get the `<pull-secret-user>` and `<pull-secret-pass>` from your lab proctors.
+
+:::
+
+```sh
+export USER="<pull-secret-user>"
+export PASS="<pull-secret-pass>"
+```
+
+Update the pull secret by running the following commands:
+
+:::note
+
+These commands use the above set variables. There is no need to edit them.
+
+:::
+
+```sh
+oc get secret/pull-secret -n openshift-config --kubeconfig ~/kubeconfig-apps --template='{{index .data ".dockerconfigjson" | base64decode}}' > pullSecret
+
+oc registry login --kubeconfig ~/kubeconfig-apps --registry="docker.io" --auth-basic="${USER}:${PASS}" --to=pullSecret
+
+oc set data secret/pull-secret -n openshift-config --kubeconfig ~/kubeconfig-apps --from-file=.dockerconfigjson=pullSecret
+```
+
 ### Manually install Quote of the Day
 
 To install the QOTD application run the following commands from the bastion

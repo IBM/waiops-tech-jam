@@ -1,41 +1,22 @@
 ---
-title: Architecture of the Environment
-description: Architecture of the Environments
+title: General Information
+description: General information about SWAT Labs
 ---
 
-# Environmental Information
+## Access an Environment
 
-The lab environment includes 2 Openshift clusters and 3 VMs.
+To complete the labs on this site you will need access to an
+[IBM Tech Zone](https://techzone.ibm.com) environment, for this you are required
+to have an
+[IBM ID](https://www.ibm.com/account/reg/signup?formid=urx-19776&target=https%3A%2F%2Flogin.ibm.com).
 
-Openshift clusters:
+You can get access to an environment in two ways:
 
-1. **AIOps cluster** - A full installation of OCP that will be used to install
-   Turbonomic.
-2. **Apps cluster** - An instance of Single Node OpenShift that will be used to
-   install the Instana and KubeTurbo agents and the sample _RobotShop_
-   application. The _Quote Of The Day_ sample application has been
-   pre-installed.
-
-Virtual Machines:
-
-1. **Guacamole VM** - A RHEL VM that will be used as the _bastion_ host into the
-   lab network. Guacamole has access to all lab VM's and clusters and will be
-   your primary workstation for these labs.
-2. **Instana** - An Ubuntu VM that will be used to install a single node
-   self-hosted Instana server.
-3. **MQACE** - An Ubuntu VM that contains the pre-installed IBM ACE and MQ
-   middleware.
-
-## Lab Environment Diagram
-
-:::note
-
-- IBM MQ, IBM ACE and Quote of the Day have been pre-installed.
-- You will install and configure all remaining components during these labs.
-
-:::
-
-![architecture](images/architecture-instana-turbo.png)
+- [Participating in a SWAT Workshop](/labs/swat-workshops/)
+- Requesting an environment as an Individual
+  - Each Lab has a section titled _Environment Setup_ with details on how to
+    provision an environment that you can use to complete the current and
+    subsequent labs.
 
 ## Important Tips
 
@@ -103,37 +84,6 @@ completed on your allocated lab environment:
    outstanding certificate signing requests. Your output should be similar to:
 
    ![Approve CSRs](images/approve-csrs.png)
-
-## Update your clusters Global Pull Secret
-
-Set the pull secret username and password:
-
-:::caution
-
-Get the `<pull-secret-user>` and `<pull-secret-pass>` from your lab proctors.
-
-:::
-
-```sh
-export USER="<pull-secret-user>"
-export PASS="<pull-secret-pass>"
-```
-
-Update the pull secret by running the following commands:
-
-:::note
-
-These commands use the above set variables. There is no need to edit them.
-
-:::
-
-```sh
-oc get secret/pull-secret -n openshift-config --kubeconfig ~/kubeconfig-apps --template='{{index .data ".dockerconfigjson" | base64decode}}' > pullSecret
-
-oc registry login --kubeconfig ~/kubeconfig-apps --registry="docker.io" --auth-basic="${USER}:${PASS}" --to=pullSecret
-
-oc set data secret/pull-secret -n openshift-config --kubeconfig ~/kubeconfig-apps --from-file=.dockerconfigjson=pullSecret
-```
 
 ## Import bookmarks on Guacamole
 
