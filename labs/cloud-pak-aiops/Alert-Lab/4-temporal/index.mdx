@@ -63,7 +63,7 @@ the **State** column. Move to the next step in the Lab, the alerts will disappea
 
 ## 4.2: Loading Historical Event Data
 
-For the purpose of this Lab, we will manually load historical alerts directly into the Cloud Pak for AIOps 
+For the purpose of this Lab, we will manually load historical alerts directly into the Cloud Pak for Watson AIOps 
 historical alerts database. What is unique about this data is that different alerts co-occur about the 
 same time during multiple days. This data characteristic will trigger the creation of alert grouping policies.
 In a real production deployment, the historical alerts database will have the alerts of the last 90 days that
@@ -213,7 +213,7 @@ and the status is **Policy has not been attempted** (hover over the status to se
 Before testing the new temporal policies, lets recap what we have done so far:
 1. We submitted four co-occurring alerts. We saw that that they don't get grouped or correlated 
 because we don't have any temporal policy deployed yet. 
-2. We loaded historical alerts directly into the Cloud Pak for AIOps historical alerts database.
+2. We loaded historical alerts directly into the Cloud Pak for Watson AIOps historical alerts database.
 This data have the same alerts from the previous step that co-occur multiple times in the past. 
 3. We manually run a temporal training job that will leverage this historical alert data.
 4. After the job finished, two things happened: a new temporal model was deployed and two draft

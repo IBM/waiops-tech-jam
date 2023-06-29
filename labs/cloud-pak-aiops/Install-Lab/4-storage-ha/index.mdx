@@ -6,12 +6,12 @@ sidebar_position: 4
 
 ## 4.1: Storage Considerations
 
-The Cloud Pak for AIOps requires persistent storage classes that support the RWO (read-write-once) and RWX (read-write-many) access modes.
+The Cloud Pak for Watson AIOps requires persistent storage classes that support the RWO (read-write-once) and RWX (read-write-many) access modes.
 Also, storage classes must have allowVolumeExpansion enabled. This allows persistent volumes to be expanded if necessary, to avoid 
 storage from filling up and causing unrecoverable failures. 
 
 :::note
-If you require your Cloud Pak for AIOps environment to support the Federal Information Processing Standards (FIPS), there are storage
+If you require your Cloud Pak for Watson AIOps environment to support the Federal Information Processing Standards (FIPS), there are storage
 related requirements as described later in this section.
 :::
 
@@ -24,14 +24,14 @@ as the recommended storage providers. For instance, your chosen provider must su
 
 ![](images/storageTable.png)
 
-Additional storage information is available in the [***public documentation***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=requirements-storage).
+Additional storage information is available in the [***public documentation***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=planning-storage-requirements).
 
 
 ## 4.2: High Availability Considerations
 
 ### Background
 
-As the Cloud Pak for AIOps is used to monitor a client's high value work loads, its important to deploy the solution in a way that
+As the Cloud Pak for Watson AIOps is used to monitor a client's high value work loads, its important to deploy the solution in a way that
 minimizes potential downtime of the product itself. This brings us two related capabilities:
 
 * High-availability (HA) methods assume that an application remains available even when failures occur and is often
@@ -50,7 +50,7 @@ recovery be necessary.
 
 :::note
 * Disaster Recovery (DR) methods are outside the scope of this Lab but additional information can be found in 
-the [***public documentation***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=administering-backup-restore-ai-manager)
+the [***public documentation***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=pak-backing-up-restoring-cloud-watson-aiops)
 :::
 
 #### Failure Domains
@@ -92,10 +92,10 @@ achieved by the stateful containers themselves based on the way they choose to p
 AIOps, stateful components are typically limited to data stores, with the majority of service pods being stateless components. 
 
 In summary, a single-zone deployment supports:
-* An individual pod failure (#1): Each pod the Cloud Pak for AIOps includes health check endpoints. When a pod reports it is not healthy, OpenShift will 
+* An individual pod failure (#1): Each pod the Cloud Pak for Watson AIOps includes health check endpoints. When a pod reports it is not healthy, OpenShift will 
 terminate it, and start a new instance.
 
-* An Openshift cluster node failure (#2): When the Cloud Pak for AIOps is installed in Production/HA mode, 
+* An Openshift cluster node failure (#2): When the Cloud Pak for Watson AIOps is installed in Production/HA mode, 
 multiple replicas will be created for most pods (note that some pods run as singletons as the processing they do is
 not time-critical). In addition, each stateless pod in the product includes proper anti-affinity labels, 
 to ensure that multiple replicas are spread across nodes.
@@ -133,13 +133,13 @@ security requirements.
 
 ### Encryption with FIPS Support Enabled
 
-When FIPS support is enabled, the Cloud Pak for AIOps uses cryptographic modules that are compliant with 
+When FIPS support is enabled, the Cloud Pak for Watson AIOps uses cryptographic modules that are compliant with 
 Level 1 of the Federal Information Processing Standard FIPS-140-2. Certificates that are used internally 
 are encrypted by using FIPS-approved cryptography algorithms. FIPS-approved modules can optionally be used 
-for the transmission of data. Traffic inside the Cloud Pak for AIOps boundary is still secure, as traffic 
+for the transmission of data. Traffic inside the Cloud Pak for Watson AIOps boundary is still secure, as traffic 
 between nodes is automatically encrypted at the Red Hat OpenShift Container Platform level when TLS protection
 is enabled, while traffic inside a given node happens in-memory and does not leave the node. This is also valid
-for the IBM Cloud Pak foundational services that are used by the Cloud Pak for AIOps.
+for the IBM Cloud Pak foundational services that are used by the Cloud Pak for Watson AIOps.
 
 With FIPS enabled, Data is FIPS encrypted at rest and also inbound communications are FIPS encrypted. Outbound 
 communications can support both FIPS enabled and non-enabled connections. For FIPS enabled connections, outbound 
@@ -154,12 +154,12 @@ cluster.
 
 :::warning
 You can only enable FIPS support when you are installing the product. You cannot upgrade a non-FIPS enabled environment to a 
-FIPS enabled environment. You also cannot backup the Cloud Pak for AIOps from a non-FIPS enabled environment and 
+FIPS enabled environment. You also cannot backup the Cloud Pak for Watson AIOps from a non-FIPS enabled environment and 
 restore it into a FIPS enabled environment.
 :::
 
-To enable FIPS support, the following links describe the tasks required for the OpenShift cluster and Cloud Pak for AIOps installation:
+To enable FIPS support, the following links describe the tasks required for the OpenShift cluster and Cloud Pak for Watson AIOps installation:
 
-* [Installing Red Hat OpenShift Container Platform and storage tasks required for compliance](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=fips-enabling-support-ai-manager#preinstall)
-* [Installing Cloud Pak for AIOps tasks required for compliance](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=fips-enabling-support-ai-manager#install_tasks)
-* [Optional conditional tasks required for compliance](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=fips-enabling-support-ai-manager#conditional)
+* [Installing Red Hat OpenShift Container Platform and storage tasks required for compliance](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=fips-enabling-support-cloud-pak-watson-aiops#preinstall)
+* [Installing Cloud Pak for Watson AIOps tasks required for compliance](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=fips-enabling-support-cloud-pak-watson-aiops#install_tasks)
+* [Conditional tasks required for compliance](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=fips-enabling-support-cloud-pak-watson-aiops#conditional)
