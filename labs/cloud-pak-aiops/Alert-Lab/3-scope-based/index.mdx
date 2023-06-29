@@ -110,7 +110,7 @@ Create a new local file, name it *scope_events.json* and paste the following con
 Now lets submit the events via the webhook script created in the previous section by running the following command:
 
 ```
-bash webhook-event-load.sh scope_events.json
+bash event-load-webhook.sh scope_events.json
 ```
 
 * From the burger menu in the top-left navigate to: **Operate → Incidents and alerts**.
@@ -132,7 +132,7 @@ Before resubmitting events again, we will clear all these Alerts in the view:
 * Wait 2-3 minutes until the Alert view is empty.
 
 
-## 3.2: Submit Events with the scope-based Policy Enabled
+## 3.3: Submit Events with the scope-based Policy Enabled
 
 We will now confirm that the scope-based correlation policy is actually working as expected, by
 enabling the policy and resubmitting the events.
@@ -147,7 +147,7 @@ You should see one policy enabled, as shown below:
 Now lets submit the events again via the webhook script created in the previous section by running the following command:
 
 ```
-bash webhook-event-load.sh scope_events.json
+bash event-load-webhook.sh scope_events.json
 ```
 
 Lets see the Alerts view again:

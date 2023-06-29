@@ -1,0 +1,22 @@
+{
+    "sender": {
+        "service": "Mun SelfMonitoring",
+        "name": "Mun SelfMonitoring",
+        "type": "Datadog Observability"
+    },
+    "resource": {
+        "name": "AGG_P",
+        "hostname": "samplehost.ibm.com",
+        "type": "host",
+        "ipaddress": "10.1.96.24",
+        "location": "Dal10"
+    },
+    "type": {
+        "classification": "CEASelfMonitoring",
+        "eventType": "problem"
+    },
+    "severity": 6,
+    "summary": "Web Service - getTransferAmount() timeout",
+    "occurrenceTime": "2023-05-05T14:50:38.000Z",
+    "expirySeconds": 0
+}
