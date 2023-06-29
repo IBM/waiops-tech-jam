@@ -1,16 +1,19 @@
 ---
-title: 2. Generic Webhook
-description: Set up a webhook integration
+title: 2. Webhook and Kafka Data Load
+description: Set up a webhook and kafka integration
 sidebar_position: 2
 ---
 
 In this section, we will configure a generic Webhook connection. If a dedicated connection is 
-not available for a data source, you can use the generic 
-webhook connection. It provides an endpoint for applications to send JSON format events
-to Cloud Pak for AIOps via HTTP POST requests. You can also include *JSONata* that maps 
-incoming JSON payloads to the Cloud Pak for AIOps event data scheme. The webhook endpoint
-is exposed via an OpenShift edge route that includes a unique, automatically-generated ID.
-This route can be regenerated if needed.
+not available for a data source, you can use the generic webhook connection to provide an endpoint
+for applications to send JSON format events to the Cloud Pak for AIOps via HTTP POST requests. 
+You can also include a *JSONata* file to map incoming JSON payloads to the Cloud Pak for AIOps 
+event data scheme. The webhook endpoint is exposed via an OpenShift edge route that includes a unique, 
+automatically-generated ID.
+
+Also in this section, we will create a couple of bash scripts. The first script will be used to load data
+via the webhook connection and the second script will be used to load data into a kafka topic. 
+The usage of these two scripts will become more clear as you move into the different sections of the Lab. 
 
 
 
@@ -27,8 +30,8 @@ Fill the **Add connection** form with these values:
 * Name: Event-Webhook
 * Description: custom webhook connection for events
 * Authentication type: *select Username/Password*
-* Username: test
-* Password: test
+* Username: pick a username (e.g. test)
+* Password: pick a password (e.g. test)
 
 Your complete form should look like this (note that your route will be different)
 
@@ -55,6 +58,7 @@ you will find this mapping capability very useful. Enter the following JSONata c
       "name": resource.name,
       "hostname": resource.hostname,
       "type": resource.type,
+      "service": resource.service,
       "ipaddress": resource.ipaddress,
       "location": resource.location
    },
@@ -75,10 +79,10 @@ You will see a new webhook created as shown below:
 ![](images/webhook-created.png)
 
 
-## 2.2: Create the Event Loader Script
+## 2.2: Create the Webhook Event Loader Script
 
 We will create a simple bash script that will read an event file and will call the webhook 
-URL or route with every event as a parameter. Create a new file called *webhook-event-load.sh*, paste 
+URL or route with every event as a parameter. Create a new file called *event-load-webhook.sh*, paste 
 this script below and assign the WEBHOOK_URL value with the webhook route of the webhook 
 you just created in the previous step.
 
@@ -91,12 +95,50 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-WEBHOOK_URL='<insert webhook URL here>'
-AUTH=test:test
+WEBHOOK_URL='<insert the webhook URL here>'
+# Note below there is a colon character ':' between the username and password. E.g. test:test
+AUTH=<insert your chosen user name>:<insert your chosen password>
 
 # Read the event file line by line and submit the event via webhook
 while IFS= read -r line; do
   curl -X POST -u $AUTH --insecure -H 'Content-Type: application/json' $WEBHOOK_URL -d "$line"
   echo ""
 done < "$1"
+```
+
+## 2.3: Create a Kafka Event Loader Script
+
+Finally, we will create another simple bash script that will take an event or alert file and a 
+kafka topic as parameters and it will load this data into the kafka topic. 
+Create a new file called *event-load-kafka.sh* and paste this script below.
+
+```sh
+#!/bin/bash
+
+# Check parameters
+if [ $# -lt 2 ]; then
+  echo "Please provide an event file and a kafka topic as parameters"
+  exit 1
+fi
+
+export EVENTS_FILE="$1"
+export KAFKA_TOPIC="$2"
+
+oc project cp4waiops
+oc extract secret/iaf-system-cluster-ca-cert --keys=ca.crt --to=- > ca.crt
+export sasl_password=$(oc get secret cp4waiops-cartridge-kafka-auth-0 --template={{.data.password}} | base64 --decode)
+export BROKER=$(oc get routes iaf-system-kafka-bootstrap -o=jsonpath='{.status.ingress[0].host}{"\n"}'):443
+
+kcat \
+-X debug=msg \
+-X security.protocol=SASL_SSL \
+-X ssl.ca.location=ca.crt \
+-X sasl.mechanisms=SCRAM-SHA-512 \
+-X sasl.username=cp4waiops-cartridge-kafka-auth-0 \
+-X sasl.password=$sasl_password \
+-X enable.ssl.certificate.verification=false \
+-b $BROKER \
+-P \
+-t $KAFKA_TOPIC \
+-l $EVENTS_FILE
 ```
