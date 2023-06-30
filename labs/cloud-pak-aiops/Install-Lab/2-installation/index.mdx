@@ -7,7 +7,7 @@ sidebar_position: 2
 
 ## 2.1: Overview
 
-This module focuses on the initial deployment of the Cloud Pak for AIOps. 
+This module focuses on the initial deployment of the Cloud Pak for Watson AIOps. 
 This deployment scenario will assume you are deploying onto the IBM Cloud
 however the steps would generally apply to an OpenShift cluster deployed on
 another cloud provider, or on-premises. The exception to this would be the setup
@@ -76,11 +76,11 @@ cluster by issuing various commands against it.
 
 
 
-## 2.4: Install the Cloud Pak for AIOps Operator
+## 2.4: Install the Cloud Pak for Watson AIOps Operator
 
 In this first part, our objective will be to deploy the product Operator which will
 then pull down the software images to the cluster, so that we can deploy an instance
-of the Cloud Pak for AIOps in the next section.
+of the Cloud Pak for Watson AIOps in the next section.
 
 :::caution
 
@@ -94,25 +94,25 @@ Lets start by creating the project (namespace) where we will install the product
 important to know which project/namespace you are in when issuing `oc`
 commands. All of the subsequent commands need to be run in the `cp4waiops`
 project/namespace otherwise the various elements you create may not be available
-to use in later steps. [***Doc Link***](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=manager-starter-installation-cli#exp_namespace)
+to use in later steps. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_namespace)
 
 ### Create an OperatorGroup in your custom project (namespace)
 
 The Operator requires an Operator Group, which provides multitenant configuration to
 installed Operators. An Operator group selects target namespaces in which to generate 
-required RBAC (Role Base Access Control) access for its member Operators. [***Doc Link***](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=manager-starter-installation-cli#op_group)
+required RBAC (Role Base Access Control) access for its member Operators. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#op_group)
 
 ### Create the entitlement key pull secret
 
 Now we will store the entitlement key that you obtained previously into a secret. This secret 
-will be used to pull installation images. [***Doc Link***](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=manager-starter-installation-cli#exp_pull_secret)
+will be used to pull installation images. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_pull_secret)
 
 ### Configure usage data collection
 
 Now we will configure the usage data collector. This is a collector of usage data that is
  all numeric, and does not include email addresses, passwords, or other personal details. 
  This usage information is really important for driving the future roadmap of the product.
-Use the values shown below for the environment variables. [***Doc Link***](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=manager-starter-installation-cli#usage_secret)
+Use the values shown below for the environment variables. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#usage_secret)
 
 ```sh
 export CUSTOMER_NAME=ACME
@@ -124,14 +124,14 @@ export PROJECT_CP4WAIOPS=cp4waiops
 ### Ensure external traffic access to AI Manager
 
 Run the following command to update the endpointPublishingStrategy.type. This is done to allow traffic 
-in case the ingresscontroller its set to HostNetwork. [***Doc Link***](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=manager-starter-installation-cli#exp_ingress)
+in case the ingresscontroller its set to HostNetwork. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_ingress)
 
 ### Create the catalog source
 
 Now we will install the Catalog Source. An Operator Lifecycle Manager (OLM) CatalogSource 
 is a collection of operator metadata. OLM uses CatalogSources to build the list of available 
 operators that can be installed from OperatorHub in the OpenShift web console. In the documentation, 
-disregard the section about disabling the automatic initiation of patch upgrades. [***Doc Link***](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=manager-starter-installation-cli#exp_catalog)
+disregard the section about disabling the automatic initiation of patch upgrades. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_catalog)
 
 ### Verify cluster readiness
 
@@ -141,17 +141,17 @@ Remember to run this verification in a real scenario!.
 ### Install the AI Manager operator
 
 Finally, we are ready to install the Operator. Do not move to the next step until you can confirm that
- the Operator is fully installed by running the verification command provided in the documentation. [***Doc Link***](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=manager-starter-installation-cli#exp_operator)
+ the Operator is fully installed by running the verification command provided in the documentation. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_operator)
 
 
-The Cloud Pak for AIOps Operator is now installed and ready to create a product instance.
+The Cloud Pak for Watson AIOps Operator is now installed and ready to create a product instance.
 
 
 
-## 2.5: Deploy an instance of Cloud Pak for AIOps
+## 2.5: Deploy an instance of Cloud Pak for Watson AIOps
 
 This final step of deployment involves deploying a running instance of the product onto the OpenShift cluster.
-Make sure you have updated the following values in the yaml file before running the command [***Doc Link***](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=manager-starter-installation-cli#exp_instance)
+Make sure you have updated the following values in the yaml file before running the command [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_instance)
 
 * <license_acceptance> must be set to **true** to agree to the license terms
 * <storage_class_name> this is the **file storage class** provided by the instructor
@@ -187,7 +187,7 @@ seeing: **Phase: Running** next to your deployment:
 ![](images/install-conf.png)
 
 Congratulations! You have successfully deployed an instance of the
-Cloud Pak for AIOps.
+Cloud Pak for Watson AIOps.
 
 
 
@@ -214,6 +214,6 @@ Remember to run this verification in a real scenario!.
 ### Log in to the IBM Cloud Pak Automation console
 
 Now you are going to locate the admin login credentials from your newly deployed
-instance of the Cloud Pak for AIOps. Follow the steps in the documentation and make sure to save 
-both the console URL and the password for the admin username. [***Doc Link***](https://ibmdocs-test.dcs.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/3.7.1?topic=manager-starter-installation-cli#exp_login)
+instance of the Cloud Pak for Watson AIOps. Follow the steps in the documentation and make sure to save 
+both the console URL and the password for the admin username. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_login)
 

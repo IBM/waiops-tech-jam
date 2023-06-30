@@ -6,8 +6,11 @@ description:
 sidebar_position: 1
 ---
 
+:::caution
+This Lab has been tested only with the Cloud Pak for Watson AIOps v4.1.0 
+:::
 
-Welcome to the Cloud Pak for AIOps installation lab.
+Welcome to the Cloud Pak for Watson AIOps installation lab.
 The following chart describes the infrastructure for the lab
 
 ![](images/intro.drawio.png)

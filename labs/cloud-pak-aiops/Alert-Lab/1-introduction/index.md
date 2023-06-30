@@ -6,8 +6,11 @@ description:
 sidebar_position: 1
 ---
 
+:::caution
+This Lab has been tested only with the Cloud Pak for Watson AIOps v4.1.0 
+:::
 
-Welcome to the Cloud Pak for AIOps Alert Correlation & Grouping Lab.
+Welcome to the Cloud Pak for Watson AIOps Alert Correlation & Grouping Lab.
 The following diagram describes the infrastructure available for the Lab:
 
 ![](images/intro.drawio.png)
@@ -19,19 +22,19 @@ The following diagram describes the infrastructure available for the Lab:
 
 
 ### Terms Definition
-Lets define some key Cloud Pak for AIOps concepts and terms that will help you understand the Lab:
+Lets define some key Cloud Pak for Watson AIOps concepts and terms that will help you understand the Lab:
 
 **Events**: An event is a record containing structured data summarizing key attributes of an occurrence on a managed entity, which might be a network resource, some part of that resource, or other key element associated with your network, services, or applications. An event may or may not indicate something anomalous and is a point-in-time, immutable statement about the managed entity in question.
 
 The Event *severity* range is  6: Critical, 5: Major, 4: Minor, 3: Warning, 2: Informational, 1: Indeterminate
 
-**Alerts**: Alerts are created when one or more events indicate an anomalous condition. Alerts represent an ongoing anomalous condition against a single managed entity. Unlike events, alerts might evolve over time as the condition changes. Alerts have a start and an end time. The creation and evolution of alerts are informed by events. The Cloud Pak for AIOps automatically correlates alerts to determine what alerts are likely to share a common cause.
+**Alerts**: Alerts are created when one or more events indicate an anomalous condition. Alerts represent an ongoing anomalous condition against a single managed entity. Unlike events, alerts might evolve over time as the condition changes. Alerts have a start and an end time. The creation and evolution of alerts are informed by events. The Cloud Pak for Watson AIOps automatically correlates alerts to determine what alerts are likely to share a common cause.
 
 The Alert *severity* range is the same as Events 6: Critical, 5: Major, 4: Minor, 3: Warning, 2: Informational, 1: Indeterminate.  
 Alerts have *state* which can be Open, Clear, or Closed. Note that the Alert *state* can go from Clear back to Open if new related events arrive 
 during the same time window. 
 
-**Alerts Groups**: An alert group is a group of two or more alerts that Cloud Pak for AIOps has correlated together because the underlying analytics have determined that these alerts belong together. Alerts can be added to an alert group because of one or more of these factors:
+**Alerts Groups**: An alert group is a group of two or more alerts that Cloud Pak for Watson AIOps has correlated together because the underlying analytics have determined that these alerts belong together. Alerts can be added to an alert group because of one or more of these factors:
 
 | Correlation Type      | Example |
 | ----------- | ----------- |
