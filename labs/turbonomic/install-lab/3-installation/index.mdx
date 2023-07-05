@@ -49,7 +49,7 @@ you use the same terminal prompt for the duration of the guide.
    namespace:
 
    ```sh
-   export NS=turbonomic
+   export NS=turbonomic-platform
    oc create namespace ${NS} --kubeconfig kubeconfig-aiops
    ```
 
@@ -114,8 +114,8 @@ You are now ready to deploy the operator
 
 1. Launch the operator pod:
 
-   Click on `Operators -> OperatorHub`. Ensure the `turbonomic` project is
-   selected in the dropdown. Search for `turbonomic platform` and select the
+   Click on `Operators -> OperatorHub`. Ensure the `turbonomic-platform` project
+   is selected in the dropdown. Search for `turbonomic platform` and select the
    **Certified** operator
 
    ![](images/turbo-operator-1.png)
@@ -225,8 +225,9 @@ Next, we are going to configure the Turbonomic instance.
 
    :::info
 
-   The pods **server-power-modeler** & **suspend** may be in a ImagePullBackOff
-   state, these can be safely ignored.
+   You can safely ignored the pods **prometheus-server**,
+   **server-power-modeler** & **suspend** if they are in _ImagePullBackOff_ or
+   _Pending_ state.
 
    :::
 
