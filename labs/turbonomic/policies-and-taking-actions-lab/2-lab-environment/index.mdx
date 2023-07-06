@@ -4,16 +4,19 @@ description: Turbonomic lab environment setup
 sidebar_position: 2
 ---
 
+# Lab Environment
+
 In this lab you will have access to two Openshift clusters:
 
-1. **AIOps cluster** - A full installation of OCP with Turbonomic integrated
-   with Instana and an Insta agent pre-installed.
-2. **Apps cluster** - An instance of Single Node OpenShift that has an Instana
-   Agent and the demo applications _RobotShop_ and _Quote Of The Day_
-   pre-installed and integrated with Instana.
+1. **AIOps cluster** - A full installation of OCP that includes an pre-installed
+   Instana and Turbonomic Server.
+2. **Apps cluster** - An instance of Single Node OpenShift that has the demo
+   applications _RobotShop_ and _Quote Of The Day_ pre-installed.
 
-You will install the Turbonomic Server on the AIOps OCP Cluster and integrate
-Turbonomic with the Instana Server also running on the AIOps Cluster.
+You will be diving into Turbonomic and learning about Turbonomic Policies and
+Actions. In the lab you will configure an SLO policy for the Robot Shop
+application to understand how Turbonomic ARM uses target data already configured
+to make action recommendations that will assure application performance.
 
 ![architecture](images/architecture-instana-turbo.png)
 
@@ -21,52 +24,20 @@ Turbonomic with the Instana Server also running on the AIOps Cluster.
 
 To complete this lab you will need:
 
-- Instana Agent and Sales key
-- Turbonomic License key
+- Instana Agent key - Required when requesting lab environment
+- Instana Sales key - Required when requesting lab environment
+- Turbonomic License key - Required when requesting lab environment
 
-## Requesting an environment as an Individual
+## Requesting a Lab Environment
 
-If you are an IBMer or IBM Business Partner you can request an environment for
-yourself on [IBM Tech Zone](https://techzone.ibm.com).
+For this lab we will be using the
+[Jam-in-a-Box: Turbonomic - Policies & Taking Actions](https://techzone.ibm.com/my/reservations/create/64a3ba32b1a45b001790c4a7)
+collection.
 
-Navigate to the
-[Jam-in-a-Box](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops)
-collection. You will need to Sign in with your IBM ID.
+:::info
 
-![jam-in-a-box](../../../_common/images/jam-in-a-box.png)
+You can follow
+[these instructions](/waiops-tech-jam/labs/jam-in-a-box/#requesting-a-lab-environment)
+if you need guidance on how to request a lab.
 
-Select **Environments** from the left navigation menu and select **Reserve**.
-
-![reserve-env](../../../_common/images/reserve-env.png)
-
-Select when you would like to reserve the environment for.
-
-![reserve-env-schedule](../../../_common/images/reserve-env-schedule.png)
-
-Fill in the reservation details and select **Submit**
-
-![create-reservation](../../../_common/images/create-reservation.png)
-
-You will receive an email with your environment details provisioning has
-completed.
-
-Once you have your environment details, navigate to the **OCP Console** URL that
-looks similar to:
-
-```sh
-https://remote.cloud.techzone.ibm.com/guacamole/#/?username=000-000000-0000&password=00000
-```
-
-You will see a page similar to the below. Expand the _twisties_ and select the
-**Remote Desktop** connection to connect to your _Apache Guacamole_ bastion
-node.
-
-![access-guacamole](../../../_common/images/access-guacamole.png)
-
-All access to the environment is behind this RHEL Guacamole Bastion host named
-**bastion-gym-lan**.
-
-![guacamole](../../../_common/images/guacamole.png)
-
-If you see the bastion hosts desktop environment you can proceed to
-[the labs](/waiops-tech-jam/labs/general/).
+:::

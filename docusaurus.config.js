@@ -87,7 +87,7 @@ const config = {
           {
             // type: "doc",
             // docId: "intro",
-            to: "/labs/general",
+            to: "/labs/jam-in-a-box",
             position: "left",
             label: "Labs",
           },

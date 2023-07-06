@@ -4,6 +4,8 @@ description: Instana Sever & Agent Installation Environment Architecture
 sidebar_position: 2
 ---
 
+# Lab Environment
+
 The lab environment includes 2 Openshift clusters and 3 VMs.
 
 Openshift clusters:
@@ -25,8 +27,6 @@ Virtual Machines:
 3. **MQACE** - An Ubuntu VM that contains the pre-installed IBM ACE and MQ
    middleware.
 
-## Lab Environment Diagram
-
 :::note
 
 - IBM MQ, IBM ACE and Quote of the Day have been pre-installed.
@@ -36,49 +36,23 @@ Virtual Machines:
 
 ![architecture](images/architecture-instana-turbo.png)
 
-## Requesting an environment as an Individual
+## Prerequisites
 
-If you are an IBMer or IBM Business Partner you can request an environment for
-yourself on [IBM Tech Zone](https://techzone.ibm.com).
+To complete this lab you will need:
 
-Navigate to the
-[Jam-in-a-Box](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops)
-collection. You will need to Sign in with your IBM ID.
+- Instana Agent Key - Required during lab
+- Instana Sales Key - Required during lab
 
-![jam-in-a-box](../../../_common/images/jam-in-a-box.png)
+## Requesting a Lab Environment
 
-Select **Environments** from the left navigation menu and select **Reserve**.
+For this lab we will be using the
+[Jam-in-a-Box: Instana - Install](https://techzone.ibm.com/my/reservations/create/649cd328fc016400174bed25)
+collection.
 
-![reserve-env](../../../_common/images/reserve-env.png)
+:::info
 
-Select when you would like to reserve the environment for.
+You can follow
+[these instructions](/waiops-tech-jam/labs/jam-in-a-box/#requesting-a-lab-environment)
+if you need guidance on how to request a lab.
 
-![reserve-env-schedule](../../../_common/images/reserve-env-schedule.png)
-
-Fill in the reservation details and select **Submit**
-
-![create-reservation](../../../_common/images/create-reservation.png)
-
-You will receive an email with your environment details provisioning has
-completed.
-
-Once you have your environment details, navigate to the **OCP Console** URL that
-looks similar to:
-
-```sh
-https://remote.cloud.techzone.ibm.com/guacamole/#/?username=000-000000-0000&password=00000
-```
-
-You will see a page similar to the below. Expand the _twisties_ and select the
-**Remote Desktop** connection to connect to your _Apache Guacamole_ bastion
-node.
-
-![access-guacamole](../../../_common/images/access-guacamole.png)
-
-All access to the environment is behind this RHEL Guacamole Bastion host named
-**bastion-gym-lan**.
-
-![guacamole](../../../_common/images/guacamole.png)
-
-If you see the bastion hosts desktop environment you can proceed to
-[the labs](/waiops-tech-jam/labs/general/).
+:::

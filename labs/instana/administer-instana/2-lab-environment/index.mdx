@@ -4,49 +4,55 @@ description: Instana lab environment setup
 sidebar_position: 2
 ---
 
-## Requesting an environment as an Individual
+# Lab Environment
 
-If you are an IBMer or IBM Business Partner you can request an environment for
-yourself on [IBM Tech Zone](https://techzone.ibm.com).
+The lab environment includes 2 Openshift clusters and 3 VMs.
 
-Navigate to the
-[Jam-in-a-Box](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops)
-collection. You will need to Sign in with your IBM ID.
+Openshift clusters:
 
-![jam-in-a-box](../../../_common/images/jam-in-a-box.png)
+1. **AIOps cluster** - A full installation of OCP that will be used to install
+   Turbonomic.
+2. **Apps cluster** - An instance of Single Node OpenShift that will be used to
+   install the Instana and KubeTurbo agents and the sample _RobotShop_
+   application. The _Quote Of The Day_ sample application has been
+   pre-installed.
 
-Select **Environments** from the left navigation menu and select **Reserve**.
+Virtual Machines:
 
-![reserve-env](../../../_common/images/reserve-env.png)
+1. **Guacamole VM** - A RHEL VM that will be used as the _bastion_ host into the
+   lab network. Guacamole has access to all lab VM's and clusters and will be
+   your primary workstation for these labs.
+2. **Instana** - An Ubuntu VM that will be used to install a single node
+   self-hosted Instana server.
+3. **MQACE** - An Ubuntu VM that contains the pre-installed IBM ACE and MQ
+   middleware.
 
-Select when you would like to reserve the environment for.
+:::note
 
-![reserve-env-schedule](../../../_common/images/reserve-env-schedule.png)
+- IBM MQ, IBM ACE and Quote of the Day have been pre-installed.
+- You will install and configure all remaining components during these labs.
 
-Fill in the reservation details and select **Submit**
+:::
 
-![create-reservation](../../../_common/images/create-reservation.png)
+![architecture](images/architecture-instana-turbo.png)
 
-You will receive an email with your environment details provisioning has
-completed.
+## Prerequisites
 
-Once you have your environment details, navigate to the **OCP Console** URL that
-looks similar to:
+To complete this lab you will need:
 
-```sh
-https://remote.cloud.techzone.ibm.com/guacamole/#/?username=000-000000-0000&password=00000
-```
+- Instana Agent Key - Required when requesting lab environment
+- Instana Sales Key - Required when requesting lab environment
 
-You will see a page similar to the below. Expand the _twisties_ and select the
-**Remote Desktop** connection to connect to your _Apache Guacamole_ bastion
-node.
+## Requesting a Lab Environment
 
-![access-guacamole](../../../_common/images/access-guacamole.png)
+For this lab we will be using the
+[Jam-in-a-Box: Instana - Administer](https://techzone.ibm.com/my/reservations/create/649cd8c0fc016400174bed2a)
+collection.
 
-All access to the environment is behind this RHEL Guacamole Bastion host named
-**bastion-gym-lan**.
+:::info
 
-![guacamole](../../../_common/images/guacamole.png)
+You can follow
+[these instructions](/waiops-tech-jam/labs/jam-in-a-box/#requesting-a-lab-environment)
+if you need guidance on how to request a lab.
 
-If you see the bastion hosts desktop environment you can proceed to
-[the labs](/waiops-tech-jam/labs/general/).
+:::
