@@ -8,11 +8,17 @@ sidebar_position: 2
 ## 2.1: Overview
 
 This module focuses on the initial deployment of the Cloud Pak for Watson AIOps. 
-This deployment scenario will assume you are deploying onto the IBM Cloud
-however the steps would generally apply to an OpenShift cluster deployed on
-another cloud provider, or on-premises. The exception to this would be the setup
-of the persistent storage but this is covered later in the lab.
+This deployment scenario will assume you are deploying onto the IBM Technology Zone, 
+[Jam-in-a-Box for AIOps](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops/environments) environments. 
+Note that the same steps would generally apply to an OpenShift cluster deployed on
+another cloud provider, or on-premises.
 
+If you don't have a **Jam-in-a-Box: CP4AIOps - Install** environment already, reserve one
+by selecting the **Jam-in-a-Box: CP4AIOps - Install** tile from the 
+[environment list](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops/environments) 
+and fill the reservation form. 
+
+You will need an IBM ID to request an entitlement key. You can create an IBM ID from [here](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776).
 
 
 
@@ -40,180 +46,283 @@ register for a 60 day trial using the following link:
 ## 2.3: Access the OpenShift cluster
 
 
-During this module, you will need to log in a "control" virtual machine on which
+During this module, you will need to login to a bastion virtual machine (VM) on which
 the `oc` utility is already installed, so that you can run certain commands to
 install the product.
 
-Open a web browser and log in to:
-[https://cloud.ibm.com](https://cloud.ibm.com). In the top-right corner of the
-screen, ensure that the right account is selected from the drop-down menu. Next,
-click on the menu button in the top-left corner, select **OpenShift**, then
-**Clusters**.
+* From the IBM technology Zone [My reservations](https://techzone.ibm.com/my/reservations) page,
+select the **Jam-in-a-Box: CP4AIOps - Install** reservation. 
+* From the **Jam-in-a-Box: CP4AIOps - Install** environment details page, click on the **Desktop URL**
+link to access the bastion VM.
+* From the bastion VM RECENT CONNECTIONS page, select the **Remote Desktop** connection as shown below
+(note that you may not have the picture of a remote desktop running)
 
-Click on your "AIops" OpenShift cluster, then click the blue **OpenShift web
-console** button to open the main OpenShift UI:
-
-![](images/1_OpenshiftWebConsole.png)
+![](images/remote-desktop.png)
 
 
-Next, we need to obtain the login command to connect to and authenticate with
-the OpenShift cluster.
+* From the bastion VM desktop, open a **Terminal** window (you may need to click on **Activities** in the
+top-left to remove the screen-saver)
+* In the **Terminal** window, copy & paste the **oc** command below to login into the cluster. Get your 
+**kubeadmin** password from your environment details page. This command will make a connection to your cluster 
+and authenticate you, so you will be ready to start installing the product by issuing various commands against it.
 
-In the top-right corner of the OpenShift UI, click on your username, then select
-**Copy Login Command**. You should get a new tab open with a link to **Display
-Token**. Click on this link to reveal the cluster login command that you will
-need to authenticate to the OpenShift cluster.
-
-![](images/2_LoginCommand.png)
-
-Copy the full **oc login** command displayed under **Log in with this token**
-and save it into Notepad or a local text editor.
-
-Go to your terminal session (either local or on a remote host) and paste the
-full "oc login" command, and press Enter. This command will make a connection to
-your cluster and authenticate you, so you will be ready to start preparing the
-cluster by issuing various commands against it.
+```
+oc login --server=https://api.ocp.techzone.lan:6443 --username kubeadmin --password <your password>
+```
 
 
 
 ## 2.4: Install the Cloud Pak for Watson AIOps Operator
 
-In this first part, our objective will be to deploy the product Operator which will
+In this section, our objective will be to deploy the product Operator which will
 then pull down the software images to the cluster, so that we can deploy an instance
-of the Cloud Pak for Watson AIOps in the next section.
+of the Cloud Pak for Watson AIOps in the next section. You will be copying, pasting and
+running the following commands from the **Terminal** window. 
 
 :::caution
-
-It is essential to ensure the indentation is correctly copied from the documentation.
-
+* It is essential to ensure the indentation is correctly copied from the documentation.
+* When you copy the commands, use the Copy helper on the right side as shown below:
+![](images/copy-helper.png)
 :::
 
 ### Create a custom project (namespace)
 
 Lets start by creating the project (namespace) where we will install the product. It is 
 important to know which project/namespace you are in when issuing `oc`
-commands. All of the subsequent commands need to be run in the `cp4waiops`
-project/namespace otherwise the various elements you create may not be available
-to use in later steps. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_namespace)
+commands. Run the following command:
+
+```
+oc create namespace cp4waiops
+```
+
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_namespace).
 
 ### Create an OperatorGroup in your custom project (namespace)
 
 The Operator requires an Operator Group, which provides multitenant configuration to
 installed Operators. An Operator group selects target namespaces in which to generate 
-required RBAC (Role Base Access Control) access for its member Operators. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#op_group)
+required RBAC (Role Base Access Control) access for its member Operators. Run the following command:
+
+```
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: cp4waiops-operator-group
+  namespace: cp4waiops
+spec:
+  targetNamespaces:
+    - cp4waiops
+EOF
+```
+
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#op_group).
 
 ### Create the entitlement key pull secret
 
 Now we will store the entitlement key that you obtained previously into a secret. This secret 
-will be used to pull installation images. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_pull_secret)
+will be used to pull installation images. Copy & paste the following command into the **Text Editor** 
+in the bastion VM, add your entitlement key and run the command from the **Terminal**: 
 
-### Configure usage data collection
-
-Now we will configure the usage data collector. This is a collector of usage data that is
- all numeric, and does not include email addresses, passwords, or other personal details. 
- This usage information is really important for driving the future roadmap of the product.
-Use the values shown below for the environment variables. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#usage_secret)
-
-```sh
-export CUSTOMER_NAME=ACME
-export CUSTOMER_ICN=ACME123
-export CUSTOMER_ENVIRONMENT=trial
-export PROJECT_CP4WAIOPS=cp4waiops
 ```
+oc create secret docker-registry ibm-entitlement-key \
+    --docker-username=cp\
+    --docker-password=<entitlement-key> \
+    --docker-server=cp.icr.io \
+    --namespace=cp4waiops
+```
+
+
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_pull_secret).
+
+### Usage data collection
+
+To help the development of IBM Cloud Pak for Watson AIOps, daily aggregated usage data is collected 
+to analyze how the product is used. The usage data is collected by the cp4waiops-metricsprocessor pod, 
+and is sent to and stored in IBM controlled GDPR-compliant systems. For the purpose of this Lab,
+we will skip this step.
+
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#usage_secret).
 
 ### Ensure external traffic access to AI Manager
 
 Run the following command to update the endpointPublishingStrategy.type. This is done to allow traffic 
-in case the ingresscontroller its set to HostNetwork. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_ingress)
+in case the ingresscontroller its set to HostNetwork. Run the following command:
+
+```
+if [ $(oc get ingresscontroller default -n openshift-ingress-operator -o jsonpath='{.status.endpointPublishingStrategy.type}') = "HostNetwork" ]; then oc patch namespace default --type=json -p '[{"op":"add","path":"/metadata/labels","value":{"network.openshift.io/policy-group":"ingress"}}]'; fi
+```
+
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_ingress).
 
 ### Create the catalog source
 
-Now we will install the Catalog Source. An Operator Lifecycle Manager (OLM) CatalogSource 
-is a collection of operator metadata. OLM uses CatalogSources to build the list of available 
-operators that can be installed from OperatorHub in the OpenShift web console. In the documentation, 
-disregard the section about disabling the automatic initiation of patch upgrades. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_catalog)
+After installation, the ibm-operator-catalog CatalogSource object determines whether the upgrade of 
+your Cloud Pak for Watson AIOps deployment is initiated automatically when a new patch becomes available.
+The ibm-operator-catalog CatalogSource object can be configured to automatically poll for and retrieve 
+a newer catalog by enabling the polling attribute, *spec.updateStrategy.registryPoll*. If a newer catalog 
+for a patch is found and retrieved, then an automatic upgrade of your Cloud Pak for Watson AIOps 
+deployment is initiated. For the purpose of this Lab, we will disable the automatic initiation of patch upgrades.
+Run the following two commands:
+
+```
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-operator-catalog
+  namespace: openshift-marketplace
+spec:
+  displayName: ibm-operator-catalog
+  publisher: IBM Content
+  sourceType: grpc
+  image: icr.io/cpopen/ibm-operator-catalog:latest
+EOF
+```
+
+```
+IMGDIGEST=`oc get pods -n openshift-marketplace -l=olm.catalogSource=ibm-operator-catalog --no-headers -o=jsonpath="{.items[0].status.containerStatuses[0].imageID}" -n openshift-marketplace` && \
+oc patch catalogsource ibm-operator-catalog -n openshift-marketplace --type=json -p "[{ "op": "test", "path": "/spec/image", "value": "\"icr.io/cpopen/ibm-operator-catalog:latest\"" }, { "op": "replace", "path": "/spec/image", "value": "\"$IMGDIGEST\"" }]"
+```
+
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_catalog).
 
 ### Verify cluster readiness
 
 In order to finish the Lab on time, we will skip the section regarding verifying the cluster readiness. 
-Remember to run this verification in a real scenario!.
+Remember to run this verification in a production implementation.
 
-### Install the AI Manager operator
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#prereq_check).
 
-Finally, we are ready to install the Operator. Do not move to the next step until you can confirm that
- the Operator is fully installed by running the verification command provided in the documentation. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_operator)
+### Install the Cloud Pak for Watson AIOps operator
 
+Finally, we are ready to install the Operator. Run the following command:
 
-The Cloud Pak for Watson AIOps Operator is now installed and ready to create a product instance.
+```
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-aiops-orchestrator
+  namespace: cp4waiops
+spec:
+  channel: v4.1
+  installPlanApproval: Automatic
+  name: ibm-aiops-orchestrator
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+EOF
+```
+
+Do not move to the next step until you can confirm that the Operator is fully installed
+by running the verification command listed below. Verify that all of the components except 
+**IBM Elastic**, have a state of Succeeded. The **IBM Elastic** installation depends on the next step.
+You should see three **Succeeded** messages.
+
+```
+oc get csv -n cp4waiops | egrep "ibm-aiops-orchestrator|ibm-automation|ibm-common-service"
+```
+
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_operator).
 
 
 
 ## 2.5: Deploy an instance of Cloud Pak for Watson AIOps
 
-This final step of deployment involves deploying a running instance of the product onto the OpenShift cluster.
-Make sure you have updated the following values in the yaml file before running the command [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_instance)
+This final step involves deploying a running instance of the product onto the OpenShift cluster.
+Note in the following command that we specify **accept** the license, that the installation
+size is **small**, and the name of the file and block **storage classes**. In a real deployment,
+you will have to define the storage classes in advance. We will get deeper into storage classes later
+in the Lab. 
 
-* <license_acceptance> must be set to **true** to agree to the license terms
-* <storage_class_name> this is the **file storage class** provided by the instructor
-* <large_block_storage_class_name> this is the **block storage class** provided by the instructor
+Note also that we specify the **TopologyModel**. This is the terminology to use in the product when defining 
+collections of topology resource groups. Valid values for TopologyModel are "application" or "service". 
+Run the following command:
 
+```
+export LICENSE_ACCEPT=true
+export INSTALL_SIZE=small
+export STORAGE_CLASS_FILE=ocs-storagecluster-cephfs
+export STORAGE_CLASS_BLOCK=ocs-storagecluster-ceph-rbd
+export TOPOLOGY_MODEL=application
 
+cat << EOF | oc apply -f -
+apiVersion: orchestrator.aiops.ibm.com/v1alpha1
+kind: Installation
+metadata:
+  name: ibm-cp-watson-aiops
+  namespace: cp4waiops
+spec:
+  imagePullSecret: ibm-entitlement-key
+  license:
+    accept: ${LICENSE_ACCEPT}
+  pakModules:
+  - name: aiopsFoundation
+    enabled: true
+  - name: applicationManager
+    enabled: true
+  - name: aiManager
+    enabled: true
+  - name: connection
+    enabled: false
+  size: ${INSTALL_SIZE}
+  storageClass: ${STORAGE_CLASS_FILE}
+  storageClassLargeBlock: ${STORAGE_CLASS_BLOCK}
+  topologyModel: ${TOPOLOGY_MODEL}
+EOF
+```
 
+Run the following command to check that the PHASE of your installation is **Updating**:
 
+```
+oc get installations.orchestrator.aiops.ibm.com -n cp4waiops
+```
 
-The deployment of your instance will normally take about 30 to 40 minutes. You
-can monitor the deployment's progress both from Installed Operators page as well
-as from: **Workloads > Pods** page. Ensure that the Project drop-down menu at
-the top of the page is set to your namespace ("cp4waiops"). Once all the pods have
-deployed and are showing with a Status of Running and 1/1 or 2/2, you will know
-that your deployment has completed. You can sort your pods by "Ready" status,
-and filter on all pods except for "Completed" jobs to monitor the deployment
-progress.
+It takes around 60-90 minutes for the installation to complete (subject to the speed with which images can be pulled). 
+When installation is complete and successful, the PHASE of your installation changes to **Running**. 
 
 :::tip
-
-Don't worry if you see some pods report an error state during the course of the
-deployment. This is simply because many pods are dependent on others, and so
-complain if they come up before those others. The system will simply retry to
-deploy these pods over and over, and so eventually everything will deploy and
-come up in the end.
-
+While you wait for the installation to finish, complete the following Lab sections:
+* Custom Sizing Tool
+* Storage, HA and FIPS Considerations
 :::
 
 
-This can also be confirmed by returning to the Installed Operators page and
-seeing: **Phase: Running** next to your deployment:
 
-![](images/install-conf.png)
+If your installation phase does not change to **Running** after 60-90 minutes, use the following command to find out which components are not ready:
 
-Congratulations! You have successfully deployed an instance of the
-Cloud Pak for Watson AIOps.
-
+```
+oc get installation.orchestrator.aiops.ibm.com -o yaml | grep 'Not Ready'
+```
 
 
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_instance).
 
 
 
-## 2.6: Configure Certificates and Locate Login Credentials
+
+## 2.6: Log in to the Cloud Pak for Watson AIOps console
+
+Now you are going to locate the console URL and the admin login credentials from your newly deployed
+instance of the Cloud Pak for Watson AIOps. 
+
+Find the URL to access the console with the following command:
+
+```
+oc get route -n cp4waiops cpd -o jsonpath='{.spec.host}'
+```
+
+Find the password for the **admin** username by running the following command:
+
+```
+oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d
+```
+
+:::tip
+Now complete the final Lab section:
+* LDAP Integration
+:::
 
 
-### Configure signed certificates for NGINX
-
-In a real deployment scenario, you will procure valid CA (Certificate Authority) signed
-certificates and patch the AutomationUIConfig instance with a new secret that contains these
-ingress certificates. In this Lab, we will just use the default self signed certificates therefore
-we can skip this step.
-
-
-### Verify the installation
-
-In order to finish the Lab on time, we will skip the section regarding verifying the installation. 
-Remember to run this verification in a real scenario!.
-
-
-### Log in to the IBM Cloud Pak Automation console
-
-Now you are going to locate the admin login credentials from your newly deployed
-instance of the Cloud Pak for Watson AIOps. Follow the steps in the documentation and make sure to save 
-both the console URL and the password for the admin username. [***Doc Link***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_login)
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_login).
 
