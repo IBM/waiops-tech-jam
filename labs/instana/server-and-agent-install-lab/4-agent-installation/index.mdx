@@ -73,39 +73,21 @@ are recommended in restrictive network setups.
 ## 4.2: Installing Instana Agent on a Linux VM
 
 We will start by installing the Instana Agent on the Linux VM that is running
-IBM MQ and IBM ACE.
+IBM MQ and ACE.
 
 ![architecture-agent-mqace-vm](images/architecture-agent-mqace-vm.png)
 
-You will be installing the Instana Agent on the ACE/MQ server that has been
-provisioned for you for this lab. Open a new terminal tab by selecting **File**
--> **New Tab**.
+Open a new terminal tab by selecting **File** -> **New Tab**.
 
 SSH to the ACE/MQ server as follows:
-
-:::note
-
-When prompted if you want to continue connecting, type: `yes`
-
-:::
 
 ```sh
 ssh jammer@mqace
 ```
 
-Change the hostname of the machine for easy future reference:
+When prompted if you want to continue connecting, type: `yes`
 
-:::note
-
-You wont see any change until you complete the next step.
-
-:::
-
-```sh
-sudo hostname mqace
-```
-
-Then use sudo to switch to root:
+Use sudo to switch to the root user:
 
 ```sh
 sudo -i
@@ -175,9 +157,10 @@ the need to provide credentials for accessing those applications.
 
 ---
 
-## 4.3: Installing Instana Agent on the Instana Server
+## 4.3: Installing Instana Agent in a Docker Environment
 
-Next, you will install the Instana agent on the Instana server.
+Next, you will install the Instana agent as a container running in Docker on the
+Instana server.
 
 ![architecture-agent-mqace-vm](images/architecture-agent-instana-vm.png)
 
@@ -208,10 +191,10 @@ the **"Deploy Agent"** button near the upper right corner.
 :::
 
 At the top of the page you will see an entry box where you can specify a
-**Zone**. Specify a zone name such as **instana**. Then, copy the docker run
+**Zone**. Specify a zone name such as **TechZone**. Then, copy the docker run
 command and paste it into the **root@instana** terminal window.
 
-![](images/dockerInstall.png)
+![](images/docker-agent.png)
 
 This will install the Instana Agent as a docker container running on the Instana
 Server machine.
@@ -235,9 +218,9 @@ configured in order to see the performance metrics.
 
 ## 4.4: Installing Instana Agent on OpenShift Cluster
 
-The next step is to install the Instana Agent into the **Apps** OpenShift
-Cluster that we'll be using to host our demo applications _Robot Shop_ and
-_Quote of the Day_.
+The next step is to install the Instana Agent into the **Apps** Sing Node
+OpenShift Cluster that in future labs we'll be using to host our demo
+applications _Robot Shop_ and _Quote of the Day_.
 
 ![architecture-agent-ocp](images/architecture-agent-ocp.png)
 
@@ -280,8 +263,17 @@ monitor the entire cluster:
 oc adm policy add-scc-to-user privileged -z instana-agent --kubeconfig kubeconfig-apps
 ```
 
-Again from the **Installing Instana Agents** screen select OpenShift from the
-list.
+From the **Installing Instana Agents** screen select OpenShift from the list.
+
+:::tip
+
+If you aren't on the **Installing Instana Agents** screen you can get there by
+selecting the **"Stan"** robot icon in the upper left corner and then clicking
+the **"Deploy Agent"** button near the upper right corner.
+
+![](images/DeployAgent.png)
+
+:::
 
 ![](images/OpenShift.png)
 
@@ -303,7 +295,8 @@ etc
 
 :::
 
-Copy the command from Instana and run.
+Copy the command from the Instana Web UI and run it as the admin user on the
+bastion host.
 
 :::note Copy & paste
 
@@ -324,14 +317,7 @@ only has one worker node so you will only see one pod running.
 oc get pods -n instana-agent --kubeconfig kubeconfig-apps
 ```
 
-![running agent pods](images/agent-pod-running.png)
-
-:::info
-
-The Agent is deployed as a daemonset so that if a new Worker Node is added to
-the cluster, monitoring will automatically get added to the new Worker Node.
-
-:::
+![running agent pods](images/ocp-agent-running.png)
 
 This completes the installation of Instana agent on OpenShift cluster.
 

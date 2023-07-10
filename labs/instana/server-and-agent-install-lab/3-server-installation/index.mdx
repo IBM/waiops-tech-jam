@@ -70,22 +70,25 @@ ports for SaaS are slightly different.
 
 :::
 
-From the Bastion host (named **Guacamole**), open a terminal window by selecting
+:::tip
+
+If you are unsure how to get access to the Bastion host (Guacamole) see
+[Accessing a Lab Environment](/waiops-tech-jam/labs/jam-in-a-box/#accessing-a-lab-environment)
+
+:::
+
+From the Bastion host (Guacamole), open a terminal window by selecting
 **Activities** at the top left of the screen and then the terminal icon.
 
 ![open-terminal](images/open-terminal.png)
 
 Use the terminal to login to the Instana host:
 
-:::note
-
-When prompted if you want to continue connecting, type: `yes`
-
-:::
-
 ```sh
 ssh jammer@instana
 ```
+
+When prompted if you want to continue connecting, type: `yes`
 
 Use sudo to become root.
 
@@ -113,7 +116,7 @@ You can run the `docker ps` command to confirm that it is installed and running.
 docker ps
 ```
 
-If docker is running, you should see output similar to what's shown below.
+If docker is running, you should see output similar to what is shown below.
 
 ![docker-ps](images/docker-ps.png)
 
@@ -155,22 +158,6 @@ mkdir /mnt/traces
 mkdir /mnt/data
 ```
 
-Finally, ensure the required packages are installed for SMTP configuration later
-in this lab:
-
-:::note Copy & paste
-
-Be mindful when copying and pasting to ensure no extra lines are inserted by
-first copying the command to a text document.
-
-:::
-
-```sh
-debconf-set-selections <<< "postfix postfix/mailname string localhost"
-debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Local only'"
-apt-get install --assume-yes postfix mailutils
-```
-
 You are now ready to start the installation of the Instana Server.
 
 ---
@@ -180,13 +167,6 @@ You are now ready to start the installation of the Instana Server.
 Run the following commands to install the Instana Server. These commands will
 vary depending on which Linux platform you are using for your installation. The
 instructions below are for Ubuntu and Debian.
-
-Instana requires port 80 so ensure there are no processes currently running on
-port 80.
-
-```sh
-lsof -t -i:80 | xargs -r kill
-```
 
 Begin by installing the Instana package by issuing the following commands. Make
 sure the commands are successful before proceeding to the next step.
@@ -243,8 +223,8 @@ Test, Prod to identify the unit.
 
 ![](images/unit.png)
 
-You will now be prompted for your **agent key**. This will be provided to you by
-the lab proctors.
+You will now be prompted for your **agent key**. This is one of the requirements
+of the lab, you will need to bring your own Instana License.
 
 ![](images/agentKey.png)
 
@@ -253,8 +233,8 @@ The next step is to enter your **download key**. Use the same key as your
 
 ![](images/downloadKey.png)
 
-Next, enter your **sales key**. This will be provided to you by the lab
-proctors.
+Next, enter your **sales key**. This is one of the requirements of the lab, you
+will need to bring your own Instana License.
 
 ![](images/salesKey.png)
 
@@ -265,7 +245,7 @@ environment we will use the IP address.
 :::caution Important
 
 Instead of specifying the hostname or fqdn, enter the **IP address** of the
-Instana server. In this environment it is **192.168.252.60**
+Instana server. In the Tech Zone lab environment it is `192.168.252.60`
 
 :::
 
@@ -330,22 +310,29 @@ information so that you can use it later to login to the Instana user interface.
 
 The output should look something like this:
 
-![](images/installSuccess.png)
+![](images/install-success.png)
+
+:::caution
 
 Before attempting to login to your Instana server, activate the license using
-the steps in section 2.4.
+the steps in the following section.
+
+:::
 
 :::tip
-
-- If you forget the password, you can use the following command to reset the
-  admin@instana.local password:
-  `instana configure admin -p <new_password_for_admin>`
 
 - If at any time you need to
   [restart Instana](https://www.ibm.com/docs/en/instana-observability/current?topic=premises-operations-docker-based-instana#stopping-all-components)
   you can run the `instana stop` and `instana start` commands.
 
 :::
+
+Change the password for the administrator account **admin@instana.local** to
+something easier to remember for the labs:
+
+```sh
+instana configure admin -p Passw0rd
+```
 
 ---
 
@@ -389,8 +376,9 @@ instana license verify
 
 You are now ready to open a browser and login to the Instana user interface.
 
-Open a firefox browser and navigate to `https://192.168.252.60` or you can
-select the **Instana** bookmark if you imported the bookmarks.
+Open a firefox browser and select the **Instana** bookmark.
+
+![open firefox](images/open-firefox.png)
 
 :::info
 
@@ -400,14 +388,16 @@ You can safely ignore the warning about the certificate being untrusted.
 
 :::
 
-When prompted, enter the username and password that you saved earlier. The
-username is **admin@instana.local**
+When prompted, enter the username and password that you updated earlier.
+
+- Username: **admin@instana.local**
+- Password: **Passw0rd**
 
 ![](images/login.png)
 
 You will be taken to an Initial Screen where you can install the instana agents
-or navigate to the main product UI. We will perform these steps in another
-section of the lab.
+or navigate to the main product UI. We will install an Instana Agent in the
+upcoming section of the lab.
 
 ![initial-instana-page](images/initial-instana-page.png)
 
@@ -526,7 +516,7 @@ Email alerts from Instana.
     host      = "localhost"
     port      = 25
     user      = "jammer"
-    password  = "<jammer password provided by proctors>"
+    password  = "Passw0rd"
     use_ssl   = false
     start_tls = false
   }
@@ -540,9 +530,13 @@ Save the changes in the settings.hcl file.
 instana update -f ./settings.hcl
 ```
 
-It will take a little while for the configuration changes to take effect.
-[Read section 2-7](#27-upgrading-the-instana-server) while the configuration
-changes are being applied.
+:::tip
+
+It will take a little while for the configuration changes to take effect. The
+next section on upgrading the Instana Server is for information only, you can
+read it while the configuration changes are being applied.
+
+:::
 
 Once complete you should see the below
 
@@ -554,8 +548,9 @@ Once complete you should see the below
 
 :::warning Do not perform these steps
 
-You should not perform any steps in this section. We want you to know the
-process for performing an upgrade.
+You should not perform any steps in this section, it is for information only.
+
+We want you to know the process for performing an upgrade.
 
 :::
 
@@ -622,7 +617,6 @@ feature flags.
 
 Finally, you learned how to upgrade a docker based self-hosted Instana server.
 
-You are now ready to continue with other portions of the lab. Navigate to
-section 3 of the Instana lab.
+You are now ready to learn how to install and configure an Instana Agent.
 
 ---

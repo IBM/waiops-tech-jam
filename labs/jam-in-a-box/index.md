@@ -42,29 +42,41 @@ Fill in the reservation details and select **Submit**
 
 ![create-reservation](../_common/images/create-reservation.png)
 
-You will receive an email with your environment details provisioning has
-completed.
+## Accessing a Lab Environment
 
-Once you have your environment details, navigate to the **OCP Console** URL that
-looks similar to:
+Once your requested environment has been provisioned successfully by Tech Zone
+you will receive an email letting you know provisioning has completed along with
+your environment details.
+
+Within the details you should see a URL for **OCP Console** that looks similar
+to the following:
 
 ```sh
 https://remote.cloud.techzone.ibm.com/guacamole/#/?username=000-000000-0000&password=00000
 ```
 
-You will see a page similar to the below. Expand the _twisties_ and select the
-**Remote Desktop** connection to connect to your _Apache Guacamole_ bastion
-node.
+:::tip
+
+If you do not see an email from TechZone you can also try checking your spam
+folder.
+
+If you no longer have the email you can also
+[view your reservation details in Tech Zone](https://techzone.ibm.com/my/reservations).
+
+:::
+
+Click on the **OCP Console** URL.
+
+You will be taken to a page that looks similar to the below. Expand the
+_twisties_ and select the **Remote Desktop** connection to connect to your
+_Apache Guacamole_ Bastion host.
 
 ![access-guacamole](../_common/images/access-guacamole.png)
 
-All access to the environment is behind this RHEL Guacamole Bastion host named
-**bastion-gym-lan**.
+All access to the lab environment is behind this RHEL Guacamole Bastion host
+named **bastion-gym-lan**.
 
 ![guacamole](../_common/images/guacamole.png)
-
-If you see the bastion hosts desktop environment you can proceed to
-[the labs](/waiops-tech-jam/labs/general/).
 
 ## Workshops
 
