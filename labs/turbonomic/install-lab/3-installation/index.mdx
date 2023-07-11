@@ -102,12 +102,31 @@ You are now ready to deploy the operator
 
 ## 3.3: Deploy the Operator
 
-1. Create the operator service account, cluster role and cluster role binding:
+1. Create the operator service account and cluster role and cluster role
+   binding:
 
    ```sh
    oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/service_account.yaml -n ${NS} --kubeconfig kubeconfig-aiops
    oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/cluster_role.yaml -n ${NS} --kubeconfig kubeconfig-aiops
-   oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/cluster_role_binding.yaml -n ${NS} --kubeconfig kubeconfig-aiops
+   ```
+
+1. Create the cluster role binding:
+
+   ```sh
+   cat << EOF | oc -n ${NS} --kubeconfig kubeconfig-aiops apply -f -
+   kind: ClusterRoleBinding
+   apiVersion: rbac.authorization.k8s.io/v1
+   metadata:
+   name: t8c-operator
+   subjects:
+   - kind: ServiceAccount
+   name: t8c-operator
+   namespace: turbonomic-platform
+   roleRef:
+   kind: ClusterRole
+   name: t8c-operator
+   apiGroup: rbac.authorization.k8s.io
+   EOF
    ```
 
 1. Open a Firefox browser window
@@ -149,7 +168,7 @@ You are now ready to deploy the operator
    - Ensure **Installed Namespace** is set to **turbonomic-platform**
      - Click **Install**.
 
-   ![](images/turbo-operator-3.png)
+   ![](images/turbo-install-operator.png)
 
 1. Wait for the operator to become available (status = running with 1/1 ready).
    Check the status by running the following command in the Terminal:
@@ -171,8 +190,6 @@ You are now ready to deploy the operator
 
    :::
 
-Next, we are going to configure the Turbonomic instance.
-
 ---
 
 ## 3.4: Configure the Turbonomic Instance: Custom Resource
@@ -190,6 +207,23 @@ Next, we are going to configure the Turbonomic instance.
 
    ```sh
    export STORAGE_CLASS=ocs-storagecluster-ceph-rbd
+   ```
+
+1. Ensure you have values set for the following environment variables:
+
+   ```sh
+   echo ${NS} && \
+   echo ${FSGROUP} && \
+   echo ${STORAGE_CLASS}
+   ```
+
+   The output should look like this (the FSGROUP value will likely be
+   different):
+
+   ```sh
+   turbonomic-platform
+   1000320000
+   ocs-storagecluster-ceph-rbd
    ```
 
 1. Apply a custom resource file to launch Turbonomic:
@@ -317,15 +351,6 @@ Once logged in, the setup wizard will prompt you to import the license key:
 
 ![](images/license1.png)
 
-:::note
-
-- If attending a scheduled Tech Jam, your lab proctors will provide you the
-  license file.
-- If following these instructions offline outside a scheduled Tech Jam, the
-  license file can be found within your downloaded software archive.
-
-:::
-
 1. From the **Guacamole** host create a file called `turbo-license` and copy the
    contents of the license file provided by your lab proctors into it.
 
@@ -357,11 +382,11 @@ Once logged in, the setup wizard will prompt you to import the license key:
 
 ## 3.7: Summary
 
-In this portion of the lab, you have learned how to install Turbonomic on
-OpenShift.
+In this portion of the lab, you have learned how to install and license
+Turbonomic on OpenShift.
 
-Navigate to the next section to integrate Instana for application performance
-data ingestion and start assuring the performance of your critical business
-applications.
+Move onto the next section to learn how to integrate Instana for application
+monitoring data ingestion so Turbonomic can start assuring the performance of
+your business applications.
 
 ---

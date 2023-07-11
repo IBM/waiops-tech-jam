@@ -20,15 +20,13 @@ export default function MultiChoiceQuestion({
         {questionNumber}. {question}
       </h2>
       {answers.map((answer, index) => {
-        const first = answer.split(" ")[0]
+        const q = answer.concat("-")
         return (
           <div key={questionNumber}>
-            <label htmlFor={`answer-${questionNumber}-${first}`}>
-              {answer}
-            </label>
+            <label htmlFor={`answer-${questionNumber}-${q}`}>{answer}</label>
             <input
               type="radio"
-              id={`answer-${questionNumber}-${first}`}
+              id={`answer-${questionNumber}-${q}`}
               checked={selectedAnswer === answer}
               onChange={() => handleAnswerClick(answer)}
             />
