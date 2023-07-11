@@ -8,8 +8,8 @@ sidebar_position: 4
 
 ## 3.1: Introduction
 
-In this lab you will be installing Turbonomic platform (highlighted in yellow)
-in your **AIOps** OpenShift cluster.
+In this lab you will be installing the Turbonomic Platform (highlighted in
+yellow) on your **AIOps OpenShift cluster**.
 
 ![architecture-turbo-server-install](images/architecture-turbo-server-install.png)
 
@@ -24,11 +24,24 @@ and build out a lab or demo environment in OpenShift.
 
 ## 3.2: Prerequisites
 
+:::tip
+
+If you are unsure how to get access to the Bastion host (Guacamole) see
+[Accessing a Lab Environment](/waiops-tech-jam/labs/jam-in-a-box/#accessing-a-lab-environment)
+
+:::
+
+From the Bastion host (Guacamole), open a terminal window by selecting
+**Activities** at the top left of the screen and then the terminal icon.
+
+![open-terminal](images/open-terminal.png)
+
 :::caution Important
 
-Perform this installation procedure from the bastion host (Guacamole) as the
-admin user. If you are unsure you can open a new terminal tab or terminal
-window.
+This installation procedure will be completed from the bastion host (Guacamole)
+as the admin user. Ensure your prompt in the terminal looks something like
+`admin@bastion-gym-lan`. If you are unsure you can open a new terminal tab or
+terminal window.
 
 The instructions in this guide use environment variables so it is important that
 you use the same terminal prompt for the duration of the guide.
@@ -44,6 +57,7 @@ you use the same terminal prompt for the duration of the guide.
    ```
 
    You should see output like the below with multiple master and worker nodes
+   which indicates that you are connecting to the **AIOps OpenShift cluster**.
 
    ![aiops-cluster-check](images/aiops-cluster-check.png)
 
@@ -96,23 +110,27 @@ You are now ready to deploy the operator
    oc create -f https://raw.githubusercontent.com/turbonomic/t8c-install/master/operator/deploy/cluster_role_binding.yaml -n ${NS} --kubeconfig kubeconfig-aiops
    ```
 
-1. Go to your OpenShift AIOps Console UI by either selecting the bookmark **OCP
-   Dashboard** or navigating to
-   `https://console-openshift-console.apps.ocp.techzone.lan`
+1. Open a Firefox browser window
 
-   :::note
+   ![open firefox](images/open-firefox.png)
 
-   Advance through the certificate warnings, on for the ocp-console and another
-   for the OAuth server.
+1. Use the Firefox Bookmark **OCP Dashboard** to open your OpenShift AIOps OCP
+   Console.
 
-   ![](images/advance-cert-warning.png)
+   :::info
+
+   You can safely ignore the warning about the certificate being untrusted.
+
+   ![untrusted-cert-advance](images/advance-cert-warning.png)
 
    :::
 
 1. Login to the OCP Console using the credentials provided in IBM Tech Zone.
 
-   The username will be **kubeadmin** and the password is the value of **_OCP
-   Cluster Admin Password_**
+   - Username: **kubeadmin**
+   - Password: The value of _"OCP Cluster Admin Password"_ from your
+     [IBM Tech Zone reservations](https://techzone.ibm.com/my/reservations) or
+     the _environment ready_ email you received from IBM Tech Zone.
 
 1. Launch the operator pod:
 
@@ -128,13 +146,13 @@ You are now ready to deploy the operator
 
 1. Select options as below:
 
-   - Ensure `Installed Namespace` is set to `turbonomic`
-     - Click the `Install` button.
+   - Ensure **Installed Namespace** is set to **turbonomic-platform**
+     - Click **Install**.
 
    ![](images/turbo-operator-3.png)
 
 1. Wait for the operator to become available (status = running with 1/1 ready).
-   Check the status using:
+   Check the status by running the following command in the Terminal:
 
    ```sh
    oc get pods -n ${NS} -w --kubeconfig kubeconfig-aiops
@@ -147,9 +165,9 @@ You are now ready to deploy the operator
    t8c-operator-fdd8b8c94-dhrt4   1/1     Running   0          72s
    ```
 
-   :::note
+   :::tip
 
-   Type `Ctrl-C` to exit the watch loop.
+   Type `Ctrl-C` to exit the watch loop once you see _Running_.
 
    :::
 
@@ -159,12 +177,14 @@ Next, we are going to configure the Turbonomic instance.
 
 ## 3.4: Configure the Turbonomic Instance: Custom Resource
 
-1. Set the storage class:
+1. Set the Storage Class by running the following in the Terminal:
 
-   :::note
+   :::info
 
-   You can view your available storage classes using `oc get storageclass`. For
-   this lab we will be using **ocs-storagecluster-ceph-rbd**.
+   You can view your available storage classes using `oc get storageclass`.
+
+   The Tech Zone environment has already configured a class called
+   **ocs-storagecluster-ceph-rbd** that we will be using.
 
    :::
 
@@ -260,20 +280,22 @@ Next, we are going to configure the Turbonomic instance.
 
 ## 3.5: Launch the Turbonomic User interface
 
-You are now ready to open a browser and login to the Turbonomic user interface.
+You are now ready to open a new browser tab and login to the Turbonomic user
+interface.
 
-1. Open the Turbonomic UI in your browser by using either the bookmark called
-   **Turbonomic** or get the Turbonomic UI route after the deployment completes:
+1. Open the Turbonomic UI in a new browser tab by using the bookmark called
+   **Turbonomic**. Advance through any certificate warnings you may get.
 
-   :::note
+   :::tip
 
-   Advance through any certificate warnings you may get.
-
-   :::
+   If you did not have a Bookmark available you can get the Turbonomic UI route
+   after the deployment completes by running the following command:
 
    ```sh
    oc get route -n ${NS} --kubeconfig kubeconfig-aiops | grep api | awk '{print $2}'
    ```
+
+   :::
 
 1. The first time you log in to Turbonomic, you will be prompted to create a
    password for the `administrator` user:
@@ -282,7 +304,7 @@ You are now ready to open a browser and login to the Turbonomic user interface.
 
    - Set the password to `Passw0rd`
    - Save the password for future logins.
-   - Click on the `Create Account` button.
+   - Click on the `CREATE ACCOUNT` button.
 
 1. If you are prompted with a _Share Analytics and usage information_ modal you
    can leave it unchecked and select **SAVE AND CONTINUE**.

@@ -57,3 +57,40 @@ helm install qotd qotd/qotd \
   --set enableInstana=true \
   --set roksCluster=true
 ```
+
+### Manually create the Robot Shop Redis PV/PVC
+
+```sh
+cat <<EOF | oc create --kubeconfig ~/kubeconfig-apps -f -
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: robot-shop-redis-pv-test
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/mnt/robotshop"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: data-redis-0
+  namespace: robot-shop
+  labels:
+    service: redis
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+EOF
+```

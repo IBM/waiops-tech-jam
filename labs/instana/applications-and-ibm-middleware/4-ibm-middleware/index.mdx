@@ -26,20 +26,15 @@ These have already been installed for us, ready to be configured on the
 
 ## 4.2: Start MQ & ACE
 
-From the terminal tab **root@mqace** check the current status of MQ and ACE by
-running the following:
-
-:::tip
-
-If you closed the **mqace** tab you can get back to it by opening a new tab and
-running the following commands:
+Open a new terminal tab, ssh to the **mqace** machine and change to the root
+user:
 
 ```sh
 ssh jammer@mqace
 sudo -i
 ```
 
-:::
+Check the current status of MQ and ACE by running the following:
 
 ```sh
 /opt/mqm/bin/dspmq -m QM1 -o all
@@ -64,35 +59,15 @@ stopped_. We are only interested in:
 
 :::
 
-If either of the above red highlighted boxes are **not in a running state** run
-the following script:
-
-:::note
-
-The script will take approximately 5 minutes to complete.
-
-:::
-
-```sh
-./demo-middleware.sh
-```
-
-Once complete you can run the status check again and confirm MQ and ACE are both
-running by comparing your output to the above screenshot.
-
-```sh
-/opt/mqm/bin/dspmq -m QM1 -o all
-/opt/ace-11.0.0.11/server/bin/mqsilist
-```
-
 ## 4.3: Configure Quote of the Day Application to use MQ & ACE
 
-The **"Quote of the Day"** application has been installed for you on the
-**Application** OpenShift cluster. For more information about the **Quote of the
-Day** application, you can go to the
-[GitLab repository](https://gitlab.com/quote-of-the-day/quote-of-the-day), it is
-not necessary to go there, but you might be interested in learning more about
-the application.
+The **Quote of the Day** application has been installed for you on the **Apps
+SNO** cluster.
+
+For more information about the **Quote of the Day** application, you can go to
+the [GitLab repository](https://gitlab.com/quote-of-the-day/quote-of-the-day),
+it is not necessary to go there, but you might be interested in learning more
+about the application.
 
 For the containerized portion of the application, some technologies are
 automatically instrumented for monitoring. In addition, the load generation tool
@@ -666,12 +641,10 @@ adjusting your time range filter. Select a shorter range or enable **Live**.
 ## 4.8: Summary
 
 You learned how to configure the Instana sensor for IBM App Connect Enterprise
-(ACE) and IBM MQ. This includes customization such as defining tags, defining a
-zone, and identifying specific processes to monitor.
+(ACE) and IBM MQ. This includes customizations such as;
 
-In the next section, **Explore Instana**, we'll begin by confirming that the ACE
-and MQ monitoring are working properly. If they are not, come back to this
-section and double check your configuration.yaml settings and check that there
-are no obvious errors in the log file.
+- Configuring tags
+- Setting the zone name
+- Configuring specific processes to monitor.
 
 ---

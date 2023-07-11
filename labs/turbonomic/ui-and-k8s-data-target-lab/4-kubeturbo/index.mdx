@@ -36,8 +36,8 @@ different we will use the OpenShift Console to install the Kubeturbo agent.
 
 ## 4.2: Prerequisites
 
-The steps in this lab should be performed on the **Apps SNO OpenShift cluster**
-to install the **KubeTurbo** agent. It will be configured to connect to the
+The steps in this lab for installing the **KubeTurbo** agent should be performed
+on the **Apps SNO OpenShift cluster**. It will be configured to connect to the
 Turbonomic server.
 
 ![architecture-kubeturbo-agent](images/architecture-kubeturbo.png)
@@ -45,19 +45,20 @@ Turbonomic server.
 1. In your browser, navigate to your Apps Single Node OpenShift console by
    selecting the **SNO Dashboard** bookmark.
 
-   :::tip
+   :::info
 
-   You can use the bookmark called **SNO Dashboard** or use the URL
-   `https://console-openshift-console.apps.sno.techzone.lan`
+   You can safely ignore the warning about the certificate being untrusted.
 
-   Double check and make sure you see the text **sno** in your URL.
+   ![untrusted-cert-advance](images/advance-cert-warning.png)
 
    :::
 
 1. Login to the OCP Console using the credentials provided in IBM Tech Zone.
 
-   The username will be **kubeadmin** and the password is the value of **_SNO
-   Cluster Admin Password_**
+   - Username: **kubeadmin**
+   - Password: The value of _"SNO Cluster Admin Password"_ from your
+     [IBM Tech Zone reservations](https://techzone.ibm.com/my/reservations) or
+     the _environment ready_ email you received from IBM Tech Zone.
 
 1. Create a project in the OCP cluster where KubeTurbo will be deployed:
 
@@ -66,7 +67,7 @@ Turbonomic server.
    1. Fill in details as below:
       - **Name**: `kubeturbo-operator`
       - **Display Name**: `Operator Hub based deployment of kubeturbo`
-   1. Click the `Create` button.
+   1. Click the **Create** button.
 
    ![](https://raw.githubusercontent.com/evat-pm/images/master/KOH-createProject.png?raw=true)
 
@@ -275,35 +276,42 @@ the **kubeturbo-operator** namespace:
 
      ![](./images/validate-deployment-by-name.png)
 
-1. Finally validate that **Kubeturbo** is discovering the **SNO Cluster VM** and
-   that the **Robot Shop** application is running on it.
+1. Finally validate that **Kubeturbo** is discovering additional entitites from
+   the **SNO Cluster VM** and that the **Robot Shop** application has been
+   stitched in correctly.
 
    - Navigate to the **Robot Shop** _Business Application_
 
      ![](./images/nav-to-kubeturbo-check.png)
 
-   - Confirm the SNO **Virtual Machine** is discovered and displayed in the
-     Turbo Supply Chain.
+   - Confirm the SNO **Virtual Machine** and other Kubernetes entities have now
+     been discovered and stitched into the Turbonomic Supply Chain.
 
-     :::note
+     :::caution **It could take a little while to populate**
 
      If you don't see it yet give the system some time to process. This can take
-     up to 10 minutes to show. In the meantime you can read the Kubeturbo
-     container logs to view the current status.
+     approximately 10 - 15 minutes to show.
+
+     In the meantime you can read the Kubeturbo container logs to view the
+     current status.
 
      :::
 
-     ![](./images/verify-turbo.png)
+     Notice Turbonomic is now using data from both Instana and Kubeturbo to
+     populate the Robot-Shop supply chain.
+
+     ![](./images/verify-kubeturbo-robot-shop.png)
 
 ---
 
 ## 4.6: Summary
 
-In this portion of the lab, you have learned how to install the KubeTurbo agent
-or probe in a target cluster, which communicates with the remote Turbonomic
-server.
+In this lab you have learned how to install the KubeTurbo agent in an OpenShift
+cluster. You have confirmed it is running and understood the value of combining
+multiple data sources to get a complete picture of an applications architecture.
 
-Navigate to the next section to configure a policy for your business
-application.
+To learn more about how Turbonomic can use this data to make intelligent
+decisions about how to manage the resources of this application consider
+completing the **Policies & Taking Actions** lab.
 
 ---

@@ -16,28 +16,37 @@ import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
 
 <MultiChoiceQuestion
   questionNumber="1"
-  question="What Turbonomic Operator do you install from the OperatorHub?"
-  answers={["Exchange", "Community", "Certified", "Marketplace"]}
-  correctAnswer="Certified"
+  question="Which of the following is not one of the three Turbonomic environmental views?"
+  answers={["Application", "On-prem", "Infrastructure", "Cloud"]}
+  correctAnswer="Infrastructure"
 />
 
 <MultiChoiceQuestion
   questionNumber="2"
-  question="The Turbonomic Administrator credentials are created at first login?"
+  question="Business Applications and Business Transactions only exist as a result of integrating with an Application Performance Management (APM) solution?"
   answers={["True", "False"]}
   correctAnswer="True"
 />
 
 <MultiChoiceQuestion
   questionNumber="3"
-  question="What 'Settings' tile is used to add the Instana Application Integration?"
-  answers={[
-    "User Management",
-    "Schedule",
-    "Application Topology",
-    "Target Configuration",
-  ]}
-  correctAnswer="Target Configuration"
+  question="Which of the following is not a status colour on the Turbonomic entity ring?"
+  answers={["Green", "Yellow", "Orange", "Red"]}
+  correctAnswer="Orange"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="4"
+  question="What Kubeturbo Operator source do you install from the OperatorHub?"
+  answers={["Exchange", "Community", "Certified", "Marketplace"]}
+  correctAnswer="Certified"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="5"
+  question="Kubeturbo automatic updates are not recommended unless you are also automatically updating the Turbonomic Server?"
+  answers={["True", "False"]}
+  correctAnswer="True"
 />
 
 </div>
