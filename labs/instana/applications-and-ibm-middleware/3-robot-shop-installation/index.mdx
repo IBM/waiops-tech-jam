@@ -20,11 +20,19 @@ Monitoring (RUM) data.
 
 ---
 
-Open the Firefox browser and select the **Instana** bookmark.
+:::tip
+
+If you are unsure how to get access to the Bastion host (Guacamole) see
+[Accessing a Lab Environment](/waiops-tech-jam/labs/jam-in-a-box/#accessing-a-lab-environment)
+
+:::
+
+From the Bastion host open the Firefox browser and select the **Instana**
+bookmark.
 
 ![open firefox](images/open-firefox.png)
 
-:::tip
+:::info
 
 You can safely ignore the warning about the certificate being untrusted.
 
@@ -56,12 +64,13 @@ into the HTML pages.
 
 ![](images/website-config-2.png)
 
-Robot Shop has already done some of the work for you. When you deploy the
-application, you can pass parameters into the helm install. There are two
-parameters within the **javascript** that we will need to copy and use when we
-install the Robot Shop application. You will need the **key** and the
-**reportingURL**. Either copy those parameters now or leave this dialog open
-that you can retrieve it later.
+Robot Shop has already done some of the work for you by embedding this script
+with variable placeholders for the unique values into the application. When you
+deploy the application, you can pass parameters into the helm install to
+populate the unique variables. There are two parameters within the javascript
+that we will need to copy and use when we do the install. You will need the
+**key** and the **reportingURL**. Either copy those parameters now or leave this
+dialog open so that you can retrieve it later.
 
 ![](images/website-config-1.png)
 
@@ -97,9 +106,7 @@ terminal window and trying again.
 
 ![check-cluster](images/check-cluster.png)
 
-:::
-
-Clone the GitHub repository by typing:
+::: Clone the GitHub repository by typing:
 
 ```sh
 cd ~ && git clone https://github.com/instana/robot-shop.git
@@ -128,27 +135,33 @@ oc adm policy add-scc-to-user privileged -z default -n robot-shop --kubeconfig ~
 
 Install the **Robot Shop** using Helm:
 
+1. Set your reporting URL by making the substitution below and running the
+   command.
+
 :::info
 
 - **<your-instana-reporting-url\>** is the _reportingURL_ you obtained in
   section 4.2. **Do not include the trailing slash ( / ) following 2999.**
   Example: `http://192.168.252.60:2999`.
-- **<your-instana-key\>** is the **key** you obtained in section 4.2 from the
-  Instana user interface. Example: `m-IMxZYFQyW_n7Xo0VRjrw`.
 
 :::
 
-1. Set your reporting URL:
+```sh
+export REPORTING_URL="<your-instana-reporting-url>"
+```
 
-   ```sh
-   export REPORTING_URL="<your-instana-reporting-url>"
-   ```
+1. Set your key value by making the substitution below and running the command.
 
-1. Set your key value:
+:::info
 
-   ```sh
-   export EUM_KEY="<your-instana-key>"
-   ```
+**<your-instana-key\>** is the **key** you obtained in section 4.2 from the
+Instana user interface. Example: `m-IMxZYFQyW_n7Xo0VRjrw`.
+
+:::
+
+```sh
+export EUM_KEY="<your-instana-key>"
+```
 
 1. Deploy the Robot Shop application with the following Helm command:
 
