@@ -1,0 +1,71 @@
+---
+title: Quiz Time!
+description: Quiz
+sidebar_label: Quiz
+sidebar_position: 5
+---
+
+import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
+
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+  }}>
+
+<MultiChoiceQuestion
+  questionNumber="1"
+  question="Which of the following is not true about Turbonomic Groups?"
+  answers={[
+    "Groups are a collection of like entities",
+    "Groups can be used any place where you can scope",
+    "Groups are all of the same 'group' type",
+    "Groups are automatically created in some cases",
+  ]}
+  correctAnswer="Groups are all of the same 'group' type"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="2"
+  question="Groups can be either Dynamic or Static?"
+  answers={["True", "False"]}
+  correctAnswer="True"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="3"
+  question="You would opt to make your group dynamic if there was no criteria that could be used to define the group and the membership was never going to change?"
+  answers={["True", "False"]}
+  correctAnswer="False"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="4"
+  question="You can use groups to scope actions?"
+  answers={["True", "False"]}
+  correctAnswer="True"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="5"
+  question="Where are the scoped policies that you have created listed?"
+  answers={["Imported Placement policies", "Automation Policies", "Defaults"]}
+  correctAnswer="Automation Policies"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="6"
+  question="What filter would you use to view on-premises policies?"
+  answers={["Imported Placement policies", "Automation Policies", "Defaults"]}
+  correctAnswer="Imported Placement policies"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="7"
+  question="Multiple manually initiated actions can be taken at once?"
+  answers={["True", "False"]}
+  correctAnswer="True"
+/>
+
+</div>

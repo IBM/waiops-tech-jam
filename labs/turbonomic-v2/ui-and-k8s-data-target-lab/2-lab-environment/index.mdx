@@ -1,0 +1,46 @@
+---
+title: 2. Lab Environment
+description: Turbonomic lab environment setup
+sidebar_position: 2
+---
+
+# Lab Environment
+
+In this lab you will have access to two Openshift clusters:
+
+1. **AIOps cluster** - A full installation of OCP that has Turbonomic
+   pre-installed. Instana and the Instana Agent have also already been
+   pre-installed and integrated with Turbonomic for you.
+2. **Apps cluster** - An instance of Single Node OpenShift that has an Instana
+   Agent and the demo applications _RobotShop_ and _Quote Of The Day_
+   pre-installed and sending metrics to Instana.
+
+In this lab you will explore the UI of the Turbonomic Server running on the
+AIOps cluster. You will also install the Turbonomic Kubeturbo agent on the Apps
+Single Node OpenShift Cluster and connect it to the Turbonomic Server running on
+the AIOps Cluster (highlighted in yellow).
+
+![architecture](images/architecture-instana-turbo.png)
+
+## Prerequisites
+
+To complete this lab you will need:
+
+- Instana License
+  - Agent Key - Entered when requesting lab environment
+  - Sales Key - Entered when requesting lab environment
+- Turbonomic License key - Entered when requesting lab environment
+
+## Requesting a Lab Environment
+
+:::info
+
+Follow
+[these instructions](/waiops-tech-jam/labs/jam-in-a-box/#requesting-a-lab-environment)
+for step by step guidance on requesting a lab environment in IBM Tech Zone.
+
+:::
+
+Request Tech Zone environment:
+
+- [Jam-in-a-Box: Turbonomic - Explore the UI & Kubeturbo](https://techzone.ibm.com/my/reservations/create/64a3b270fdf8be0017755812)

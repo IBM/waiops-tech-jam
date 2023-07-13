@@ -1,0 +1,84 @@
+---
+title: Quiz Time!
+description: Quiz
+sidebar_label: Quiz
+sidebar_position: 5
+---
+
+import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
+
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+  }}>
+
+<MultiChoiceQuestion
+  questionNumber="1"
+  question="Do you need to copy an Instana supplied script into your web application to setup End User Monitoring?"
+  answers={["Yes", "No"]}
+  correctAnswer="Yes"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="2"
+  question="MQ/ACE configurations can be made in which configuration file?"
+  answers={[
+    "settings.yaml",
+    "instana-config.hcl",
+    "configuration.yaml",
+    "settings.hcl",
+  ]}
+  correctAnswer="configuration.yaml"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="3"
+  question="In what section of the configuration file can you configure the Zone name?"
+  answers={[
+    "com.instana.plugin.host",
+    "com.instana.plugin.generic.hardware",
+    "com.instana.plugin.process",
+    "com.instana.ignore",
+  ]}
+  correctAnswer="com.instana.plugin.generic.hardware"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="4"
+  question="In what section of the configuration file can you configure tags?"
+  answers={[
+    "com.instana.plugin.host",
+    "com.instana.plugin.generic.hardware",
+    "com.instana.plugin.process",
+    "com.instana.ignore",
+  ]}
+  correctAnswer="com.instana.plugin.host"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="5"
+  question="In what section of the configuration file can you configure the monitoring of a custom process?"
+  answers={[
+    "com.instana.plugin.host",
+    "com.instana.plugin.generic.hardware",
+    "com.instana.plugin.process",
+    "com.instana.ignore",
+  ]}
+  correctAnswer="com.instana.plugin.process"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="6"
+  question="In what section of the configuration file can you configure Instana to ignore a process?"
+  answers={[
+    "com.instana.plugin.host",
+    "com.instana.plugin.generic.hardware",
+    "com.instana.plugin.process",
+    "com.instana.ignore",
+  ]}
+  correctAnswer="com.instana.ignore"
+/>
+
+</div>

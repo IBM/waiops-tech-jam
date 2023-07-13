@@ -1,0 +1,57 @@
+---
+title: Quiz Time!
+description: Quiz
+sidebar_label: Quiz
+sidebar_position: 5
+---
+
+import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
+
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+  }}>
+
+<MultiChoiceQuestion
+  questionNumber="1"
+  question="Which of the following is not an Instana on-premises deployment option?"
+  answers={["Kubernetes", "Single Server", "Two Server", "Three Server"]}
+  correctAnswer="Three Server"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="2"
+  question="On-premises releases are odd number?"
+  answers={["True", "False"]}
+  correctAnswer="True"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="3"
+  question="Feature Flags for Instana Server deployed on Docker can be enabled via which configuration file?"
+  answers={[
+    "settings.yaml",
+    "instana-config.hcl",
+    "configuration.yaml",
+    "settings.hcl",
+  ]}
+  correctAnswer="settings.hcl"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="4"
+  question="When installing the Instana Agent on a Linux host are you able to install and start the agent as a service on SystemD based systems?"
+  answers={["Yes", "No"]}
+  correctAnswer="Yes"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="5"
+  question="Which of the following is not a supported technology for deploying the Instana Agent on OpenShift?"
+  answers={["YAML", "Bash Script", "Operator", "Helm Chart"]}
+  correctAnswer="Bash Script"
+/>
+
+</div>
