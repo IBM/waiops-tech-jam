@@ -1,0 +1,10 @@
+{
+    "workbench.editorAssociations": {   
+        "*.mdx": "vscode.markdown.preview.editor",
+    },
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#06351A",
+        "titleBar.activeBackground": "#094A25",
+        "titleBar.activeForeground": "#EEFDF5"
+    }
+}
