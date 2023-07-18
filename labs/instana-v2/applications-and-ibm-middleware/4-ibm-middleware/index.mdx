@@ -44,10 +44,6 @@ source /opt/ace-11.0.0.11/server/bin/mqsiprofile
 
 If MQ (QM1) and ACE (BK1) are both ready the output will look like this:
 
-![ace-mq-status](images/ace-mq-status.png)
-
-Carefully compare your output to the screenshot above.
-
 :::note
 
 You can ignore the status; _Integration node 'IBNODE' on queue manager 'QM1' is
@@ -58,6 +54,10 @@ stopped_. We are only interested in:
   URI 'http://mqace:4414' is running._
 
 :::
+
+![ace-mq-status](images/ace-mq-status.png)
+
+Carefully compare your output to the screenshot above.
 
 ## 4.3: Configure Quote of the Day Application to use MQ & ACE
 
@@ -150,10 +150,15 @@ oc rollout status deployment qotd-engraving -n qotd --kubeconfig kubeconfig-apps
 To verify that the changes were applied successfully, let's check the
 application UI.
 
-If you copied the bookmarks open a new tab in Firefox and select the **Quote of
-the Day** bookmark. You can manually find the URL by running the command
+In Firefox, open the **Quote of the Day** bookmark.
+
+:::note
+
+You can manually find the URL by running the command
 `oc get route -n qotd --kubeconfig kubeconfig-apps` and opening the URL with
 open this URL with http:// in front.
+
+:::
 
 Once opened click the “Order Engraving” button.
 
@@ -196,7 +201,7 @@ environments. But it is worth validating the configuration. For example, you can
 use the ACE `mqsireportresourcestats` and `mqsireportflowstats` commands to view
 the configuration for ACE.
 
-SSH to the **mqace** server
+Open in a new Terminal tab and SSH to the **mqace** server
 
 ```sh
 ssh jammer@mqace
@@ -260,14 +265,14 @@ then you need to set **CHLEV** (Channel Events) and **PERFMEV** (Performance
 Events) to **ENABLED**. To check those settings, you can issue the following
 commands.
 
-Become root user on mqace node:
+If you aren't already, become root user on mqace node:
 
 ```sh
 sudo -i
 ```
 
-HINT: To run the following commands you have to source the `setmqenv` and
-specify the queue manager name (QM1):
+To run the following commands you have to source the `setmqenv` and specify the
+queue manager name (QM1) like below:
 
 ```sh
 . /opt/mqm/bin/setmqenv -m QM1
@@ -310,6 +315,11 @@ ALTER QMGR PERFMEV(ENABLED)
 ```
 
 Re-run the display command to verify that configuration was changed
+
+```sh
+display QMGR PUBSUB CHLEV
+display QMGR CLUSTER PERFMEV
+```
 
 ![](images/2022-05-27-14-59-27.png)
 
