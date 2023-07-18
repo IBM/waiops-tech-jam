@@ -16,28 +16,48 @@ import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
 
 <MultiChoiceQuestion
   questionNumber="1"
-  question="What Turbonomic Operator do you install from the OperatorHub?"
-  answers={["Exchange", "Community", "Certified", "Marketplace"]}
-  correctAnswer="Certified"
+  question="What Alert Channel type has the best potential to be programmatically adaptable to a large number of external systems?"
+  answers={["Slack", "Generic Webhook", "PagerDuty", "Microsoft Teams"]}
+  correctAnswer="Generic Webhook"
 />
 
 <MultiChoiceQuestion
   questionNumber="2"
-  question="The Turbonomic Administrator credentials are created at first login?"
+  question="Which of the following is not a type of Smart Alert?"
+  answers={[
+    "Slow Calls",
+    "Erroneous Calls",
+    "Resource Utilisation",
+    "HTTP Status Codes",
+    "Throughput",
+  ]}
+  correctAnswer="Resource Utilisation"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="3"
+  question="When setting up a Smart Alert can Internal Calls and Synthetic Calls be filtered out?"
   answers={["True", "False"]}
   correctAnswer="True"
 />
 
 <MultiChoiceQuestion
-  questionNumber="3"
-  question="What 'Settings' tile is used to add the Instana Application Integration?"
+  questionNumber="4"
+  question="When configuring a Smart Alert multiple Alert Channels can be added to send alerts via for example, Email and Slack?"
+  answers={["True", "False"]}
+  correctAnswer="True"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="5"
+  question="How do you target the host itself in a Dynamic Focus Query?"
   answers={[
-    "User Management",
-    "Schedule",
-    "Application Topology",
-    "Target Configuration",
+    "entity.type:host",
+    "entity.host:self",
+    "entity.selfType:host",
+    "entity.host:selfType",
   ]}
-  correctAnswer="Target Configuration"
+  correctAnswer="entity.selfType:host"
 />
 
 </div>

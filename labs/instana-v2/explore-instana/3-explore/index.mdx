@@ -6,9 +6,38 @@ sidebar_position: 4
 
 # Explore Instana
 
-Follow the tutorial below to explore some key Instana capabilities including
-monitoring of Kubernetes, monitoring of applications, and monitoring of
-infrastructure.
+Follow this tutorial to explore some key Instana capabilities including:
+
+- Monitoring of Kubernetes
+- Monitoring of applications
+- Monitoring of infrastructure
+
+From the Bastion host open the Firefox browser and select the **Instana**
+bookmark.
+
+:::tip
+
+If you are unsure how to get access to the Bastion host (Guacamole) see
+[Accessing a Lab Environment](/waiops-tech-jam/labs/jam-in-a-box/#accessing-a-lab-environment)
+
+:::
+
+![open firefox](images/open-firefox.png)
+
+:::info
+
+You can safely ignore the warning about the certificate being untrusted.
+
+![untrusted-cert-advance](images/untrusted-cert-advance.png)
+
+:::
+
+When prompted, enter the username and password that you updated earlier.
+
+- Username: **admin@instana.local**
+- Password: **Passw0rd**
+
+![](images/login.png)
 
 ## 3.1: Explore Kubernetes
 
@@ -25,12 +54,12 @@ flags** that can be enabled to add in other technologies like **VMware**,
 technologies when you performed the Instana server installation.
 
 You will see a list of Kubernetes clusters. In this environment there is only
-the SNO cluster that we installed the OCP Instana Agent onto.
+the SNO cluster named **apps_cluster** that we installed the OCP Instana Agent
+onto in an earlier lab.
 
 ![](images/clusters.png)
 
-Assuming that your cluster shows up properly, click the cluster name to open the
-dashboard.
+Click the cluster name to open the dashboard.
 
 You should see a screen similar to the one below where you can see overall
 utilization of the Kubernetes cluster.
@@ -59,18 +88,18 @@ Next, explore the Infrastructure view. To do this, click on the
 
 ![](images/infra-zones.png)
 
-You'll notice that there is a square surrounding the **"towers"** with the zone
-names that you specified. The square is a **"zone"**. If you recall, you
-specified a zone name when you performed the install of the Instana Agent or
-specified a zone name in the Instana Aganet configuration file. The towers
-contained within the zones represents the OpenShift SNO cluster, the Instana
-server, and the virtual machine running ACE and MQ.
+You'll notice that there is a box surrounding the **"towers"** with the zone
+names that you specified. The box is a **"zone"**. In previous labs a zone name
+was specified during the install of the Instana Agent or added to the Instana
+Agent configuration file. The towers contained within the zones represents the
+OpenShift SNO cluster named Apps, the Instana server, and the virtual machine
+running ACE and MQ.
 
 :::note
 
 If you cannot see 3 zones with a host in each then one of the Agents is not
 connecting properly. If you see a host show up in the _'Undefined Zone'_, it
-means that you did not specify a zone name in the Agent configuration.
+means that a zone name has not been specified in the Agent configuration.
 
 :::
 
@@ -85,8 +114,7 @@ ways of organizing and filtering the Infrastructure view.
 
 Or, you can use the lucene query language in the filter/search bar at the top of
 the page. Before beginning the search, flyover one of the towers and identify
-the hostname of one of the servers. For example jam-stack-dal10-01-mqace.<fully
-qualified hostname\>
+the hostname of one of the servers. For example _mqace_
 
 - Click in the filter bar and select **"Entity"**
 - A list will popup. Start typing **host** and you will see the list filtered to
@@ -695,13 +723,11 @@ That completes the Explore section of the lab.
 
 ## 3.7: Summary
 
-In this exercise you have explored some of the key capabilities within Instana.
-You explored Kubernetes monitoring. You explored the Infrastructure view. You
-defined an Application Perspective. And you explored the application monitoring
-details. You learned about the website monitoring and EUM data. And, you
-reviewed the unbounded analytics.
-
-Navigate to section 7 of the lab where we will investigate the Administrative
-capabilities within Instana.
+In this exercise lab have explored some of the key capabilities within Instana.
+You explored Kubernetes monitoring and the Infrastructure view. You also created
+two Application Perspectives for two different demo applications. You learned
+about website monitoring and the different types of End User Monitoring data
+that Instana can collect. Finally, you reviewed Instana unbounded analytics
+capabilities.
 
 ---
