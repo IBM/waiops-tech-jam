@@ -1,0 +1,43 @@
+---
+title: Quiz Time!
+description: Quiz
+sidebar_label: Quiz
+sidebar_position: 99
+---
+
+import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
+
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+  }}>
+
+<MultiChoiceQuestion
+  questionNumber="1"
+  question="How to install Synthetic Point of Presence?"
+  answers={["It is installed by default", "As RPM", "Using Helm", "With Kubernetes Operator only"]}
+  correctAnswer="Using Helm"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="2"
+  question="Is it true that Instana Synthetic Point of Presence can only be installed on the same cluster with backend?"
+  answers={["True", "False"]}
+  correctAnswer="False"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="3"
+  question="Do Synthetic tests require Smart Alerts?"
+  answers={[
+    "Yes, Smart Alerts trigger Synthetic tests",
+    "No, Smart Alerts are used to send notification on synthetic test failures",
+    "Yes, Synthetic tests are useless without Smart Alerts",
+    "No, Smart Alerts configured automatically for Synthetic Tests and can't be disabled",
+  ]}
+  correctAnswer="No, Smart Alerts are used to send notification on synthetic test failures"
+/>
+
+</div>
