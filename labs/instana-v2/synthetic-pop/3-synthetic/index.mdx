@@ -10,7 +10,35 @@ In this Lab exercise we will create synthetic tests to check services availabili
 
 ## Install Synthetic Point of Presence component
 
-Access to bastion node, navigate to "instana-core" namespace and edit core component of Instana backend cluster by commands:
+Access to bastion node.
+
+:::tip
+
+If you are unsure how to get access to the Bastion host (Guacamole) see
+[Accessing a Lab Environment](/waiops-tech-jam/labs/jam-in-a-box/#accessing-a-lab-environment)
+
+:::
+
+From the Bastion host (Guacamole), open a terminal window by selecting
+**Activities** at the top left of the screen and then the terminal icon.
+
+![open-terminal](images/open-terminal.png)
+
+Use the terminal to login to the Instana host:
+
+```sh
+ssh jammer@instana
+```
+
+When prompted if you want to continue connecting, type: `yes`
+
+Use sudo to become root.
+
+```sh
+sudo -i
+```
+
+Navigate to "instana-core" namespace and edit core component of Instana backend cluster by commands:
 ```bash
 oc project instana-core
 oc edit core
