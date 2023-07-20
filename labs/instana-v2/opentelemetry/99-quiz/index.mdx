@@ -1,0 +1,23 @@
+---
+title: Quiz Time!
+description: Quiz
+sidebar_label: Quiz
+sidebar_position: 8
+---
+
+import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
+
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+  }}>
+
+<MultiChoiceQuestion
+  questionNumber="1"
+  question="Test questions?"
+  answers={["Yes", "No"]}
+  correctAnswer="Yes"
+/>
+</div>
