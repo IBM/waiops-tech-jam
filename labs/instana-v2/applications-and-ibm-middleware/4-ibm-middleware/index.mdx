@@ -29,6 +29,8 @@ These have already been installed for us, ready to be configured on the
 Open a new terminal tab, ssh to the **mqace** machine and change to the root
 user:
 
+> Type **yes** when asked if you are sure that you want to continue connecting.
+
 ```sh
 ssh jammer@mqace
 sudo -i
@@ -74,9 +76,14 @@ automatically instrumented for monitoring. In addition, the load generation tool
 is continuously running transactions against the application. Let's verify that
 things are running.
 
-From the **bastion host** (_admin@bastion-gym-lan_, open a new tab if you are
-unsure) issue the **oc get pods** command against the **qotd**
-namespace/project.
+:::info IMPORTANT
+
+The following should be completed from the **bastion host**
+(_admin@bastion-gym-lan_, open a new tab if you are unsure)
+
+:::
+
+Issue the **oc get pods** command against the **qotd** namespace/project.
 
 ```sh
 cd ~
@@ -101,8 +108,15 @@ Type the following command:
 oc edit deployment qotd-engraving -n qotd --kubeconfig kubeconfig-apps
 ```
 
-This will open a "vi" session. Scroll down within the file to line 49. You
+This will open a "vi" session. Scroll down within the file to line 48. You
 should see 3 lines of text like the following:
+
+:::tip
+
+If you want to display line numbers in vi, press the _esc_ key to enter command
+mode and type **":set number"**.
+
+:::
 
 ```sh
 - name: SUPPLY_CHAIN_URL
@@ -132,7 +146,8 @@ When you are done, the lines should look like this:
   value: "false"
 ```
 
-Type **":wq"** to save your changes and exit the file.
+Press the **esc** key to enter command mode and write your changes and quit the
+open file by typing the following and pressing enter:
 
 ```sh
 :wq
@@ -160,10 +175,10 @@ open this URL with http:// in front.
 
 :::
 
-Once opened click the “Order Engraving” button.
+Once opened click the **Order Engraving** button.
 
-Then, click again the “Order Engraving” button. If successful, you’ll see “Order
-successfully placed.”
+Then, click again the **Order Engraving** button. If successful, you’ll see
+“Order successfully placed.”
 
 ![](images/2022-05-30-12-04-59.png)
 
@@ -416,18 +431,24 @@ meaningful.
 
 Change directory to `/opt/instana/agent/etc/instana`
 
+:::info
+
+Reminder: The Instana Agent you are about to modify was pre-installed for you on
+this server.
+
+:::
+
 ```sh
 cd /opt/instana/agent/etc/instana
 ```
 
 This is the main configuration directory for the Instana Agent and sensors.
-There are few configuration files in the parent directory, but most of the
+There are few configuration files in the parent _etc_ directory, but most of the
 important ones are here.
 
-The **com.instana.agent.main.sender.Backend.cfg** file contains information on
-where the Agent is going to send the monitoring data. Back one directory, you'll
-see a file **/opt/instana/agent/etc/mvn-settings.xml** that is used to configure
-the use of an internal maven repository.
+- **configuration.yaml** - Sensor and other agent configuration parameters.
+- **com.instana.agent.main.sender.Backend.cfg** - Contains information on where
+  the Agent is going to send the monitoring data.
 
 We are going to be editing the configuration.yaml file. This file contains all
 of the configuration settings for the sensors.
@@ -480,13 +501,6 @@ Edit the **IBM ACE** section of the file so that it looks like this. If you
 want, you can copy this text and replace the entire section. Or, you can change
 the individual parameters.
 
-:::caution Important
-
-When you paste this information, you must **replace <mqm password\> with the
-password provided by the lab proctor**.
-
-:::
-
 ```yaml
 # IBM ACE
 com.instana.plugin.ace:
@@ -499,7 +513,7 @@ com.instana.plugin.ace:
       queuemanagerName: "QM1" # Queue Manager name (required for IBM MQ)
       channel: "ACE.SVRCONN" # Remote administration channel (required for IBM MQ)
       mqUsername: "mqm" # MQ channel authentication's username if security enabled (optional for IBM MQ)
-      mqPassword: "<mqm password>" # MQ channel authentication's password if security enabled (optional for IBM MQ)
+      mqPassword: "Passw0rd" # MQ channel authentication's password if security enabled (optional for IBM MQ)
 ```
 
 In the example above, **QM1** is the Queue Manager name. **BK1** is the name of
@@ -520,13 +534,6 @@ Edit the **# IBM MQ** section of the file so that it looks like this. If you
 want, you can copy this text and replace the entire section. Or, you can change
 the individual parameters.
 
-:::caution Important
-
-When you paste this information, you must **replace <mqm password\> with the
-password provided by the lab proctor**.
-
-:::
-
 ```yaml
 # IBM MQ
 com.instana.plugin.ibmmq:
@@ -536,7 +543,7 @@ com.instana.plugin.ibmmq:
     QM1:
       channel: "ACE.SVRCONN" # Remote administration channel
       username: "mqm"
-      password: "<mqm password>"
+      password: "Passw0rd"
 ```
 
 ---
@@ -548,9 +555,9 @@ Zone that you specified when installing the Docker and OpenShift monitoring
 Agents.
 
 Scroll down until you see the section titled **# Hardware & Zone**. Uncomment
-the 3 lines of text starting with `com.instana.plugin.generic.hardware`. By
-default the "availability-zone" parameter is set to "Datacenter A /Rack 42".
-Change the value to **ACE and MQ**
+the 3 lines of text starting with `com.instana.plugin.generic.hardware`. Change
+the _availability-zone_ to something that makes sense for the demo environment:
+**App**. This VM will be zoned with other Apps.
 
 The section of the configuration.yaml file should look as follows:
 
@@ -558,7 +565,7 @@ The section of the configuration.yaml file should look as follows:
 # Hardware & Zone
 com.instana.plugin.generic.hardware:
   enabled: true # disabled by default
-  availability-zone: "ACE and MQ"
+  availability-zone: "App"
 ```
 
 In addition to configuring the **Zone** name, you can specify tags within the
@@ -571,14 +578,14 @@ some tags. Add the following:
 
 - **production** tag to indicate that this system is a production server.
 - **QOTD** tag to indicate that it supports the _Quote of the Day_ application.
-- **Tokyo** tag to indicate the the server resides in Tokyo.
+- **TechZone** tag to indicate the the server resides in IBM Tech Zone.
 
 ```yaml
 com.instana.plugin.host:
   tags:
     - "production"
     - "QOTD"
-    - "Tokyo"
+    - "TechZone"
 ```
 
 It is possible to specify tags for the Docker and OpenShift versions of the
@@ -622,8 +629,12 @@ processes that you want to ignore. Search for **com.instana.ignore**.
 
 :::
 
-Save and exit the configuration.yaml file. In "vi", type ":wq" to save and exit
-the file.
+Save and exit the configuration.yaml file. Press the **esc** key to enter
+Command Mode and then write your changes and exit the file by typing:
+
+```sh
+:wq
+```
 
 As soon as you save your changes to the file, Instana will detect those changes
 and will start to implement what you have configured.
