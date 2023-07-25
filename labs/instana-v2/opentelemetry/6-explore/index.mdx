@@ -66,8 +66,7 @@ The above example proves the Instana can combine traces from both OpenTelemetry 
 ## Instana native tracing - code examples
 
 Instana can provide combined traces from the OpenTelemetry and Instana native tracing. In the below example, you can see, how to 
-use native Instana instrumentation techniques. In the below snippet, we follow Envoy tracing configuration described here 
-https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-envoy-proxy#configuring-distributed-tracing
+use native Instana instrumentation techniques. In the below snippet, we follow [Envoy tracing configuration described here](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-envoy-proxy#configuring-distributed-tracing)
 
 As an outcome, Instana will inject its code and capture tracing of a calls, which were processed by the Envoy proxy.
 
@@ -94,7 +93,7 @@ ENTRYPOINT ["/bin/sh", "-c", "envsubst < envoy.tmpl.yaml > envoy.yaml && envoy -
 
 Please note the use of libcxx-libinstana_sensor.so library.
 
-The source code is available here https://github.com/instana/opentelemetry-demo/blob/main/src/frontendproxy/Dockerfile 
+[The source code is available here](https://github.com/instana/opentelemetry-demo/blob/main/src/frontendproxy/Dockerfile)
 
 ## OpenTelemetry tracing - code examples
 
@@ -160,4 +159,4 @@ return function (App $app) {
 
 Please note the use of OpenTelemetry/API and further use of the span builders.
 
-The source code can be found here https://github.com/instana/opentelemetry-demo/blob/main/src/quoteservice/app/routes.php 
+[The source code can be found here](https://github.com/instana/opentelemetry-demo/blob/main/src/quoteservice/app/routes.php)
