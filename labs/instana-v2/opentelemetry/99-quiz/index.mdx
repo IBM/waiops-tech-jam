@@ -1,0 +1,44 @@
+---
+title: Quiz Time!
+description: Quiz
+sidebar_label: Quiz
+sidebar_position: 99
+---
+
+import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
+
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+  }}>
+
+<MultiChoiceQuestion
+  questionNumber="1"
+  question="Can Instana combine native Instana tracing and OpenTelemetry tracing under the same transaction?"
+  answers={["No", "Yes"]}
+  correctAnswer="Yes"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="2"
+  question="What is OpenTelemetry?"
+  answers={[
+    "An open-source observability framework with a collection of software development kits (SDKs), vendor-neutral or vendor-agnostic APIs, and tools for instrumentation", 
+    "Open source javascript library for gathering logs", 
+    "Open source, cloud-native programming language"]}
+  correctAnswer="An open-source observability framework with a collection of software development kits (SDKs), vendor-neutral or vendor-agnostic APIs, and tools for instrumentation"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="3"
+  question="Do I need additional license in Instana to use OpenTelemetry"
+  answers={[
+    "No, it is all included",
+    "Yes, it costs ~100 USD/host"
+  ]}
+  correctAnswer="No, it is all included"
+/>
+
+</div>
