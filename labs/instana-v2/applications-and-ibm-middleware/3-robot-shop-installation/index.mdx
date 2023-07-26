@@ -56,6 +56,8 @@ On left side navigation, select **Websites & Mobile Apps**. You'll see a dialog
 where you can enter a Website Name. Enter `Robot Shop` as the website name.
 Then, click the **Add Website** button.
 
+![](images/add-website.png)
+
 ![](images/addWebsite.png)
 
 A dialog containing **javascript** will open. In a more typical application, you
@@ -93,7 +95,14 @@ instructions.
 
 :::info Important
 
-The following should be run from the bastion host (**admin@bastion-gym-lan**).
+The following should be run from the terminal on the bastion host
+(**admin@bastion-gym-lan**).
+
+From the Bastion host (Guacamole), open a terminal window by selecting
+**Activities** at the top left of the screen and then the terminal icon.
+
+![open-terminal](images/open-terminal.png)
+
 Check to make sure you are in the right place by running the following:
 
 ```sh
@@ -118,13 +127,6 @@ change directory into the **robot-shop/K8s** directory
 cd robot-shop/K8s
 ```
 
-Create an OpenShift **project (workspace)** for the **Robot Shop** application
-by issuing the following command:
-
-```sh
-oc adm new-project robot-shop --kubeconfig ~/kubeconfig-apps
-```
-
 Next, setup **privileges** within the cluster for the **Robot Shop** application
 by issuing the following two commands:
 
@@ -141,7 +143,7 @@ Install the **Robot Shop** using Helm:
 :::info
 
 - **<your-instana-reporting-url\>** is the _reportingURL_ you obtained in
-  section 4.2. **Do not include the trailing slash ( / ) following 2999.**
+  section 3.2. **Do not include the trailing slash ( / ) following 2999.**
   Example: `http://192.168.252.60:2999`.
 
 :::
@@ -154,7 +156,7 @@ export REPORTING_URL="<your-instana-reporting-url>"
 
 :::info
 
-**<your-instana-key\>** is the **key** you obtained in section 4.2 from the
+**<your-instana-key\>** is the **key** you obtained in section 3.2 from the
 Instana user interface. Example: `m-IMxZYFQyW_n7Xo0VRjrw`.
 
 :::

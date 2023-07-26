@@ -39,11 +39,18 @@ When prompted, enter the username and password that you updated earlier.
 
 ![](images/login.png)
 
+:::tip
+
+If the _Installing Instana Agents_ screen is show you can skip it and select
+**"Go to Instana!"**.
+
+![](images/continue-to-instana.png)
+
+:::
+
 ## 3.1: Explore Kubernetes
 
-Open the browser tab for the Instana user interface.
-
-On the left navigation, select **Platforms** and then **Kubernetes**
+Use the left navigation to select **Platforms** and then **Kubernetes**
 
 ![](images/kubernetes.png)
 
@@ -89,17 +96,16 @@ Next, explore the Infrastructure view. To do this, click on the
 ![](images/infra-zones.png)
 
 You'll notice that there is a box surrounding the **"towers"** with the zone
-names that you specified. The box is a **"zone"**. In previous labs a zone name
-was specified during the install of the Instana Agent or added to the Instana
-Agent configuration file. The towers contained within the zones represents the
-OpenShift SNO cluster named Apps, the Instana server, and the virtual machine
-running ACE and MQ.
+names that have been configured in the Agent configurations. The box is a
+**"zone"**. In previous labs a zone name was specified during the install of the
+Instana Agent or added to the Instana Agent configuration file. The towers
+contained within the zones represents the OpenShift SNO cluster named Apps, the
+Instana server, and the virtual machine running ACE and MQ.
 
-:::note
+:::tip
 
-If you cannot see 3 zones with a host in each then one of the Agents is not
-connecting properly. If you see a host show up in the _'Undefined Zone'_, it
-means that a zone name has not been specified in the Agent configuration.
+If a zone name was not defined after installing an Agent the host would show up
+in the _'Undefined Zone'_.
 
 :::
 

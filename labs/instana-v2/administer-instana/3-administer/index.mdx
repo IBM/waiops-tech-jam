@@ -92,8 +92,28 @@ to the address you specified. You'll see whether the Instana server has access
 to the Email destination.
 
 Check for the test email on the Instana server. Login to the Instana server in a
-new Terminal tab using `ssh jammer@instana`. Once logged in use the `mail`
-command as presented below to view the jammer users inbox:
+new Terminal tab using `ssh jammer@instana`.
+
+:::tip
+
+Use the Bastion host (Guacamole) to get to the Instana machine. Open a terminal
+window by selecting **Activities** at the top left of the screen and then the
+terminal icon.
+
+![open-terminal](images/open-terminal.png)
+
+Connect to the Instana server by running the following command:
+
+> Type _yes_ when prompted to accept the host key.
+
+```sh
+ssh jammer@instana
+```
+
+:::
+
+Once logged in use the `mail` command as presented below to view the jammer
+users inbox:
 
 ![](images/test-mail-instana.png)
 
