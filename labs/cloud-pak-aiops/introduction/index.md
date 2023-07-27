@@ -10,7 +10,7 @@ AIOps.
 
 There are three Watson AIOps labs:
 
-- [**Installation**](../install/1-introduction/index.mdx)
+- [**Installation**](../install/1-introduction/index.md)
   - Install a small size deployment of the Cloud Pak for Watson AIOPs
   - Custom deployments sizes using the _custom sizing tool_
   - Storage requirements

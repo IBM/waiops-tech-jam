@@ -135,9 +135,6 @@ All access to the environment is behind this RHEL Guacamole Bastion host named
 
 ![guacamole](./images/guacamole.png)
 
-If you see the bastion hosts desktop environment you can proceed to
-[the labs](/waiops-tech-jam/labs/general/).
-
 ---
 
 ## Important Tips
