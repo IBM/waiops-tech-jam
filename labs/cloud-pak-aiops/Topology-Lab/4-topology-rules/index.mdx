@@ -1,0 +1,158 @@
+---
+title: 4. Topology Rules
+description: Create topology rules
+sidebar_position: 4
+---
+
+Topology Rules help streamline topologies and conserve system resources, such as by merging 
+different observer records of the same resource into a single composite resource, or by excluding 
+specific changes from being recorded against a resource history. You can use a number of different 
+types of rules for different purposes.
+
+:::note
+In this Lab, we will only see a hands-on example of a **mergeRule**. Additional information about rules
+cane be found in the product [**documentation**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=elements-configuring-rules).
+:::
+
+#### mergeRule
+
+Different observers can record and then display the same resource as two (or more) resources. 
+To prevent this, you can create a merge rule to ensure that the separate records of the same 
+resource share values in their tokens set, which then triggers the Merge service to create a 
+single composite resource vertex. Composite (or merged) resources are displayed in the Topology 
+viewer as a single resource, which includes the properties of all merged resources. 
+Merge rules are applied to resources in an observer job *before* it is sent to the topology service.
+
+
+#### tagsRule
+
+The tags rule allows the value of another field to be copied to the tags field so that it becomes 
+searchable in the UI. It populates the tags of resources matched by the rule. Any field that is not 
+indexed and cannot normally be searched becomes searchable when copied to the tags property. For a list 
+of indexed properties, see [Properties](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=reference-properties).
+Having the right tags in resources also enable the use of Tag Templates to group resources with a common
+tag. We will see resource grouping in the next chapter. 
+
+#### matchTokensRule
+
+A match token rule allows the value of another field to be copied to the matchTokens field so that 
+it can be used to match events to resources. It populates the matchTokens of resources matched by the rule.
+This is really important as events get assigned to the impacted resource.
+
+#### historyRule
+
+A history rule identifies properties that change every observation, but that don't indicate an important change,
+for example a host's sysUpTime property. Use a history rule to exclude properties from being retained 
+in history, saving resources by not maintaining detailed historical records of changes to these properties.
+
+
+
+
+## 4.1: Merge Rules in Action
+
+You are now ready to create a Merge Rule to tie the two topology segments that we loaded in the previous 
+chapter.
+
+This is where the topology data coming from the application topology
+source is mapped onto the topology data coming from the infrastructure
+orchestration topology source. In our hypothetical scenario, we know we have
+Resources of type "computer" in both sets of topology, and we know that they
+relate to the same servers. Corresponding instances across the two data sets are
+also labelled consistently and correctly, meaning that identifying the same
+Resource across the two data sets is possible.
+
+In our case, we have a Resource called "computer1000" represented in our
+infrastructure topology data as well as in our application data. Our goal is to
+merge the two sets of topology together so that we can both visualize what
+applications are running on our servers, and more importantly, correlate
+hardware alarms with application alarms, something that is not possible
+otherwise. Note that the rule is created in a generic way so that if there were
+any other computers included in our two data sets, they too would be merged
+together automatically, so long as they met the criteria set out in the rule.
+
+
+From the burger menu in the top-left, navigate to: **Operate → Resource management**.
+In the **Resource management** page, click on the **Settings** gear icon in the top-right and select 
+**Topology configuration**. From the **Topology configuration** page, in the **Rules** card, select **Configure**. 
+
+Select the **Merge rules** tab and click the **New** button in the top-right.
+
+Follow these steps to create your new Merge Rule:
+
+- **Rule name:** Give your rule a name, for example **InfrastructureApplications**
+
+- Set **Status** to **Enabled**
+
+- **Tokens**: The tokens refer to the parameters in your Resources that will be
+  compared. In our case, the parameter that stores the computer name is called
+  "name" in both sets of data, therefore we just need one token entry here called
+  **name**. If the parameters were named different things, you could
+  simply add both of the parameter names here.
+
+- Expand the **Conditions** drop-down.
+
+- **Observers**: Add **File** to the list of Observers this rule should apply
+  to. Since both job types are of type File, this is all that is needed in this
+  case. Normally you would add all the Observer types that apply to your
+  mapping. If this section was left empty, it would try to apply this rule to
+  topology data coming from **all** Observer types.
+
+- **Providers**: Add both of your jobs to the list (e.g. 
+  **FILE.OBSERVER:infrastructure.txt** and **FILE.OBSERVER:application.txt**)
+  This specifies that this rule should only apply to these particular jobs. If
+  this section was left empty, it would try to apply this rule to topology data
+  coming from **all** File jobs defined.
+
+- **Resource types**: Add the Resource types that this rule should apply to -
+  ie. **computer**. If this section was left empty, it would try to apply this
+  rule to **all** Resource types in the Observers list and Providers list above.
+
+- The **Token filter mode** and **Token** filters sections allow you to refine
+  your rule mapping even further, by allowing you to specify regular expressions
+  to either include or exclude the set of Resources from the rule. In this case,
+  we will leave both of these sections blank.
+
+:::note
+It is good practice to specify an appropriate set of Conditions for your rules,
+to ensure they only get applied to things they're meant to.
+:::
+
+When finished creating your new Merge Rule, click **Save** and return to the
+Observer jobs page
+
+* from the burger menu in the top-left navigate to: **Define → Data and tool connections**
+* from the **Data and tool connections** page click on **Add connection**
+* from the **Add connections** page click on **Topology** and select **configure, schedule, and manage other observer jobs **
+
+Click on the Run (Play button icon) to run your two jobs again. The data will be
+reprocessed in light of the new Merge rule information, and any Resources that match
+the rule will have the merge operation applied against them.
+
+:::info
+
+The merge will not happen unless the affected jobs are re-run. In other words,
+you will always have to rerun jobs to apply any defined rules.
+
+:::
+
+#### Finding the Merged Resource
+
+To verify the merge was successful, navigate back to Resource management.
+From the burger menu in the top-left, navigate to: **Operate → Resource management**.
+
+In the **Resource management** page, click on the **Resources** tab and this time search for **computer1000**. Now you will see
+just one instance in the list of Resources called computer1000 whereas before
+you would have seen two. Click on **computer1000**, change the hop view to **2**
+and click **Render**. You should see something like the following, showing the
+combined topology segments:
+
+![](images/computer.png)
+
+The Resource computer1000 is only shown once in the topology, but remains
+connected to all the resources it was connected to in both sets of topology
+data, prior to the merge. The Merge Rule has effectively merged the two sets of
+topology together, by merging the common Resources, according to the rule that
+we defined.
+
+You have now completed this chapter and are ready for next one about "topology templates".
+
