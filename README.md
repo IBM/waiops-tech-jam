@@ -1,9 +1,10 @@
 # IBM AIOps Tech Jam
 
+To run locally you need to run:
 
-To run locally you need to:
-* install docusaurus: https://docusaurus.io/docs/installation
-* run:
 ```
+npm install
 npm run start
 ```
+
+Browse to http://localhost:3000/waiops-tech-jam/
