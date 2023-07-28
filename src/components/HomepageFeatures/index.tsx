@@ -1,7 +1,7 @@
-import clsx from 'clsx'
-import Link from '@docusaurus/Link'
-import React from 'react'
-import styles from './styles.module.css'
+import clsx from "clsx"
+import Link from "@docusaurus/Link"
+import React from "react"
+import styles from "./styles.module.css"
 
 type FeatureItem = {
   title: string
@@ -15,8 +15,8 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/undraw_techjam.svg").default,
     description: (
       <>
-        Check out the latest <Link to="/labs/general">TechJam Labs</Link> from
-        the IBM AIOps Automation SWAT team.
+        Check out the latest <Link to="/labs/jam-in-a-box">TechJam Labs</Link>{" "}
+        from the IBM AIOps Automation SWAT team.
       </>
     ),
   },

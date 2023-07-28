@@ -189,6 +189,7 @@ const config = {
             },
           },
         ],
+        additionalLanguages: ['php'],
       },
       docs: {
         sidebar: {

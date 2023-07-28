@@ -1,10 +1,10 @@
-import clsx from 'clsx'
-import HomepageFeatures from '@site/src/components/HomepageFeatures'
-import Layout from '@theme/Layout'
-import Link from '@docusaurus/Link'
-import React from 'react'
-import styles from './index.module.css'
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import clsx from "clsx"
+import HomepageFeatures from "@site/src/components/HomepageFeatures"
+import Layout from "@theme/Layout"
+import Link from "@docusaurus/Link"
+import React from "react"
+import styles from "./index.module.css"
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext()
@@ -16,7 +16,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/labs/general"
+            to="/labs/jam-in-a-box"
           >
             View the latest AIOps TechJam Lab 🧑‍🔬
           </Link>
