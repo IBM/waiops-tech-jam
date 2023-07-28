@@ -1,14 +1,13 @@
 ---
 title: Labs Overview
-description: Welcome to the Watson AIOps Jam-in-a-Box labs
+description: Welcome to the Cloud Pak for AIOps Jam-in-a-Box labs
 sidebar_position: 1
 ---
 
-In the Watson AIOps labs of the AIOps Jam-in-a-Box series you will be going
-through several key exercises in order to learn more about the IBM Cloud Pak for
-AIOps.
+In the Cloud Pak for AIOps labs of the AIOps Jam-in-a-Box series, you will be going through
+several key exercises in order to learn more about the IBM Cloud Pak for AIOps.
 
-There are three Watson AIOps labs:
+This is the Lab list:
 
 - [**Installation**](../install/1-introduction/index.md)
   - Install a small size deployment of the Cloud Pak for Watson AIOPs

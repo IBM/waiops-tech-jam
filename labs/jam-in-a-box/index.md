@@ -73,7 +73,7 @@ _Apache Guacamole_ Bastion host.
 
 ![access-guacamole](../_common/images/access-guacamole.png)
 
-All access to the lab environment is behind this RHEL Guacamole Bastion host
+All access to the lab environment is behind this RHEL Bastion host
 named **bastion-gym-lan**.
 
 ![guacamole](../_common/images/guacamole.png)
