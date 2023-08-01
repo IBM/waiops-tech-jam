@@ -27,5 +27,5 @@ This is the Lab list:
 
 More labs will be added in the future to explore more advanced scenarios and
 features of IBM Cloud Pak for AIOps.
-    
+      
 ---
