@@ -5,9 +5,7 @@ sidebar_position: 6
 ---
 
 
-As we discussed in the **Introduction** chapter, Applications (or more generally, ‘services’), 
-are the highest level of abstraction, considered the starting point for correlating the 
-current environment and managing it in a more coarse-grained and logical way. 
+
 
 
 ## 6.1: Business Criticality
@@ -17,15 +15,20 @@ that resource is, and therefore how important any related problems might be. You
 of business criticality for your applications, resource groups and resources, 
 and then view a list of them on the Business criticality page.
 
+Lets have a quick overview of Policies as they leverage Business Criticality. Policies are rules that contain multiple 
+condition and action sets. They can be triggered to reduce noise by suppressing alerts or grouping alerts together, automatically 
+promote alerts to incidents, assign runbooks to remediate alerts, etc.
+
+:::note
+The topic of **Policies** is outside the scope of this Lab, but additional information can be found in the product 
+[**documentation**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=policies-creating).
+:::
+
 Business Criticality plays a major factor in making sure that Policies reflect business priorities in terms
 of what applications affect business operations the most. 
 Policies can be defined in a way that considers the Business criticality as a factor to take an action
 such as promoting Alerts to an Incident that IT Ops. personnel can see in the Incident View. 
 
-:::note
-The definition of **Policies** is outside the scope of this Lab, but additional information can be found in the product 
-[**documentation**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=policies-creating).
-:::
 
 
 ### Defining Business Criticality
@@ -35,16 +38,22 @@ Now we will define some business criticality values that can then be assigned to
 * From the burger menu in the top-left, navigate to: **Operate → Resource management**.
 * In the **Resource management** page, click on the **Settings** gear icon in the top-right and select 
 **Topology configuration**. 
+
+![](images/gear-icon.png)
+
+
 * From the **Topology configuration** page, in the **Business criticality** card, select **Configure**. 
 
+![](images/bus-tile.png)
+
 The Business criticality page is displayed listing any existing criticality definitions in a table format
-by name, description, and criticality value, in sortable columns. For purpose of the Lab, we will use 
+by name, description, and criticality value, in sortable columns. For the purpose of the Lab, we will use 
 the predefined criticality values but note that you can custom define these values to better represent 
 your specific IT environment. 
 
 Click on **Start with presets**, inspect the preset values and click on **Add**. 
 
-![](images/preset.png)
+![](images/preset.png) 
 
 We have now defined three tiers of business criticality as shown below:
 
@@ -54,17 +63,21 @@ We have now defined three tiers of business criticality as shown below:
 
 
 
-## 6.2: Applications
+## 6.2: Applications or Services?
 
+Based on customer feedback, starting in v4.1, the Cloud Pak for AIOps provides the option to call a 
+collection of topology groups an *Application* or a *Service*. From a product functionality point of view, there is no 
+difference between these two terms. But depending on the customer industry, these two terms represent two different abstractions. 
+In the Telecommunications industry, a *Service* represents a group of interconnected components such as routers, switches, firewalls, etc. 
+that participate in the operation of voice and data communications. In mostly every other industry, an *Application* represents a set of IT resources 
+that performs a specific function directly for an end user or, in some cases, for another Application. For the rest of the Lab, we
+will just use the term *Application*. 
 
-Applications, in this context, are simply a collection of resource groups that best represent business critical
-application [TODO: rephrase] or service in terms of its composition given no one source or group 
-is likely to have end-to-end visibility.
-
-These applications, when combined with resource-level event correlation and grouping mechanisms, 
+In summary, an Application, in the context of the Cloud Pak for AIOps, is a collection of topology resource groups that represent a complete IT solution stack. Applications, 
+when combined with resource-level event correlation and grouping mechanisms, 
 provide roll-up incident visibility. In other words, Alerts impacting resources will also surface
-as impacting the Applications that those resources belong to. This improves overall visibility, 
-allows the prioritization of incident resolution based on the business criticality.
+as impacting the Applications that those resources belong to. This improves overall visibility and 
+allows the prioritization of incident resolution based on the business criticality that has been preassigned to the application.
 
 
 
@@ -73,44 +86,49 @@ allows the prioritization of incident resolution based on the business criticali
 You define and edit applications by adding (or removing) resource groups, icons and tags, 
 assigning business criticality levels, and setting service disruption costs.
 
+Lets define a fictional application based on the existing topology resource groups:
 
 * From the burger menu in the top-left, navigate to: **Operate → Resource management**.
 * In the **Resource management** page, click the **Define application** button in the top-right. 
-* In the Define application page, we will select a subset of the resource groups defined in the previous 
-chapter, that belong to our application. Lets select APPSERVER-computer1000, APPSERVER-computer1001 and 
-ROUTER-router1 as shown below: 
+* In the **Define application** page, we will select a subset of the resource groups defined in previous 
+chapters using Topology Group Templates. These are the resource groups that belong to our fictional application. 
+Lets select APPSERVER-computer1000, APPSERVER-computer1001 and ROUTER-router1 as shown below: 
 
 ![](images/select-resource-groups.png)
 
 * Click **Next** to preview the application. 
 
-As we preview an application, we can use the checkbox to deselect resource groups on the right sidebar
+As we preview the application, we can use the checkbox to deselect resource groups on the right sidebar
 in order to visualize the application without those groups. 
 
 * In this preview step, we realize that we don't need the ROUTER-router1 resource group, so click on the (-) minus sign to remove
-the ROUTER-router1 resource group from this application. You should be left with the topology preview as
-shown below:
+the ROUTER-router1 resource group from this application. 
 
 ![](images/topology-preview.png)
 
+* You should be left with the topology preview as
+shown below:
+
+![](images/topology-final.png)
 
 
 
 * Click **Next** to add additional details.
-* Enter a name for the application, for example **Order Capture Backend**
-* Set an icon for the application, using the drop-down list select the **backend** icon. This icon is used to identify the application 
+* Enter a **Name** for the application, for example **Order Capture Backend**
+* Set an **Icon** for the application, using the drop-down list select the **backend** icon. This icon is used to identify the application 
 resource type in the topology view of your applications.
-* Mark the application as a favorite by clicking on the hart icon. 
-* In the **Add tags** field, type **orderBackend** and select (Create new tag). Tags can be used to 
+* Mark the application as a **favorite** by clicking on the heart icon. 
+* In the **Add tags** field, type **orderBackend** and select **Create new tag**. Tags can be used to 
 identify similar applications and to distinguish applications from other applications.
-* In the **Business criticality** field, select **Tier 1**.
-* In the Estimated cost per minute for service disruption, type 750. This numerical value, represents the 
+* In the **Business criticality** field, select **Tier 3**.
+* In the **Estimated cost per minute for service disruption**, type **750**. This numerical value, represents the 
 estimated disruption cost (in local currency) for the business per minute if this application is down. 
 This information is used on the **AIOps insights** dashboard.
 
 You should see the application details as shown below: 
 
-![](images/details.png)
+
+![](images/details.png) 
 
 * Click **Define application**. 
 
@@ -120,11 +138,11 @@ view we can see total number of resources, the active Incidents and Alerts relat
 ![](images/app-defined.png) 
 
 
-#######################
+############################################
 
 **This concludes the Cloud Pak for AIOps Topology Lab**
 
-#######################
+############################################
 
 
 

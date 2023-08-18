@@ -65,10 +65,10 @@ Example **failure domains** for OpenShift applications are listed below. Each fa
 3.  An availability zone (a zone can be represented by a data center or an autonomous section inside a data center)
 4.  A geographical region (e.g. a city or region that may contain multiple data centers or zones)
 
-:::note
+:::caution
 At the time of writing this Lab: 
 * only two deployment options are supported: single-zone and multi-zone deployments
-* there is no support for geographical region failures (#4)
+* there is no support for geographical region failures
 :::
 
 ### Single-Zone Deployment
@@ -154,7 +154,7 @@ cluster.
 
 :::warning
 You can only enable FIPS support when you are installing the product. You cannot upgrade a non-FIPS enabled environment to a 
-FIPS enabled environment. You also cannot backup the Cloud Pak for AIOps from a non-FIPS enabled environment and 
+FIPS enabled environment. You cannot backup the Cloud Pak for AIOps from a non-FIPS enabled environment and 
 restore it into a FIPS enabled environment.
 :::
 
