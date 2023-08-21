@@ -39,10 +39,15 @@ then pull down the software images to the cluster, so that we can deploy an inst
 of the Cloud Pak for AIOps in the next section. You will be copying, pasting and
 running the following commands from the **Terminal** window. 
 
-:::caution
+:::tip
 * It is essential to ensure the indentation is correctly copied from the documentation.
 * When you copy the commands, use the Copy helper on the right side as shown below:
 ![](images/copy-helper.png)
+:::
+
+:::caution
+IBM Cloud Pak for AIOps and Infrastructure Automation can co-exist on the same cluster, but you cannot 
+have multiple instances of IBM Cloud Pak for AIOps or Infrastructure Automation on the same cluster.
 :::
 
 ### Create a custom project (namespace)
@@ -274,7 +279,7 @@ instance of the Cloud Pak for AIOps.
 Find the URL to access the console with the following command:
 
 ```
-oc get route -n cp4waiops cpd -o jsonpath='{.spec.host}'
+echo -e "https://$(oc get route -n cp4waiops cpd -o jsonpath='{.spec.host}')\n"
 ```
 
 Find the password for the **admin** username by running the following command:
@@ -284,9 +289,10 @@ oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='
 
 ```
 
-Make sure you can login as **admin**, as shown below, using the password from the previous command. Note that 
-you will get a security **Warning: Potential Security Risk Ahead**. This is because we have used 
-self-signed certificates for this Lab. Just accept the risk and continue. 
+Open a Firefox browser window and copy & paste the **Cloud Pak for AIOps URL** that you got in the previous step. 
+Note that you will get one or more security **Warning: Potential Security Risk Ahead**. This is because we have used 
+self-signed certificates for this Lab. Just accept the risk and continue. Make sure you can login as **admin**, 
+as shown below, using the password from the previous command.
 
 ![](images/login.png)
 

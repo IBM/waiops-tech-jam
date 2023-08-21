@@ -42,38 +42,46 @@ Also, we want the alert grouping to happen within a 15 minute rolling window. In
 We will first review the default scope-based policies that come with the product. Log into the Cloud Pak for AIOps:
 
 * From the burger menu in the top-left navigate to: **Operate → Automations**
-* From the Automations page, we will explore the existing scope-based policies that come out-of-the-box.
-    * Click on **Tag** and select **scope-based**.
-    * Note that there are two scope-based policies already defined.
-    * Select on the **Policy name** of the first policy.
-    * On the right-side slider, click on the **Specification** tab and explore the policy logic. 
-    * Now click on the down-arrow and explore the logic of the second scope-based policy.
-    * Click on the X to close the slider.
+* From the Automations page, we will explore the existing scope-based policies that come out-of-the-box
+    * Click on **Filter** icon on the left, check **scope-based** and click **Apply**
+
+* ![](images/filter.png)
+    * Note that there are two scope-based policies already defined
+    * Select on the **Policy name** of the first policy
+* ![](images/first.png)    
+    * On the right-side slider, click on the **Specification** tab and explore the policy logic
+* ![](images/spec.png)    
+    * Now click on the down-arrow and explore the logic of the second scope-based policy
+    * Click on the X to close the slider
 
 Now we will create a new scope-based policy:
 
-* From the same Automations page, click the **Create policy** button. 
-* From the **Policy templates** page, select the **Group alerts based on scope** tile.
+
+* From the same **Automations** page, click the **Create policy** button
+* From the **Policy templates** page, select the **Group alerts based on scope** tile
 * From the **Group alerts based on scope** page: 
-    * Make sure the **Policy** is **Enabled** (green).
-    * Under **Policy details**, set the **Policy name** as "Group Alerts coming from 2 Locations by Location-Application". 
-    * Change the **Execution order** slider value to 40.
-    * Under Policy triggers, check **Before an alert is created**.
+    * Make sure the **Policy** is **Enabled** (green)
+    * Under **Policy details**, set the **Policy name** as "Group Alerts coming from 2 Locations by Location-Application"
+    * Change the **Execution order** slider value to **40**
+    * Under Policy triggers, check **Before an alert is created**
     * Under **Condition sets**:
-        * click on **Add condition**.
-        * Leave AND selected.
+        * click on **Add condition** and select **Alert property**
+        * ![](images/property.png)  
+        * Leave **AND** selected
         * For **Property** select **alert.resource.location**
-        * For **Operator** select **contains**.
-        * For **Matches** select **any of**.
+        * For **Operator** select **contains**
+        * For **Matches** select **any of**
         * For **Value** type US-SOUTH and select String: US-South, type US-EAST and select String: US-EAST
-    * Under **Create a scope-based grouping**: type and select 
+    * Under **Create a scope-based grouping**:
         * type and select **alert.resource.location**
         * type **:** and select **String: :**
         * type and select **alert.resource.application**
-        * Your final value for ScopeID should look like **Value of: alert.resource.location String: : Value of: alert.resource.application**
+        * Your final value for ScopeID should look like 
+        
+        * ![](images/scopeid.png) 
     * Under **Time window**:
-        * For time period field type 900. This represents 900 seconds (15 min).
-        * Under **Type**, select **Rolling**. This means that alerts will be grouped as long as they are not separated by more than 15 min.
+        * For time period field type 900. This represents 900 seconds (15 min)
+        * Under **Type**, select **Rolling**. This means that alerts will be grouped as long as they are not separated by more than 15 min
 
 Your new policy should look like the charts below:
 
@@ -91,10 +99,17 @@ Make sure to **disable all three policies** as shown below. You may be asked to 
 ![](images/policy-disabled.png) 
 
 
+
 ## 5.2: Submit Events with the scope-based Policy Disabled
 
+Create a new file called *scope_events.json* by running the following command in the Terminal window to open the text editor,
+ **copy** the event data below, **paste** it into the text editor, 
+click on the **Save** button in the text editor and **close** the editor window (click on the X). 
 
-Create a new local file, name it *scope_events.json* and paste the following content into it:
+```
+gedit scope_events.json
+```
+
 
 ```
 { "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "application":"NetCash", "name":"DB2server2", "hostname":"DB2server2.company.com", "type":"host", "ipaddress":"10.1.96.24", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":3, "summary":"/dev/sda1 is 70% full", "occurrenceTime":"2023-05-05T14:40:38.000Z", "expirySeconds":0 }

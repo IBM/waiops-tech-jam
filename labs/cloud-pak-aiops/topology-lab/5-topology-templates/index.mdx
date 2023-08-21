@@ -15,7 +15,7 @@ what a "favorite" is and will have added some items to your topology dashboard.
 
 Topology group templates are used to create groups of resources. Resource groups
 make it easier to find and visualize collections of related resources, as well
-as do event correlation over resources in a group. There are three main types of
+as enabling event correlation over resources in the same group. There are four types of
 topology group template:
 
 - **Exact**: defines a single group of specific resources
@@ -43,55 +43,55 @@ connected network switch.
 The exact topology group template is useful for when you have a specific
 collection of resources that are unique in your environment that may be of
 particular importance. Perhaps you want to be able to find this group of
-resources quickly and easily, or visualize them on a wall screen.
+resources quickly and easily.
 
 #### Exercise
 
 In this exercise, we will create a template for a specific group of resources
-for our router (router1) and its connected resources.
+for our router **router1** and its connected resources up to one hop connection.
 
 From the burger menu in the top-left, navigate to: **Operate → Resource management**.
 In the **Resource management** page, click on the **Resource group templates** icon in the top-right.
 
+![](images/group-templates.png)
+
 In the **Resource group templates** page, click on **Create a new template**, select **Exact template** and click **Start**.
+
+![](images/new-exact.png)
 
 You will be presented with a **Template builder** page. From here, use the
 following steps to configure a new exact template:
 
-- Give the template a name and provide a brief description
-- Choose the **Resource group type: network**
+- Give the template a name (e.g. router1)
+- Choose the **Resource group type** as **network**
 - Add a **Resource group naming pattern prefix** for the resulting group's name:
   **ROUTER-**
 - Enable **Correlate event groups on topologies from this template** 
   to correlate events across these resources
-- Type **router1** in the search box: **Search for a resource to get started**
+- On the right side, in the search box: **Search for a resource to get started** type **router1** 
   and hit Enter
-- Choose **router1** from the list of resources
-- Change the view to 1 hop and click **Render**
+  - Choose **router1** from the list of resources
+  - Change the view to 1 hop and click **Render**
 - Click **Save template & generate resource group**
 
 You should have something like the following:
 
 ![](images/exact.png)
 
-After returning to the **Resource group templates** screen, you will see your
-saved template:
+Click on the **Resource group templates** link on the top. You will see your
+new template:
 
 ![](images/resourcegroup.png)
 
-:::note
 
-An exact topology group template will only ever have 1 resource group.
-
-:::
-
-If you navigate to Resource management and search for **ROUTER-** , you will see
+Click on the **Resource management** link on the top, select the **Resource groups** tab and search for **ROUTER-** , you will see
 the following under the **Resource groups** tab:
 
 ![](images/search.png)
 
-If you click on the name **ROUTER-router1**, you will be able to view the
-topology group, which consists of 3 resources:
+Click on the name **ROUTER-router1**, you will be able to view the
+topology group, which shows 3 resources but actually consists of 4 resources because computer1000 actually represents two resources 
+as they have been merged by the Merge Rule defined previously.
 
 ![](images/router1.png)
 
@@ -99,7 +99,7 @@ topology group, which consists of 3 resources:
 
 If you have enabled event correlation across this group of resources and receive
 events related to any of these resources, these events will be correlated automatically.
-This is called **topological correlation** and is one of the correlation modes in addition 
+This is called **topological event correlation** and is one of the correlation modes in addition 
 to **temporal** and **scope-based** correlation. 
 :::
 
@@ -121,7 +121,7 @@ both of those tags, the resource group will be updated to include them.
 
 Note that resources don't have to be connected; they simply need to have
 the common tag in order to be grouped. Tags can be added to resources via the
-topology **tagsRule** as discussed in the previous chapter, or via the tags parameter 
+topology **tagsRule** as discussed in the previous chapter, or by including the tags parameter 
 if creating topology via the File or REST Observers.
 
 #### Exercise
@@ -132,37 +132,39 @@ their common tag.
 In the **Resource management** page, click on the **Resource group templates** icon in the top-right.
 In the **Resource group templates** page, click on **Create a new template**, select **Tag based template** and click **Start**.
 
+![](images/tag-select.png)
+
 You will be presented with a **Template builder** page. From here, use the
 following steps to configure an tag based template:
 
-- Give the template a name and provide a brief description
-- Choose the **Resource group type: compute**
+- Give the template a name (e.g. tag template)
+- Choose the **Resource group type** as **compute**
 - Add a **Resource group name** for the name of the group of resources:
-  **WAIOpsDemoAssets**
+  **tag-group**
 - Enable **Correlate event groups on topologies from this template**
   to correlate events across these resources
 - Type **WAIOpsDemo** in the search box: **Search for a tag to get started** and
   hit Enter
 - Check **WAIOpsDemo** from the list of available tags and then click the
   **Resources** tab to see the list of matching resources
-- Click **Save template & generate resource group**
 
 You should have something like the following:
 
 ![](images/tagbased.png)
 
-After returning to the **Resource group templates** screen, you will see your
+- Click **Save template & generate resource group**
+
+Click on the **Resource group templates** link on the top, filter by **tag template** and you will see your
 saved template:
 
-![](images/tagbasedsearch.png)
+![](images/tag-template.png)
 
-If you navigate to Resource management and search for **WAIOpsDemoAssets** , you
-will see the following under the **Resource groups** tab:
+Click on the **Resource management** link on the top, select the **Resource groups** tab and search for **tag-group**, you
+will find the new group created by the tag template:
 
-![](images/tagresourcegrp.png)
+![](images/tag-group.png)
 
-If you click on the name **WAIOpsDemoAssets** , you will be able to view the
-topology group, which consists of 8 resources:
+If you click on the name **tag-group**, you will see the resources in the topology group:
 
 ![](images/tagrouter.png)
 
@@ -174,23 +176,23 @@ topology group, which consists of 8 resources:
 
 ## 5.3: Dynamic Group Template
 
-A dynamic template builds multiple groups of resources that are similar to the 
+A dynamic group template builds multiple groups of resources that are similar to the 
 specified seed resource and relationship and/or resource type criteria. Resource 
 group creation and membership is dynamically maintained based on the available 
 topology data and how it changes.
 
-For example, you can use a dynamic template to create dynamic groups of resources, 
+For example, you can use a dynamic group template to create dynamic groups of resources, 
 one for each of your virtual machines and the Kubernetes services they're running. 
 Resource groups are then added, removed and updated as you add or remove virtual 
 machines and/or services running on them.
 
 
-The Dynamic template is probably the most versatile of the three topology group
+The Dynamic group template is probably the most versatile of the three topology group
 templates. Using an example of a set of resources you want to group, the dynamic
-topology group template will automatically find other groups of resources that
-follow the same "recipe" as the example you give. As you expose the resources
+ group template will automatically find other groups of resources that
+follow the same *recipe* as the example you give. As you expose the resources
 and relationships in the view, the template builder records the steps, and then
-uses this recipe to find other similar groups of resources.
+uses this *recipe* to find other similar groups of resources.
 
 
 #### Exercise
@@ -200,37 +202,49 @@ that host our applications. We will create a second server **computer1001** that
 hosts the **notification** and **email** applications for the purposes of this
 exercise.
 
-Create a new file called application2.txt with the following contents:
+Create a new file called **application2.txt** by running the following command in the Terminal window to open the text editor
+, copy the topology data listed below (use the copy helper icon (top-right) for one-click copy), paste it into the text editor, 
+click on the **Save** button in the text editor and close the editor window (click on the X). 
+
+```
+gedit application2.txt
+```
+
 
 ```sh title="application2.txt"
-V:{"_operation":"InsertReplace","uniqueId":"111-379177a8-0a6a-4068-817c-d6d6e870437e-app2","matchTokens":["111-379177a8-0a6a-4068-817c-d6d6e870437e-app2","notifications"],"tags":["WAIOpsDemo"],"name":"notifications","entityTypes":["application"]}
-V:{"_operation":"InsertReplace","uniqueId":"111-9c1f90e0-7dc4-40d8-8721-40ea2f3af453-app2","matchTokens":["111-9c1f90e0-7dc4-40d8-8721-40ea2f3af453-app2","email"],"tags":["WAIOpsDemo"],"name":"email","entityTypes":["application"]}
-V:{"_operation":"InsertReplace","uniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807-app2","matchTokens":["111-974d1788-1312-4151-8a62-73fa1854e807-app2","computer1001"],"tags":["WAIOpsDemo"],"name":"computer1001","entityTypes":["computer"]}
-E:{"_toUniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807-app2","_edgeType":"runsOn","_fromUniqueId":"111-379177a8-0a6a-4068-817c-d6d6e870437e-app2"}
-E:{"_toUniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807-app2","_edgeType":"runsOn","_fromUniqueId":"111-9c1f90e0-7dc4-40d8-8721-40ea2f3af453-app2"}
+V:{"_operation":"InsertReplace","uniqueId":"111-379177a8-0a6a-4068-817c-d6d6e870437e-app2","matchTokens":["111-379177a8-0a6a-4068-817c-d6d6e870437e-app2","notifications"],"tags":["WAIOpsDemo"],"name":"notifications","entityTypes":["application"],"_references":[{"_toUniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807-app2","_edgeType":"runsOn"}]}
+V:{"_operation":"InsertReplace","uniqueId":"111-9c1f90e0-7dc4-40d8-8721-40ea2f3af453-app2","matchTokens":["111-9c1f90e0-7dc4-40d8-8721-40ea2f3af453-app2","email"],"tags":["WAIOpsDemo"],"name":"email","entityTypes":["application"],"_references":[{"_toUniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807-app2","_edgeType":"runsOn"}]}
+V:{"_operation":"InsertReplace","uniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807-app2","matchTokens":["111-974d1788-1312-4151-8a62-73fa1854e807-app2","computer1001"],"tags":["WAIOpsDemo"],"name":"computer1001","entityTypes":["computer"],"_references":[]}
 ```
 
 Use the steps described in the previous chapter to import this file using a 
 new File Observer job to ingest the topology data.
 
-In the **Resource management** page, click on the **Resource group templates** icon in the top-right.
+After running this last Observer job, you should see a total of 12 resources which 2 have been merged, as shown below:
+
+![](images/12resources.png)
+
+
+
+Now lets create the dynamic group template. In the **Resource management** page, click on the **Resource group templates** icon in the top-right.
 In the **Resource group templates** page, click on **Create a new template**, select **Dynamic template** and click **Start**.
 
+![](images/dynamic-option.png)
 
 You will be presented with a **Template builder** page. From here, use the
 following steps to configure a dynamic template:
 
-- Give the template a name and provide a brief description
+- Give the template a **name** e.g. AppServers
 - Choose the **Resource group type: compute**
 - Add a **Resource group naming pattern** prefix for the resulting group's name:
   **APPSERVER-**
 - Enable **Correlate event groups on topologies from this template**
   to correlate events across these resources
-- Type **computer1000** in the search box: **Search for a resource to get
-  started** and hit Enter
+- In the search box **Search for a resource to get started**, type **computer1000** and hit Enter
 - Choose **computer1000** from the list of available resources
-- Right-click on computer1000 and select **Follow Relationship → runsOn** which
-  will expose the applications **webserver** and **billing**
+- Right-click on computer1000 and select **Follow Relationship → runsOn** which will expose the applications **webserver** and **billing**
+
+![](images/runs-on.png)
 
 You should have something like the following:
 
@@ -238,16 +252,19 @@ You should have something like the following:
 
 Continue with the following steps:
 
-- Scroll down on the left side and note that the template has been recording
-  your actions to build a "recipe" for the template
-- Add a tag to the list of starting seeds if you want to restrict the items
+- Scroll down on the left side and note that the template has been recording your actions to build a *recipe* for the template
+- You can optionally add tag to the list of starting seeds if you want to restrict the items
   matched by this template to just those tagged with specific tags
-- Continue to scroll down and click **Save template & generate resource group**
 
 ![](images/dynamic_def.png)
 
-You should see that the dynamic template builder has found two groups of
-resources that match the specification:
+- Continue to scroll down and click **Save template & generate resource group**
+
+
+In the **Preview resource groups** section, you will see that the dynamic template builder has found two groups of
+resources that match the *recipe*. The first group resources were in the original application resources data. The second group resources were added
+by the Observer job we just run. In summary, we defined a dynamic template that creates groups for every compute resource 
+and will include any one hope resource that has the attribute *runsOn*. 
 
 ![](images/dynamic_result.png)
 
@@ -265,9 +282,9 @@ For example, you could create a token template containing a rule with a token of
 have an applicationId property value of 'MyApp', then a group called 'MyApp' will
 be created, and those three resources will be added to it.
 
-As token templates apply rules only to resources that are received via observer jobs, the
+As token group templates apply rules only to resources that are received via observer jobs, the
 only way to actually see the new resource groups created by this template is by running 
-the related Observer Jobs.
+the related observer jobs.
 
 #### Exercise
 
@@ -278,41 +295,43 @@ another group of all AMD cpu resources.
 In the **Resource management** page, click on the **Resource group templates** icon in the top-right.
 In the **Resource group templates** page, click on **Create a new template**, select **Token template** and click **Start**.
 
+![](images/token-start.png)
 
 You will be presented with a **Template builder** page. From here, use the
 following steps to configure a token template:
 
-- Give the template a name and provide a brief description
+- Give the template a **name** e.g. token template
 - Choose the **Resource group type: compute**
 - Enable **Correlate event groups on topologies from this template**
 to correlate events across these resources
 - On the right side, set the Rule name as **CPU rule**
-- For **Tokens** we will use **${name}** which is the value of the name property
-which in our example will be Intel or AMD.
+- For **Tokens** type **${name}** and click on **Add**. This is the value of the name property which in our resource data will be *Intel* or *AMD*.
 - Expand the **Conditions** section
-- For **Observers** select **File** 
-- Skip **Providers** as this will apply to all File Observer providers
-- For **Resource types** select **cpu**. This is important as we only want to group
-cpu type resources and nothing else. 
-- Skip the **Token filter mode** as we don't need additional logic to filter.
-- Click on **Save rule**.
+  - For **Observers** select **File** and click on **Add**
+  - Skip **Providers** as this will apply to all File Observer providers
+  - For **Resource types** select **cpu** and click on **Add**. This is important as we only want to group **cpu** type resources and nothing else. 
+  - Skip the **Token filter mode** as we don't need additional logic to filter.
+
+Your rule should look like this: 
+
+![](images/before-rule.png)
+
+- Click on **Add rule**.
 
 - Now confirm that you see the new rule under **Rule definitions** as shown below
 and click on **Save template**.
 
-[TODO update this picture]
-![](images/dynamic.png)
+![](images/new-rule.png)
 
 
 
 Finally, as this template will create new groups based on the cpu name and these 
-resources are in the **infrastructure** resource data file, rerun the **infrastructure** 
-observer job to actually apply the rules in this template.
+resources are in the **infrastructure** resource data file, please rerun the **infrastructure** 
+observer job to actually apply the rules in this group template.
 
 
 Now in the **Resource management** page, click on the **Resource groups** tab and
-you should see two new resource groups created as shown below:
+you should see two new resource groups created, as shown below:
 
-[TODO update this picture]
-![](images/tagresourcegrp.png)
+![](images/token-groups.png)
 

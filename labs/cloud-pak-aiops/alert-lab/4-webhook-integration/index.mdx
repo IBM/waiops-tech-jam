@@ -4,11 +4,11 @@ description: Set up a webhook and kafka integration
 sidebar_position: 4
 ---
 
-In this section, we will configure a generic Webhook connection. If a dedicated connection is 
+In this section, we will configure a generic webhook connection. If a dedicated connection is 
 not available for a data source, you can use the generic webhook connection to provide an endpoint
 for applications to send JSON format events to the Cloud Pak for AIOps via HTTP POST requests. 
 You can also include a *JSONata* file to map incoming JSON payloads to the Cloud Pak for AIOps 
-event data scheme. The webhook endpoint is exposed via an OpenShift edge route that includes a unique, 
+event data schema. The webhook endpoint is exposed via an OpenShift edge route that includes a unique, 
 automatically-generated ID.
 
 Also in this section, we will create a couple of bash scripts. The first script will be used to load data
@@ -27,7 +27,7 @@ Log into the Cloud Pak for AIOps:
 
 Fill the **Add connection** form with these values: 
 
-* Name: Event-Webhook
+* Name: event-webhook
 * Description: custom webhook connection for events
 * Authentication type: *select Username/Password*
 * Username: pick a username (e.g. test)
@@ -36,6 +36,7 @@ Fill the **Add connection** form with these values:
 Your complete form should look like this (note that your route will be different)
 
 ![](images/webhook-page1.png)
+
 
 Click **Next**. 
 
@@ -81,13 +82,28 @@ You will see a new webhook created as shown below:
 
 ## 4.2: Create the Webhook Event Loader Script
 
-We will create a simple bash script that will read an event file and will call the webhook 
-URL or route with every event as a parameter. Create a new file called *event-load-webhook.sh*, paste 
-this script below and assign the WEBHOOK_URL value with the webhook route of the webhook 
-you just created in the previous step.
+Lets create a **lab** **folder** for the upcoming files in the home directory and change to this new folder. 
+Run the following command from the Terminal window:
+
+```
+cd; mkdir lab; cd lab
+```
+
+
+We will create a simple bash script that reads an event file and calls the webhook 
+URL with every event in the file as a parameter. 
+
+Create a file called **event-load-webhook.sh** by running the following command in the Terminal window to open the text editor
+, **copy** the bash script below (use the copy helper icon (top-right) for one-click copy), **paste** it into the text editor.
+
+```
+gedit event-load-webhook.sh
+```
+
 
 ```sh
 #!/bin/bash
+# this is the event-load-webhook.sh script
 
 # Check if a file is provided as a parameter
 if [ $# -eq 0 ]; then
@@ -95,9 +111,12 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
+###########################################
 WEBHOOK_URL='<insert the webhook URL here>'
-# Note below there is a colon character ':' between the username and password. E.g. test:test
+# Note below there is a colon character ':' between the username and password e.g. test:test
 AUTH=<insert your chosen user name>:<insert your chosen password>
+###########################################
+
 
 # Read the event file line by line and submit the event via webhook
 while IFS= read -r line; do
@@ -106,14 +125,32 @@ while IFS= read -r line; do
 done < "$1"
 ```
 
+There are two changes you need to make to the script:
+*  assign to WEBHOOK_URL the webhook route of the webhook you just created in the previous step
+*  assign to AUTH the chosen user name and password of the webhook you just created in the previous step e.g. test:test
+
+Click on the **Save** button in the text editor and **close** the editor window (click on the X). 
+
+
+
+
+
 ## 4.3: Create a Kafka Event Loader Script
 
 Finally, we will create another simple bash script that will take an event or alert file and a 
 kafka topic as parameters and it will load this data into the kafka topic. 
-Create a new file called *event-load-kafka.sh* and paste this script below.
+
+Create a new file called *event-load-kafka.sh* by running the following command in the Terminal window to open the text editor
+, **copy** the bash script below, **paste** it into the text editor,
+click on the **Save** button in the text editor and **close** the editor window (click on the X). 
+
+```
+gedit event-load-kafka.sh
+```
 
 ```sh
 #!/bin/bash
+# this is the event-load-kafka.sh script
 
 # Check parameters
 if [ $# -lt 2 ]; then
