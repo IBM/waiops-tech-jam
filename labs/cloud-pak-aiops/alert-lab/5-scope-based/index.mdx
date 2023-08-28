@@ -128,10 +128,10 @@ Now lets submit the events via the webhook script created in the previous sectio
 bash event-load-webhook.sh scope_events.json
 ```
 
-* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts**.
-* From the **Incidents and alerts** page, click on the **Alerts** tab. 
+* From the burger menu in the top-left navigate to: **Operate → Alerts**.
+* Click on the **Refresh alerts** icon on the right, to see the alerts we just loaded.
 * Lets add some color to this page:
-    * Click on the **gear** icon in the top right and select **User preferences**.
+    * Click on the **gear** icon in the right and select **User preferences**.
     * From the **User preferences for alerts** pop-up, click on the **Row coloring** slider to On (green).
     * Click on **Save**.
 
@@ -153,6 +153,7 @@ We will now confirm that the scope-based correlation policy is actually working 
 enabling the policy and resubmitting the events.
 
 * From the burger menu in the top-left navigate to: **Operate → Automations**
+* From the Automations page, click on **Filter** icon on the left, check **scope-based** and click **Apply** (this may be already done).
 * Enable the scope-based policy "Group Alerts coming from 2 Locations by Location-Application" that you created in the previous step.
 
 You should see one policy enabled, as shown below:
@@ -167,8 +168,7 @@ bash event-load-webhook.sh scope_events.json
 
 Lets see the Alerts view again:
 
-* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts**.
-* From the **Incidents and alerts** page, click on the **Alerts** tab. 
+* From the burger menu in the top-left navigate to: **Operate → Alerts**
 
 Note that now, the Alerts are grouped by Location and Application. Note also that 
 Alerts from the region EU-CENTRAL are not grouped as shown below.
@@ -183,3 +183,20 @@ Scroll to the right and check the view correlation icon on the top-right to crea
 that the grouped Alerts have the scope correlation icon in each row.
 
 ![](images/alerts-grouped3.png) 
+
+
+## 5.4: Recap
+
+We created a new **scope-based correlation policy** that groups alerts within a 15 minute rolling window by alert.resource.location 
+and alert.resource.application and where the location is one of two cloud regions US-SOUTH and US-EAST.
+
+
+
+Finally, lets disable the scope policy so it does not interfere with the rest of the Lab:
+
+* From the burger menu in the top-left navigate to: **Operate → Automations**
+* From the **Automations** page, if there is no **Scope-based** filter set already, click on Filter icon on the left, check **Scope-based** and click **Apply**.
+* Click on the slider on the policy that is **Enabled** in green to change it to **Disabled** in grey as shown below
+
+![](images/disable-all.png) 
+

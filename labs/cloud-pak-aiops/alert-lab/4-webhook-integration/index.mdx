@@ -56,10 +56,10 @@ you will find this mapping capability very useful. Enter the following JSONata c
       "type": sender.type
    },
    "resource":{
+      "application": resource.application,
       "name": resource.name,
       "hostname": resource.hostname,
       "type": resource.type,
-      "service": resource.service,
       "ipaddress": resource.ipaddress,
       "location": resource.location
    },
@@ -162,10 +162,21 @@ export EVENTS_FILE="$1"
 export KAFKA_TOPIC="$2"
 
 oc project cp4waiops
+
+# Change Cassandra aiops.alerts table data expiration default_time_to_live (TTL) to 5 years
+oc exec -it aiops-topology-cassandra-0 -- \
+    /opt/ibm/cassandra/bin/cqlsh \
+    --ssl \
+    -u $(oc get secret aiops-topology-cassandra-auth-secret -o jsonpath='{.data.username}' | base64 --decode) \
+    -p $(oc get secret aiops-topology-cassandra-auth-secret -o jsonpath='{.data.password}' | base64 --decode) \
+    -e 'ALTER TABLE aiops.alerts WITH default_time_to_live = 157784630;'
+
+# Set Password and Broker
 oc extract secret/iaf-system-cluster-ca-cert --keys=ca.crt --to=- > ca.crt
 export sasl_password=$(oc get secret cp4waiops-cartridge-kafka-auth-0 --template={{.data.password}} | base64 --decode)
 export BROKER=$(oc get routes iaf-system-kafka-bootstrap -o=jsonpath='{.status.ingress[0].host}{"\n"}'):443
 
+# Load data using kafka-cat tool
 kcat \
 -X debug=msg \
 -X security.protocol=SASL_SSL \
@@ -173,7 +184,6 @@ kcat \
 -X sasl.mechanisms=SCRAM-SHA-512 \
 -X sasl.username=cp4waiops-cartridge-kafka-auth-0 \
 -X sasl.password=$sasl_password \
--X enable.ssl.certificate.verification=false \
 -b $BROKER \
 -P \
 -t $KAFKA_TOPIC \
