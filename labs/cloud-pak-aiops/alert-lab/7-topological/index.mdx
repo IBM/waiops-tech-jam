@@ -5,7 +5,7 @@ sidebar_position: 7
 ---
 
 This AI algorithm is an unsupervised learning algorithm that groups alerts based on the 
-resource groups in which those alerts occur. For example if you have a resource group 
+topology resource groups in which those alerts occur. For example, if you have a resource group 
 made up of all the resources within a given Kubernetes namespace, then any alerts on pods, 
 microservices, or other resources in that namespace will be grouped together 
 in a single topological alert group.
@@ -23,12 +23,19 @@ view the details of the alert in the context of the topology resources that are 
 First, we will load a set of events to validate that there is no correlation whatsoever for the 
 alerts created from these events. 
 
-Create a new local file, name it *topology-events.json* and paste the following content into it:
+
+Create a new file called *topology-events.json* by running the following command in the Terminal window to open the text editor,
+**copy** the event data below, **paste** it into the text editor, 
+click on the **Save** button in the text editor and **close** the editor window (click on the X). 
 
 ```
-{ "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "name":"computer1000", "hostname":"computer1000.company.com", "type":"host", "ipaddress":"10.1.96.24", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":3, "summary":"CPU at 80% utilization", "occurrenceTime":"2023-05-05T14:40:38.000Z", "expirySeconds":0 }
-{ "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "name":"router1", "hostname":"", "type":"device", "ipaddress":"10.1.96.28", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":5, "summary":"Unscheduled device restart. Review log files", "occurrenceTime":"2023-05-05T14:45:20.000Z", "expirySeconds":0 }
-{ "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "name":"greatfirewallofsecurity", "hostname":"", "type":"device", "ipaddress":"10.1.96.29", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":6, "summary":"Unable to load firewall rules after reboot", "occurrenceTime":"2023-05-05T14:46:10.000Z", "expirySeconds":0 }
+gedit topology-events.json
+```
+
+```
+{ "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "application":"eCom2 web server", "name":"computer1000", "hostname":"computer1000.company.com", "type":"host", "ipaddress":"10.1.96.24", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":3, "summary":"CPU at 80% utilization", "occurrenceTime":"2023-05-05T14:40:38.000Z", "expirySeconds":0 }
+{ "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "application":"eCom2 api layer", "name":"router1", "hostname":"", "type":"device", "ipaddress":"10.1.96.28", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":5, "summary":"Unscheduled device restart. Review log files", "occurrenceTime":"2023-05-05T14:45:20.000Z", "expirySeconds":0 }
+{ "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "application":"eCom2 security layer", "name":"greatfirewallofsecurity", "hostname":"", "type":"device", "ipaddress":"10.1.96.29", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":6, "summary":"Unable to load firewall rules after reboot", "occurrenceTime":"2023-05-05T14:46:10.000Z", "expirySeconds":0 }
 ```
 
 Now lets submit the events via the webhook script created in the previous section by running the following command:
@@ -37,8 +44,8 @@ Now lets submit the events via the webhook script created in the previous sectio
 bash event-load-webhook.sh topology-events.json
 ```
 
-* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts**.
-* From the **Incidents and alerts** page, click on the **Alerts** tab. 
+* From the burger menu in the top-left navigate to: **Operate → Alerts**.
+* Click on the **Refresh alerts** icon on the right
 
 Now we can see that the three alerts are independent from each other and not correlated. Also,
 if you click on the **View correlation** icon in the top-right, the **Correlation** column shows
@@ -69,47 +76,52 @@ In this scenario, we will have one set of topology data that represents
 
 Create a file called **infrastructure.txt** with the following content:
 
-```txt title="infrastructure.txt"
-V:{"_operation":"InsertReplace","uniqueId":"379177a8-0a6a-4068-817c-d6d6e870437e","matchTokens":["379177a8-0a6a-4068-817c-d6d6e870437e","router1"],"tags":["WAIOpsDemo"],"name":"router1","entityTypes":["router"]}
-V:{"_operation":"InsertReplace","uniqueId":"9c1f90e0-7dc4-40d8-8721-40ea2f3af453","matchTokens":["9c1f90e0-7dc4-40d8-8721-40ea2f3af453","Intel"],"tags":["WAIOpsDemo"],"name":"Intel","entityTypes":["cpu"]}
-V:{"_operation":"InsertReplace","uniqueId":"222-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","matchTokens":["222-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","AMD"],"tags":["WAIOpsDemo"],"name":"AMD","entityTypes":["cpu"]}
-V:{"_operation":"InsertReplace","uniqueId":"7598a194-27a0-4d0b-9c49-cbc0070c99c9","matchTokens":["7598a194-27a0-4d0b-9c49-cbc0070c99c9","greatFireWallOfSecurity"],"tags":["WAIOpsDemo"],"name":"greatFireWallOfSecurity","entityTypes":["firewall"]}
-V:{"_operation":"InsertReplace","uniqueId":"974d1788-1312-4151-8a62-73fa1854e807","matchTokens":["974d1788-1312-4151-8a62-73fa1854e807","computer1000"],"tags":["WAIOpsDemo"],"name":"computer1000","entityTypes":["computer"]}
-V:{"_operation":"InsertReplace","uniqueId":"5c6f968a-2006-4b43-96b5-dd53df6b0afb","matchTokens":["5c6f968a-2006-4b43-96b5-dd53df6b0afb","steve"],"tags":["WAIOpsDemo"],"name":"steve","entityTypes":["person"]}
-E:{"_toUniqueId":"379177a8-0a6a-4068-817c-d6d6e870437e","_edgeType":"connectedTo","_fromUniqueId":"974d1788-1312-4151-8a62-73fa1854e807"}
-E:{"_toUniqueId":"7598a194-27a0-4d0b-9c49-cbc0070c99c9","_edgeType":"uses","_fromUniqueId":"379177a8-0a6a-4068-817c-d6d6e870437e"}
-E:{"_toUniqueId":"974d1788-1312-4151-8a62-73fa1854e807","_edgeType":"uses","_fromUniqueId":"5c6f968a-2006-4b43-96b5-dd53df6b0afb"}
-E:{"_toUniqueId":"9c1f90e0-7dc4-40d8-8721-40ea2f3af453","_edgeType":"contains","_fromUniqueId":"974d1788-1312-4151-8a62-73fa1854e807"}
-E:{"_toUniqueId":"222-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","_edgeType":"contains","_fromUniqueId":"974d1788-1312-4151-8a62-73fa1854e807"}
+
+Create a new file called *infrastructure.txt* by running the following command in the Terminal window to open the text editor,
+**copy** the topology data below, **paste** it into the text editor, 
+click on the **Save** button in the text editor and **close** the editor window (click on the X). 
+
+```
+gedit infrastructure.txt
 ```
 
-#### File Observer Format Overview
+```sh 
+V:{"_operation":"InsertReplace","uniqueId":"379177a8-0a6a-4068-817c-d6d6e870437e","matchTokens":["379177a8-0a6a-4068-817c-d6d6e870437e","router1"],"tags":["WAIOpsDemo"],"name":"router1","entityTypes":["router"],"_references":[{"_toUniqueId":"7598a194-27a0-4d0b-9c49-cbc0070c99c9","_edgeType":"uses"}]}
+V:{"_operation":"InsertReplace","uniqueId":"9c1f90e0-7dc4-40d8-8721-40ea2f3af453","matchTokens":["9c1f90e0-7dc4-40d8-8721-40ea2f3af453","Intel"],"tags":["WAIOpsDemo"],"name":"Intel","entityTypes":["cpu"],"_references":[]}
+V:{"_operation":"InsertReplace","uniqueId":"222-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","matchTokens":["222-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","AMD"],"tags":["WAIOpsDemo"],"name":"AMD","entityTypes":["cpu"],"_references":[]}
+V:{"_operation":"InsertReplace","uniqueId":"7598a194-27a0-4d0b-9c49-cbc0070c99c9","matchTokens":["7598a194-27a0-4d0b-9c49-cbc0070c99c9","greatFireWallOfSecurity"],"tags":["WAIOpsDemo"],"name":"greatFireWallOfSecurity","entityTypes":["firewall"],"_references":[]}
+V:{"_operation":"InsertReplace","uniqueId":"974d1788-1312-4151-8a62-73fa1854e807","matchTokens":["974d1788-1312-4151-8a62-73fa1854e807","computer1000"],"tags":["WAIOpsDemo"],"name":"computer1000","entityTypes":["computer"],"_references":[{"_toUniqueId":"379177a8-0a6a-4068-817c-d6d6e870437e","_edgeType":"connectedTo"},{"_toUniqueId":"9c1f90e0-7dc4-40d8-8721-40ea2f3af453","_edgeType":"contains"},{"_toUniqueId":"222-9c1f90e0-7dc4-40d8-8721-40ea2f3af453","_edgeType":"contains"}]}
+V:{"_operation":"InsertReplace","uniqueId":"5c6f968a-2006-4b43-96b5-dd53df6b0afb","matchTokens":["5c6f968a-2006-4b43-96b5-dd53df6b0afb","steve"],"tags":["WAIOpsDemo"],"name":"steve","entityTypes":["person"],"_references":[{"_toUniqueId":"974d1788-1312-4151-8a62-73fa1854e807","_edgeType":"uses"}]}
+```
 
-The pseudo JSON format in this file is the format expected by the File Observer, and contains
-topology directives, one per line. A line that begins with a **V** represents a
-"Vertex" (or Resource). A line that begins with an **E** represents
-an "Edge" (or Relationship).
+The pseudo JSON format in this topology file is the format expected by the File Observer, and contains
+topology directives, one per line.
 
 :::note
 Other format information can be found in the [**documentation**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=jobs-file-observer)
 :::
 
 
+#### Creating a File Observer
+
+We will create a file observer to load the topology file we just created. 
+
 Log into the Cloud Pak for AIOps: 
 * from the burger menu in the top-left navigate to: **Define → Data and tool connections**
 * from the **Data and tool connections** page, click on **Add connection**
-* from the **Add connections** page, under Category click on **Topology** then click on the **File** tile and click **Connect**
+* from the **Add connections** page, under **Category** click on **Topology** then search for **File** tile. Click on the 
+**File** tile and select **Connect** on the right
+
+![](images/file-observer.png)
 
 
 In the **New observer job: File** form, fill the Unique ID field as "infrastructure". Keep the 
 **File Mode** as **Upload local file** and upload the **infrastructure.txt** file that you created in the previous 
-step. Click the **Save** button.
+step. Leave the **Provider** field unchanged, as shown below:
 
 ![](images/infrajob.png)
 
-:::note
-The Provider will be automatically populated when you click Save.
-:::
+Click the **Save** button.
 
 The File Observer job will run the moment it is saved. After you have done this, your
 Observer jobs screen should look like the one below. You can verify that your job ran successfully by confirming the **Ready** status
@@ -129,12 +141,18 @@ resources quickly and easily, or visualize them on the screen.
 
 * From the burger menu in the top-left, navigate to: **Operate → Resource management**.
 * In the **Resource management** page, click on the **Resource group templates** icon in the top-right.
+
+![](images/template-icon.png)
+
+
 * In the **Resource group templates** page, click on **Create a new template**, select **Exact template** and click **Start**.
+
+![](images/start-template.png)
 
 You will be presented with a **Template builder** page. From here, use the
 following steps to configure a new exact template:
 
-- Give the template a name such as "My Resource Group".
+- Set the **Template name** as **My Resource Group**.
 - Skip the optional **Description**.
 - Choose the **Resource group type: network**
 - Add a **Resource group naming pattern prefix** for the resulting group's name:
@@ -142,20 +160,33 @@ following steps to configure a new exact template:
 - Enable **Correlate event groups on topologies from this template**. This is actually the objective of this Lab section after all! 
 - In the **Search for a resource to get started** on the right, type **router1**
   and hit Enter
-- Choose **router1** from the list of resources
+- Choose **router1** from the list of resources. Your screen should look like this
+
+![](images/router1.png)
+
+
+
 - On the top-right, change the view to 1 hop and click **Render**
 
-We have selected 3 resources that will be part of a group, as render in the view. Your form should look like this:
+![](images/1-hop.png)
+
+
+In summary, we have selected 3 resources that will be part of a topology resource group, as render in the view. Your form should look like this:
 
 ![](images/exact.png)
 
 - Finally, click **Save template & generate resource group**
 
-Click on **Resource group templates** in the top-left. In the **Resource group templates** screen, you will see your
+Click on **Resource group templates** in the top-left. 
+
+![](images/select.png)
+
+In the **Resource group templates** screen, you will see your
 new template:
 
 
 ![](images/resourcegroup.png)
+
 
 
 Click on **Resource management** in the top-left and click on the **Resource groups** tab:
@@ -165,31 +196,22 @@ Click on **Resource management** in the top-left and click on the **Resource gro
 If you click on the name **ROUTER-router1**, you will be able to view the
 topology group, which consists of 3 resources:
 
-![](images/router1.png)
+![](images/3-resources.png)
 
 
 
 ## 7.4: Validate Topological Correlation
 
-Now we have a group of topology resources that can we use to validate topological 
-correlation. We will reload the same events to confirm that alerts that impact
-topology resources in the same group are actually correlated.
+Now we have a group of topology resources that we can use to validate topological 
+correlation. We will reload the same set of events. 
+Because these events impact resources we have in our topology map and 
+there is a resource group that clump these resources together, these alerts will be correlated.
 
-Lets submit again the events via the webhook script created in the previous section by running the following command:
+from the **Terminal** window, lets submit again the events via the webhook script created in the previous section by running the following command:
 
 ```
 bash event-load-webhook.sh topology-events.json
 ```
-
-* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts**.
-* From the **Incidents and alerts** page, click on the **Alerts** tab. 
-
-Now we can see that the three alerts have been correlated under a single group. Also,
-if you click on the **View correlation** icon in the top-right, the **Correlation** column shows
-the topological group icon. 
-
-![](images/alerts-correlated.png)
-
 
 Lets verify how the alerts are shown in the topology view:
 
@@ -205,6 +227,24 @@ three resources, each with one alert. Click on the **Topology activity** on the 
 alert severity breakdown over time.  
 
 ![](images/group-with-alerts2.png)
+
+
+
+Lets validated that these alerts are indeed correlated. 
+
+* From the burger menu in the top-left navigate to: **Operate → Alerts**.
+
+Now we can see that the three alerts have been correlated under a single group. 
+
+![](images/one-group.png)
+
+
+Click on the chevron icon on the left to expand the group.  Also click on the **View correlation** icon in the top-right, the **Correlation** column shows
+the topological group icon. 
+
+![](images/alerts-correlated.png)
+
+
 
 
 ################################################
