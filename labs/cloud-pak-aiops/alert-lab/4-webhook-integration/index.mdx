@@ -46,7 +46,9 @@ In the **Configure event mapping** form:
 * The webhook connector leverages JSONata which is a simple expression language to transform JSON data. 
 You can read about JSONata [here](https://jsonata.org/). In this Lab, we provide the JSON event format
 as expected by the Cloud Pak for AIOPs, therefore the JSONata is just a "passthrough". In a real scenario, 
-you will find this mapping capability very useful. Enter the following JSONata configuration:
+you will find this mapping capability very useful. 
+
+Enter the following JSONata configuration (use the copy helper icon (top-right) for one-click copy)
 
 ```json
 {
@@ -74,8 +76,7 @@ you will find this mapping capability very useful. Enter the following JSONata c
 }
 ```
 
-Click on **Done**.
-You will see a new webhook created as shown below:
+Click on **Done**. You will see a new webhook created as shown below. Note the **Webhook route** URL on the right. You will need this URL in the next step. 
 
 ![](images/webhook-created.png)
 
@@ -83,7 +84,7 @@ You will see a new webhook created as shown below:
 ## 4.2: Create the Webhook Event Loader Script
 
 Lets create a **lab** **folder** for the upcoming files in the home directory and change to this new folder. 
-Run the following command from the Terminal window:
+Run the following command from the **Terminal** window:
 
 ```
 cd; mkdir lab; cd lab
@@ -93,7 +94,7 @@ cd; mkdir lab; cd lab
 We will create a simple bash script that reads an event file and calls the webhook 
 URL with every event in the file as a parameter. 
 
-Create a file called **event-load-webhook.sh** by running the following command in the Terminal window to open the text editor
+Create a file called **event-load-webhook.sh** by running the following command in the **Terminal** window to open the text editor
 , **copy** the bash script below (use the copy helper icon (top-right) for one-click copy), **paste** it into the text editor.
 
 ```
@@ -140,7 +141,7 @@ Click on the **Save** button in the text editor and **close** the editor window 
 Finally, we will create another simple bash script that will take an event or alert file and a 
 kafka topic as parameters and it will load this data into the kafka topic. 
 
-Create a new file called *event-load-kafka.sh* by running the following command in the Terminal window to open the text editor
+Create a new file called *event-load-kafka.sh* by running the following command in the **Terminal** window to open the text editor
 , **copy** the bash script below, **paste** it into the text editor,
 click on the **Save** button in the text editor and **close** the editor window (click on the X). 
 

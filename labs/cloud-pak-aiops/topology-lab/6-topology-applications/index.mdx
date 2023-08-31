@@ -16,7 +16,7 @@ of business criticality for your applications, resource groups and resources,
 and then view a list of them on the Business criticality page.
 
 Lets have a quick overview of Policies as they leverage Business Criticality. Policies are rules that contain multiple 
-condition and action sets. They can be triggered to reduce noise by suppressing alerts or grouping alerts together, automatically 
+condition and action sets. They can be triggered to reduce noise by suppressing alerts, grouping alerts together, automatically 
 promote alerts to incidents, assign runbooks to remediate alerts, etc.
 
 :::note
@@ -66,18 +66,18 @@ We have now defined three tiers of business criticality as shown below:
 ## 6.2: Applications or Services?
 
 Based on customer feedback, starting in v4.1, the Cloud Pak for AIOps provides the option to call a 
-collection of topology groups an *Application* or a *Service*. From a product functionality point of view, there is no 
+collection of topology groups an **Application** or a **Service**. From a product functionality point of view, there is no 
 difference between these two terms. But depending on the customer industry, these two terms represent two different abstractions. 
 In the Telecommunications industry, a *Service* represents a group of interconnected components such as routers, switches, firewalls, etc. 
 that participate in the operation of voice and data communications. In mostly every other industry, an *Application* represents a set of IT resources 
-that performs a specific function directly for an end user or, in some cases, for another Application. For the rest of the Lab, we
-will just use the term *Application*. 
+that performs a specific function directly for an end user or, in some cases, for another Application. In this Lab, we
+are using the term *Application*. 
 
 In summary, an Application, in the context of the Cloud Pak for AIOps, is a collection of topology resource groups that represent a complete IT solution stack. Applications, 
 when combined with resource-level event correlation and grouping mechanisms, 
 provide roll-up incident visibility. In other words, Alerts impacting resources will also surface
 as impacting the Applications that those resources belong to. This improves overall visibility and 
-allows the prioritization of incident resolution based on the business criticality that has been preassigned to the application.
+allows the prioritization of incident resolution based on the business criticality that has been preassigned to the impacted applications.
 
 
 
@@ -120,7 +120,7 @@ resource type in the topology view of your applications.
 * Mark the application as a **favorite** by clicking on the heart icon. 
 * In the **Add tags** field, type **orderBackend** and select **Create new tag**. Tags can be used to 
 identify similar applications and to distinguish applications from other applications.
-* In the **Business criticality** field, select **Tier 3**.
+* In the **Business criticality** field, select **Tier 1**.
 * In the **Estimated cost per minute for service disruption**, type **750**. This numerical value, represents the 
 estimated disruption cost (in local currency) for the business per minute if this application is down. 
 This information is used on the **AIOps insights** dashboard.
@@ -138,11 +138,16 @@ view we can see total number of resources, the active Incidents and Alerts relat
 ![](images/app-defined.png) 
 
 
-############################################
 
-**This concludes the Cloud Pak for AIOps Topology Lab**
+## 6.3: Lab Recap
 
-############################################
+
+Congratulations if you made it here!. We have seen a lot of features in a short period of time. If there 
+is a single thought that you can take away from this Lab, this is it:
+
+*A real-time, unified Topology View is a core capability of the Cloud Pak for AIOps, as it allows to visualize
+topology changes over time, anomalous alerts in context and the correlation of alerts based on the impacted topology resources.
+Topology is a key component to achieve fast incident resolution through the Cloud Pak for AIOps.*
 
 
 

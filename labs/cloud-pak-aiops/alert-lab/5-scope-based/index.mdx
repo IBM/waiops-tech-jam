@@ -21,7 +21,7 @@ identify when issues might be related. When related alerts are grouped based on 
 you can view the details in the Alert Viewer.
 
 The default scope-based policy in Cloud Pak for AIOps is a correlation on alert.resource.name 
-constrained by a rolling window of 15 minutes.
+constrained by a rolling window of 15 minutes. This will become more clear in the next steps. 
 
 
 ## 5.1: Create a Scope-based Event Grouping Policy 
@@ -29,7 +29,7 @@ constrained by a rolling window of 15 minutes.
 Scope-based grouping enable operations teams to provide local knowledge on how alerts should be grouped
 by defining scope-based grouping policies. 
 
-We will play the role of an SRE that is responsible for an application that is deployed independently in two 
+We will play the role of an SRE (Site Reliability Engineer) that is responsible for an application that is deployed independently in two 
 public cloud regions, US-SOUTH and US-EAST. We have observability tools deployed that monitor each application stack
 layer including databases (DB2), application servers (Liberty) and web services (APIs) on top. The challenge is that alerts
 related to each stack layer are not correlated despite the fact that belong to the same overall application stack.
@@ -42,22 +42,22 @@ Also, we want the alert grouping to happen within a 15 minute rolling window. In
 We will first review the default scope-based policies that come with the product. Log into the Cloud Pak for AIOps:
 
 * From the burger menu in the top-left navigate to: **Operate → Automations**
-* From the Automations page, we will explore the existing scope-based policies that come out-of-the-box
+* From the **Automations** page, we will explore the existing scope-based policies that come out-of-the-box
     * Click on **Filter** icon on the left, check **scope-based** and click **Apply**
 
 * ![](images/filter.png)
     * Note that there are two scope-based policies already defined
     * Select on the **Policy name** of the first policy
 * ![](images/first.png)    
-    * On the right-side slider, click on the **Specification** tab and explore the policy logic
+    * On the right-side slider, click on the **Specification** tab and explore the **Policy action** rule logic
 * ![](images/spec.png)    
-    * Now click on the down-arrow and explore the logic of the second scope-based policy
+    * Now click on the down-arrow and explore the **Policy action** rule logic of the second scope-based policy
     * Click on the X to close the slider
 
 Now we will create a new scope-based policy:
 
 
-* From the same **Automations** page, click the **Create policy** button
+* From the same **Automations** page, select the **Policies** tab and click the **Create policy** button
 * From the **Policy templates** page, select the **Group alerts based on scope** tile
 * From the **Group alerts based on scope** page: 
     * Make sure the **Policy** is **Enabled** (green)
@@ -71,14 +71,16 @@ Now we will create a new scope-based policy:
         * For **Property** select **alert.resource.location**
         * For **Operator** select **contains**
         * For **Matches** select **any of**
-        * For **Value** type US-SOUTH and select String: US-South, type US-EAST and select String: US-EAST
+        * For **Value** type (use uppercase in both) US-SOUTH and select String: US-South, type US-EAST and select String: US-EAST
     * Under **Create a scope-based grouping**:
-        * type and select **alert.resource.location**
-        * type **:** and select **String: :**
-        * type and select **alert.resource.application**
-        * Your final value for ScopeID should look like 
-        
-        * ![](images/scopeid.png) 
+        * select **resource.location**
+        * type the colon character **:** and select **String: :**
+        * select **resource.application**
+        * Your final value for ScopeID should be 
+            * **Value of: alert.resource.location String: : Value of: alert.resource.application** 
+            * as shown below
+            * ![](images/scopeid.png) 
+
     * Under **Time window**:
         * For time period field type 900. This represents 900 seconds (15 min)
         * Under **Type**, select **Rolling**. This means that alerts will be grouped as long as they are not separated by more than 15 min
@@ -94,7 +96,7 @@ Your new policy should look like the charts below:
 Now you should have 3 scope-based policies. We will first submit events with all scope
 policies disabled and later we will resubmit the same events with the new policy enabled.
 Make sure to **disable all three policies** as shown below. You may be asked to confirm the action
-(Note that its OK if the values in your Status column is different).
+(the values in the **Status** column may be different).
 
 ![](images/policy-disabled.png) 
 
@@ -102,7 +104,7 @@ Make sure to **disable all three policies** as shown below. You may be asked to 
 
 ## 5.2: Submit Events with the scope-based Policy Disabled
 
-Create a new file called *scope_events.json* by running the following command in the Terminal window to open the text editor,
+Create a new file called *scope_events.json* by running the following command in the **Terminal** window to open the text editor,
  **copy** the event data below, **paste** it into the text editor, 
 click on the **Save** button in the text editor and **close** the editor window (click on the X). 
 
@@ -122,13 +124,13 @@ gedit scope_events.json
 { "sender":{ "service":"Instana Application Monitoring", "name":"US-EAST API Layer SelfMonitoring", "type":"Instana" }, "resource":{ "application":"NetCash", "name":"NetCash Services", "hostname":"netcash-api.company.com", "type":"host", "ipaddress":"10.1.96.69", "location":"US-EAST" }, "type":{ "classification":"API availability", "eventType":"problem" }, "severity":5, "summary":"API: account-balance web service time out ", "occurrenceTime":"2023-05-05T14:51:18.000Z", "expirySeconds":0 }
 ```
 
-Now lets submit the events via the webhook script created in the previous section by running the following command:
+Now lets submit the events via the webhook script created in the previous section by running the following command in the **Terminal** window:
 
 ```
 bash event-load-webhook.sh scope_events.json
 ```
 
-* From the burger menu in the top-left navigate to: **Operate → Alerts**.
+* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts** and click on the **Alerts** tab
 * Click on the **Refresh alerts** icon on the right, to see the alerts we just loaded.
 * Lets add some color to this page:
     * Click on the **gear** icon in the right and select **User preferences**.
@@ -144,7 +146,7 @@ Before resubmitting events again, we will clear all these Alerts in the view:
 
 * Select all the Alerts, right-click and select **Clear**.
 * The Alerts will change state from **Open** to **Clear** and eventually to **Closed**. 
-* Wait 2-3 minutes until the Alert view is empty.
+* Wait 2-3 minutes until the Alert view is empty. Click the **Refresh** icon to see changes.
 
 
 ## 5.3: Submit Events with the scope-based Policy Enabled
@@ -153,14 +155,14 @@ We will now confirm that the scope-based correlation policy is actually working 
 enabling the policy and resubmitting the events.
 
 * From the burger menu in the top-left navigate to: **Operate → Automations**
-* From the Automations page, click on **Filter** icon on the left, check **scope-based** and click **Apply** (this may be already done).
+* From the **Automations** page, click on **Filter** icon on the left, check **scope-based** and click **Apply** (this may be already done).
 * Enable the scope-based policy "Group Alerts coming from 2 Locations by Location-Application" that you created in the previous step.
 
 You should see one policy enabled, as shown below:
 
 ![](images/policy-enabled.png) 
 
-Now lets submit the events again via the webhook script created in the previous section by running the following command:
+Now lets submit the events again via the webhook script created in the previous section by running the following command from the **Terminal** window
 
 ```
 bash event-load-webhook.sh scope_events.json
@@ -168,7 +170,7 @@ bash event-load-webhook.sh scope_events.json
 
 Lets see the Alerts view again:
 
-* From the burger menu in the top-left navigate to: **Operate → Alerts**
+* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts** and click on the **Alerts** tab
 
 Note that now, the Alerts are grouped by Location and Application. Note also that 
 Alerts from the region EU-CENTRAL are not grouped as shown below.
@@ -185,14 +187,21 @@ that the grouped Alerts have the scope correlation icon in each row.
 ![](images/alerts-grouped3.png) 
 
 
+
+
 ## 5.4: Recap
 
 We created a new **scope-based correlation policy** that groups alerts within a 15 minute rolling window by alert.resource.location 
 and alert.resource.application and where the location is one of two cloud regions US-SOUTH and US-EAST.
 
 
+Finally, we will clear all these Alerts in the view before we move to the next section
 
-Finally, lets disable the scope policy so it does not interfere with the rest of the Lab:
+* Select each group of Alerts, right-click and select **Clear**. Do the same with the ungrouped Alerts.
+* The Alerts will change state from **Open** to **Clear** and eventually to **Closed**. 
+* Wait 2-3 minutes until the Alert view is empty. Click the **Refresh** icon to see changes.
+
+Also, lets disable the scope policy so it does not interfere with the rest of the Lab:
 
 * From the burger menu in the top-left navigate to: **Operate → Automations**
 * From the **Automations** page, if there is no **Scope-based** filter set already, click on Filter icon on the left, check **Scope-based** and click **Apply**.
