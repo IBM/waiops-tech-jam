@@ -38,13 +38,13 @@ gedit topology-events.json
 { "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "application":"eCom2 security layer", "name":"greatfirewallofsecurity", "hostname":"", "type":"device", "ipaddress":"10.1.96.29", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":6, "summary":"Unable to load firewall rules after reboot", "occurrenceTime":"2023-05-05T14:46:10.000Z", "expirySeconds":0 }
 ```
 
-Now lets submit the events via the webhook script created in the previous section by running the following command:
+Now lets submit the events via the webhook script created in the previous section by running the following command from the **Terminal** window:
 
 ```
 bash event-load-webhook.sh topology-events.json
 ```
 
-* From the burger menu in the top-left navigate to: **Operate → Alerts**.
+* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts** and click on the **Alerts** tab
 * Click on the **Refresh alerts** icon on the right
 
 Now we can see that the three alerts are independent from each other and not correlated. Also,
@@ -66,13 +66,13 @@ topology groups and to create these groups, first we need to create topology res
 
 In a real-world scenario, it is likely that you would be using a number of
 off-the-shelf Topology Observers to get your topology data from your environment. It is
-also likely that you would also leverage the File or REST Observers
-either to ingest data for which an off-the-shelf Observer doesn't exist, or to
+also likely that you would also leverage the File or REST Topology Observers
+either to ingest data for which an off-the-shelf Topology Observer doesn't exist, or to
 manually create relationships between Resources in your topology for which there
 is no source. 
 
 In this scenario, we will have one set of topology data that represents
-**physical infrastructure** and we will load this topology using a File Observer.
+**physical infrastructure** and we will load this topology using a File Topology Observer.
 
 Create a file called **infrastructure.txt** with the following content:
 
@@ -102,9 +102,9 @@ Other format information can be found in the [**documentation**](https://www.ibm
 :::
 
 
-#### Creating a File Observer
+#### Creating a File Topology Observer
 
-We will create a file observer to load the topology file we just created. 
+We will create a file topology observer to load the topology file we just created. 
 
 Log into the Cloud Pak for AIOps: 
 * from the burger menu in the top-left navigate to: **Define → Data and tool connections**
@@ -116,15 +116,17 @@ Log into the Cloud Pak for AIOps:
 
 
 In the **New observer job: File** form, fill the Unique ID field as "infrastructure". Keep the 
-**File Mode** as **Upload local file** and upload the **infrastructure.txt** file that you created in the previous 
-step. Leave the **Provider** field unchanged, as shown below:
+**File Mode** as **Upload local file**. Click on **Drag and drop file here or click to upload** 
+and from the pop-up file selection window, find the **infrastructure.txt** file under **sysadmin/lab**.
+
+Leave the **Provider** field unchanged, as shown below:
 
 ![](images/infrajob.png)
 
 Click the **Save** button.
 
 The File Observer job will run the moment it is saved. After you have done this, your
-Observer jobs screen should look like the one below. You can verify that your job ran successfully by confirming the **Ready** status
+**Observer jobs** page should look like the one below. You can verify that your job ran successfully by confirming the **Ready** status
 for each job:
 
 ![](images/one-observer.png)
@@ -155,9 +157,9 @@ following steps to configure a new exact template:
 - Set the **Template name** as **My Resource Group**.
 - Skip the optional **Description**.
 - Choose the **Resource group type: network**
-- Add a **Resource group naming pattern prefix** for the resulting group's name:
-  **ROUTER-**
-- Enable **Correlate event groups on topologies from this template**. This is actually the objective of this Lab section after all! 
+- Under **Resource group naming pattern**, in the **Name prefix** field type **ROUTER-**
+- Enable **Correlate event groups on topologies from this template**. This is actually the objective of this Lab section after all. We will
+correlate events that affect the resources in the same topology group. This template will create such group of topology resources.
 - In the **Search for a resource to get started** on the right, type **router1**
   and hit Enter
 - Choose **router1** from the list of resources. Your screen should look like this
@@ -207,7 +209,7 @@ correlation. We will reload the same set of events.
 Because these events impact resources we have in our topology map and 
 there is a resource group that clump these resources together, these alerts will be correlated.
 
-from the **Terminal** window, lets submit again the events via the webhook script created in the previous section by running the following command:
+From the **Terminal** window, lets submit again the events via the webhook script created in the previous section by running the following command from the **Terminal** window:
 
 ```
 bash event-load-webhook.sh topology-events.json
@@ -232,7 +234,7 @@ alert severity breakdown over time.
 
 Lets validated that these alerts are indeed correlated. 
 
-* From the burger menu in the top-left navigate to: **Operate → Alerts**.
+* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts** and click on the **Alerts** tab
 
 Now we can see that the three alerts have been correlated under a single group. 
 
@@ -246,9 +248,15 @@ the topological group icon.
 
 
 
+## 7.5: Lab Recap
 
-################################################
 
-**This concludes the Cloud Pak for AIOps Alert Correlation Lab**
+Congratulations if you made it here!. We have seen a lot of features in a short period of time. If there 
+is a single thought that you can take away from this Lab, this is it:
 
-################################################
+*Event Management is a core feature of the Cloud Pak for AIOps, as it can consume IT Ops events from multiple sources and 
+apply advanced event noise reduction capabilities,
+including event classification, deduplication, correlation, suppression, etc. This allows IT operations teams to respond 
+quickly and proactively to slowdowns and outages, with end-to-end visibility and context.*
+
+

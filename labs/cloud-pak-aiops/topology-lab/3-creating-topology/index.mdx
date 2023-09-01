@@ -132,13 +132,13 @@ OpenStack, and application data, coming from an application management tool,
 such as AppDynamics or Instana.
 
 Lets create a folder for the topology files in the home directory and change to this new folder. 
-Run the following command from the Terminal window:
+Run the following command from the **Terminal** window:
 
 ```
 cd; mkdir lab; cd lab
 ```
 
-Create a file called **infrastructure.txt** by running the following command in the Terminal window to open the text editor
+Create a file called **infrastructure.txt** by running the following command in the **Terminal** window to open the text editor
 , copy the infrastructure topology data listed below (use the copy helper icon (top-right) for one-click copy), paste it into the text editor, 
 click on the **Save** button in the text editor and close the editor window (click on the X). 
 
@@ -207,8 +207,7 @@ Resource properties definition:
 
 - entityTypes: This defines what type of Resource is being created for
   example: a computer or a database and will also dictate which icon it will
-  use in the topology view. A resource can have multiple values in the
-  entityTypes field, although normally it would just have one entry.
+  use in the topology view.
 
 - references: this adds one or more edges to another resource. Each edge in the list can have some of these keywords:
   - \_fromUniqueId and \_toUniqueId: these parameters 
@@ -224,25 +223,26 @@ Resource properties definition:
 Log into the Cloud Pak for AIOps: 
 * from the burger menu in the top-left navigate to: **Define → Data and tool connections**
 * from the **Data and tool connections** page, click on **Add connection**
-* from the **Add connections** page, under Category click on **Topology** then click on the **File** tile and click **Connect**
+* from the **Add connections** page, under Category click on **Topology** then search for **File**, click on the **File** tile and click **Connect**
 
 
 
 In the **New observer job: File** form, fill the Unique ID field as "infrastructure". Keep the 
 **File Mode** as **Upload local file**, upload the **infrastructure.txt** file that you created in the previous 
-step and click the **Save** button. The Provider field will be automatically populated when you click Save.
+step and click the **Save** button. The Provider field will be automatically populated when you click **Save**.
 
 ![](images/infrajob.png)
 
 
-Repeat the process by creating a second File Observer job with the Unique ID as "application" and this time load the
-**application.txt** file.
+Now click on the **Add a new job** button, from the pop-up choose the **File** observer and repeat the process by creating a second File Observer 
+job with the Unique ID as "application" and this time load the **application.txt** file.
 
 Each job will run the moment it is saved. After you have done this, your
 Observer jobs screen should look like the one below. You can verify that your jobs ran successfully by confirming the Ready status
 for each job:
 
 ![](images/observers.png)
+
 
 
 

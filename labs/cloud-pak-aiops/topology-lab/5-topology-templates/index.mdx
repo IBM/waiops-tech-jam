@@ -62,7 +62,7 @@ In the **Resource group templates** page, click on **Create a new template**, se
 You will be presented with a **Template builder** page. From here, use the
 following steps to configure a new exact template:
 
-- Give the template a name (e.g. router1)
+- Give the template a name such as **router1**
 - Choose the **Resource group type** as **network**
 - Add a **Resource group naming pattern prefix** for the resulting group's name:
   **ROUTER-**
@@ -72,6 +72,10 @@ following steps to configure a new exact template:
   and hit Enter
   - Choose **router1** from the list of resources
   - Change the view to 1 hop and click **Render**
+
+![](images/1-hop.png)
+
+
 - Click **Save template & generate resource group**
 
 You should have something like the following:
@@ -187,7 +191,7 @@ Resource groups are then added, removed and updated as you add or remove virtual
 machines and/or services running on them.
 
 
-The Dynamic group template is probably the most versatile of the three topology group
+The Dynamic group template is probably the most versatile of all the topology group
 templates. Using an example of a set of resources you want to group, the dynamic
  group template will automatically find other groups of resources that
 follow the same *recipe* as the example you give. As you expose the resources
@@ -202,7 +206,7 @@ that host our applications. We will create a second server **computer1001** that
 hosts the **notification** and **email** applications for the purposes of this
 exercise.
 
-Create a new file called **application2.txt** by running the following command in the Terminal window to open the text editor
+Create a new file called **application2.txt** by running the following command in the **Terminal** window to open the text editor
 , copy the topology data listed below (use the copy helper icon (top-right) for one-click copy), paste it into the text editor, 
 click on the **Save** button in the text editor and close the editor window (click on the X). 
 
@@ -217,7 +221,7 @@ V:{"_operation":"InsertReplace","uniqueId":"111-9c1f90e0-7dc4-40d8-8721-40ea2f3a
 V:{"_operation":"InsertReplace","uniqueId":"111-974d1788-1312-4151-8a62-73fa1854e807-app2","matchTokens":["111-974d1788-1312-4151-8a62-73fa1854e807-app2","computer1001"],"tags":["WAIOpsDemo"],"name":"computer1001","entityTypes":["computer"],"_references":[]}
 ```
 
-Use the steps described in the previous chapter to import this file using a 
+Use the steps described in the previous chapter to import this file (**application2.txt**) using a 
 new File Observer job to ingest the topology data.
 
 After running this last Observer job, you should see a total of 12 resources which 2 have been merged, as shown below:
@@ -262,8 +266,8 @@ Continue with the following steps:
 
 
 In the **Preview resource groups** section, you will see that the dynamic template builder has found two groups of
-resources that match the *recipe*. The first group resources were in the original application resources data. The second group resources were added
-by the Observer job we just run. In summary, we defined a dynamic template that creates groups for every compute resource 
+resources that match the *recipe*. The first group resources were in the original application resources data (**application.txt**). The second group resources were added
+by the Observer job we just run (**application2.txt**). In summary, we defined a dynamic template that creates groups for every compute resource 
 and will include any one hope resource that has the attribute *runsOn*. 
 
 ![](images/dynamic_result.png)
@@ -319,13 +323,12 @@ Your rule should look like this:
 - Click on **Add rule**.
 
 - Now confirm that you see the new rule under **Rule definitions** as shown below
-and click on **Save template**.
 
 ![](images/new-rule.png)
 
+- Finally click on **Save template**.
 
-
-Finally, as this template will create new groups based on the cpu name and these 
+As this template will create new groups based on the cpu name and these 
 resources are in the **infrastructure** resource data file, please rerun the **infrastructure** 
 observer job to actually apply the rules in this group template.
 

@@ -66,7 +66,7 @@ In our case, we have a Resource called "computer1000" represented in our
 infrastructure topology data as well as in our application data. Our goal is to
 merge the two sets of topology together so that we can both visualize what
 applications are running on our servers, and more importantly, correlate
-hardware alarms with application alarms, something that is not possible
+infrastructure alerts with application alerts, something that is not possible
 otherwise. Note that the rule is created in a generic way so that if there were
 any other computers included in our two data sets, they too would be merged
 together automatically, so long as they met the criteria set out in the rule.
@@ -87,9 +87,7 @@ Select the **Merge rules** tab, note that some Merge rules are already defined o
 Follow these steps to create your new Merge Rule:
 
 - **Rule name:** Give your rule a name, for example **InfrastructureApplications**
-
 - Set **Status** to **Enabled**
-
 - **Tokens**: The tokens refer to the parameters in your Resources that will be
   compared. In our case, the parameter that stores the computer name is called
   "name" in both sets of data, therefore type **${name}** and click on **Add**. 
@@ -111,8 +109,8 @@ Follow these steps to create your new Merge Rule:
   this section was left empty, it would try to apply this rule to topology data
   coming from **all** File jobs defined.
 
-  - **Resource types**: Add the Resource types that this rule should apply to -
-  ie. **computer**. If this section was left empty, it would try to apply this
+  - **Resource types**: Add the Resource type that this rule should apply to which is
+  **computer**. If this section was left empty, it would try to apply this
   rule to **all** Resource types in the Observers list and Providers list above.
 
   - The **Token filter mode** and **Token** filters sections allow you to refine
@@ -133,7 +131,7 @@ to ensure they only get applied to the right topology resources.
 When finished creating your new Merge Rule, click **Save** and return to the
 Observer jobs page
 
-#### Rerun Observer Jobs to Apply Merge Rule
+#### Rerun Observer Jobs to Apply the Merge Rule
 
 * from the burger menu in the top-left navigate to: **Define → Data and tool connections**
 * from the **Data and tool connections** page click on **Manage observer jobs** tab and click on **Configure, schedule, and manage observer jobs**.
