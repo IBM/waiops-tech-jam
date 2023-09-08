@@ -138,8 +138,183 @@ view we can see total number of resources, the active Incidents and Alerts relat
 ![](images/app-defined.png) 
 
 
+## 6.3: Alert Topological Correlation
 
-## 6.3: Lab Recap
+We will see how the topology resource groups we have created are used to correlate alerts. Topological alert grouping 
+helps you understand when alerts are connected based on their topology, providing valuable context information 
+for why related alerts might occur together.
+
+In order to load alerts, we need to create a webhook connection and an event loader script. 
+
+### Creating a Webhook Connection
+
+The webhook connection allows the Cloud Pak for AIOps to expose an API that can be used to load IT Ops events created
+by observability tools such as Datadog, Zabbix and others:
+* from the burger menu in the top-left navigate to: **Define → Data and tool connections**
+* from the **Data and tool connections** page click on **Add connection**
+* from the **Add connections** page search for **webhook**, click on the
+ **Generic Webhook** tile and click **Connect**. 
+
+Fill the **Add connection** form with these values: 
+
+* Name: event-webhook
+* Description: custom webhook connection for events
+* Authentication type: *select Username/Password*
+* Username: pick a username (e.g. test)
+* Password: pick a password (e.g. test)
+
+Your complete form should look like this (note that your route will be different)
+
+![](images/webhook-page1.png)
+
+
+Click **Next**. 
+
+In the **Configure event mapping** form:
+
+* Confirm the **Enable webhook** slider is green (On)
+* The webhook connector leverages JSONata which is a simple expression language to transform JSON data. 
+You can read about JSONata [here](https://jsonata.org/). In this Lab, we provide the JSON event format
+as expected by the Cloud Pak for AIOPs, therefore the JSONata is just a "passthrough". In a real scenario, 
+you will find this mapping capability very useful. 
+
+Enter the following JSONata configuration (use the copy helper icon (top-right) for one-click copy)
+
+```json
+{
+   "sender":{
+      "service": sender.service,
+      "name": sender.name,
+      "type": sender.type
+   },
+   "resource":{
+      "application": resource.application,
+      "name": resource.name,
+      "hostname": resource.hostname,
+      "type": resource.type,
+      "ipaddress": resource.ipaddress,
+      "location": resource.location
+   },
+   "type":{
+      "classification": type.classification,
+      "eventType": type.eventType
+   },
+   "severity": severity,
+   "summary": summary,
+   "occurrenceTime": occurrenceTime,
+   "expirySeconds": expirySeconds
+}
+```
+
+Click on **Done**. You will see a new webhook created as shown below. Note the **Webhook route** URL on the right. You will need this URL in the next step. 
+
+![](images/webhook-created.png)
+
+
+### Creating a Webhook Event Loader Script
+
+
+We will create a simple bash script that reads an event file and calls the webhook 
+API with every event in the file as a parameter. 
+
+In the same *lab* folder, create a file called **event-load-webhook.sh** by running the following command in the **Terminal** window to open the text editor
+, **copy** the bash script below (use the copy helper icon (top-right) for one-click copy), **paste** it into the text editor.
+
+```
+gedit event-load-webhook.sh
+```
+
+
+```sh
+#!/bin/bash
+# this is the event-load-webhook.sh script
+
+# Check if a file is provided as a parameter
+if [ $# -eq 0 ]; then
+  echo "Please provide an event file as a parameter."
+  exit 1
+fi
+
+###########################################
+WEBHOOK_URL='<insert the webhook URL here>'
+# Note below there is a colon character ':' between the username and password e.g. test:test
+AUTH=<insert your chosen user name>:<insert your chosen password>
+###########################################
+
+
+# Read the event file line by line and submit the event via webhook
+while IFS= read -r line; do
+  curl -X POST -u $AUTH --insecure -H 'Content-Type: application/json' $WEBHOOK_URL -d "$line"
+  echo ""
+done < "$1"
+```
+
+There are two changes you need to make to the script:
+*  assign to WEBHOOK_URL the webhook route of the webhook you just created in the previous step
+*  assign to AUTH the chosen user name and password of the webhook you just created in the previous step e.g. test:test
+
+Click on the **Save** button in the text editor and **close** the editor window (click on the X). 
+
+
+
+### Validating Topological Correlation
+
+We will now load a set of sample events. Because these events impact resources we have in one of our topology group (billing, 
+computer1000 and webserver) these events will be correlated.
+
+
+Create a new file called *topology-events.json* by running the following command in the **Terminal** window to open the text editor,
+**copy** the event data below, **paste** it into the text editor, 
+click on the **Save** button in the text editor and **close** the editor window (click on the X). 
+
+```
+gedit topology-events.json
+```
+
+```
+{ "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "application":"eCom2 web server", "name":"computer1000", "hostname":"computer1000.company.com", "type":"host", "ipaddress":"10.1.96.24", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":3, "summary":"CPU at 80% utilization", "occurrenceTime":"2023-05-05T14:40:38.000Z", "expirySeconds":0 }
+{ "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "application":"eCom2 api layer", "name":"billing", "hostname":"", "type":"device", "ipaddress":"10.1.96.28", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":5, "summary":"Unscheduled device restart. Review log files", "occurrenceTime":"2023-05-05T14:45:20.000Z", "expirySeconds":0 }
+{ "sender":{ "service":"Zabbix Middleware Monitoring", "name":"US-SOUTH CEA SelfMonitoring @AGG_P", "type":"Zabbix" }, "resource":{ "application":"eCom2 security layer", "name":"webserver", "hostname":"", "type":"device", "ipaddress":"10.1.96.29", "location":"US-SOUTH" }, "type":{ "classification":"System status", "eventType":"problem" }, "severity":6, "summary":"Unable to load firewall rules after reboot", "occurrenceTime":"2023-05-05T14:46:10.000Z", "expirySeconds":0 }
+```
+
+Now lets submit the events via the *webhook event loader script* created in the previous section by running the following command from the **Terminal** window:
+
+```
+bash event-load-webhook.sh topology-events.json
+```
+
+First, lets see how the Application we have defined shows these events:
+
+* From the burger menu in the top-left navigate to: **Operate → Resource Management** and click on the **Applications** tab
+
+Note that the events impacting the resources, have rolled-up into the impacted **Application** that contains these resources, as shown below
+
+![](images/app-impacted.png)
+
+Click on the Application name (**Order Capture Backend**) to see the topology resources impacted
+
+![](images/topo-impacted.png)
+
+Finally, lets see how these events are correlated:
+
+* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts** and click on the **Alerts** tab
+* Click on the **Refresh alerts** icon on the right
+* Lets add some color to this page:
+    * Click on the **gear** icon in the right and select **User preferences**.
+    * From the **User preferences for alerts** pop-up, click on the **Row coloring** slider to On (green).
+    * Click on **Save**.
+
+In the Alerts view, we can see a single group of alerts as shown below.
+
+![](images/events-group.png)
+
+Click on the chevron icon on the left to expand this group. See how the three events we have submitted have been grouped together. 
+Also click on the **View correlation** icon in the top-right, the Correlation column on the right, shows the topological group icon. 
+
+![](images/events-expanded.png)
+
+
+## 6.4: Lab Recap
 
 
 Congratulations if you made it here!. We have seen a lot of features in a short period of time. If there 
