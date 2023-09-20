@@ -19,9 +19,11 @@ The following diagram describes the initial infrastructure for the Lab:
 
 :::note
 
-- One key objective of this Lab is to expose the product public documentation to
-  the practitioners. With this in mind, each installation steps will reference
-  the product documentation. :::
+One key objective of this Lab is to expose the product public documentation to
+the practitioners. With this in mind, each installation steps will reference the
+product documentation.
+
+:::
 
 ## 2.1: Prerequisites
 
@@ -59,9 +61,12 @@ most capacity available.
 
 <TechZoneStatus />
 
-:::info Follow
+:::info
+
+Follow
 [these instructions](/waiops-tech-jam/labs/jam-in-a-box/#requesting-a-lab-environment)
 for step by step guidance on requesting a new lab environment in IBM Tech Zone.
+
 :::
 
 Request Tech Zone environment:
@@ -70,8 +75,11 @@ Request Tech Zone environment:
 
 ## 2.3: Accessing your Lab Environment
 
-:::info Once you have received an eMail confirming that your environment is
-ready, follow
+:::info
+
+Once you have received an eMail confirming that your environment is ready,
+follow
 [these instructions](/waiops-tech-jam/labs/jam-in-a-box/#accessing-a-lab-environment)
 for step by step guidance on accessing your lab environment in IBM Tech Zone.
+
 :::
