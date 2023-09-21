@@ -29,8 +29,8 @@ TechZone collection.
 
 :::
 
-1. Use the link supplied in the lab you would like to start to navigate to the
-   TechZone collection.
+1. Use the link supplied in the labs **Lab Environment** section to navigate to
+   the TechZone collection.
 
    Sign in with your IBM ID when prompted.
 
@@ -38,7 +38,30 @@ Select when you would like to reserve the environment for.
 
 ![reserve-env-schedule](../_common/images/reserve-env-schedule.png)
 
+import TechZoneStatus from "../\_common/components/tech-zone-status.tsx"
+
+:::info
+
+When requesting your environment it would be wise to select the region that has
+the most capacity available. Below is a live chart showing Tech Zone capacity in
+each available region. Keep this in mind when completing your reservation.
+
+<TechZoneStatus />
+
+:::
+
 Fill in the reservation details and select **Submit**
+
+:::caution Required Fields
+
+Pay close attention to the values you are asked to enter in the reservation
+form. Ignore the label text that suggests a field is _optional_, **these fields
+are not optional** and are required to provision your environment successfully.
+
+Each lab includes a **Lab Environment** section that will include a reminder
+about this and list the required fields for the respective lab.
+
+:::
 
 ![create-reservation](../_common/images/create-reservation.png)
 
@@ -73,8 +96,8 @@ _Apache Guacamole_ Bastion host.
 
 ![access-guacamole](../_common/images/access-guacamole.png)
 
-All access to the lab environment is behind this RHEL Bastion host
-named **bastion-gym-lan**.
+All access to the lab environment is behind this RHEL Bastion host named
+**bastion-gym-lan**.
 
 ![guacamole](../_common/images/guacamole.png)
 
@@ -203,3 +226,5 @@ completed on your allocated lab environment:
    outstanding certificate signing requests. Your output should be similar to:
 
    ![Approve CSRs](images/approve-csrs.png)
+
+## Troubleshooting
