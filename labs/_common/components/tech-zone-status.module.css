@@ -1,0 +1,68 @@
+.status {
+  min-height: 270px;
+  margin-bottom: 2rem;
+}
+
+.table {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+  border: 0.5px solid #c0c0c0;
+}
+
+.header {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 16px;
+  background-color: #f9fafb;
+  font-weight: 700;
+  box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.1);
+}
+
+.data {
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  align-content: flex-start;
+}
+
+.badge {
+  display: block;
+  padding: 0.2em 0.5em;
+  font-weight: bold;
+  border-radius: 12px;
+  color: #fff;
+  height: fit-content;
+}
+
+.badgeOperational {
+  composes: badge;
+  background-color: #55ab67;
+}
+
+.badgeLimited {
+  composes: badge;
+  background-color: #eaac50;
+}
+
+.badgeCritical {
+  composes: badge;
+  background-color: #b54a39;
+}
+
+.errorMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 270px;
+  text-align: center;
+  padding: 1rem;
+  background-color: #f7f7f7;
+}
+
+.loading {
+  composes: errorMessage;
+  color: var(--ifm-color-primary);
+}
