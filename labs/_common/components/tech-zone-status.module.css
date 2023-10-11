@@ -29,7 +29,7 @@
 }
 
 .badge {
-  display: block;
+  display: inline-block;
   padding: 0.2em 0.5em;
   font-weight: bold;
   border-radius: 12px;
@@ -65,4 +65,8 @@
 .loading {
   composes: errorMessage;
   color: var(--ifm-color-primary);
+}
+
+.legend {
+  font-size: small;
 }

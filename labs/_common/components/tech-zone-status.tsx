@@ -138,6 +138,25 @@ export default function TechZoneStatus() {
               })}
             </div>
           </div>
+
+          <div
+            style={{
+              paddingTop: "16px",
+              justifyContent: "end",
+              display: "flex",
+              gap: "8px",
+            }}
+          >
+            <span className={`${styles.badgeOperational} ${styles.legend}`}>
+              High Capacity
+            </span>
+            <span className={`${styles.badgeLimited} ${styles.legend}`}>
+              Moderate Capacity
+            </span>
+            <span className={`${styles.badgeCritical} ${styles.legend}`}>
+              Low Capacity
+            </span>
+          </div>
         </>
       ) : error ? (
         <div className={styles.errorMessage}>
