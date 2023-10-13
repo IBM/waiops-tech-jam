@@ -6,7 +6,8 @@ Set the pull secret username and password:
 
 :::caution
 
-Get the `<pull-secret-user>` and `<pull-secret-pass>` from your lab proctors.
+The `<pull-secret-user>` and `<pull-secret-pass>` are obtained by creating a
+DockerHub account.
 
 :::
 
