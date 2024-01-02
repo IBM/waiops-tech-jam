@@ -117,15 +117,15 @@ You are now ready to deploy the operator
    kind: ClusterRoleBinding
    apiVersion: rbac.authorization.k8s.io/v1
    metadata:
-   name: t8c-operator
+     name: t8c-operator
    subjects:
-   - kind: ServiceAccount
-   name: t8c-operator
-   namespace: turbonomic-platform
+     - kind: ServiceAccount
+       name: t8c-operator
+       namespace: turbonomic-platform
    roleRef:
-   kind: ClusterRole
-   name: t8c-operator
-   apiGroup: rbac.authorization.k8s.io
+     kind: ClusterRole
+     name: t8c-operator
+     apiGroup: rbac.authorization.k8s.io
    EOF
    ```
 
