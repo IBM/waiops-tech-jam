@@ -226,7 +226,9 @@ You are now ready to deploy the operator
 
    ```sh
    turbonomic-platform
-   1000320000
+   1000680000
+   icr.io/cpopen/turbonomic
+   8.11.4
    ocs-storagecluster-ceph-rbd
    ```
 
@@ -282,14 +284,6 @@ You are now ready to deploy the operator
    - show `1/1` in the `READY` column.
 
    **Example output only (Do not copy and paste into your terminal):**
-
-   :::info
-
-   You can safely ignored the pods **prometheus-server**,
-   **server-power-modeler** & **suspend** if they are in _ImagePullBackOff_ or
-   _Pending_ state.
-
-   :::
 
    ```sh
    NAME                                   READY   STATUS    RESTARTS      AGE
