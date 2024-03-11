@@ -206,6 +206,8 @@ You are now ready to deploy the operator
    :::
 
    ```sh
+   export TURBONOMIC_REPOSITORY=icr.io/cpopen/turbonomic
+   export TURBONOMIC_TAG=8.11.4
    export STORAGE_CLASS=ocs-storagecluster-ceph-rbd
    ```
 
@@ -214,6 +216,8 @@ You are now ready to deploy the operator
    ```sh
    echo ${NS} && \
    echo ${FSGROUP} && \
+   echo ${TURBONOMIC_REPOSITORY} && \
+   echo ${TURBONOMIC_TAG} && \
    echo ${STORAGE_CLASS}
    ```
 
@@ -222,7 +226,9 @@ You are now ready to deploy the operator
 
    ```sh
    turbonomic-platform
-   1000320000
+   1000680000
+   icr.io/cpopen/turbonomic
+   8.11.4
    ocs-storagecluster-ceph-rbd
    ```
 
@@ -238,12 +244,12 @@ You are now ready to deploy the operator
    spec:
      global:
        customImageNames: false
-       repository: registry.connect.redhat.com/turbonomic
+       repository: ${TURBONOMIC_REPOSITORY}
        securityContext:
          fsGroup: ${FSGROUP}
        storageClassName: ${STORAGE_CLASS}
        storageSelector: false
-       tag: 8.6.2
+       tag: ${TURBONOMIC_TAG}
      openshiftingress:
        enabled: true
      kubeturbo:
@@ -278,14 +284,6 @@ You are now ready to deploy the operator
    - show `1/1` in the `READY` column.
 
    **Example output only (Do not copy and paste into your terminal):**
-
-   :::info
-
-   You can safely ignored the pods **prometheus-server**,
-   **server-power-modeler** & **suspend** if they are in _ImagePullBackOff_ or
-   _Pending_ state.
-
-   :::
 
    ```sh
    NAME                                   READY   STATUS    RESTARTS      AGE
