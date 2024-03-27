@@ -121,16 +121,21 @@ terminal window and trying again.
 cd ~ && git clone https://github.com/instana/robot-shop.git
 ```
 
-change directory into the **robot-shop/K8s** directory
+Change directory into the **robot-shop/K8s** directory
 
 ```sh
 cd robot-shop/K8s
 ```
 
-create namespace `robot-shop`:
+Ensure namespace `robot-shop` is created:
 
 ```sh
-oc create ns robot-shop --kubeconfig ~/kubeconfig-apps
+cat <<EOF | oc apply --server-side --kubeconfig ~/kubeconfig-apps -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: robot-shop
+EOF
 ```
 
 Next, setup **privileges** within the cluster for the **Robot Shop** application
