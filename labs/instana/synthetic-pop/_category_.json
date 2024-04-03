@@ -1,4 +1,5 @@
 {
   "label": "Synthetic Monitoring",
-  "position": 50
+  "position": 50,
+  "className": "wip-docs"
 }

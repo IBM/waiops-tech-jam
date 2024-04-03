@@ -4,14 +4,22 @@ description: Explore Instana
 sidebar_position: 7
 ---
 
+:::warning Work In Progress
+
+This lab is currently under development.
+
+:::
+
 ## Explore Instana and OpenTelemetry traces
 
-Now, once the Instana and OpenTelemetry Demo Application are in sync, you can start exploring the captured data.
+Now, once the Instana and OpenTelemetry Demo Application are in sync, you can
+start exploring the captured data.
 
 ## Instana native tracing
 
-In this section you will focus on exploring Instana's native tracing capabilities. In your Instana UI/Analytics search for calls which meet 
-these criteria: 
+In this section you will focus on exploring Instana's native tracing
+capabilities. In your Instana UI/Analytics search for calls which meet these
+criteria:
 
 - Application name: your application name
 - Service name: frontendproxy
@@ -20,15 +28,17 @@ Click on the image call described under the point (4) from the below screen
 
 ![explore4](images/explore-004-fixed.png)
 
-On the right side of the screen you will notice tags and call parameters, together with an Infrastructure information - EnvoyProxy. 
-This means that Instana injected its own tracing libraries into the proxy application.
+On the right side of the screen you will notice tags and call parameters,
+together with an Infrastructure information - EnvoyProxy. This means that
+Instana injected its own tracing libraries into the proxy application.
 
 ![explore5](images/explore-005-fixed.png)
 
 ## OpenTelemetry tracing
 
-Using Instana agent, you can also receive OpenTelemetry based traces. Let's find an example in your environment.
-Go to Instana UI/Analytics search for calls which meet these criteria: 
+Using Instana agent, you can also receive OpenTelemetry based traces. Let's find
+an example in your environment. Go to Instana UI/Analytics search for calls
+which meet these criteria:
 
 - Application name: your application name
 - Service name: quoteservice
@@ -37,38 +47,49 @@ Click on the call link to see the transaction details.
 
 ![explore6](images/explore-006-fixed.png)
 
-In the detailed view of the call, please take a look at the right side of the screen. You will find there a list of json attributes captured by Instana. One of them is called 
-"telemetry.sdk.name" with a value "opentelemetry", which proves that the content is coming from the OpenTelemetry tracer.
+In the detailed view of the call, please take a look at the right side of the
+screen. You will find there a list of json attributes captured by Instana. One
+of them is called "telemetry.sdk.name" with a value "opentelemetry", which
+proves that the content is coming from the OpenTelemetry tracer.
 
 ![explore7](images/explore-007-fixed.png)
 
 ## Instana and OpenTelemetry combined traces
 
-Instana can combine traces coming from applications instrumented by OpenTelemetry and Instana tracing on the same screen. 
-Please follow the below instructions to find an example of such transaction in your environment.
+Instana can combine traces coming from applications instrumented by
+OpenTelemetry and Instana tracing on the same screen. Please follow the below
+instructions to find an example of such transaction in your environment.
 
-Go to Instana UI/Analytics and search for the calls that are in your application perspective and endpoint name is /api/cart like presented below.
-Click on /api/cart to see the details of the call.
+Go to Instana UI/Analytics and search for the calls that are in your application
+perspective and endpoint name is /api/cart like presented below. Click on
+/api/cart to see the details of the call.
 
 ![explore1](images/explore-003-fixed.png)
 
-Click on the first transaction as highlighted on the below screen in a point (1). The point (2) represents the captured data. 
-The content was delivered by a native Instana tracing.
+Click on the first transaction as highlighted on the below screen in a point
+(1). The point (2) represents the captured data. The content was delivered by a
+native Instana tracing.
 
 ![explore2](images/explore-001-fixed.png)
 
-Click on the second row within the transaction as described below in a point (1). The point (2) represents the captured data which comes from the OpenTelemetry tracer.
+Click on the second row within the transaction as described below in a point
+(1). The point (2) represents the captured data which comes from the
+OpenTelemetry tracer.
 
 ![explore3](images/explore-002-fixed.png)
 
-The above example proves the Instana can combine traces from both OpenTelemetry and Instana tracing within the same screen under one transaction ID.
+The above example proves the Instana can combine traces from both OpenTelemetry
+and Instana tracing within the same screen under one transaction ID.
 
 ## Instana native tracing - code examples
 
-Instana can provide combined traces from the OpenTelemetry and Instana native tracing. In the below example, you can see, how to 
-use native Instana instrumentation techniques. In the below snippet, we follow [Envoy tracing configuration described here](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-envoy-proxy#configuring-distributed-tracing)
+Instana can provide combined traces from the OpenTelemetry and Instana native
+tracing. In the below example, you can see, how to use native Instana
+instrumentation techniques. In the below snippet, we follow
+[Envoy tracing configuration described here](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-envoy-proxy#configuring-distributed-tracing)
 
-As an outcome, Instana will inject its code and capture tracing of a calls, which were processed by the Envoy proxy.
+As an outcome, Instana will inject its code and capture tracing of a calls,
+which were processed by the Envoy proxy.
 
 ```bash
 FROM envoyproxy/envoy:v1.25-latest
@@ -97,7 +118,8 @@ Please note the use of libcxx-libinstana_sensor.so library.
 
 ## OpenTelemetry tracing - code examples
 
-If you wish to use OpenTelemetry in your application, here is the example snippet which can show, how to build the proper instrumentation. 
+If you wish to use OpenTelemetry in your application, here is the example
+snippet which can show, how to build the proper instrumentation.
 
 ```php
 use OpenTelemetry\API\Common\Instrumentation\Globals;

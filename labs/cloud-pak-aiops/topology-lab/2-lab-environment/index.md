@@ -52,13 +52,6 @@ most capacity available.
 
 <TechZoneStatus />
 
-:::warning Required Fields
-
-When requesting your environment the **Cloud Pak for AIOps entitlement key** is
-a required field.
-
-:::
-
 :::info
 
 Follow

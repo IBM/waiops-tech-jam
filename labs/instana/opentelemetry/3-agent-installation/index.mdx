@@ -4,20 +4,30 @@ description: Install the Instana agent on OCP cluster
 sidebar_position: 4
 ---
 
+:::warning Work In Progress
+
+This lab is currently under development.
+
+:::
+
 ## Instana agent installation
+
 In this section you will install Instana Agent to monitor your OCP cluster.
 
-## Helm chart 
+## Helm chart
 
-Log in to your Instana UI, click on "Deploy agent" link as described on the below picture
+Log in to your Instana UI, click on "Deploy agent" link as described on the
+below picture
 
 ![agent1](images/agent-install-001-fixed.png)
 
-Select OpenShift and choose Helm installation option. Copy the helm chart installation script.
+Select OpenShift and choose Helm installation option. Copy the helm chart
+installation script.
 
 ![agent2](images/agent-install-002-fixed.png)
 
-Go back to your ssh console, paste the copied helm chart installation script and hit enter
+Go back to your ssh console, paste the copied helm chart installation script and
+hit enter
 
 ```bash
 helm install instana-agent \
@@ -50,9 +60,9 @@ k8sensor-xxx-btll6          1/1     Running   0          3d
 k8sensor-xxx-qvn2s          1/1     Running   0          3d
 ```
 
-
 ## Verify OpenShift monitoring
 
-Go to your Instana UI, click on "Kubernetes" left side menu. Ensure you are getting the metrics from your cluster.
+Go to your Instana UI, click on "Kubernetes" left side menu. Ensure you are
+getting the metrics from your cluster.
 
 ![agent3](images/agent-install-003-fixed.png)

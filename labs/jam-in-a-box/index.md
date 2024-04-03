@@ -55,11 +55,8 @@ Fill in the reservation details and select **Submit**
 :::caution Required Fields
 
 Pay close attention to the values you are asked to enter in the reservation
-form. Ignore the label text that suggests a field is _optional_, **these fields
-are not optional** and are required to provision your environment successfully.
-
-Each lab includes a **Lab Environment** section that will include a reminder
-about this and list the required fields for the respective lab.
+form. Credentials and licenses you are prompted for are required. Automations
+will not provision correctly without them.
 
 :::
 
