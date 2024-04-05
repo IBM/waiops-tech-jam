@@ -73,3 +73,7 @@
     transform: rotate(360deg);
   }
 }
+
+.wip-docs {
+  display: none !important;
+}

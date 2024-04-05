@@ -58,6 +58,25 @@ You can safely ignore the warning about the certificate being untrusted.
 
    :::
 
+:::warning
+
+There is currently a known issue with the integration between Turbonomic and
+Instana in the lab environment preventing data ingest from Instana.
+
+Until this is resolved the workaround is to **re-save** and **rediscover** the
+Instana target. To do this:
+
+1. Select **Settings** from the left navigation pane
+2. Select **Target Configuration**
+3. Edit the **Instana** target that is in a critical state. DO NOT change
+   anything. Just click **Save**.
+4. Check the checkbox next to the **Instana** target and click **Rediscover**
+
+This will force a re-discovery of the Instana target and should resolve the
+issue. The UI will begin to populate with data from Instana after a few minutes.
+
+:::
+
 1. Once logged in you will see the Turbonomic UI homepage. Lets start by
    familiarising ourselves with the UI.
 
