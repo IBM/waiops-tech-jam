@@ -13,7 +13,7 @@ your issue.
   [Collect automation logs](#collect-automation-logs)
 
 - Your environment failed to provision.
-  [Collect the Transaction ID](#collect-transaction-id).
+  [Collect the Transaction & Reservation IDs](#collect-transaction-and-reservation-ids).
 
 ## Collect Automation Logs
 
@@ -35,26 +35,30 @@ provide additional context when posting your question:
 3. Copy as much of the output as possible starting from the very bottom.
 
 4. Let us know about the issue you are facing in the _#jam-in-a-box_ Slack
-   channel.
-
-   To keep the main thread easy to follow please follow the instructions below
-   when posting:
+   channel. Please follow the below guidance when posting in the channel:
 
    :::warning Slack
 
-   1. Ask your question in the main thread (do not include the log output in the
-      initial message).
+   **To keep the main thread easy to follow please follow the instructions below
+   when posting:**
+
+   1. Let us know a brief description of your issue in the main thread (Do not
+      include the log output in the main thread).
    2. After posting your message, select **reply to thread** on your own
       message.
-   3. In the thread view type `/snippet` and select **Create a text snippet**.
-      Paste your logs into the snippet and select **Create Snippet**.
+   3. In the thread view include the following:
+      - A link to the TechZone environment you attempted to provision.
+      - Your
+        [Reservation and Transaction IDs](#collect-transaction-and-reservation-ids).
+      - type `/snippet` and select **Create a text snippet**. Paste your logs
+        into the snippet and select **Create Snippet**.
 
-   This will make it easier for us to work with your logs and keep the main
-   thread clean and easy to follow.
+   This will make it easier for us to understand your issue and keep the main
+   thread clean and easy to follow for all.
 
    :::
 
-## Collect Transaction ID
+## Collect Transaction and Reservation IDs
 
 The Transaction ID will help us identify the specific provisioning attempt that
 failed. Please follow the steps below to collect the Transaction ID:
@@ -70,9 +74,11 @@ failed. Please follow the steps below to collect the Transaction ID:
 
 1. Select the tile for the failed reservation.
 
-1. Copy the Transaction ID.
+1. Copy the Reservation and Transaction IDs.
 
-   ![open-terminal](/img/transaction-id.png)
+   ![open-terminal](/img/reservation-and-transaction-ids.png)
 
-1. Send us a message in slack letting us know what environment you tried to
-   provision and the Transaction ID.
+1. Send us a message in slack with the following information:
+   - A link to the TechZone environment you attempted to provision
+   - The Reservation ID
+   - The Transaction ID
