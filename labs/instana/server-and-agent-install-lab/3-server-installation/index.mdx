@@ -298,147 +298,48 @@ upcoming section of the lab.
 
 ---
 
-## 3.6: Turning on features and setting up SMTP
+## 3.6: Setting up SMTP
 
-Following the initial install of your Instana server, there are optional
-configurations that you will likely want to make.
-
-- You may need to setup the Instana server to use an SMTP server if you plan to
-  send out Email notifications.
-- There may be some optional features that you want to enable via feature flags.
-  Features such as VMware/vSphere monitoring, Power HMC monitoring, and zHMC
-  monitoring are disabled by default.
-
-Follow the steps below to configure the SMTP settings and enable some additional
-feature flags.
-
-1. Edit `settings.hcl` file according to the
-   [documentation](https://www.ibm.com/docs/en/obi/current?topic=installer-enabling-feature-flags).
-   The **settings.hcl** file will be located in the same directory where you
-   issued the **instana init** command.
-
-These parameters are added to the settings.hcl file in the section with the
-other feature flags. Search in the settings.hcl file for **feature**. Then, add
-any additional feature flags that are desired in that section of the file. They
-can be place anywhere within the **feature** section of the file.
-
-:::caution
-
-Be aware that turning on features (especially BETA features) may heavily impact
-backend performance. DO NOT turn on features you don't need\*\*
-
-:::
-
-As we issued **instana init** from the working directory `/opt/instana`, the
-`settings.hcl` has been created there:
+You can configure SMTP settings when installing the cluster however as we have
+already installed the Instana server, we can now make modifications to the
+backend configuration using the stanctl tool.
 
 ```sh
-cd /opt/instana
+stanctl backend apply \
+  --core-smtp-from="server@instana.com" \
+  --core-smtp-host="localhost" \
+  --core-smtp-password="Passw0rd" \
+  --core-smtp-port=25 \
+  --core-smtp-start-tls=false \
+  --core-smtp-use-ssl=false
 ```
 
-Before you edit the settings.hcl file, make a backup of the file by typing:
+You should see output similar to the below:
+
+![backend-apply](images/smtp-backend-apply.png)
+
+## 3.7: Turning on features
+
+There are optional configurations that you will likely want to make to your
+installation of Instana.
+
+These options are made available via optional 'feature flags'. For features such
+as VMware/vSphere monitoring, Power HMC monitoring, and zHMC monitoring which
+are disabled by default.
+
+As an example to enable VMware/vSphere monitoring, you would run the following
+command:
 
 ```sh
-cp settings.hcl settings.hcl.bak
+stanctl backend apply --core-feature-flags feature.vsphere.enabled
 ```
 
-Now, edit the settings.hcl file by typing:
-
-```sh
-vi settings.hcl
-```
-
-Locate the existing _feature_ settings and add the following feature flags.
-
-```java
-feature "infraCustomDashboards" {
-  enabled = true
-}
-feature "infraEntityExplore" {
-  enabled = true
-}
-```
-
-:::info
-
-Note: There are other feature flags that you should be aware of, <span
-style={{color: "red"}}> but do not add these into the settings.hcl file</span>.
-Here are some common feature flags available are:
-
-```java
-feature "vsphereEnabled" {
-  enabled=true
-}
-feature "zhmcEnabled" {
-  enabled=true
-}
-feature "phmcEnabled" {
-  enabled=true
-}
-feature "beeinstana" {
-  enabled=true
-}
-feature "smartAlertsLogsBlueprintEnabled" {
-  enabled=true
-}
-feature "infraCustomDashboards" {
-  enabled = true
-}
-feature "infraEntityExplore" {
-  enabled = true
-}
-```
-
-:::
-
-Next, in the same file search for the **smtp** section in the settings.hcl file.
-Modify the smtp section to look like the below. We recommend that you edit the
-parameters rather than copy/paste this section. It is easy to make a mistake
-with the spacing when doing a copy/paste.
-
-:::note
-
-If you want, you can replace the **from** parameter with any Email address that
-you like. The **from** Email address is what you will see as the sender of the
-Email alerts from Instana.
-
-:::
-
-```sh
-  smtp {
-    from      = "server@instana.com"
-    host      = "localhost"
-    port      = 25
-    user      = "jammer"
-    password  = "Passw0rd"
-    use_ssl   = false
-    start_tls = false
-  }
-```
-
-Save the changes in the settings.hcl file.
-
-2. Apply the changes
-
-```sh
-instana update -f ./settings.hcl
-```
-
-:::tip
-
-It will take a little while for the configuration changes to take effect. The
-next section on upgrading the Instana Server is for information only, you can
-read it while the configuration changes are being applied.
-
-:::
-
-Once complete you should see the below
-
-![settings update](images/settings-update.png)
+You can view a
+[full list of available feature flags here.](https://www.ibm.com/docs/en/instana-observability/current?topic=openshift-enabling-optional-features#enabling-optional-features)
 
 ---
 
-## 3.7: Upgrading the Instana server
+## 3.8: Upgrading the Instana server
 
 :::warning Do not perform these steps
 
@@ -448,57 +349,35 @@ We want you to know the process for performing an upgrade.
 
 :::
 
-When upgrading an Instana server, it is important to know that you can only skip
-one release when upgrading. The on-prem/self-hosted releases use odd numbers.
-That means that you can upgrade from version 225 to either 227 or 229. But, you
-can't upgrade from 225 to 231 because that would be skipping 2 releases and
-isn't supported. It is important for customers to know this because they need to
-keep their Instana server patched on a fairly regular basis. Otherwise, it will
-mean that they will have to perform multiple steps to upgrade to the current
-version.
+Upgrades are made simple with the **stanctl** tool. The process for an upgrade
+is to first upgrade **stanctl** and then upgrade the Instana backend.
 
-Before attempting to upgrade, you want to confirm your current version. Issue
-the **instana version**
+Upgrading the **stanctl** tool is different depending on the Operating System
+you are using. As an example for Ubuntu you would run the following commands:
 
 ```sh
-instana version
+# Unhold the stanctl package if it is held
+sudo apt-mark unhold stanctl
+
+apt update -y
+apt install -y stanctl
+
+# Hold the stanctl package again to prevent it from being upgraded unintentionally.
+apt-mark hold stanctl
 ```
 
-Next, find out what versions are available to be installed. Issue the the
-following command:
+Then upgrade the backend:
 
 ```sh
-apt-cache policy instana-console
+stanctl up
 ```
 
-You will see a long list of versions that are available. Scroll to the top of
-the list where you will see the most recent versions. ![](images/versions.png)
-
-You'll notice that in this example, 229-2 is the most recent version and 229-1
-is the current version. That means you can upgrade to that minor release. There
-is newer major release available.
-
-First, install the latest instana-console. This upgrades the **instana** command
-that is installed on your server:
-
-```sh
-apt install instana-console=229-2
-```
-
-Next, upgrade the server by issuing the **instana update** command. If you are
-in directory with the settings.hcl file, then you don't need any arguments.
-Otherwise, specify the path to the settings.hcl file.
-
-```sh
-instana update -f /opt/instana/settings.hcl
-```
-
-When performance the upgrade, the installer automatically pulls down the latest
-docker containers and gets them up and running on the Instana server.
+The command will list the available updates. You can select **Proceed with
+installing the updates** to upgrade the backend.
 
 ---
 
-## 3.8: Summary
+## 3.9: Summary
 
 In this portion of the lab, you have learned how to install a self-hosted docker
 based Instana server. For a POC, we recommend either SaaS or the single server
