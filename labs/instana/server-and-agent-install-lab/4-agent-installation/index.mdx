@@ -24,16 +24,9 @@ All above mentioned methods are accessible via the wizard on the Instana UI
 
 :::caution
 
-If the Instana user interface is not available, go back and look at the command
-prompt where you issued the **instana update** command to change the
-configuration parameters. The command may still be running. The user interface
-won't be available until the update is complete.
-
-:::
-
-:::caution Important
-
-The Instana agent install requires **root** privileges.
+If you are unable to access the Instana Web UI you will need to go back through
+the previous lab and follow all the steps to ensure that the Instana server is
+up and running.
 
 :::
 
@@ -70,7 +63,40 @@ are recommended in restrictive network setups.
 
 ---
 
-## 4.2: Installing Instana Agent on a Linux VM
+## 4.2: Installing a local Instana Agent on K3s for self monitoring
+
+Self monitoring the Instana Backend when using the Standard Edition of Instana
+installed on K3s is very simple.
+
+Open a new terminal tab by selecting **File** -> **New Tab**.
+
+SSH to the Instana server with the _stanctl_ cli tool installed:
+
+```sh
+ssh jammer@instana
+```
+
+Become the root user:
+
+```sh
+sudo su -
+```
+
+Run the following command:
+
+```sh
+stanctl agent apply
+```
+
+After a short time you should see the following output:
+
+```sh
+⠹ Applying instana-agent  [5s] ✓
+```
+
+---
+
+## 4.3: Installing Instana Agent on a Linux VM
 
 We will start by installing the Instana Agent on the Linux VM that is running
 IBM MQ and ACE.
@@ -93,41 +119,36 @@ Use sudo to switch to the root user:
 sudo -i
 ```
 
-Refer back to Firefox where the **Installing Instana Agents** (shown below) page
-should now be open.
-
-![instana-default-login](images/instana-default-login.png)
+After logging into Instana for the first time you will be taken to the Agent
+Deployment page.
 
 :::tip
 
-If you aren't on the **Installing Instana Agents** screen you can get there by
-selecting the **"Stan"** robot icon in the upper left corner and then clicking
-the **"Deploy Agent"** button near the upper right corner.
+If you aren't on the **Agent deployment** screen you can get there by selecting
+the **Home** menu in the left navigation and then clicking the **"Deploy
+Agent"** button near the upper right corner.
 
-![](images/DeployAgent.png)
+![](images/deploy-agent.png)
 
 :::
 
 A list of different environments where you can install the Instana Agent is
-shown. This is a Linux server, so select Linux on the left side of the screen.
+shown. For example, on Linux, you can choose a automatic **one-liner**
+installation, RPM, or TAR file installation. For OpenShift/kubernetes, you have
+multiple options including operator, helm, and yaml installs. The easiest method
+is the default, **"Automatic Installation (One-Liner)"**. The _MQACE_ VM is a
+Linux server, so select Linux (One-liner).
 
-![](images/2022-05-21-17-48-04.png)
+![instana-default-login](images/agent-deployment.png)
 
-Then you can selected the **Technology** dropdown and choose from a list of
-installation options. For example, on Linux, you can choose a automatic
-**one-liner** installation, RPM, or TAR file installation. For
-OpenShift/kubernetes, you have multiple options including operator, helm, and
-yaml installs. The easiest method is the default, **"Automatic Installation
-(One-Liner)"**. Select that option in the dropdown list.
-
-Notice that there are a few other options including the use of different java
-versions, static vs. dynamic agents, etc. Leave the default settings.
+There are a few other options including the use of different java versions,
+static vs. dynamic agents, etc. Leave the default settings.
 
 Next, select the checkbox next to **"Install and start as service"**. This will
 setup the systemctl autostart process and will also start the Agent immediately
 after it is installed.
 
-![](images/linuxInstall.png)
+![install command](images/install-command.png)
 
 Finally, copy and paste the curl command into the **root@mqace** terminal window
 and answer `y` when prompted.
@@ -154,65 +175,6 @@ discovering key processes and middleware. In many cases it will automatically
 instrument those technologies. In the case of some technologies (eg. MQ an and
 App Connect Enterprise), there are manual configuration steps required due to
 the need to provide credentials for accessing those applications.
-
----
-
-## 4.3: Installing Instana Agent in a Docker Environment
-
-Next, you will install the Instana agent as a container running in Docker on the
-Instana server.
-
-![architecture-agent-mqace-vm](images/architecture-agent-instana-vm.png)
-
-You can navigate back to your first tab still logged into the **instana** host
-or from a terminal ssh to the Instana server again:
-
-```sh
-ssh jammer@instana
-```
-
-Switch to root
-
-```sh
-sudo -i
-```
-
-In the Instana UI, from the **Installing Instana Agents** screen select
-**Docker** this time.
-
-:::tip
-
-If you aren't on the **Installing Instana Agents** screen you can get there by
-selecting the **"Stan"** robot icon in the upper left corner and then clicking
-the **"Deploy Agent"** button near the upper right corner.
-
-![](images/DeployAgent.png)
-
-:::
-
-At the top of the page you will see an entry box where you can specify a
-**Zone**. Specify a zone name such as **TechZone**. Then, copy the docker run
-command and paste it into the **root@instana** terminal window.
-
-![](images/docker-agent.png)
-
-This will install the Instana Agent as a docker container running on the Instana
-Server machine.
-
-Once complete you can issue a **docker ps** command, you'll see there is a new
-Instana agent container running.
-
-```sh
-docker ps | grep agent
-```
-
-![docker ps agent](images/docker-ps-agent.png)
-
-Once installed, the Agent will begin to collect host metrics and will discover
-the various technologies like Cassandra, ClickHouse, ElasticSearch, Nginx,
-Node.js, and more. Many of these technologies will be monitored automatically
-without the need for configuration. In some cases, the sensors need to be
-configured in order to see the performance metrics.
 
 ---
 
@@ -263,29 +225,29 @@ monitor the entire cluster:
 oc adm policy add-scc-to-user privileged -z instana-agent --kubeconfig kubeconfig-apps
 ```
 
-From the **Installing Instana Agents** screen select OpenShift from the list.
+From the **Agent deployment** screen select OpenShift, Helm chart from the list.
 
 :::tip
 
-If you aren't on the **Installing Instana Agents** screen you can get there by
-selecting the **"Stan"** robot icon in the upper left corner and then clicking
-the **"Deploy Agent"** button near the upper right corner.
+If you aren't on the **Agent deployment** screen you can get there by selecting
+the **"Stan"** robot icon in the upper left corner and then clicking the
+**"Deploy Agent"** button near the upper right corner.
 
-![](images/DeployAgent.png)
+![](images/deploy-agent.png)
 
 :::
 
-![](images/OpenShift.png)
+![](images/agent-deploy-ocp-helm.png)
 
-Select the dropdown list next to the word **"Technology"**. Notice that there
-are multiple options for installing the Agent. Choose the **"Helm chart"**
-option from the list.
+Since this OCP cluster will be used for the Quote of the Day and Robot Shop demo
+application set the following:
 
-Set the **Cluster name** to `SNO` and the **Agent Zone** name to `Demo Apps`
-since this OCP cluster will be used for the Quote of the Day and Robot Shop demo
-application. Setting these values will allow you to find your Agent and
-Kubernetes Cluster within the user interface and not get confused by data coming
-in from other agents.
+- **Cluster name**: `SNO`
+- **Agent Zone**: `Demo Apps`
+
+Setting these values will allow you to find your Agent and Kubernetes Cluster
+within the user interface and not get confused by data coming in from other
+agents.
 
 :::info
 
@@ -323,16 +285,81 @@ This completes the installation of Instana agent on OpenShift cluster.
 
 ---
 
-## 4.5: View Instana Agents in the Instana UI
+## 4.5: Installing Instana Agent in a Docker Environment
 
-From the **Installing Instana Agents** screen, select the **Go to Instana!**
-button. If you don't see the button you can move on to the next step.
+:::warning Information Only
 
-![](images/go-to-instana.png)
+You do not need to perform the actions in this section. This is for your
+information only. It may be useful if you install Instana using the Classic
+mode.
 
-Select **Infrastructure** from the left navigation menu.
+:::
 
-![](images/select-infra-from-home.png)
+If you chose to run the Classic installation of Instana Server you might also
+want to deploy an Instana Docker agent locally to self monitor the Instana
+Backend.
+
+![architecture-agent-mqace-vm](images/architecture-agent-instana-vm.png)
+
+You can navigate back to your first tab still logged into the **instana** host
+or from a terminal ssh to the Instana server again:
+
+```sh
+ssh jammer@instana
+```
+
+Switch to root
+
+```sh
+sudo -i
+```
+
+In the Instana UI, from the **Agent deployment** screen select **Docker** this
+time.
+
+:::tip
+
+If you aren't on the **Agent deployment** screen you can get there by selecting
+the **"Stan"** robot icon in the upper left corner and then clicking the
+**"Deploy Agent"** button near the upper right corner.
+
+![](images/deploy-agent.png)
+
+:::
+
+![](images/agent-deploy-docker.png)
+
+At the top of the page you will see an entry box where you can specify a
+**Zone**. Specify a zone name such as **TechZone**. Then, copy the docker run
+command and paste it into the **root@instana** terminal window.
+
+![](images/agent-deploy-docker-config.png)
+
+This will install the Instana Agent as a docker container running on the Instana
+Server machine.
+
+Once complete you can issue a **docker ps** command, you'll see there is a new
+Instana agent container running.
+
+```sh
+docker ps | grep agent
+```
+
+![docker ps agent](images/docker-ps-agent.png)
+
+Once installed, the Agent will begin to collect host metrics and will discover
+the various technologies like Cassandra, ClickHouse, ElasticSearch, Nginx,
+Node.js, and more. Many of these technologies will be monitored automatically
+without the need for configuration. In some cases, the sensors need to be
+configured in order to see the performance metrics.
+
+---
+
+## 4.6: View Instana Agents in the Instana UI
+
+From the left navigation select **Infrastructure**.
+
+![](images/infrastructure-menu.png)
 
 You should see 3 nodes reporting. The **Instana VM**, the **MQACE VM** and the
 **Single Node OpenShift (SNO) VM**. If you don't see them yet, give the agents a
@@ -347,14 +374,14 @@ the _MQACE_ VM resides.
 
 ![](images/show-three-clusters.png)
 
-## 4.6: Troubleshooting Instana Agent Installation on Linux
+## 4.7: Troubleshooting Instana Agent Installation on Linux
 
 If you cannot see the **Instana** or **MQACE** hosts in the Instana UI you
 should read the Instana agent logs on the respective agent host located at
 `/opt/instana/agent/data/log/agent.log`. Look for the current status and any
 warnings or errors that may be shown.
 
-## 4.7: Troubleshooting Instana Agent Installation on Kubernetes Cluster
+## 4.8: Troubleshooting Instana Agent Installation on Kubernetes Cluster
 
 If you don't see the **SNO host** in the **Demo Apps** zone after a couple of
 minutes, you need to troubleshoot the Instana Agent.
@@ -382,7 +409,7 @@ oc logs $(oc get pods -n instana-agent -o custom-columns=POD:.metadata.name --no
 
 ---
 
-## 4.8: Configuring Proxy
+## 4.9: Configuring Proxy
 
 :::warning Information Only
 
@@ -408,7 +435,7 @@ variables.
 
 ---
 
-## 4.9: Configuring Instana Agent
+## 4.10: Configuring Instana Agent
 
 :::warning Information Only
 
@@ -451,7 +478,7 @@ applied, make sure that it's not a formatting error
 
 ---
 
-## 4.10: Agent Configuration Troubleshooting
+## 4.11: Agent Configuration Troubleshooting
 
 :::warning Information Only
 
@@ -469,7 +496,7 @@ In case of Kubernetes based deployment you have to look at logs of
 
 ---
 
-## 4.11: Configuring GitOps for Agents
+## 4.12: Configuring GitOps for Agents
 
 :::warning Information Only
 
