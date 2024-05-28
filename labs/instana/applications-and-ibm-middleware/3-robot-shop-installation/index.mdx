@@ -231,44 +231,86 @@ route to the application
 oc get route -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
-The result should look similar to: **web-robot-shop.CLUSTER_DOMAIN**
+The result should look similar to: `web-robot-shop.CLUSTER_DOMAIN`. In our case
+it is **web-robot-shop.apps.sno.techzone.lan**
 
 ![](images/expose-robot-shop.png)
 
-Once all pods are in a running state you can continue.
+Wait for all pods to be in a running state before you continue.
 
-Open a new Firefox tab and select the **Robot Shop** bookmark, or if pasting the
-route into firefox make sure you specify http instead of https. You will see the
+Open a new Firefox tab and select the **Robot Shop** bookmark to navigate to the
 Robot Shop application.
+
+:::tip
+
+If using the route you printed earlier make sure you pay attention to the 'Port'
+field, for this application you will be using http instead of https.
+
+:::
 
 ![](images/stans-robot-shop.png)
 
-:::warning Robot Shop Bug in OpenShift Deployments
+### Workaround Required for Robot Shop in OpenShift Deployments
 
-From the Robot Shop webpage you can press F12 to bring up the developer tools
-and select the **Network** tab. As you click around the app you will notice the
-failing EUM beacons.
+You can now navigate and use the Robot Shop application, however if you navigate
+to **Websites & Mobile Apps** > **Robot Shop** you will not see the EUM data in
+Instana.
 
-There is a bug in Robot Shop when installed on OpenShift that causes the
-trailing slash of the reporting URL to be stripped on install. Without the slash
-the EUM data will not be correctly proxied into Instana and therefore no End
-User Monitoring details will be shown in Instana.
+![No Data](images/no-data-robot-shop.png)
 
-The workaround we can use for this lab is to manually add the trailing slash
-back into the reporting URL with the following command ran from the Bastion:
+There are two reasons for this:
+
+1. The EUM reporting URL we used was **https://instana.techzone.lan/eum/** and
+   becuase we are using Self Signed Certificates in this lab the browser will
+   not allow the EUM data to be sent to Instana without first providing
+   approval.
+2. There is a bug in Robot Shop when deployed on OpenShift that causes the
+   trailing slash of the reporting URL to be stripped on install. Without the
+   slash the EUM data will not be correctly proxied and therefore no End User
+   Monitoring details will be shown in Instana.
+
+To fix this first issue, from Firefox select the bookmark **EUM TLS** and accept
+the certificate.
+
+![EUM TLS Cert](images/eum-tls.png)
+
+If you have done this correctly you should now see the _eum.min.js_ file.
+
+![eum.min.js](images/eum-min-js.png)
+
+You can now close the tab.
+
+To fix the second issue, we need to manually add the trailing slash back into
+the eum.html file.
+
+:::tip
+
+If you want to understand the issue here you can open the Firefox dev tools with
+F12 and navigate to the **Network** tab. As you click around the app you will
+notice the failing EUM beacons. Once we adjust the eum.html with the correct URL
+you will see these same EUM beacons succeeding and sending data in Instana.
+
+:::
+
+Run the following command to update the URL:
 
 ```sh
 kubectl exec -n robot-shop $(kubectl get pod -l service=web -n robot-shop -o jsonpath={..metadata.name} --kubeconfig ~/kubeconfig-apps) -- sed -i 's|https://instana.techzone.lan/eum|https://instana.techzone.lan/eum/|g' /usr/share/nginx/html/eum.html
 ```
 
-:::
+Now click around the Robot Shop app to generate beacons. Navigate to **Websites
+& Mobile Apps** > **Robot Shop** and you should now see EUM data in Instana. If
+you don't see it yet, adjust the time range to **Last minute** and select
+**Live**.
+
+![eum-data-showing](images/eum-data-showing.png)
 
 ---
 
 ## 3.4: Setup Automated Load
 
-Now that the application is running, you will want to generate some traffic
-against the Robot-Shop application.
+Now that the application is running and EUM data in displaying, we can generate
+some artifical traffic against the Robot-Shop application.
 
 Issue the following command to install the load generation pod.
 
