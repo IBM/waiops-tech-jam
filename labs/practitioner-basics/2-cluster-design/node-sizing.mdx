@@ -255,11 +255,17 @@ In essence they involve a 2 step process:
 1. If you are deploying a new cluster from scratch, then automatic resource
    allocation for core system components is advised.
 
-1. If you are updating an existing cluster, especially in production, then
-   manual updates may be the preferred option if more controlled rollout is
-   desired, e.g.
-   - canary rollout of node reservations to observe impact before updating the
-     cluster wholesale.
+1. If you are updating an existing cluster, especially in production, then we
+   would recommend:
+   1. Perform the calculations to understand if your current cluster capacity is
+      really enough for your workload.
+   1. Plan to add compute capacity based on **_allocatable_** numbers and node
+      counts.
+   1. Perform a manual canary rollout of changes to observe behaviour in a safe
+      manner.
+   1. Complete node updates once things stabililse.
+   1. Update any automation or GitOps connfiguration for your nodes to use
+      automatic reservation updates for future rollouts.
 
 ## Conclusion
 
