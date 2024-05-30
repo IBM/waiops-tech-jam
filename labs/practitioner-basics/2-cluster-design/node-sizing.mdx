@@ -57,13 +57,13 @@ ensured:
 - your foundation has been laid to the right depth, thickness and cement mixture
   ratio to achieve the desired strength for holding up your house?
 
-:::danger Don't let your bath tub end up in your downstairs living room
+:::danger Don't let your bathtub end up in your downstairs living room.
 
-So you purchased a luxury steel bath tub, but your builder spaced out your floor
-joists too far apart to achieve the required strength to support your bath tub.
+So, you purchased a luxury steel bathtub, but your builder spaced out your floor
+joists too far apart to achieve the required strength to support your bathtub.
 
-Before you know it, your bath tub has fallen through the floor and is now
-sitting in the middle of your living area.
+Before you know it, your bathtub has fallen through the floor and is now sitting
+in the middle of your living area.
 
 Probably not where you intended it to be right?
 
@@ -71,7 +71,7 @@ _(No house, person or animal was hurt in the making of this analogy)_.
 
 :::
 
-One of the most overlooked aspect of any deployment is ensuring the base
+One of the most overlooked aspects of any deployment is ensuring the base
 Operating System or platform has the necessary resources for its core components
 to function properly. Building a stable and performant foundation for
 applications to run on. Avoiding resource starvation at a base level, which
@@ -79,7 +79,7 @@ could bring down your application.
 
 ## Anatomy of a node
 
-So what exactly is a node made up of?
+So, what exactly is a node made up of?
 
 ![Node anatomy](./images/nodes/node-anatomy.png)
 
@@ -101,8 +101,8 @@ should be reserved relative to the overall capacity for these core components.
 
 :::tip Car engine analogy
 
-Genereally speaking, the bigger and more powerful your car, the bigger your car
-engine. Therefore the more fuel it will use in comparison to a smaller, less
+Generally speaking, the bigger and more powerful your car, the bigger your car
+engine. Therefore, the more fuel it will use in comparison to a smaller, less
 powerful car.
 
 The engine is fundamentally what is transforming your fuel into energy to power
@@ -117,7 +117,7 @@ the core components, your node, therefore your application underperforms.
 
 ## How does this affect Pod scheduling?
 
-:::note What is the scheduler
+:::note What is the scheduler?
 
 The
 [scheduler](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/)
@@ -132,13 +132,13 @@ As per the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.14/nodes/nodes/nodes-nodes-resources-configuring.html#allocate-scheduler-policy_nodes-nodes-resources-configuring):
 
 > The scheduler uses the value of `node.Status.Allocatable` instead of
-> `node.Status.Capacity` to decide if a node will become a candidate for pod
+> `node.Status.Capacity` to decide if a node will become a candidate for Pod
 > scheduling.
 >
 > **By default, the node will report its machine capacity as fully schedulable
 > by the cluster.**
 
-So if the node is reporting that all it's capacity is available, how does the
+So, if the node is reporting that all its capacity is available, how does the
 scheduler really know how much of the node's capacity is available for Pod
 allocation?
 
@@ -166,14 +166,14 @@ If the values for `system-reserved` are not updated in line with how much CPU
 and memory you allocate to a node, this calculation is skewed, resulting in many
 downstream performance or instability issues.
 
-:::caution Debugging and maintencance cost
+:::caution Debugging and maintenance cost.
 
 Since many different symptoms can be experienced as a result of this type of
-core component resource starvation, most teams enter into a contionuous reactive
+core component resource starvation, most teams enter into a continuous reactive
 cycle. Tackling symptoms without resolving the root cause of the issues.
 
 Understanding this core element of node sizing helps alleviate and deflect many
-downstream issues in your cluster, including perceived application level issues.
+downstream issues in your cluster, including perceived application-level issues.
 
 :::
 
@@ -192,7 +192,7 @@ If we consider a node with 16 CPU cores and 32 GB RAM, how much node capacity is
 
 ![Worked example](./images/nodes/worked-example.png)
 
-There a few things to note in this example:
+There are a few things to note in this example:
 
 - Allocatable memory is shown in `GB`, having subtracted the converted
   `system-reserved` memory from `GiB`.
@@ -210,7 +210,7 @@ calculate how many nodes you need to support your application, don't forget to
 calculate node count based on what is **_allocatable_** on each node, not total
 capacity.
 
-Otherwise your deployment will suffer performance and instability issues.
+Otherwise, your deployment will suffer performance and instability issues.
 
 ## How do I update node `system-reserved` settings?
 
@@ -222,7 +222,7 @@ There are 2 options:
 Both procedures are very well documented in the OpenShift documentation so I
 won't repeat them here.
 
-In essence they involve a 2 step process:
+In essence they involve a 2-step process:
 
 1. Edit the `machineconfigpool` for the type of node you want to update and
    labels for node selection.
@@ -240,11 +240,11 @@ In essence they involve a 2 step process:
    - Understand what the impact would be of updating values post application
      deployment.
 
-1. If your calculations show a value falls below the default, to be on the safe,
+1. If your calculations show a value fall below the default, to be on the safe,
    stick with the default value:
 
-   - It may be tempting to squeeze resources futher, however going below the
-     defaults may be counter-productive.
+   - It may be tempting to squeeze resources further, however going below the
+     defaults may be counterproductive.
 
 1. Calculate node count based on:
 
@@ -264,7 +264,7 @@ In essence they involve a 2 step process:
    1. Perform a manual canary rollout of changes to observe behaviour in a safe
       manner.
    1. Complete node updates once things stabilize.
-   1. Update any automation or GitOps connfiguration for your nodes to use
+   1. Update any automation or GitOps configuration for your nodes to use
       automatic reservation updates for future rollouts.
 
 ## Conclusion
