@@ -48,8 +48,8 @@ Robot Shop demo application.
 
 ## 4.2: Ingest application performance data from Instana
 
-1. Navigate to the Instana console by selecting the **Instana** bookmark and
-   logging in.
+1. Navigate to the Instana console by selecting the **Instana** bookmark from
+   the bookmarks bar in Firefox and logging in.
 
    - Username: `admin@instana.local`
    - Password: `Passw0rd`
@@ -106,15 +106,22 @@ Robot Shop demo application.
 
    :::info
 
-   Instana has been pre-installed on OCP for this lab. Instana was installed
-   with the unit name `unit0` and tenant name `tenant0`. This can change
-   depending on the environment. In an OCP environment you can look at the
-   configured routes to get a better understanding of what endpoints are
-   available `oc get route -n instana-core`.
+   Instana has been pre-installed in an Ubuntu VM using the standard
+   installation method on K3s. Instana had been installed with the unit name
+   `unit0` and tenant name `ibm`. This can change depending on the environment.
+   In a kubernetes environment you can look at the configured routes to get a
+   better understanding of what endpoints are available
+
+   - K3s:
+     - command: `kubectl get svc -n instana-core`
+     - example: `unit0-tenant0.techzone.instana.local`
+   - Openshift:
+     - command: `oc get route -n instana-core`
+     - example: `unit0-tenant0.instana.apps.ocp.techzone.lan`
 
    :::
 
-   - Hostname: `unit0-tenant0.instana.apps.ocp.techzone.lan`
+   - Hostname we will use for this lab: `unit0-ibm.techzone.instana.local`
    - API key: The key you created and copied in Step 2 earlier
 
    ![](images/add-instana-target.png)
