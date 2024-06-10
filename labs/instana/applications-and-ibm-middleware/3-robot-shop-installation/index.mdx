@@ -58,13 +58,13 @@ Then, click the **Add Website** button.
 
 ![](images/add-website.png)
 
-![](images/addWebsite.png)
+![](images/add-website-name.png)
 
 A dialog containing **javascript** will open. In a more typical application, you
 would follow the instructions on the dialog. You copy/paste the **javascript**
 into the HTML pages.
 
-![](images/website-config-2.png)
+![](images/website-config-unmarked.png)
 
 Robot Shop has already done some of the work for you by embedding this script
 with variable placeholders for the unique values into the application. When you
@@ -74,7 +74,7 @@ that we will need to copy and use when we do the install. You will need the
 **key** and the **reportingURL**. Either copy those parameters now or leave this
 dialog open so that you can retrieve it later.
 
-![](images/website-config-1.png)
+![](images/website-config-marked.png)
 
 ---
 
@@ -153,27 +153,26 @@ Install the **Robot Shop** using Helm:
 
 :::info
 
-- **<your-instana-reporting-url\>** is the _reportingURL_ you obtained in
-  section 3.2. **Do not include the trailing slash ( / ) following 2999.**
-  Example: `http://192.168.252.60:2999`.
+- **your-instana-reporting-url** is the _reportingURL_ you obtained in section
+  3.2. <br/> Example: `https://instana.techzone.lan/eum/`.
 
 :::
 
 ```sh
-export REPORTING_URL="<your-instana-reporting-url>"
+export REPORTING_URL="your-instana-reporting-url"
 ```
 
 1. Set your key value by making the substitution below and running the command.
 
 :::info
 
-**<your-instana-key\>** is the **key** you obtained in section 3.2 from the
-Instana user interface. Example: `m-IMxZYFQyW_n7Xo0VRjrw`.
+**your-instana-key** is the **key** you obtained in section 3.2 from the Instana
+user interface. <br /> Example: `_9ouL2yERFuYz49FAPIhQQ`.
 
 :::
 
 ```sh
-export EUM_KEY="<your-instana-key>"
+export EUM_KEY="your-instana-key"
 ```
 
 1. Deploy the Robot Shop application with the following Helm command:
@@ -232,22 +231,86 @@ route to the application
 oc get route -n robot-shop --kubeconfig ~/kubeconfig-apps
 ```
 
-The result should look similar to: **web-robot-shop.<cluster domain\>**
+The result should look similar to: `web-robot-shop.CLUSTER_DOMAIN`. In our case
+it is **web-robot-shop.apps.sno.techzone.lan**
 
 ![](images/expose-robot-shop.png)
 
-Once all pods are in a running state, open a new Firefox tab and select the
-**Robot Shop** bookmark, or if pasting the route into firefox make sure you
-specify http instead of https. You will see the Robot Shop application.
+Wait for all pods to be in a running state before you continue.
+
+Open a new Firefox tab and select the **Robot Shop** bookmark to navigate to the
+Robot Shop application.
+
+:::tip
+
+If using the route you printed earlier make sure you pay attention to the 'Port'
+field, for this application you will be using http instead of https.
+
+:::
 
 ![](images/stans-robot-shop.png)
+
+### Workaround Required for Robot Shop in OpenShift Deployments
+
+You can now navigate and use the Robot Shop application, however if you navigate
+to **Websites & Mobile Apps** > **Robot Shop** you will not see the EUM data in
+Instana.
+
+![No Data](images/no-data-robot-shop.png)
+
+There are two reasons for this:
+
+1. The EUM reporting URL we used was **https://instana.techzone.lan/eum/** and
+   becuase we are using Self Signed Certificates in this lab the browser will
+   not allow the EUM data to be sent to Instana without first providing
+   approval.
+2. There is a bug in Robot Shop when deployed on OpenShift that causes the
+   trailing slash of the reporting URL to be stripped on install. Without the
+   slash the EUM data will not be correctly proxied and therefore no End User
+   Monitoring details will be shown in Instana.
+
+To fix this first issue, from Firefox select the bookmark **EUM TLS** and accept
+the certificate.
+
+![EUM TLS Cert](images/eum-tls.png)
+
+If you have done this correctly you should now see the _eum.min.js_ file.
+
+![eum.min.js](images/eum-min-js.png)
+
+You can now close the tab.
+
+To fix the second issue, we need to manually add the trailing slash back into
+the eum.html file.
+
+:::tip
+
+If you want to understand the issue here you can open the Firefox dev tools with
+F12 and navigate to the **Network** tab. As you click around the app you will
+notice the failing EUM beacons. Once we adjust the eum.html with the correct URL
+you will see these same EUM beacons succeeding and sending data in Instana.
+
+:::
+
+Run the following command to update the URL:
+
+```sh
+kubectl exec -n robot-shop $(kubectl get pod -l service=web -n robot-shop -o jsonpath={..metadata.name} --kubeconfig ~/kubeconfig-apps) -- sed -i 's|https://instana.techzone.lan/eum|https://instana.techzone.lan/eum/|g' /usr/share/nginx/html/eum.html
+```
+
+Now click around the Robot Shop app to generate beacons. Navigate to **Websites
+& Mobile Apps** > **Robot Shop** and you should now see EUM data in Instana. If
+you don't see it yet, adjust the time range to **Last minute** and select
+**Live**.
+
+![eum-data-showing](images/eum-data-showing.png)
 
 ---
 
 ## 3.4: Setup Automated Load
 
-Now that the application is running, you will want to generate some traffic
-against the Robot-Shop application.
+Now that the application is running and EUM data in displaying, we can generate
+some artifical traffic against the Robot-Shop application.
 
 Issue the following command to install the load generation pod.
 
@@ -300,31 +363,6 @@ minute** to see the traffic in real time.
 :::
 
 ![](images/robot-shop-traffic.png)
-
-<!---
-The below is only required for the bundled robot-shop loadgen
-
-Now that the application is running, you will want to generate some traffic
-against the application.
-
-Within the same directory, issue the following command to install the load
-generation pod.
-
-```sh
-cd /home/admin/robot-shop/K8s
-oc apply -f load-deployment.yaml -n robot-shop --kubeconfig ~/kubeconfig-apps
-```
-
-Run the **oc get pods** command. You should see an additional pod named **load**
-running within the project.
-
-```sh
-oc get pods -n robot-shop --kubeconfig ~/kubeconfig-apps
-```
-
-![robot shop load](images/robot-shop-load.png)
-
--->
 
 ---
 

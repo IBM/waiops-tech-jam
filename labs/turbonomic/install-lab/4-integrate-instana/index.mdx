@@ -48,8 +48,8 @@ Robot Shop demo application.
 
 ## 4.2: Ingest application performance data from Instana
 
-1. Navigate to the Instana console by selecting the **Instana** bookmark and
-   logging in.
+1. Navigate to the Instana console by selecting the **Instana** bookmark from
+   the bookmarks bar in Firefox and logging in.
 
    - Username: `admin@instana.local`
    - Password: `Passw0rd`
@@ -57,33 +57,23 @@ Robot Shop demo application.
 1. Create a new API token by selecting:
 
    - **Settings** -> **Team Settings** page -> **API Tokens**.
-   - Click on **Add API Token** to create an API key from Instana.
+   - Click on **New API Token** to create an API key from Instana.
 
    ![](images/addApiToken.png)
 
 1. In the create API token page, enter a name for your token, e.g.
-   `Turbonomic API Token`:
-
-1. Copy the generated API token to be used in later steps:
-
-   1. Click the _eye_ icon as in screen shot below. This will show the token.
-   2. Click the _copy_ icon next to the token to actually copy the token:
-      - Clicking the _eye_ icon alone does not copy the generated token, it just
-        makes it visible.
-
-   ![](images/apiToken1.png)
-
-1. Then scroll down to the **Permissions** section to enable the following
-   permissions:
+   `Turbonomic API Token` and scroll down to the **Permissions** section to
+   enable the following permissions:
 
    - Access to audit log
    - Access to token and session timeout settings
-   - Access to license usage
-   - Access to on prem license usage
    - Access to account and billing information
-   - Service & endpoint mapping
 
    ![](images/apiToken2.png)
+
+1. Copy the generated API token to be used in later steps:
+
+   ![](images/apiToken1.png)
 
 1. Click on the **Save** button. The API token is created.
 
@@ -106,16 +96,23 @@ Robot Shop demo application.
 
    :::info
 
-   Instana has been pre-installed on OCP for this lab. Instana was installed
-   with the unit name `unit0` and tenant name `tenant0`. This can change
-   depending on the environment. In an OCP environment you can look at the
-   configured routes to get a better understanding of what endpoints are
-   available `oc get route -n instana-core`.
+   Instana has been pre-installed in an Ubuntu VM using the standard
+   installation method on K3s. Instana had been installed with the unit name
+   `unit0` and tenant name `ibm`. This can change depending on the environment.
+   In a kubernetes environment you can look at the configured routes to get a
+   better understanding of what endpoints are available
+
+   - K3s:
+     - command: `kubectl get svc -n instana-core`
+     - example: `unit0-tenant0.instana.techzone.lan`
+   - Openshift:
+     - command: `oc get route -n instana-core`
+     - example: `unit0-tenant0.instana.apps.ocp.techzone.lan`
 
    :::
 
-   - Hostname: `unit0-tenant0.instana.apps.ocp.techzone.lan`
-   - API key: The key you created and copied in Step 2 earlier
+   - **Hostname** we will use for this lab: `unit0-ibm.instana.techzone.lan`
+   - **API key**: The key you created and copied in Step 2 earlier
 
    ![](images/add-instana-target.png)
 
@@ -127,8 +124,8 @@ Robot Shop demo application.
    ![target added](images/instana-target-added.png)
 
    You can now select the green **on** at the top left of the Turbonomic
-   Dashboard. After a short wait you will be able to see information on
-   monitored applications coming into Turbonomic from Instana.
+   Dashboard. You will need to wait a little while to be able to see information
+   on monitored applications coming into Turbonomic from Instana.
 
    :::caution
 

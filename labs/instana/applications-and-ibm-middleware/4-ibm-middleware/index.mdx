@@ -83,6 +83,8 @@ The following should be completed from the **bastion host**
 
 :::
 
+Ensure you have opened a new tab in the terminal and are on the Bastion host.
+
 Issue the **oc get pods** command against the **qotd** namespace/project.
 
 ```sh
@@ -128,9 +130,9 @@ You need to modify those lines to look like the following. You need to add a
 "value" parameter that contains the SUPPLY_CHAIN_URL for the ACE flow. The flow
 within the ACE server is
 **"http://&lt;acemq_ipaddress&gt;:7081/supplychain/v1/order"**. This is what you
-need to use for the SUPPLY_CHAIN_URL value, but replace **<acemq_ipaddress>**
-with the IP address of your ACE/MQ server, in this demo environment that is
-**192.168.252.70**.
+need to use for the SUPPLY_CHAIN_URL value, but replace
+**&lt;acemq_ipaddress&gt;** with the IP address of your ACE/MQ server, in this
+demo environment that is **192.168.252.70**.
 
 You will also need to change the value for the SUPPLY_CHAIN_SIMULATE to
 **false** to disable the simulation.
@@ -180,7 +182,7 @@ Once opened click the **Order Engraving** button.
 Then, click again the **Order Engraving** button. If successful, you’ll see
 “Order successfully placed.”
 
-![](images/2022-05-30-12-04-59.png)
+![order-engraving](images/order-engraving.png)
 
 ---
 
@@ -551,8 +553,7 @@ com.instana.plugin.ibmmq:
 ## 4.7: Further Configuration
 
 First, let's change the **Zone** name within the file. This is similar to the
-Zone that you specified when installing the Docker and OpenShift monitoring
-Agents.
+Zone that you specified when installing the OpenShift monitoring Agent.
 
 Scroll down until you see the section titled **# Hardware & Zone**. Uncomment
 the 3 lines of text starting with `com.instana.plugin.generic.hardware`. Change

@@ -45,10 +45,60 @@ _Watson AIOps_, and more. In this section we'll show you how to setup and an
 Alert Channel. Later, in the Administrative section, we'll use that Alert
 Channel to get a notification when an Event triggers.
 
-Begin by selecting the **Settings** gear in the left side navigation. Then,
-select **Alert Channel**
+Begin by configuring Instana to support SMTP email. From the Bastion host
+(Guacamole) open a terminal window by selecting **Activities** at the top left
+of the screen and then the terminal icon.
 
-![](images/alertChannel2.png)
+![open-terminal](images/open-terminal.png)
+
+Connect to the Instana server by running the following command:
+
+> Type _yes_ when prompted to accept the host key.
+
+```sh
+ssh jammer@instana
+```
+
+Next, become the root user by running the following command:
+
+```sh
+sudo su -
+```
+
+Now you can configure Instana to use the locally installed **Postfix** email
+server.
+
+```sh
+stanctl backend apply \
+  --core-smtp-from="server@instana.com" \
+  --core-smtp-host="instana.techzone.lan" \
+  --core-smtp-port="25" \
+  --core-smtp-user="jammer" \
+  --core-smtp-password="Passw0rd" \
+  --core-smtp-check-server-identity false \
+  --core-smtp-start-tls=false \
+  --core-smtp-use-ssl=false
+```
+
+:::tip
+
+Instana will now apply the config and restart the necessary pods. From the same
+terminal windows you can run the following command to see the progress:
+
+```sh
+kubectl get pods -n instana-core -w
+```
+
+> Exit by pressing `ctrl + c`
+
+:::
+
+Give Instana few minutes to apply the configuration.
+
+To configure an Aler Channel navigate back to Firefox and begin by selecting the
+**Settings** gear in the left side navigation. Then, select **Alert Channel**
+
+![](images/select-alert-channels.png)
 
 The screen will change to show the **Alert Channels**. Since this is a new
 install of Instana, there are no Alert Channels defined.
@@ -85,32 +135,22 @@ Here are the steps for setting up the **Email** channel.
   purpose, please use `jammer@localhost` email - Instana will be able to send
   email to your localhost email server
 
-![](images/003-administer_instana.png)
-
 Next, click the **Test Channel** button. This will attempt to send a test Email
 to the address you specified. You'll see whether the Instana server has access
 to the Email destination.
 
-Check for the test email on the Instana server. Login to the Instana server in a
-new Terminal tab using `ssh jammer@instana`.
+![](images/mq-alert-channel.png)
 
-:::tip
+Check for the test email on the Instana server. Navigate back to your terminal
+window byb selecting **Activities** at the top left of the screen and then the
+**terminal**.
 
-Use the Bastion host (Guacamole) to get to the Instana machine. Open a terminal
-window by selecting **Activities** at the top left of the screen and then the
-terminal icon.
-
-![open-terminal](images/open-terminal.png)
-
-Connect to the Instana server by running the following command:
-
-> Type _yes_ when prompted to accept the host key.
+As you are currently the _root_ user you will need to run the following command
+to switch to the _jammer_ user:
 
 ```sh
-ssh jammer@instana
+su - jammer
 ```
-
-:::
 
 Once logged in use the `mail` command as presented below to view the jammer
 users inbox:
@@ -124,6 +164,8 @@ Type **exit** to exit the mail prompt.
 
 After successfully testing the Alert Channel, click the **Create** button to
 save the **Alert Channel**
+
+![created-alert-channel](images/created-alert-channel.png)
 
 ---
 
@@ -157,7 +199,7 @@ Alerts**
 
 Leave the default of **Slow Calls**
 
-![](images/slowCalls.png)
+![](images/slow-calls.png)
 
 Scroll down. You'll see that there are number of options to determine which
 calls you want to analyze.
@@ -168,13 +210,13 @@ calls you want to analyze.
 - You can include **Internal Calls**
 - You can include **Synthetic Calls**
 
-![](images/options4.png)
+![](images/scope-options.png)
 
 Leave the default settings.
 
-Scroll down further until you see the widgets show in the screen capture below.
+Scroll down further to the **Thresholds** section.
 
-![](images/options2.png)
+![](images/thresholds-options.png)
 
 You'll notice that there are a variety of options including:
 
@@ -208,18 +250,18 @@ and the mission criticality of the application.
 In this case we will need to leave the default for this section, **Static
 Threshold** as we do not have enough historical data.
 
-![](images/qotd-static-threshold-alert.png)
+![](images/thresholds-options-default-static.png)
 
-Scroll down further.
+Scroll down further to the **Time Threshold** options.
 
 You'll see that there are options for persistence over time. This ensures that
 the conditions trigger for a reasonable length of time before an alert is
 raised.
 
-![](images/options3.png)
+![](images/time-threshold-options.png)
 
-There is also an option to select an **Alert Channel**. In the previous section,
-you created an Email Alert Channel.
+Below there is also an option to select an **Alert Channel**. In the previous
+section, you created an Email Alert Channel.
 
 Select the **Select Alert Channels** button. A dialog will open with the Alert
 Channel that you created earlier. Select the channel.
@@ -232,10 +274,12 @@ notify the DBAs and you can notify that line of business that uses the database.
 
 :::
 
+![add-mq-alert-channel](images/add-mq-alert-channel.png)
+
 Scroll further down on the page and you'll see a section titled **Additional
 Alert Properties**
 
-![](images/alertProperties.png)
+![](images/additional-alert-properties.png)
 
 In this section you will notice that there is a default title and description.
 You can edit those fields and replace them with custom messages. As you type the
@@ -262,7 +306,7 @@ conjunction with Alert Channels.
 
 On the left side of the screen, select the **Settings** gear.
 
-![](images/events.png)
+![events](images/events.png)
 
 The Settings menu provides access to most of the administrative tasks within
 Instana. You'll notice menus for Events, Alerts, Alert Channels, API Tokens,
@@ -275,7 +319,7 @@ defined as out of the box thresholds within Instana. If you want to filter the
 list, you can do that in a number of ways via the drop down lists at the top of
 the page.
 
-![](images/filterEvents.png)
+![filter-events](images/filter-events.png)
 
 Notice that you can filter based on the Event type, severity, entity type,
 state, or simply enter a keyword filter.
@@ -287,7 +331,7 @@ Queue, Channel, etc.
 
 Select **IBM MQ Queue Manager** from the dropdown list.
 
-![](images/qmEvents.png)
+![mq-events](images/mq-events.png)
 
 This will filter the Events to the list of Events that are written against the
 IBM MQ Queue Manager entity type. There are several out of the box threshold
@@ -296,9 +340,9 @@ status, publish/subscribe engine status, and more.
 
 Let's create a new Event now.
 
-At the top of the screen, select the **+ New Event** link.
+At the top of the page, select the **New Event** button.
 
-![](images/newEvent.png)
+![](images/new-event.png)
 
 Fill in the following information for you new Event:
 
@@ -309,7 +353,9 @@ Fill in the following information for you new Event:
   Incidents
 - Select a Grace Period.
 
-![](images/newEvent1.png)
+![](images/new-event-1.png)
+
+:::info
 
 The Grace Period is a capability that allow you to avoid getting multiple alerts
 during flapping. Let's say you are monitoring for high CPU utilization on a
@@ -318,13 +364,13 @@ time, you typically only want to see **ONE** event. By setting a "Grace Period"
 of something like 60 seconds, you would only receive 1 Event during that
 interval.
 
-Now, scroll down a little further and fill in the remaining options.
+:::
+
+Now, scroll down a little further to fill in the remaining options.
 
 In the **Condition** section, select the dropdown and choose **Built-in
 Metrics**. Most of your thresholds will be written against these **Built-in
 Metrics**.
-
-![](images/newEvent2.png)
 
 :::info
 
@@ -339,39 +385,38 @@ dropdown list is asking for the **Entity type** that you are going to write your
 threshold against.
 
 In the **Entity type** dropdown, select **IBM MQ Queue**. Notice that you can
-type in letters such as `IBM MQ` to filter the list.
+type in letters such as `IBM MQ` to filter the list. The **Time Window** is the
+duration that you want to monitor and evaluate, set this to **60 s**.
 
-![](images/newEvent3.png)
+![](images/new-event-2.png)
 
 After specifying an **Entity type**, a new dropdown appears with a list of
 available **Metrics**. Select the **Metric** dropdown and choose **Depth > Queue
 Depth Percentage**.
 
-![](images/newEvent4.png)
-
 After selecting the _Metric_ some new dropdowns appear on the screen looking for
 the following information:
 
-- Time Window: This is the duration that you want to monitor and evaluate
 - Aggregation: Since Instana is capture data at a high interval, you can use
   Min, Max, Avg, Sum as part of your evaluation.
 - Operator: What type of evaluation do you want to do (>, < =, etc.)
 - Percentage - This field is actually different depending on the metric you are
   evaluating. In this case, you are evaluating a metric that is a percentage.
 
-In the dropdowns, choose **60 s** for the time window, **max** for the
-Aggregation, **>** for the Operator, and **90** for the Percentage.
+Set the following:
 
-![](images/newEvent5.png)
+- Aggregation: **max**
+- Operator: **>**
+- Percentage: **90**.
 
-This will cause the threshold to evaluate the **Queue Depth Percent** for 60
-seconds and determine whether the maximum value during that interval exceeded
-90%. If it did exceed 90%, then the Event will trigger.
+![](images/new-event-3.png)
+
+These settings will cause the threshold to evaluate the **Queue Depth Percent**
+for 60 seconds and determine whether the maximum value during that interval
+exceeded 90%. If it did exceed 90%, then the Event will trigger.
 
 Now you have to select the **Scope** that this threshold will apply to. Select
 the dropdown list.
-
-![](images/allEntities.png)
 
 In the dropdown list, you'll see the following options:
 
@@ -383,6 +428,8 @@ In the dropdown list, you'll see the following options:
 - Or, you can have your threshold apply to **All Available Entities**.
 
 Let's make this a global Event and choose the **All Available Entities** option.
+
+![all-entities](images/all-entities.png)
 
 Click the **Create** button to save your new Event.
 
@@ -425,8 +472,6 @@ Select a **Grace Period** of **10s**.
 Select **System Rules** as the **Source** under _2. Condition_. Then, select
 **Offline event detection** for the **System Rule**
 
-![](images/systemEvent.png)
-
 Next, select the scope. Choose **Selected Entities Only (Dynamic Focus Query)**.
 
 In the **Dynamic Focus Query**, you are going to specify something a little
@@ -442,9 +487,9 @@ Copy and post the string into the Event definition.
 entity.selfType:host
 ```
 
-Your **Dynamic Focus Query** should look like this.
+Your Offline Event should look like this:
 
-![](images/selfType.png)
+![](images/offline-event.png)
 
 Click the **Create** button to save your Event.
 
@@ -472,41 +517,41 @@ one or more Alert Channels that you select.
 
 Select **Settings** on the left side navigation. Then select **Alerts**
 
-![](images/alerts.png)
+![alerts](images/alerts.png)
 
-Click on the **+ New Alert** link
+Click on the **New Alert** button
 
-![](images/newAlert.png)
+![](images/new-alert.png)
 
 Give the new **Alert** a name. Normally, the **Alert** name is something
 meaningful to indicate who will be notified and the type of events being sent.
 For example, **MQ Alerts**
 
-Select the dropdown labeled **Alert on Event(s)** ![](images/alertOnEvents.png)
+![](images/alert-name.png)
 
-You will see that there are multiple options. You can setup an Alert for a
-particular Entity Type. For example, you might setup an Alert for all Oracle
-Database Events.
+Under **Events** you will see that there are multiple options. You can setup an
+Alert for a particular Entity Type. For example, you might setup an Alert for
+all Oracle Database Events.
 
-In your case, select **Alert on Event(s)**. This option allows you to select a
-specific list of Events to forward to an Alert Channel(s).
+Select **Alert on Event(s)** from the dropdown. This option allows you to select
+a specific list of Events to forward to an Alert Channel(s).
 
-Further down on the page, select the **Add Events** link.
+![](images/alert-events-section.png)
 
-![](images/addEvent.png)
+Select the **Add Events** button.
+
+![](images/add-event-to-alert-button.png)
 
 Initially, you will see a list of ALL Events.
 
-Let's filter the list to just a specific **Entity Type**. Select the **Entity
-Type** dropdown list and select **IBM MQ Queue**
+Filter the list to just a specific **Entity Type**. Select the **Entity Type**
+dropdown list and select **IBM MQ Queue**. You will now see a filtered list of
+Events related to IBM MQ Queues.
 
-![](images/filterQueue.png)
+Find the Event you created in the previous section and select the checkbox.
+Then, select the **Add 1 Event** button at the bottom.
 
-You will now see a filtered list of Events related to IBM MQ Queues. Find the
-Event you created in the previous section and select the checkbox. Then, select
-the **Add 1 Event** button at the bottom.
-
-![](images/choose-custom-event.png)
+![](images/add-events-to-alert.png)
 
 You will now see the 1 selected Event listed.
 
@@ -525,8 +570,6 @@ options:
 
 Select the **Selected Entities Only** option
 
-![](images/selectedEntities.png)
-
 A new widget will appear on the right side of the screen asking you to specify
 the **Dynamic Focus Query**
 
@@ -538,7 +581,7 @@ used for the **Quote of the Day** application. In this case, we are looking for
 entity.ibmmq.queue.name:CP4I.DEMO.API.Q
 ```
 
-![](images/new-alert-mq-scope.png)
+![](images/alert-scope-section.png)
 
 :::note
 
@@ -550,7 +593,7 @@ reduce the **Grace Period** to **10s** and the **Queue Depth Percentage** to
 
 :::
 
-Next, click on the **+ Add Alert Channels** link
+Next, click on the **Add Alert Channels** button.
 
 A dialog will open with a list of available **Alert Channels**. Select the Alert
 Channel that you created earlier.
@@ -563,6 +606,8 @@ Scroll down to the bottom. You will see an optional section where you can add
 custom payloads by adding Key/Value pairs. We're going to skip that section.
 
 Finally, click the **Create** button to save your Alert.
+
+![](images/alert-added.png)
 
 That completes this section of the lab.
 
