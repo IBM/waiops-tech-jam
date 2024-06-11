@@ -22,6 +22,9 @@ There are four Instana labs:
 - [**Administer Instana**](../administer-instana/1-introduction/index.mdx)
   - Learn about the different alerting options in Instana; set up Alert
     Channels, Smart Alerts and events.
+
+<!--
+
 - [**Synthetic Monitoring**](../synthetic-pop/1-introduction/index.mdx)
   - Install an Instana Synthetic Point of Presence.
   - Configure Instana backend for querying its REST API interface.
@@ -31,6 +34,8 @@ There are four Instana labs:
   - Working with an OpenTelemetry demo application configured to support Instana
     monitoring.
   - Exploring OpenTelemetry metrics and traces in Instana.
+
+ -->
 
 More labs will be added in the future to explore more advanced scenarios and
 features of Instana.
