@@ -60,7 +60,7 @@ commands. Run the following command:
 oc create namespace cp4waiops
 ```
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_namespace).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_namespace).
 
 ### Create an OperatorGroup in your custom project (namespace)
 
@@ -81,7 +81,7 @@ spec:
 EOF
 ```
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#op_group).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#op_group).
 
 ### Create the entitlement key pull secret
 
@@ -98,7 +98,7 @@ oc create secret docker-registry ibm-entitlement-key \
 ```
 
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_pull_secret).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_pull_secret).
 
 ### Usage data collection
 
@@ -107,7 +107,7 @@ to analyze how the product is used. The usage data is collected by the cp4waiops
 and is sent to and stored in IBM controlled GDPR-compliant systems. For the purpose of this Lab,
 we will skip this step.
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#usage_secret).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#usage_secret).
 
 ### Ensure external traffic access
 
@@ -118,7 +118,7 @@ in case the ingresscontroller its set to HostNetwork. Run the following command:
 if [ $(oc get ingresscontroller default -n openshift-ingress-operator -o jsonpath='{.status.endpointPublishingStrategy.type}') = "HostNetwork" ]; then oc patch namespace default --type=json -p '[{"op":"add","path":"/metadata/labels","value":{"network.openshift.io/policy-group":"ingress"}}]'; fi
 ```
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_ingress).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_ingress).
 
 ### Create the catalog source
 
@@ -150,14 +150,14 @@ IMGDIGEST=`oc get pods -n openshift-marketplace -l=olm.catalogSource=ibm-operato
 oc patch catalogsource ibm-operator-catalog -n openshift-marketplace --type=json -p "[{ "op": "test", "path": "/spec/image", "value": "\"icr.io/cpopen/ibm-operator-catalog:latest\"" }, { "op": "replace", "path": "/spec/image", "value": "\"$IMGDIGEST\"" }]"
 ```
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_catalog).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_catalog).
 
 ### Verify cluster readiness
 
 In order to finish the Lab on time, we will skip the section regarding verifying the cluster readiness. 
 Remember to run this verification in a production implementation.
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#prereq_check).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#prereq_check).
 
 ### Install the Cloud Pak for AIOps operator
 
@@ -192,7 +192,7 @@ You should see three **Succeeded** messages as shown below:
 
 ![](images/3-succeeded.png)
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_operator).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_operator).
 
 
 
@@ -266,7 +266,7 @@ oc get installation.orchestrator.aiops.ibm.com -o yaml | grep 'Not Ready'
 ```
 
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_instance).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_instance).
 
 
 
@@ -302,5 +302,5 @@ After confirming you can login as **admin**, complete the final Lab section:
 :::
 
 
-If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/4.1.0?topic=aiops-starter-installation#exp_login).
+If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_login).
 
