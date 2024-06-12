@@ -152,6 +152,93 @@ oc patch catalogsource ibm-operator-catalog -n openshift-marketplace --type=json
 
 If interested, this install step is documented [***here***](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_catalog).
 
+### Install Cert Manager
+
+Install the IBM Cloud Pak Certificate Manager:
+```
+cat << EOF | oc apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ibm-cert-manager
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: ibm-cert-manager-operator-group
+  namespace: ibm-cert-manager
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cert-manager-operator
+  namespace: ibm-cert-manager
+spec:
+  channel: v4.2
+  installPlanApproval: Automatic
+  name: ibm-cert-manager-operator
+  source: ibm-cert-manager-catalog
+  sourceNamespace: openshift-marketplace
+EOF
+```
+Run the following command to ensure that the IBM Cloud Pak® foundational services Cert Manager pods have a STATUS of Running before proceeding to the next step:
+```
+oc -n ibm-cert-manager get pods
+```
+Example output for a successful IBM Cloud Pak® foundational services Cert Manager installation:
+```
+NAME                                        READY   STATUS    RESTARTS   AGE
+cert-manager-cainjector-674854c49d-vstq4    1/1     Running   0          8d
+cert-manager-controller-646d4bd6fd-zwmqm    1/1     Running   0          8d
+cert-manager-webhook-8598787c8-s4lkt        1/1     Running   0          8d
+ibm-cert-manager-operator-c96957695-dkxnm   1/1     Running   0          8d
+```
+### Install the License Service
+
+IBM Cloud Pak for AIOps requires the installation of the IBM Cloud Pak foundational services License Service. You must install the IBM Cloud Pak foundational services License Service on the Red Hat OpenShift cluster that you are installing IBM Cloud Pak for AIOps on.
+
+Run the following command to create the resource definitions that you need:
+```
+cat << EOF | oc apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ibm-licensing
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: ibm-licensing-operator-group
+  namespace: ibm-licensing
+spec:
+  targetNamespaces:
+  - ibm-licensing
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-licensing-operator-app
+  namespace: ibm-licensing
+spec:
+  channel: v4.2
+  installPlanApproval: Automatic
+  name: ibm-licensing-operator-app
+  source: ibm-licensing-catalog
+  sourceNamespace: openshift-marketplace
+EOF
+```
+Run the following command to ensure that the IBM Cloud Pak® foundational services License Server pods have a STATUS of Running before proceeding to the next step.
+```
+oc -n ibm-licensing get pods
+
+```
+Example output for a successful IBM Cloud Pak® foundational services License Service installation:
+```
+NAME                                              READY   STATUS    RESTARTS   AGE
+ibm-licensing-operator-db4cd746c-xzmlf            1/1     Running   0          8d
+ibm-licensing-service-instance-596b99588f-76cc5   1/1     Running   0          8d
+```
+
 ### Verify cluster readiness
 
 In order to finish the Lab on time, we will skip the section regarding verifying the cluster readiness. 
