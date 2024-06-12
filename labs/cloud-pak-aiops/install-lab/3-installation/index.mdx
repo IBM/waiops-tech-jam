@@ -369,22 +369,22 @@ Find the URL to access the console with the following command:
 echo -e "https://$(oc get route -n cp4waiops cpd -o jsonpath='{.spec.host}')\n"
 ```
 
-Find the password for the **admin** username by running the following command:
+Find the password for the **cpadmin** username by running the following command:
 
 ```
-oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d ; echo -e "\n"
+oc -n cp4waiops get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d ; echo -e "\n"
 
 ```
 
 Open a Firefox browser window and copy & paste the **Cloud Pak for AIOps URL** that you got in the previous step. 
 Note that you will get one or more security **Warning: Potential Security Risk Ahead**. This is because we have used 
-self-signed certificates for this Lab. Just accept the risk and continue. Make sure you can login as **admin**, 
+self-signed certificates for this Lab. Just accept the risk and continue. Make sure you can login as **cpadmin**, 
 as shown below, using the password from the previous command.
 
 ![](images/login.png)
 
 :::tip
-After confirming you can login as **admin**, complete the final Lab section:
+After confirming you can login as **cpadmin**, complete the final Lab section:
 * LDAP Integration
 :::
 
