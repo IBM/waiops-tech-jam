@@ -4,51 +4,55 @@ description: Set up a webhook and kafka integration
 sidebar_position: 4
 ---
 
-In this section, we will configure a generic webhook connection. If a dedicated connection is 
-not available for a data source, you can use the generic webhook connection to provide an endpoint
-for applications to send JSON format events to the Cloud Pak for AIOps via HTTP POST requests. 
-You can also include a *JSONata* file to map incoming JSON payloads to the Cloud Pak for AIOps 
-event data schema. The webhook endpoint is exposed via an OpenShift edge route that includes a unique, 
-automatically-generated ID.
+In this section, we will configure a generic webhook connection. If a dedicated
+connection is not available for a data source, you can use the generic webhook
+connection to provide an endpoint for applications to send JSON format events to
+the Cloud Pak for AIOps via HTTP POST requests. You can also include a _JSONata_
+file to map incoming JSON payloads to the Cloud Pak for AIOps event data schema.
+The webhook endpoint is exposed via an OpenShift edge route that includes a
+unique, automatically-generated ID.
 
-Also in this section, we will create a couple of bash scripts. The first script will be used to load data
-via the webhook connection and the second script will be used to load data into a kafka topic. 
-The usage of these two scripts will become more clear as you move into the different sections of the Lab. 
+Also in this section, we will create a couple of bash scripts. The first script
+will be used to load data via the webhook connection and the second script will
+be used to load data into a kafka topic. The usage of these two scripts will
+become more clear as you move into the different sections of the Lab.
 
+## 4.1: Creating a Webhook Integration
 
+Log into the Cloud Pak for AIOps:
 
-## 4.1: Creating a Webhook Connection
+- from the burger menu in the top-left navigate to: **Define → Integrations**
+- from the **Integrations** page click on **Add integration**
+- from the **Add integrations** page search for **webhook**, click on the
+  **Generic Webhook** tile and click **Get started**.
 
-Log into the Cloud Pak for AIOps: 
-* from the burger menu in the top-left navigate to: **Define → Data and tool connections**
-* from the **Data and tool connections** page click on **Add connection**
-* from the **Add connections** page search for **webhook**, click on the
- **Generic Webhook** tile and click **Connect**. 
+Fill the **Add integration** form with these values:
 
-Fill the **Add connection** form with these values: 
+- Name: eventWebhook
+- Description: custom webhook integration for events
+- Authentication type: _select Username/Password_
+- Username: pick a username (e.g. test)
+- Password: pick a password (e.g. test)
 
-* Name: event-webhook
-* Description: custom webhook connection for events
-* Authentication type: *select Username/Password*
-* Username: pick a username (e.g. test)
-* Password: pick a password (e.g. test)
-
-Your complete form should look like this (note that your route will be different)
+Your complete form should look like this (note that your route will be
+different)
 
 ![](images/webhook-page1.png)
 
-
-Click **Next**. 
+Click **Next**.
 
 In the **Configure event mapping** form:
 
-* Confirm the **Enable webhook** slider is green (On)
-* The webhook connector leverages JSONata which is a simple expression language to transform JSON data. 
-You can read about JSONata [here](https://jsonata.org/). In this Lab, we provide the JSON event format
-as expected by the Cloud Pak for AIOPs, therefore the JSONata is just a "passthrough". In a real scenario, 
-you will find this mapping capability very useful. 
+- Confirm the **Enable webhook** slider is green (On)
+- The webhook connector leverages JSONata which is a simple expression language
+  to transform JSON data. You can read about JSONata
+  [here](https://jsonata.org/). In this Lab, we provide the JSON event format as
+  expected by the Cloud Pak for AIOPs, therefore the JSONata is just a
+  "passthrough". In a real scenario, you will find this mapping capability very
+  useful.
 
-Enter the following JSONata configuration (use the copy helper icon (top-right) for one-click copy)
+Enter the following JSONata configuration (use the copy helper icon (top-right)
+for one-click copy)
 
 ```json
 {
@@ -76,31 +80,33 @@ Enter the following JSONata configuration (use the copy helper icon (top-right) 
 }
 ```
 
-Click on **Done**. You will see a new webhook created as shown below. Note the **Webhook route** URL on the right. You will need this URL in the next step. 
+Click on **Done**. You will see a new webhook created as shown below. After the
+webhook has finished initializing copy the **Webhook route** URL on the right.
+You will need this URL in the next step.
 
 ![](images/webhook-created.png)
 
-
 ## 4.2: Create the Webhook Event Loader Script
 
-Lets create a **lab** **folder** for the upcoming files in the home directory and change to this new folder. 
-Run the following command from the **Terminal** window:
+Lets create a **lab** **folder** for the upcoming files in the home directory
+and change to this new folder. Run the following command from the **Terminal**
+window:
 
 ```
 cd; mkdir lab; cd lab
 ```
 
+We will create a simple bash script that reads an event file and calls the
+webhook URL with every event in the file as a parameter.
 
-We will create a simple bash script that reads an event file and calls the webhook 
-URL with every event in the file as a parameter. 
-
-Create a file called **event-load-webhook.sh** by running the following command in the **Terminal** window to open the text editor
-, **copy** the bash script below (use the copy helper icon (top-right) for one-click copy), **paste** it into the text editor.
+Create a file called **event-load-webhook.sh** by running the following command
+in the **Terminal** window to open the text editor , **copy** the bash script
+below (use the copy helper icon (top-right) for one-click copy), **paste** it
+into the text editor.
 
 ```
 gedit event-load-webhook.sh
 ```
-
 
 ```sh
 #!/bin/bash
@@ -127,23 +133,25 @@ done < "$1"
 ```
 
 There are two changes you need to make to the script:
-*  assign to WEBHOOK_URL the webhook route of the webhook you just created in the previous step
-*  assign to AUTH the chosen user name and password of the webhook you just created in the previous step e.g. test:test
 
-Click on the **Save** button in the text editor and **close** the editor window (click on the X). 
+- assign to WEBHOOK_URL the webhook route of the webhook you just created in the
+  previous step
+- assign to AUTH the chosen user name and password of the webhook you just
+  created in the previous step e.g. test:test
 
-
-
-
+Click on the **Save** button in the text editor and **close** the editor window
+(click on the X).
 
 ## 4.3: Create a Kafka Event Loader Script
 
-Finally, we will create another simple bash script that will take an event or alert file and a 
-kafka topic as parameters and it will load this data into the kafka topic. 
+Finally, we will create another simple bash script that will take an event or
+alert file and a kafka topic as parameters and it will load this data into the
+kafka topic.
 
-Create a new file called *event-load-kafka.sh* by running the following command in the **Terminal** window to open the text editor
-, **copy** the bash script below, **paste** it into the text editor,
-click on the **Save** button in the text editor and **close** the editor window (click on the X). 
+Create a new file called _event-load-kafka.sh_ by running the following command
+in the **Terminal** window to open the text editor , **copy** the bash script
+below, **paste** it into the text editor, click on the **Save** button in the
+text editor and **close** the editor window (click on the X).
 
 ```
 gedit event-load-kafka.sh
@@ -190,3 +198,7 @@ kcat \
 -t $KAFKA_TOPIC \
 -l $EVENTS_FILE
 ```
+
+---
+
+You will use these event loader scripts in the following labs.
