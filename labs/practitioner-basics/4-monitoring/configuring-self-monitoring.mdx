@@ -1,0 +1,610 @@
+---
+title: Configuring self-monitoring
+description: How to configure self-monitoring of IBM CloudPak for AIOps with OpenShift
+sidebar_position: 30
+---
+
+This page covers some strategies for observing IBM CloudPak for AIOps KPIs and how to 
+configure them.
+
+## Examining KPIs and other metrics using User Workload Monitoring
+
+OpenShift comes with a prometheus-based monitoring stack, which out of the box is used to
+track metrics about the cluster. 
+
+It is possible to extend this monitoring to 'user workloads' (i.e. anything that is not a 
+core OCP service), by [enabling user workload monitoring](https://docs.openshift.com/container-platform/4.15/observability/monitoring/enabling-monitoring-for-user-defined-projects.html). This will deploy a secondary prometheus instance, which can be queried alongside 
+the cluster-level prometheus, as if it was one instance, using [thanos](https://thanos.io).
+
+There are various services in AIOps which are capable of exposing metrics to prometheus 
+in this way.
+
+### Enabling user workload monitoring
+
+The first step is to enable the capability, if it has not been already. This is a 
+cluster-wide setting, so care should be taken if this is being applied to a shared cluseter.
+
+It can be enabled by running the following commands when logged into the cluster:
+
+```bash
+oc create -n openshift-monitoring -f - <<EOF || true
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/created-by: vision-deploy-tool
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+data:
+  config.yaml: |
+    enableUserWorkload: true
+EOF
+
+oc create -n openshift-user-workload-monitoring -f - <<EOF || true
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/created-by: vision-deploy-tool
+  name: user-workload-monitoring-config
+  namespace: openshift-user-workload-monitoring
+data:
+  config.yaml: |
+EOF
+```
+
+More advanced configuration is possible; refer to the 
+[OpenShift documentation](https://docs.openshift.com/container-platform/4.15/observability/monitoring/enabling-monitoring-for-user-defined-projects.html) for more details.
+
+### Viewing metrics in the OCP console
+
+At this point, some AIOps metrics will become available in the OCP console under
+`Observe -> Metrics`. This will allow you to enter any 
+[prometheus query](https://prometheus.io/docs/prometheus/latest/querying/basics/) and graph the result.
+
+Below are some example queries for AIOps metrics:
+
+1. Rate of events ingested by lifecycle over time:
+   ```
+   sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic="cp4waiops_cartridge_lifecycle_input_events"}>0)[1m:30s]))
+   ```
+2. Rate of alert update messages processed by lifecycle over time:
+   ```
+   sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic="cp4waiops_cartridge_lifecycle_input_alerts"}>0)[1m:30s]))
+   ```
+3. Average kafka message size for messages produced by lifecycle:
+   ```
+   sum(flink_taskmanager_job_task_operator_KafkaProducer_record_size_avg > 0) by (operator_name)
+   ```
+4. Lifecycle kafka consumer lag (i.e. how far behind the latest message it is):
+   ```
+   sum by (task_name, subtask_index) (flink_taskmanager_job_task_operator_pendingRecords)
+   ```
+
+### Enabling additional metrics
+
+While some components enable metric scraping out of the box (e.g. lifecycle, as in the examples 
+above), others need additional configuration.
+
+#### Kafka
+
+A large portion of the communication in AIOps happens over Kafka, so scraping metrics from this 
+is highly valuable. 
+
+The kafka prometheus exporter can be enabled and configured by running the following commands in the 
+AIOps namespace:
+
+```bash
+KAFKA_METRICS_CONFIGMAP='
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kafka-metrics
+  labels:
+    app: strimzi
+data:
+  kafka-metrics-config.yml: |
+    # See https://github.com/prometheus/jmx_exporter for more info about JMX Prometheus Exporter metrics
+    lowercaseOutputName: true
+    rules:
+    # Special cases and very specific rules
+    - pattern: kafka.server<type=(.+), name=(.+), clientId=(.+), topic=(.+), partition=(.*)><>Value
+      name: kafka_server_$1_$2
+      type: GAUGE
+      labels:
+       clientId: "$3"
+       topic: "$4"
+       partition: "$5"
+    - pattern: kafka.server<type=(.+), name=(.+), clientId=(.+), brokerHost=(.+), brokerPort=(.+)><>Value
+      name: kafka_server_$1_$2
+      type: GAUGE
+      labels:
+       clientId: "$3"
+       broker: "$4:$5"
+    - pattern: kafka.server<type=(.+), cipher=(.+), protocol=(.+), listener=(.+), networkProcessor=(.+)><>connections
+      name: kafka_server_$1_connections_tls_info
+      type: GAUGE
+      labels:
+        cipher: "$2"
+        protocol: "$3"
+        listener: "$4"
+        networkProcessor: "$5"
+    - pattern: kafka.server<type=(.+), clientSoftwareName=(.+), clientSoftwareVersion=(.+), listener=(.+), networkProcessor=(.+)><>connections
+      name: kafka_server_$1_connections_software
+      type: GAUGE
+      labels:
+        clientSoftwareName: "$2"
+        clientSoftwareVersion: "$3"
+        listener: "$4"
+        networkProcessor: "$5"
+    - pattern: "kafka.server<type=(.+), listener=(.+), networkProcessor=(.+)><>(.+):"
+      name: kafka_server_$1_$4
+      type: GAUGE
+      labels:
+       listener: "$2"
+       networkProcessor: "$3"
+    - pattern: kafka.server<type=(.+), listener=(.+), networkProcessor=(.+)><>(.+)
+      name: kafka_server_$1_$4
+      type: GAUGE
+      labels:
+       listener: "$2"
+       networkProcessor: "$3"
+    # Some percent metrics use MeanRate attribute
+    # Ex) kafka.server<type=(KafkaRequestHandlerPool), name=(RequestHandlerAvgIdlePercent)><>MeanRate
+    - pattern: kafka.(\w+)<type=(.+), name=(.+)Percent\w*><>MeanRate
+      name: kafka_$1_$2_$3_percent
+      type: GAUGE
+    # Generic gauges for percents
+    - pattern: kafka.(\w+)<type=(.+), name=(.+)Percent\w*><>Value
+      name: kafka_$1_$2_$3_percent
+      type: GAUGE
+    - pattern: kafka.(\w+)<type=(.+), name=(.+)Percent\w*, (.+)=(.+)><>Value
+      name: kafka_$1_$2_$3_percent
+      type: GAUGE
+      labels:
+        "$4": "$5"
+    # Generic per-second counters with 0-2 key/value pairs
+    - pattern: kafka.(\w+)<type=(.+), name=(.+)PerSec\w*, (.+)=(.+), (.+)=(.+)><>Count
+      name: kafka_$1_$2_$3_total
+      type: COUNTER
+      labels:
+        "$4": "$5"
+        "$6": "$7"
+    - pattern: kafka.(\w+)<type=(.+), name=(.+)PerSec\w*, (.+)=(.+)><>Count
+      name: kafka_$1_$2_$3_total
+      type: COUNTER
+      labels:
+        "$4": "$5"
+    - pattern: kafka.(\w+)<type=(.+), name=(.+)PerSec\w*><>Count
+      name: kafka_$1_$2_$3_total
+      type: COUNTER
+    # Generic gauges with 0-2 key/value pairs
+    - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.+), (.+)=(.+)><>Value
+      name: kafka_$1_$2_$3
+      type: GAUGE
+      labels:
+        "$4": "$5"
+        "$6": "$7"
+    - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.+)><>Value
+      name: kafka_$1_$2_$3
+      type: GAUGE
+      labels:
+        "$4": "$5"
+    - pattern: kafka.(\w+)<type=(.+), name=(.+)><>Value
+      name: kafka_$1_$2_$3
+      type: GAUGE
+    # Emulate Prometheus 'Summary' metrics for the exported 'Histogram's.
+    # Note that these are missing the '_sum' metric!
+    - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.+), (.+)=(.+)><>Count
+      name: kafka_$1_$2_$3_count
+      type: COUNTER
+      labels:
+        "$4": "$5"
+        "$6": "$7"
+    - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.*), (.+)=(.+)><>(\d+)thPercentile
+      name: kafka_$1_$2_$3
+      type: GAUGE
+      labels:
+        "$4": "$5"
+        "$6": "$7"
+        quantile: "0.$8"
+    - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.+)><>Count
+      name: kafka_$1_$2_$3_count
+      type: COUNTER
+      labels:
+        "$4": "$5"
+    - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.*)><>(\d+)thPercentile
+      name: kafka_$1_$2_$3
+      type: GAUGE
+      labels:
+        "$4": "$5"
+        quantile: "0.$6"
+    - pattern: kafka.(\w+)<type=(.+), name=(.+)><>Count
+      name: kafka_$1_$2_$3_count
+      type: COUNTER
+    - pattern: kafka.(\w+)<type=(.+), name=(.+)><>(\d+)thPercentile
+      name: kafka_$1_$2_$3
+      type: GAUGE
+      labels:
+        quantile: "0.$4"
+  zookeeper-metrics-config.yml: |
+    # See https://github.com/prometheus/jmx_exporter for more info about JMX Prometheus Exporter metrics
+    lowercaseOutputName: true
+    rules:
+    # replicated Zookeeper
+    - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+)><>(\\w+)"
+      name: "zookeeper_$2"
+      type: GAUGE
+    - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+)><>(\\w+)"
+      name: "zookeeper_$3"
+      type: GAUGE
+      labels:
+        replicaId: "$2"
+    - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+)><>(Packets\\w+)"
+      name: "zookeeper_$4"
+      type: COUNTER
+      labels:
+        replicaId: "$2"
+        memberType: "$3"
+    - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+)><>(\\w+)"
+      name: "zookeeper_$4"
+      type: GAUGE
+      labels:
+        replicaId: "$2"
+        memberType: "$3"
+    - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+), name3=(\\w+)><>(\\w+)"
+      name: "zookeeper_$4_$5"
+      type: GAUGE
+      labels:
+        replicaId: "$2"
+        memberType: "$3"
+'
+
+KAFKA_PODMONITOR='
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: kafka-resources-metrics
+  labels:
+    app: strimzi
+spec:
+  selector:
+    matchExpressions:
+      - key: "ibmevents.ibm.com/kind"
+        operator: In
+        values: ["Kafka", "KafkaConnect", "KafkaMirrorMaker", "KafkaMirrorMaker2"]
+  namespaceSelector:
+    matchNames:
+      - myproject
+  podMetricsEndpoints:
+  - path: /metrics
+    port: tcp-prometheus
+    relabelings:
+    - separator: ;
+      regex: __meta_kubernetes_pod_label_(ibmevents_ibm_com_.+)
+      replacement: $1
+      action: labelmap
+    - sourceLabels: [__meta_kubernetes_namespace]
+      separator: ;
+      regex: (.*)
+      targetLabel: namespace
+      replacement: $1
+      action: replace
+    - sourceLabels: [__meta_kubernetes_pod_name]
+      separator: ;
+      regex: (.*)
+      targetLabel: kubernetes_pod_name
+      replacement: $1
+      action: replace
+    - sourceLabels: [__meta_kubernetes_pod_node_name]
+      separator: ;
+      regex: (.*)
+      targetLabel: node_name
+      replacement: $1
+      action: replace
+    - sourceLabels: [__meta_kubernetes_pod_host_ip]
+      separator: ;
+      regex: (.*)
+      targetLabel: node_ip
+      replacement: $1
+      action: replace
+'
+
+oc apply -f - <<EOF
+${KAFKA_METRICS_CONFIGMAP}
+---
+${KAFKA_PODMONITOR}
+EOF
+
+oc patch kafka iaf-system --type=merge -p '{
+  "spec": {
+    "kafka": {
+      "metricsConfig": {
+        "type": "jmxPrometheusExporter",
+        "valueFrom": {
+          "configMapKeyRef": {
+            "key": "kafka-metrics-config.yml",
+            "name": "kafka-metrics"
+          }
+        }
+      }
+    }
+  }
+}'
+```
+
+One these commands are run, the kafka brokers will perform a rolling restart in order to enable the metric exporter.
+
+You will then be able to explore kafka broker metrics in the openshift console, for example:
+
+1. Rate of messages published per kafka topic:
+   ```
+   sum by (topic) (irate(kafka_server_brokertopicmetrics_messagesin_total{topic!=""}[1m]))
+   ```
+
+### Viewing metrics in Grafana
+
+Whilst all metrics can be explored in the OCP console, it is fairly limited when it comes to visualization types
+and there is no way to construct and save a dashboard of multiple charts.
+
+It is possible to install Grafana into OpenShift and configure it to connect to Thanos. This will give it access to
+all metrics across all of the prometheus instances (both cluster and user workload metrics).
+
+#### Installation
+As a quick start, this can be installed with the following script:
+
+```diff
+@@ NOTE: This will not work for airgap deployments as it relies on pulling grafana from public registries @@
+```
+
+```bash
+#!/bin/bash
+
+oc create -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring-grafana
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: operatorgroup
+  namespace: monitoring-grafana
+spec:
+  targetNamespaces:
+  - monitoring-grafana
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: monitoring-grafana
+  namespace: monitoring-grafana
+spec:
+  channel: v4
+  installPlanApproval: Automatic
+  name: grafana-operator
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+EOF
+
+oc project monitoring-grafana
+
+installReady=false
+while [ "$installReady" != true ]
+do
+    installPlan=`oc get subscription.operators.coreos.com monitoring-grafana -n monitoring-grafana -o json | jq -r .status.installplan.name`
+    if [ -z "$installPlan" ]
+    then
+        installReady=false
+    else
+        installReady=`oc get installplan -n monitoring-grafana "$installPlan" -o json | jq -r '.status|.phase == "Complete"'`
+    fi
+
+    if [ "$installReady" != true ]
+    then
+        sleep 5
+    fi
+done
+installReady=false
+while [ "$installReady" != true ]
+do
+    csv=`oc get subscription.operators.coreos.com monitoring-grafana -n monitoring-grafana -o json | jq -r .status.currentCSV`
+    if [ -z "$csv" ]
+    then
+        installReady=false
+    else
+        installReady=`oc get csv -n monitoring-grafana "$csv" -o json | jq -r '.status.phase == "Succeeded"'`
+    fi
+
+    if [ "$installReady" != true ]
+    then
+        sleep 5
+    fi
+done
+
+oc create -n monitoring-grafana -f - <<EOF
+apiVersion: integreatly.org/v1alpha1
+kind: Grafana
+metadata:
+  name: grafana
+spec:
+  baseImage: docker.io/grafana/grafana-oss:9.4.7
+  config:
+    log:
+      mode: "console"
+      level: "warn"
+    auth:
+      disable_login_form: false
+      disable_signout_menu: true
+    auth.basic:
+      enabled: true
+    auth.anonymous:
+      enabled: true
+      org_role: Admin
+  deployment:
+    env:
+      - name: GRAFANA_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: grafana-auth-secret
+            key: token
+  containers:
+    - env:
+        - name: SAR
+          value: '-openshift-sar={"resource": "namespaces", "verb": "get"}'
+      args:
+        - '-provider=openshift'
+        - '-pass-basic-auth=false'
+        - '-https-address=:9091'
+        - '-http-address='
+        - '-email-domain=*'
+        - '-upstream=http://localhost:3000'
+        - "\$(SAR)"
+        - '-openshift-delegate-urls={"/": {"resource": "namespaces", "verb": "get"}}'
+        - '-tls-cert=/etc/tls/private/tls.crt'
+        - '-tls-key=/etc/tls/private/tls.key'
+        - '-client-secret-file=/var/run/secrets/kubernetes.io/serviceaccount/token'
+        - '-cookie-secret-file=/etc/proxy/secrets/session_secret'
+        - '-openshift-service-account=grafana-serviceaccount'
+        - '-openshift-ca=/etc/pki/tls/cert.pem'
+        - '-openshift-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
+        - '-skip-auth-regex=^/metrics'
+      image: 'registry.redhat.io/openshift4/ose-oauth-proxy:v4.10'
+      imagePullPolicy: Always
+      name: grafana-proxy
+      ports:
+        - containerPort: 9091
+          name: grafana-proxy
+      resources: {}
+      volumeMounts:
+        - mountPath: /etc/tls/private
+          name: secret-grafana-k8s-tls
+          readOnly: false
+        - mountPath: /etc/proxy/secrets
+          name: secret-grafana-k8s-proxy
+          readOnly: false
+  secrets:
+    - grafana-k8s-tls
+    - grafana-k8s-proxy
+  service:
+    ports:
+      - name: grafana-proxy
+        port: 9091
+        protocol: TCP
+        targetPort: grafana-proxy
+    annotations:
+      service.alpha.openshift.io/serving-cert-secret-name: grafana-k8s-tls
+  ingress:
+    enabled: true
+    targetPort: grafana-proxy
+    termination: reencrypt
+  client:
+    preferService: true
+  serviceAccount:
+    annotations:
+      serviceaccounts.openshift.io/oauth-redirectreference.primary: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"grafana-route"}}'
+  dashboardLabelSelector:
+    - matchExpressions:
+        - { key: "app", operator: In, values: ['grafana'] }
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: grafana-proxy
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: grafana-proxy
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: grafana-proxy
+subjects:
+  - kind: ServiceAccount
+    name: grafana-serviceaccount
+---
+apiVersion: v1
+data:
+  session_secret: Y2hhbmdlIG1lCg==
+kind: Secret
+metadata:
+  name: grafana-k8s-proxy
+type: Opaque
+EOF
+
+waitForStatus \
+  grafanas.integreatly.org \
+  grafana \
+  400 \
+  10 \
+  '{.status.phase}' \
+  'failing'
+
+# Ignore error if svc grafana-alert has no annotations
+oc patch svc grafana-alert --type=json -p='[{"op": "remove", "path": "/metadata/annotations"}]' || true
+oc delete secret grafana-k8s-tls 
+oc annotate service grafana-service fixed=yes
+
+oc adm policy add-cluster-role-to-user cluster-monitoring-view -z grafana-serviceaccount -n monitoring-grafana
+
+oc create -n monitoring-grafana -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-auth-secret
+  annotations:
+    kubernetes.io/service-account.name: grafana-serviceaccount
+type: kubernetes.io/service-account-token
+EOF
+
+oc create -n monitoring-grafana -f - <<EOF
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDataSource
+metadata:
+  name: prometheus
+spec:
+  datasources:
+    - access: proxy
+      editable: true
+      isDefault: true
+      jsonData:
+        httpHeaderName1: 'Authorization'
+        timeInterval: 5s
+        tlsSkipVerify: true
+      name: prometheus
+      secureJsonData:
+        httpHeaderValue1: 'Bearer \${GRAFANA_TOKEN}'
+      type: prometheus
+      url: 'https://thanos-querier.openshift-monitoring.svc.cluster.local:9091'
+  name: prometheus.yaml
+EOF
+
+echo "Monitoring will be available at https://$(oc get route -n monitoring-grafana grafana-route -o jsonpath='{.status.ingress[0].host}')"
+```
+
+Alternatively, there is a [RedHat blog](https://cloud.redhat.com/experts/o11y/ocp-grafana/) which details
+how to deploy grafana and connect to Thanos. 
+
+#### Creating dashboards
+
+All the same queries listed above for the OCP console will work in Grafana too, and can be attached to any
+of the available visualizations.
+
+There are some example dashboards available in 
+[example-dashboards](https://github.com/IBM/waiops-tech-jam/tree/main/labs/practitioner-basics/4-monitoring/example-dashboards), 
+which can be imported into Grafana.
