@@ -4,34 +4,34 @@ description: Temporal Correlation
 sidebar_position: 6
 ---
 
+Temporal grouping is an unsupervised learning algorithm that groups alerts which
+co-occur over time. When a problem arises, there are typically multiple parts of
+a system or environment that are impacted. When alerts in different areas
+co-occur, it makes sense to look at them together and treat them as one problem
+to try and determine what might have happened.
 
+Grouping co-occurring alerts together reduces the number of tickets and
+incidents opened and the number of people looking at the same problem. It helps
+to understand the context of an issue so it can be prioritize, triage, and
+resolved more quickly.
 
-Temporal grouping is an unsupervised learning algorithm that groups alerts which co-occur over time. 
-When a problem arises, there are typically multiple parts of a system or environment that are impacted. 
-When alerts in different areas co-occur, it makes sense to look at them together and treat them 
-as one problem to try and determine what might have happened.
+This AI algorithm can start to discover groups after a pattern is learned. For
+example, if a problem occurs the first week of January, the fourth week of
+January, and again in March, it will learn the alerts that tend to co-occur when
+that problem happens.
 
-Grouping co-occurring alerts together reduces the number of tickets and incidents opened and the number 
-of people looking at the same problem. It helps to understand the context of an issue so it can be
-prioritize, triage, and resolved more quickly. 
-
-This AI algorithm can start to discover groups after a pattern is learned. 
-For example, if a problem occurs the first week of January, the fourth week of January, and again in 
-March, it will learn the alerts that tend to co-occur when that problem happens.
-
-Temporal grouping will generate a set of alert grouping policies that you can review and selectively deploy 
-or they can get all deployed automatically.
-
+Temporal grouping will generate a set of alert grouping policies that you can
+review and selectively deploy or they can get all deployed automatically.
 
 ## 6.1: Validate the Absence of Correlation
 
+First, we will load a set of events to validate that there is no correlation
+from the alerts created by these events.
 
-First, we will load a set of events to validate that there is no correlation from the 
-alerts created by these events. 
-
-Create a new file called *temp-events-inference.json* by running the following command in the Terminal window to open the text editor,
-**copy** the event data below, **paste** it into the text editor, 
-click on the **Save** button in the text editor and **close** the editor window (click on the X). 
+Create a new file called _temp-events-inference.json_ by running the following
+command in the Terminal window to open the text editor, **copy** the event data
+below, **paste** it into the text editor, click on the **Save** button in the
+text editor and **close** the editor window (click on the X).
 
 ```
 gedit temp-events-inference.json
@@ -44,46 +44,46 @@ gedit temp-events-inference.json
 { "sender": { "service": "DemoMon", "name": "newsletters.myapp.example.com", "type": "Netcool/OMNIbus" }, "resource": { "name": "newsletters.myapp.example.com", "hostname": "newsletters.myapp.example.com", "type": "Service"}, "type": { "classification": "Newsletter not received in 5 min:++:Newsletter self test", "eventType": "problem" }, "severity": 3, "summary": "Newsletter test email not received within 5 minutes - emails may not be working", "occurrenceTime": "2021-09-27T21:43:47.948Z", "expirySeconds": 0 }
 ```
 
-Now lets submit the events via the webhook script created in the previous section by running the following command in the **Terminal** window:
+Now lets submit the events via the webhook script created in the previous
+section by running the following command in the **Terminal** window:
 
 ```
 bash event-load-webhook.sh temp-events-inference.json
 ```
 
-* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts** and click on the **Alerts** tab
-* Click on the **Refresh alerts** icon on the right
+- From the burger menu in the top-left navigate to: **Operate → Alerts**
+- Click on the **Refresh alerts** icon on the right
 
-Now we can see that the four alerts are independent from each other and not correlated. Also,
-if you click on the **View correlation** icon in the top-right, the **Correlation** column shows
-no correlation information for these alerts. 
+Now we can see that the four alerts are independent from each other and not
+correlated. Also, if you click on the **View correlation** icon in the
+top-right, the **Correlation** column shows no correlation information for these
+alerts.
 
 ![](images/temp-no-correlated.png)
 
-
-
-Lets clear these alerts before we test the temporal correlation.
-Select all the alerts, right-click and select **Clear**. Make sure all four alerts have **Clear** under 
-the **State** column. Move to the next step in the Lab (don't wait), the alerts will disappear after 2-3 minutes.
-
-
+Lets clear these alerts before we test the temporal correlation. Select all the
+alerts, right-click and select **Clear**. Make sure all four alerts have
+**Clear** under the **State** column. Move to the next step in the Lab (don't
+wait), the alerts will disappear after 2-3 minutes.
 
 ## 6.2: Loading Historical Event Data
 
-For the purpose of this Lab, we will manually load historical alerts directly into the Cloud Pak for AIOps 
-historical alerts database. What is unique about this data is that different alerts co-occur about the 
-same time during multiple days. This data characteristic will trigger the creation of alert grouping policies.
-In a real production deployment, the historical alerts database will have the alerts of the last 90 days that
-can be used by the temporal training algorithm. 
+For the purpose of this Lab, we will manually load historical alerts directly
+into the Cloud Pak for AIOps historical alerts database. What is unique about
+this data is that different alerts co-occur about the same time during multiple
+days. This data characteristic will trigger the creation of alert grouping
+policies. In a real production deployment, the historical alerts database will
+have the alerts of the last 90 days that can be used by the temporal training
+algorithm.
 
-
-Create a new file called *temp-events-training.json* by running the following command in the Terminal window to open the text editor,
-**copy** the event data below, **paste** it into the text editor, 
-click on the **Save** button in the text editor and **close** the editor window (click on the X). 
+Create a new file called _temp-events-training.json_ by running the following
+command in the Terminal window to open the text editor, **copy** the event data
+below, **paste** it into the text editor, click on the **Save** button in the
+text editor and **close** the editor window (click on the X).
 
 ```
 gedit temp-events-training.json
 ```
-
 
 ```
 {"tenantid":"cfd95b7e-3bc7-4006-a4a8-a73a79c71255","requestid":"d5f5cfca-1415-499e-9e6d-5b9eed2181a0","notificationTime":"2023-08-23T20:41:12.420Z","type":"created","entityType":"alert","entity":{"deduplicationKey":"https://myapp.example.com->Synthetic test failed","sender":{"service":"DemoMon","name":"https://myapp.example.com","type":"Netcool/OMNIbus"},"resource":{"name":"https://myapp.example.com","type":"Service"},"type":{"classification":"Synthetic test failed:++:Synthetic test","eventType":"problem"},"severity":5,"summary":"Synthetic test failed for >1min on https://myapp.example.com","occurrenceTime":"2023-06-19T23:02:59.628Z","expirySeconds":0,"signature":"{name=https://myapp.example.com, type=Service}-Synthetic test failed:++:Synthetic test-","firstOccurrenceTime":"2023-06-19T23:02:59.628Z","lastOccurrenceTime":"2023-06-19T23:02:59.628Z","eventCount":1,"state":"open","id":"83eff4b1-c6f5-4819-8feb-ce4c2d41d652","langId":"en_US","team":"","owner":"","insights":[],"links":[]}}
@@ -112,12 +112,14 @@ gedit temp-events-training.json
 {"tenantid":"cfd95b7e-3bc7-4006-a4a8-a73a79c71255","requestid":"03da5ec6-cf87-40e6-b50d-b5882e3e2862","notificationTime":"2023-08-23T20:41:12.525Z","type":"created","entityType":"alert","entity":{"deduplicationKey":"newsletters.myapp.example.com->High error rate","sender":{"service":"DemoMon","name":"newsletters.myapp.example.com","type":"Netcool/OMNIbus"},"resource":{"name":"newsletters.myapp.example.com","hostname":"newsletters.myapp.example.com","type":"Service"},"type":{"classification":"Newsletter not received in 5 min:++:Newsletter self test","eventType":"problem"},"severity":3,"summary":"Newsletter test email not received within 5 minutes - emails may not be working","occurrenceTime":"2023-08-16T08:04:49.630Z","expirySeconds":0,"signature":"{hostname=newsletters.myapp.example.com, name=newsletters.myapp.example.com, type=Service}-Newsletter not received in 5 min:++:Newsletter self test-","firstOccurrenceTime":"2023-08-16T08:04:49.630Z","lastOccurrenceTime":"2023-08-16T08:04:49.630Z","eventCount":1,"state":"open","id":"685fa56f-3bfc-4cb8-be77-edb29672646f","langId":"en_US","team":"","owner":"","insights":[],"links":[]}}
 ```
 
-Now lets load these alerts into the historical alerts database via a kafka topic. 
-We will use the kafka script created in the previous section. Since this kafka script requires 
-a CLI (Command Line Interface) connection to the OpenShift cluster, the script will leverage the 
- *oc login* command connection that we run at the beginning of the Lab.
+Now lets load these alerts into the historical alerts database via a kafka
+topic. We will use the kafka script created in the previous section. Since this
+kafka script requires a CLI (Command Line Interface) connection to the OpenShift
+cluster, the script will leverage the _oc login_ command connection that we run
+at the beginning of the Lab.
 
-Run the following command to load the AI model training alerts into the historical alerts database:
+Run the following command to load the AI model training alerts into the
+historical alerts database:
 
 ```
 bash event-load-kafka.sh temp-events-training.json cp4waiops-cartridge.irdatalayer.replay.alerts
@@ -129,155 +131,169 @@ Now that we have loaded historical alert data, we can run the temporal training.
 
 ### Configure Temporal Training Model
 
-* From the burger menu in the top-left navigate to: **Operate → AI model management**.
-* From the **AI model management** page, click on the **Temporal grouping** tile. 
+- From the burger menu in the top-left navigate to: **Operate → AI model
+  management**.
+- From the **AI model management** page, click on the **Temporal grouping**
+  tile.
 
 ![](images/temp-group-tile.png)
 
 From the **Set up training** pop-up:
 
-* In the **Getting started** page, read the description and click **Next**
-* In the **Schedule training** page, leave **Schedule training** Off and click **Next**
-* (Skip this step if you don't have a **Select data** page) In the **Select data** page, set **Start date** as January 1st 2023 and **End date** as September 1st, 2023. Leave **Time** unchanged
+- In the **Getting started** page, read the description and click **Next**
+- In the **Schedule training** page, leave **Schedule training** Off and click
+  **Next**
+- (Skip this step if you don't have a **Select data** page) In the **Select
+  data** page, set **Start date** as January 1st 2023 and **End date** as
+  September 1st, 2023. Leave **Time** unchanged
 
 ![](images/select-data-temp.png)
 
-* In the **Deploy policies** page, leave **Review and manually deploy policies** selected and 
-click **Done** as shown below:
+- In the **Deploy policies** page, leave **Review and manually deploy policies**
+  selected and click **Done** as shown below:
 
 ![](images/temp-training-popup.png)
 
-
 ### Run Temporal Training Model and Create Temporal Policies
 
-
-* From the **AI model management** page, click again on the **Temporal grouping** tile. 
-* From the **Temporal grouping** page, click **Train model and create policies** on the right of the page.
+- From the **AI model management** page, click again on the **Temporal
+  grouping** tile.
+- From the **Temporal grouping** page, click **Train model and create policies**
+  on the right of the page.
 
 You will see a pop-up message that confirms that training has started:
 
 ![](images/temp-training-started.png)
 
-After about 5 minutes, you will see that the training has finished in the **Activity** log on the right:
+After about 5 minutes, you will see that the training has finished in the
+**Activity** log on the right:
 
 ![](images/temp-training-complete.png)
 
-Click on the **Model versions** tab. Note that a new Model v1 shows as **Deployed**. 
+Click on the **Model versions** tab. Note that a new Model v1 shows as
+**Deployed**.
 
 ![](images/temp-training-deployed.png)
 
-Click on the **Draft and archived policies** tab. Note that two draft Policies have been created. 
+Click on the **Draft and archived policies** tab. Note that two draft Policies
+have been created.
 
 ![](images/draft-policies.png)
 
-
-
 ## 6.4: Review and Deploy Temporal Policies
 
-Lets review the newly created temporal policies based on the historical alert data.
+Lets review the newly created temporal policies based on the historical alert
+data.
 
 ### Policy Logic
 
-Click on the first policy name. On the right-side slider, click on the **Specification** tab
+Click on the first policy name. On the right-side slider, click on the
+**Specification** tab
 
 ![](images/first-policy-spec.png)
 
 Note that this policy will correlate any alerts that:
-1. Have the alert.signature value equal to any of the two values listed. These values came from 
-Alerts in the historical training data that have co-occurred in the past.
+
+1. Have the alert.signature value equal to any of the two values listed. These
+   values came from Alerts in the historical training data that have co-occurred
+   in the past.
 2. Happen within a 900 seconds (15 minutes) fixed time window.
 
-Close the right-side slider by clicking on the X. 
+Close the right-side slider by clicking on the X.
 
 Click on the second policy name and repeat the review process.
 
 ### Policy Justification
 
-Now lets explore the policy Justification. On the first policy, click on the three dots on the 
-right and select **View justification**, as shown below:
+Now lets explore the policy Justification. On the first policy, click on the
+three dots on the right and select **View justification**, as shown below:
 
 ![](images/first-policy-justification.png)
 
-The policy justification page shows the alerts that have co-occurred in the past. For this policy,
-we see that two alerts with severities Major and Minor have co-occurred on June 19, July 5, July 20, 
-Aug 7, Aug 17 and Aug 22 during 2023. 
+The policy justification page shows the alerts that have co-occurred in the
+past. For this policy, we see that two alerts with severities Major and Minor
+have co-occurred on June 19, July 5, July 20, Aug 7, Aug 17 and Aug 22
+during 2023.
 
 ![](images/justification-details.png)
 
-Click on the previous browser tab to get back to the list of the two draft policies and repeat the
-justification review with the second policy. 
+Click on the previous browser tab to get back to the list of the two draft
+policies and repeat the justification review with the second policy.
 
 ### Policy Deployment
 
-Now that we have reviewed the logic and the justification for the draft policies, we will deploy them.
-From the **Temporal Grouping** page under the **Draft and archived policies** tab, select both policies and
-click **Deploy**, as shown below. Confirm the deployment on the confirmation pop-up. 
+Now that we have reviewed the logic and the justification for the draft
+policies, we will deploy them. From the **Temporal Grouping** page under the
+**Draft and archived policies** tab, select both policies and click **Deploy**,
+as shown below. Confirm the deployment on the confirmation pop-up.
 
 ![](images/policy-deploy.png)
 
-After the two policies are deployed, they are removed from the draft list. Click on the **Manage deployed policies**
-link, as shown below:
+After the two policies are deployed, they are removed from the draft list. Click
+on the **Manage deployed policies** link, as shown below:
 
 ![](images/policy-deploy-gone.png)
 
-Now we are in the **Automations** page, under the **Policies** tab with a preset filter for temporal policies. We 
-can see that the two temporal polices are now deployed and enabled. Note that the **Last run** column is empty 
-and the status is **Policy has not been attempted** (hover over the status icon to see the legend).
+Now we are in the **Automations** page, under the **Policies** tab with a preset
+filter for temporal policies. We can see that the two temporal polices are now
+deployed and enabled. Note that the **Last run** column is empty and the status
+is **Policy has not been attempted** (hover over the status icon to see the
+legend).
 
 ![](images/policy-enabled.png)
-
 
 ## 6.5: Test the Temporal Policies
 
 Before testing the new temporal policies, lets recap what we have done so far:
-1. We submitted four co-occurring alerts. We saw that that they don't get grouped or correlated 
-because we don't have any temporal correlation policy deployed yet. 
-2. We loaded historical alerts directly into the Cloud Pak for AIOps historical alerts database.
-This data have the same alerts from the previous step that co-occur multiple times in the past. 
-3. We manually run a temporal training job that will leverage this historical alert data.
-4. After the job finished, two things happened: a new temporal model was deployed and two draft
-temporal correlation policies were created.
-5. We reviewed both, the logic and the justification of the draft temporal policies. 
+
+1. We submitted four co-occurring alerts. We saw that that they don't get
+   grouped or correlated because we don't have any temporal correlation policy
+   deployed yet.
+2. We loaded historical alerts directly into the Cloud Pak for AIOps historical
+   alerts database. This data have the same alerts from the previous step that
+   co-occur multiple times in the past.
+3. We manually run a temporal training job that will leverage this historical
+   alert data.
+4. After the job finished, two things happened: a new temporal model was
+   deployed and two draft temporal correlation policies were created.
+5. We reviewed both, the logic and the justification of the draft temporal
+   policies.
 6. Finally we deployed both temporal policies.
 
-To test the deployed temporal policies, we will submit the same four co-occurring alerts
-we tried in the first step.
+To test the deployed temporal policies, we will submit the same four
+co-occurring alerts we tried in the first step.
 
-Lets resubmit the same four events via the webhook script created in the previous section by 
-running the following command from the **Terminal** window
+Lets resubmit the same four events via the webhook script created in the
+previous section by running the following command from the **Terminal** window
 
 ```
 bash event-load-webhook.sh temp-events-inference.json
 ```
 
-* From the burger menu in the top-left navigate to: **Operate → Incidents and alerts** and click on the **Alerts** tab
-
+- From the burger menu in the top-left navigate to: **Operate → Alerts**
 
 Now we can see that there are two alert groups as shown below:
 
 ![](images/temp-yes-correlated.png)
 
-Click on the chevron icon (^) for each group to expand them. Also,
-click on the **View correlation** icon in the top-right, the **Correlation** column shows
-the temporal correlation icon for these alerts. 
+Click on the chevron icon (^) for each group to expand them. Also, click on the
+**View correlation** icon in the top-right, the **Correlation** column shows the
+temporal correlation icon for these alerts.
 
 ![](images/temp-yes-correlated-expanded.png)
 
-
-Now click on the temporal correlation icon of the first alert. Note that there is a 
-calendar that shows which days these two alerts have co-occurred in the past. Hover on the
-calendar to see the dates.
+Now click on the temporal correlation icon of the first alert. Note that there
+is a calendar that shows which days these two alerts have co-occurred in the
+past. Hover on the calendar to see the dates.
 
 ![](images/temp-yes-correlated-calendar.png)
 
-Finally, if you click on the **More information** link, you will see the same justification page
-that we saw while reviewing the draft policies.
+Finally, if you click on the **More information** link, you will see the same
+justification page that we saw while reviewing the draft policies.
 
 ![](images/temp-yes-correlated-justification.png)
 
-Lets clear these alerts before we move to the next section in the Lab.
-Select all the alerts, right-click and select **Clear**. Make sure all four alerts have **Clear** under 
-the **State** column. Move to the next step in the Lab (don't wait), the alerts will disappear after 2-3 minutes
-
-
-
+Lets clear these alerts before we move to the next section in the Lab. Select
+all the alerts, right-click and select **Clear**. Make sure all four alerts have
+**Clear** under the **State** column. Move to the next step in the Lab (don't
+wait), the alerts will disappear after 2-3 minutes

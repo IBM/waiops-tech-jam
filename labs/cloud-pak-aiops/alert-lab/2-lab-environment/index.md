@@ -14,7 +14,7 @@ storage.
 
 The following diagram describes the infrastructure for the Lab:
 
-![](images/intro.drawio.png)
+![](images/intro.png)
 
 ## 2.1: Prerequisites
 
@@ -108,15 +108,24 @@ Find the **password** for the **admin** username by running the following
 command from the **Terminal** window:
 
 ```
-oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d ; echo -e "\n"
+oc -n cp4waiops get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d ; echo -e "\n"
 ```
 
-Open a Firefox browser window and copy & paste the **Cloud Pak for AIOps URL**
-that you got in the previous step. Note that you will get one or more security
-**Warning: Potential Security Risk Ahead**. This is because we have used
-self-signed certificates for this Lab. Just accept the risk and continue. Make
-sure you can login as **admin**, as shown below, using the password from the
-previous command.
+Open a Firefox browser window and navigate to the AIOps dashboard using the url
+you discovered in the previous step.
+
+`https://cpd-cp4waiops.apps.ocp.techzone.lan`
+
+:::tip
+
+You will get one or more security **Warning: Potential Security Risk Ahead**.
+This is because we have used self-signed certificates for this Lab. Just accept
+the risk and continue.
+
+:::
+
+- Username: `cpadmin`
+- Password: The password you found in the previous step.
 
 ![](images/login.png)
 
