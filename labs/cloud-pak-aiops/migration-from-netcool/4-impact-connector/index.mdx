@@ -1,0 +1,93 @@
+---
+title: 4. Set up the Netcool/Impact Connector
+description: Set up the Netcool/Impact Connector in AIOps
+sidebar_position: 4
+---
+
+## 3.1: Overview
+
+In this Lab, you will create an instance of the Netcool/Impact Connector to connect to an existing Netcool/Impact server. Most, if not all, AIOps deployments will include Netcool/Impact to enable automation and integration with third-party systems. Creating and configuring the Netcool/Impact Connector therefore is usually going to be a key part of any AIOps set-up.
+
+## 3.2 Preparation tasks
+
+### Retrieve Netcool/Impact certificates
+
+In this section, you will retrieve the two certificates used by Netcool/Impact for its server and GUI server processes. These are needed to complete the Netcool/Impact Connector instance.
+
+Open a command prompt and issue the following commands. Save the resulting certificates to a text editor.
+
+```
+echo '' | openssl s_client -connect netcoolvm:16311  -showcerts 2>&1  | sed -n -e '/BEGIN\ CERTIFICATE/,/END\ CERTIFICATE/ p'
+echo '' | openssl s_client -connect netcoolvm:9081  -showcerts 2>&1  | sed -n -e '/BEGIN\ CERTIFICATE/,/END\ CERTIFICATE/ p'
+```
+
+### Set up the Zen API key
+
+Use the following steps to create an instance of the Netcool/Impact Connector:
+
+- Log in to the AIOps console
+- Click on your user icon in the top-right corner of the screen and select **Profile and settings**
+- Click on **API key** in the top-right corner of the screen and select **Generate new key**
+- Copy and save the API key to a safe place
+- Substitute your copied API key into the following script:
+```
+ZENAPIKEY=$(echo "cpadmin:<your-API-key>" | base64 -w 0)
+echo ${ZENAPIKEY}
+```
+- Test out your `ZENAPIKEY` using the following:
+```
+CPD_ROUTE=`oc get route -n cp4waiops cpd -o jsonpath='{.spec.host}'`
+TENANT_ID=cfd95b7e-3bc7-4006-a4a8-a73a79c71255
+curl -kv -H "Authorization: ZenApiKey ${ZENAPIKEY}" -H "x-tenant-id: ${TENANT_ID}"  "https://${CPD_ROUTE}/aiops/api/issue-resolution/v1/alerts/"
+```
+If you get a JSON payload response containing events, it means your `ZENAPIKEY` works.
+
+Save the value of `ZENAPIKEY` to a text editor.
+
+## 3.3 Create a Netcool/Impact Connector instance
+
+Use the following steps to create an instance of the Netcool/Impact Connector:
+
+- Log in to the AIOps console and select **Integrations** from the main menu
+- Click the **Add integration** button to add a new integration
+- Type **Netcool** into the Search bar
+- Choose **IBM Tivoli Netcool Impact** and click **Get started** to create a new instance
+- **Name**: the label you want to give this integration instance
+- **GUI Server URLs of Impact endpoint**: enter: `https://netcoolvm:16311`
+- **Backend Server URLs of Impact endpoint**: enter: `https://netcoolvm:9081`
+- **User ID**: enter: `impactadmin`
+- **Password**: enter: `netcool`
+- **Impact certificates**: paste in the certificates you retrieved earlier
+- **Deployment options**: leave this set to **Local**
+- Click on the **Done** button to complete the integration
+
+It will now take a few minutes for AIOps to create the new integration. Refresh the **Integrations** page and ensure the **Integration status** eventually shows with a green tick.
+
+## 3.4 Complete the integration in Netcool/Impact
+
+As part of the Netcool/Impact Connector instance creation, AIOps creates a number of assets within Netcool/Impact, including some policies, and a RESTful API Data Source Adaptor (DSA) instance. The final step in the setup of the Netcool/Impact Connector integration is to configure the Data Source Adaptor in Netcool/Impact to be able to connect back to AIOps via its API. Use the following steps to complete this last task.
+
+- Navigate to the Netcool/Impact GUI: `https://netcoolvm:16311/ibm/console`
+- Log in to Netcool/Impact as the user `impactadmin` and password `netcool`
+- Click on **Data Model**
+- Identify the RESTful API DSA instance created by AIOps by its name starting with `AIOps-`
+- Double click the AIOps DSA instance to edit it
+- Set **Host Name** to the AIOps host name: `cpd-aiops.apps.aiops-4.cp.fyre.ibm.com`
+- **Use HTTPS**: checked
+- **Disable SSL Verification**: checked
+- **Reuse Connection**: checked
+- **Cache Response**: unchecked
+- **Authentication method to use**: select `No Authentication`
+- Scroll down to: **Protected Request Headers**
+- Create a new header with the following details:
+  - **Header Name**: `Authorization` 
+  - **Header Value**: `ZenApiKey <your-ZENAPIKEY-created-earlier>`
+- Click **OK** to save your new header
+- Click on the Save button with the small disk icon at the top of the page to save your changes
+- Click on the X to close the DSA instance
+- Right click on the DSA instance and select **Test Connection** and verify it responds with **Connection OK**
+
+:::note
+The header value should be the exact string `ZenApiKey`, followed by a space character, followed by the `ZENAPIKEY` output you saved to a text editor earlier. If your DSA connection test fails, check each of the steps above to ensure they are correct.
+:::
+
