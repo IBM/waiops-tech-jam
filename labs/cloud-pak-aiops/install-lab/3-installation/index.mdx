@@ -204,16 +204,14 @@ spec:
 EOF
 ```
 
-Run the following command to ensure that the IBM Cloud Pak® foundational
-services Cert Manager pods have a STATUS of Running before proceeding to the
-next step:
+Run the following command to ensure that the IBM Cert Manager pods have a STATUS
+of Running before proceeding to the next step:
 
 ```sh
 oc -n ibm-cert-manager get pods
 ```
 
-Example output for a successful IBM Cloud Pak® foundational services Cert
-Manager installation:
+Example output for a successful IBM Cert Manager installation:
 
 ```
 NAME                                        READY   STATUS    RESTARTS   AGE
@@ -223,12 +221,18 @@ cert-manager-webhook-8598787c8-s4lkt        1/1     Running   0          8d
 ibm-cert-manager-operator-c96957695-dkxnm   1/1     Running   0          8d
 ```
 
+:::warning
+
+Ensure you see all pods in a **Ready 1/1** state before proceeding to the next
+step.
+
+:::
+
 ### Install the License Service
 
-IBM Cloud Pak for AIOps requires the installation of the IBM Cloud Pak
-foundational services License Service. You must install the IBM Cloud Pak
-foundational services License Service on the Red Hat OpenShift cluster that you
-are installing IBM Cloud Pak for AIOps on.
+IBM Cloud Pak for AIOps requires the installation of the IBM License Service.
+You must install the IBM License Service on the Red Hat OpenShift cluster that
+you are installing IBM Cloud Pak for AIOps on.
 
 Run the following command to create the resource definitions that you need:
 
@@ -262,22 +266,26 @@ spec:
 EOF
 ```
 
-Run the following command to ensure that the IBM Cloud Pak® foundational
-services License Server pods have a STATUS of Running before proceeding to the
-next step.
+Run the following command to ensure that the IBM License Server pods have a
+STATUS of Running before proceeding to the next step.
 
 ```sh
 oc -n ibm-licensing get pods
 ```
 
-Example output for a successful IBM Cloud Pak® foundational services License
-Service installation:
+Example output for a successful IBM License Service installation:
 
 ```sh
 NAME                                              READY   STATUS    RESTARTS   AGE
 ibm-licensing-operator-db4cd746c-xzmlf            1/1     Running   0          8d
-ibm-licensing-service-instance-596b99588f-76cc5   1/1     Running   0          8d
 ```
+
+:::warning
+
+Ensure you see all pods in a **Ready 1/1** state before proceeding to the next
+step.
+
+:::
 
 ### Verify cluster readiness
 
@@ -300,7 +308,7 @@ metadata:
   name: ibm-aiops-orchestrator
   namespace: cp4waiops
 spec:
-  channel: v4.6
+  channel: v4.5
   installPlanApproval: Automatic
   name: ibm-aiops-orchestrator
   source: ibm-operator-catalog
@@ -308,22 +316,27 @@ spec:
 EOF
 ```
 
-Do not move to the next step until you can confirm that the Operator is fully
-installed by running the verification command listed below. Verify that all of
-the components except **IBM Elastic**, have a state of **Succeeded**. As the
-**IBM Elastic** installation depends on the next step, you will see the **IBM
-Elastic** state as **Installing** or **Failed** but this is expected.
+After a few minutes you can confirm that the Operator is fully installed by
+running the following command:
 
 ```
 oc get csv -n cp4waiops | egrep "ibm-aiops-orchestrator"
 ```
 
-You should see three **Succeeded** messages as shown below:
+You should see **Succeeded** messages as shown below:
 
-![](images/3-succeeded.png)
+```sh
+ibm-aiops-orchestrator.v4.5.1         IBM Cloud Pak for AIOps               4.5.1   Succeeded
+```
 
 If interested, this install step is documented
 [**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_operator).
+
+:::warning
+
+Ensure you see the **Succeeded** status before proceeding to the next step.
+
+:::
 
 ## 3.4: Deploy an instance of Cloud Pak for AIOps
 
@@ -337,7 +350,7 @@ Lab.
 Note also that we specify the **TopologyModel**. This is the terminology to use
 in the product when defining collections of topology resource groups. Valid
 values for TopologyModel are "application" or "service". Run the following
-command:
+commands:
 
 ```sh
 export LICENSE_ACCEPT=true
@@ -374,7 +387,7 @@ spec:
 EOF
 ```
 
-Run the following command to check that the PHASE of your installation is
+Run the following command to check that the _PHASE_ of your installation is
 **Updating**:
 
 ```
@@ -387,11 +400,11 @@ successful, the PHASE of your installation changes to **Running**.
 
 :::tip
 
-While you wait for the installation to finish, complete the following Lab
-sections below and come back when you are done.
+While you wait for the installation to finish, you can complete the following
+Lab sections and come back to complete this section when you are done.
 
-- Custom Sizing Tool
-- Storage, HA and FIPS Considerations
+- [Custom Sizing Tool](/labs/cloud-pak-aiops/install-lab/sizing-tool/)
+- [Storage, HA and FIPS Considerations](/labs/cloud-pak-aiops/install-lab/storage-ha/)
 
 :::
 
