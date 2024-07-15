@@ -54,19 +54,19 @@ The "LDAP connection" page is displayed as shown below:
 
 Enter the following details to set up the LDAP connection:
 
-- Connection name: LDAP
-- Server type: Custom
-- Base DN: dc=ibm,dc=com
-- Bind DN: cn=admin,dc=ibm,dc=com
-- Bind DN password: _get the LDAP **admin** password from previous step_
-- LDAP server URL: ldap://openldap.openldap.svc.cluster.local:389
+- Connection name: `LDAP`
+- Server type: `Custom`
+- Base DN: `dc=ibm,dc=com`
+- Bind DN: `cn=admin,dc=ibm,dc=com`
+- Bind DN password: _use the LDAP **admin** password from previous step_
+- LDAP server URL: `ldap://openldap.openldap.svc.cluster.local:389`
 
 Now, click _Test connection_. You should get Successful connection.
 
 Lets fill out the rest of the fields. Leave the default values for Group filter,
 Group ID map, User ID map and Group member ID map. Only update the field below:
 
-- User filter: (&(uid=%v)(objectclass=Person))
+- User filter: `(&(uid=%v)(objectclass=Person))`
 
 Now the "LDAP connection" page should be filled as displayed below:
 
@@ -108,7 +108,7 @@ We will now login to the Cloud Pak for AIops as the new user we just created.
 - From the Cloud Pak for AIOps login page:
 
   - under **Log in with** select **Enterprise LDAP**.
-  - under **Username**, type **sre1**.
+  - under **Username**, type `sre1`.
   - under **Password**, copy/paste the _generic password for all users_ you
     obtained before. Note that this credential has been pre-stored in the LDAP
     server.
