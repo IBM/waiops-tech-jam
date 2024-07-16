@@ -1,4 +1,5 @@
 {
   "label": "Migration from Netcool",
-  "position": 20
+  "position": 50,
+  "className": "wip-docs"
 }
