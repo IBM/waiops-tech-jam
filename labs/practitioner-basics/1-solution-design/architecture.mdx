@@ -6,6 +6,14 @@ description:
 sidebar_position: 2
 ---
 
+:::info
+
+Whilst the examples below focus on AIOps as the subject, this guide is meant as
+a generic recommendation for planning any product or solution deployment
+project.
+
+:::
+
 A successful deployment involves communicating important details to multiple
 teams across an organization in good time to avoid miscommunication, e.g.
 
@@ -66,6 +74,8 @@ solution:
   rules.
 - Infrastructure engineers can communicate platform and other information
   relevant to the solution.
+- Infrastructure and network engineers can plan subnet information for the
+  cluster based on identified outbound connection details upfront.
 
 :::info Diagram tooling
 
@@ -112,6 +122,28 @@ understand and convey to stakeholders:
 Using colour coding adds extra visual context to easily see data types and
 associated flows into the system.
 
+### Can you spot any potential gaps?
+
+In the example above, it is pretty easy to see 2 immediate areas of concern that
+need further investigation:
+
+1. Whilst we may be getting metric data for `App3` running on `Server X` near
+   the bottom of the stack, we don't appear to be getting any monitoring data
+   for `Server X` itself.
+1. We seem to have no monitoring data for `Storage Infrastructure` right at the
+   bottom.
+
+Since `App2` at the top has a relationship to `App3` as seen by the connection
+to `Load Balancer`, and `App3` has dependencies on `Server X` and
+`Storage Infrastructure`, how could you tell if an issue with the server or
+storage was causing a problem with either of the 2 applications. Operations /
+SREs may be treating symptoms in the applications without being aware of
+underlying issues further down the stack.
+
+Seeing this quickly on paper can really help steer planning and implementation
+in the right direction quickly, helping you get the most from your monitoring
+solution.
+
 ## Identifying data volume and filtering needs
 
 In an ideal world, compute resource would be infinite and you could simply
@@ -134,6 +166,11 @@ project on. You can start to:
 - Identify the important data points and the tools they will come from.
 - Identify data filtering characteristics.
 - Understand and quantify projected data volumes.
+- Understand how data will be correlated and which correlation keys will be
+  used:
+  - This can help guide naming convention discussions and other data related
+    best practices which can help improve the quality and value of your
+    monitoring solution.
 
 ## Tips on what is useful to capture
 
