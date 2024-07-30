@@ -52,9 +52,9 @@ Use the following steps to create the new AIOps automation policy:
 - Click the **Create policy** button and choose **Invoke IBM Tivoli Netcool/Impact** to create a new policy
 - **Policy name**: give your policy the name: `Housekeeping`
 - **Trigger entity**: leave it set to `Alert`
-- **Trigger entity type**: ensure **After an alert is created**`** is checked
-- **Trigger entity type**: ensure **After an alert has been updated**`** is checked
-- Set **Alert property** to **Value of: alert.eventCount** and **Change** to **changes**
+- **Trigger entity type**: ensure **After an alert is created** is checked
+- **Trigger entity type**: ensure **After an alert has been updated** is checked
+- Set **Alert property** to **Value of: alert.eventCount** and **Change** to **Changes**
 - Under **Condition sets**, click the **Add condition** button and choose **Alert property**
 - Under **Alert properties** set **Property** to **Value of: alert.eventCount**, **Operator** to **greater or equal**, **Matches** to **only**, and **Value** to **Number: 1**
 - Scroll down to the section: **Then take the following actions:**
