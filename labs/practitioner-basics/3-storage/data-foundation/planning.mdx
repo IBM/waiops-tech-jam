@@ -1,0 +1,34 @@
+---
+title: Planning
+description:
+  Storage planning guidance for IBM Fusion Data Foundation and Red Hat OpenShift
+  Data Foundation solutions.
+sidebar_position: 1
+---
+
+# Planning
+
+:::caution Work in progress
+
+This section is being updated actively and full details will be published
+shortly.
+
+:::
+
+This section covers design planning considerations for
+[IBM Storage Fusion Data Foundation](https://www.ibm.com/docs/en/storage-fusion/2.6?topic=foundation-introduction-fusion-data)
+and
+[Red Hat OpenShift Data Foundation](https://www.redhat.com/en/technologies/cloud-computing/openshift-data-foundation)
+in the context of IBM AIOps solutions.
+
+Both solutions are based on [Ceph](https://docs.ceph.com/en/latest/) and are
+distributed software-defined solutions which provide block, file and object
+storage capabilities for containerized workloads.
+
+## Understanding capacity
+
+These solutions are configured with a default replication factor of `3`, so the
+first thing to understand when planning storage capacity is the notion of:
+
+- **_Usable Capacity:_** The amount of storage available to consumers of the
+  storage pool, i.e. the applications.
