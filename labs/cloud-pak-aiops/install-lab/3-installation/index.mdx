@@ -45,6 +45,9 @@ Infrastructure Automation on the same cluster.
 
 :::
 
+If interested, this install steps we will begin to follow are documented
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_namespace).
+
 ### Create a custom project (namespace)
 
 Lets start by creating the project (namespace) where we will install the
@@ -54,9 +57,6 @@ product. It is important to know which project/namespace you are in when issuing
 ```
 oc create namespace cp4waiops
 ```
-
-If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_namespace).
 
 ### Create an OperatorGroup in your custom project (namespace)
 
@@ -78,9 +78,6 @@ spec:
 EOF
 
 ```
-
-If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#op_group).
 
 ### Create the entitlement key pull secret
 
@@ -108,7 +105,7 @@ To open the **Text Editor** in the bastion VM, click on **Applications**, type
 :::
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_pull_secret).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_pull_secret).
 
 ### Usage data collection
 
@@ -118,7 +115,7 @@ the cp4waiops-metricsprocessor pod, and is sent to and stored in IBM controlled
 GDPR-compliant systems. For the purpose of this Lab, we will skip this step.
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#usage_secret).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#usage_secret).
 
 ### Ensure external traffic access
 
@@ -133,35 +130,57 @@ if [ $(oc get ingresscontroller default -n openshift-ingress-operator -o jsonpat
 If interested, this install step is documented
 [**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_ingress).
 
-### Create the catalog source
+### Create the catalog sources
 
-After installation, the ibm-operator-catalog CatalogSource object determines
-whether the upgrade of your Cloud Pak for AIOps deployment is initiated
-automatically when a new patch becomes available. The ibm-operator-catalog
-CatalogSource object can be configured to automatically poll for and retrieve a
+After installation, CatalogSource objects determine
+whether the upgrade of your Cloud Pak for AIOps, Cert Manager or License Service deployments are initiated automatically when a new patch becomes available.
+
+The CatalogSources object can be configured to automatically poll for and retrieve a
 newer catalog by enabling the polling attribute,
 _spec.updateStrategy.registryPoll_. If a newer catalog for a patch is found and
-retrieved, then an automatic upgrade of your Cloud Pak for AIOps deployment is
+retrieved, then an automatic upgrade of the respective component is
 initiated. For the purpose of this Lab, we will disable the automatic initiation
-of patch upgrades. Run the following two commands:
+of patch upgrades. Run the following:
 
 ```sh
 cat << EOF | oc apply -f -
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
-  name: ibm-operator-catalog
+  name: ibm-aiops-catalog
   namespace: openshift-marketplace
 spec:
-  displayName: ibm-operator-catalog
+  displayName: ibm-aiops-catalog
   publisher: IBM Content
   sourceType: grpc
-  image: icr.io/cpopen/ibm-operator-catalog:latest
+  image: icr.io/cpopen/ibm-aiops-catalog@sha256:9c3abcfcff17f2dfb28efa697de35a7b6bdbade58f1412a81d90283c6b93fe38
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-cert-manager-catalog
+  namespace: openshift-marketplace
+spec:
+  displayName: ibm-cert-manager
+  publisher: IBM
+  sourceType: grpc
+  image: icr.io/cpopen/ibm-cert-manager-operator-catalog
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-licensing-catalog
+  namespace: openshift-marketplace
+spec:
+  displayName: IBM License Service Catalog
+  publisher: IBM
+  sourceType: grpc
+  image: icr.io/cpopen/ibm-licensing-catalog
 EOF
 ```
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_catalog).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_catalog).
 
 :::tip
 
@@ -172,6 +191,12 @@ This ensures that the ibm-operator-catalog CatalogSource pods do not pull the
 latest image if a node reload or other issue causes them to restart.
 
 :::
+
+Confirm the CatalogSources are created by running the following command:
+
+```sh
+oc get CatalogSources -n openshift-marketplace
+```
 
 ### Install Cert Manager
 
@@ -199,7 +224,7 @@ spec:
   channel: v4.2
   installPlanApproval: Automatic
   name: ibm-cert-manager-operator
-  source: ibm-operator-catalog
+  source: ibm-cert-manager-catalog
   sourceNamespace: openshift-marketplace
 EOF
 ```
@@ -261,7 +286,7 @@ spec:
   channel: v4.2
   installPlanApproval: Automatic
   name: ibm-licensing-operator-app
-  source: ibm-operator-catalog
+  source: ibm-licensing-catalog
   sourceNamespace: openshift-marketplace
 EOF
 ```
@@ -294,7 +319,7 @@ the cluster readiness. Remember to run this verification in a production
 implementation.
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#prereq_check).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#prereq_check).
 
 ### Install the Cloud Pak for AIOps operator
 
@@ -308,10 +333,10 @@ metadata:
   name: ibm-aiops-orchestrator
   namespace: cp4waiops
 spec:
-  channel: v4.5
+  channel: v4.7
   installPlanApproval: Automatic
   name: ibm-aiops-orchestrator
-  source: ibm-operator-catalog
+  source: ibm-aiops-catalog
   sourceNamespace: openshift-marketplace
 EOF
 ```
@@ -330,7 +355,7 @@ ibm-aiops-orchestrator.v4.5.1         IBM Cloud Pak for AIOps               4.5.
 ```
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_operator).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_operator).
 
 :::warning
 
@@ -416,7 +441,7 @@ oc get installation.orchestrator.aiops.ibm.com -o yaml | grep 'Not Ready'
 ```
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_instance).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_instance).
 
 ## 3.5: Log in to the Cloud Pak for AIOps console
 
@@ -433,7 +458,6 @@ Find the password for the **cpadmin** username by running the following command:
 
 ```
 oc -n cp4waiops get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d ; echo -e "\n"
-
 ```
 
 Open a Firefox browser window and copy & paste the **Cloud Pak for AIOps URL**
@@ -446,8 +470,8 @@ the previous command.
 
 :::tip
 
-If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_login).
+If interested, the cluster access step is documented
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_login).
 
 :::
 
