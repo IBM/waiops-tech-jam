@@ -120,10 +120,11 @@ This final step is where you configure the mapping between ObjectServer fields a
     "signature": alert.@Identifier,
     "firstOccurrenceTime": alert.@FirstOccurrence,
     "lastOccurrenceTime": alert.@LastOccurrence,
-    "severity": alert.@Severity < 0 ? 1 : alert.@Severity = 0 ? 2 : alert.@Severity < 6 ? alert.@Severity + 1 : alert.@Severity >= 6 ? 6,
+    "severity": alert.@Type = 13 ? 2 : alert.@Severity < 0 ? 1 : alert.@Severity = 0 ? 2 : alert.@Severity < 6 ? alert.@Severity + 1 : alert.@Severity >= 6 ? 6,
     "state": alert.@Severity = 0 ? "clear" : "open",
     "acknowledged": alert.@Acknowledged = 1 ? true : false,
     "expirySeconds": alert.@ExpireTime = 0 ? undefined : alert.@ExpireTime,
+    "suppressed": alert.@SuppressEscl = 4 ? true : false,
     "details": {
         "appId": alert.@AppID = "" ? undefined : alert.@AppID,
         "region": alert.@Region = "" ? undefined : alert.@Region,
