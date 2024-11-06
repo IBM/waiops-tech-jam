@@ -116,7 +116,7 @@ const config = {
             title: "Docs",
             items: [
               {
-                label: "CP4WAIOps",
+                label: "CP4AIOps",
                 href: "https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops",
               },
               {
@@ -189,7 +189,7 @@ const config = {
             },
           },
         ],
-        additionalLanguages: ['php'],
+        additionalLanguages: ["php"],
       },
       docs: {
         sidebar: {

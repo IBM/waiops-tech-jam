@@ -170,7 +170,7 @@ fi
 export EVENTS_FILE="$1"
 export KAFKA_TOPIC="$2"
 
-oc project cp4waiops
+oc project cp4aiops
 
 # Change Cassandra aiops.alerts table data expiration default_time_to_live (TTL) to 5 years
 oc exec -it aiops-topology-cassandra-0 -- \

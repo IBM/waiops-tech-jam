@@ -62,7 +62,7 @@ for step by step guidance on requesting a new lab environment in IBM Tech Zone.
 
 Request Tech Zone environment:
 
-- [Jam-in-a-Box: cp4aiops - Explore](https://techzone.ibm.com/my/reservations/create/64c2a0166c515100179d63e2)
+- [Jam-in-a-Box: CP4AIOps - Explore](https://techzone.ibm.com/my/reservations/create/64c2a0166c515100179d63e2)
 
 ## 2.3: Accessing your Lab Environment
 

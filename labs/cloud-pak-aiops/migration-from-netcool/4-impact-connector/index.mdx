@@ -36,7 +36,7 @@ echo ${ZENAPIKEY}
 ```
 - Test out your `ZENAPIKEY` using the following:
 ```
-CPD_ROUTE=`oc get route -n cp4waiops cpd -o jsonpath='{.spec.host}'`
+CPD_ROUTE=`oc get route -n cp4aiops cpd -o jsonpath='{.spec.host}'`
 TENANT_ID=cfd95b7e-3bc7-4006-a4a8-a73a79c71255
 curl -kv -H "Authorization: ZenApiKey ${ZENAPIKEY}" -H "x-tenant-id: ${TENANT_ID}"  "https://${CPD_ROUTE}/aiops/api/issue-resolution/v1/alerts/"
 ```
@@ -80,7 +80,7 @@ As part of the Netcool/Impact Connector instance creation, AIOps creates a numbe
 - **Authentication method to use**: select `No Authentication`
 - Scroll down to: **Protected Request Headers**
 - Create a new header with the following details:
-  - **Header Name**: `Authorization` 
+  - **Header Name**: `Authorization`
   - **Header Value**: `ZenApiKey <your-ZENAPIKEY-created-earlier>`
 - Click **OK** to save your new header
 - Click on the Save button with the small disk icon at the top of the page to save your changes
