@@ -170,7 +170,7 @@ fi
 export EVENTS_FILE="$1"
 export KAFKA_TOPIC="$2"
 
-oc project cp4waiops
+oc project cp4aiops
 
 # Change Cassandra aiops.alerts table data expiration default_time_to_live (TTL) to 5 years
 oc exec -it aiops-topology-cassandra-0 -- \
@@ -182,7 +182,7 @@ oc exec -it aiops-topology-cassandra-0 -- \
 
 # Set Password and Broker
 oc extract secret/iaf-system-cluster-ca-cert --keys=ca.crt --to=- > ca.crt
-export sasl_password=$(oc get secret cp4waiops-cartridge-kafka-auth-0 --template={{.data.password}} | base64 --decode)
+export sasl_password=$(oc get secret cp4aiops-cartridge-kafka-auth-0 --template={{.data.password}} | base64 --decode)
 export BROKER=$(oc get routes iaf-system-kafka-bootstrap -o=jsonpath='{.status.ingress[0].host}{"\n"}'):443
 
 # Load data using kafka-cat tool
@@ -191,7 +191,7 @@ kcat \
 -X security.protocol=SASL_SSL \
 -X ssl.ca.location=ca.crt \
 -X sasl.mechanisms=SCRAM-SHA-512 \
--X sasl.username=cp4waiops-cartridge-kafka-auth-0 \
+-X sasl.username=cp4aiops-cartridge-kafka-auth-0 \
 -X sasl.password=$sasl_password \
 -b $BROKER \
 -P \

@@ -4,24 +4,24 @@ description: How to configure self-monitoring of IBM CloudPak for AIOps with Ope
 sidebar_position: 30
 ---
 
-This page covers some strategies for observing IBM CloudPak for AIOps KPIs and how to 
+This page covers some strategies for observing IBM CloudPak for AIOps KPIs and how to
 configure them.
 
 ## Examining KPIs and other metrics using User Workload Monitoring
 
 OpenShift comes with a prometheus-based monitoring stack, which out of the box is used to
-track metrics about the cluster. 
+track metrics about the cluster.
 
-It is possible to extend this monitoring to 'user workloads' (i.e. anything that is not a 
-core OCP service), by [enabling user workload monitoring](https://docs.openshift.com/container-platform/4.15/observability/monitoring/enabling-monitoring-for-user-defined-projects.html). This will deploy a secondary prometheus instance, which can be queried alongside 
+It is possible to extend this monitoring to 'user workloads' (i.e. anything that is not a
+core OCP service), by [enabling user workload monitoring](https://docs.openshift.com/container-platform/4.15/observability/monitoring/enabling-monitoring-for-user-defined-projects.html). This will deploy a secondary prometheus instance, which can be queried alongside
 the cluster-level prometheus, as if it was one instance, using [thanos](https://thanos.io).
 
-There are various services in AIOps which are capable of exposing metrics to prometheus 
+There are various services in AIOps which are capable of exposing metrics to prometheus
 in this way.
 
 ### Enabling user workload monitoring
 
-The first step is to enable the capability, if it has not been already. This is a 
+The first step is to enable the capability, if it has not been already. This is a
 cluster-wide setting, so care should be taken if this is being applied to a shared cluseter.
 
 It can be enabled by running the following commands when logged into the cluster:
@@ -53,24 +53,24 @@ data:
 EOF
 ```
 
-More advanced configuration is possible; refer to the 
+More advanced configuration is possible; refer to the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.15/observability/monitoring/enabling-monitoring-for-user-defined-projects.html) for more details.
 
 ### Viewing metrics in the OCP console
 
 At this point, some AIOps metrics will become available in the OCP console under
-`Observe -> Metrics`. This will allow you to enter any 
+`Observe -> Metrics`. This will allow you to enter any
 [prometheus query](https://prometheus.io/docs/prometheus/latest/querying/basics/) and graph the result.
 
 Below are some example queries for AIOps metrics:
 
 1. Rate of events ingested by lifecycle over time:
    ```
-   sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic="cp4waiops_cartridge_lifecycle_input_events"}>0)[1m:30s]))
+   sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic="cp4aiops_cartridge_lifecycle_input_events"}>0)[1m:30s]))
    ```
 2. Rate of alert update messages processed by lifecycle over time:
    ```
-   sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic="cp4waiops_cartridge_lifecycle_input_alerts"}>0)[1m:30s]))
+   sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic="cp4aiops_cartridge_lifecycle_input_alerts"}>0)[1m:30s]))
    ```
 3. Average kafka message size for messages produced by lifecycle:
    ```
@@ -83,15 +83,15 @@ Below are some example queries for AIOps metrics:
 
 ### Enabling additional metrics
 
-While some components enable metric scraping out of the box (e.g. lifecycle, as in the examples 
+While some components enable metric scraping out of the box (e.g. lifecycle, as in the examples
 above), others need additional configuration.
 
 #### Kafka
 
-A large portion of the communication in AIOps happens over Kafka, so scraping metrics from this 
-is highly valuable. 
+A large portion of the communication in AIOps happens over Kafka, so scraping metrics from this
+is highly valuable.
 
-The kafka prometheus exporter can be enabled and configured by running the following commands in the 
+The kafka prometheus exporter can be enabled and configured by running the following commands in the
 AIOps namespace:
 
 ```bash
@@ -557,7 +557,7 @@ waitForStatus \
 
 # Ignore error if svc grafana-alert has no annotations
 oc patch svc grafana-alert --type=json -p='[{"op": "remove", "path": "/metadata/annotations"}]' || true
-oc delete secret grafana-k8s-tls 
+oc delete secret grafana-k8s-tls
 oc annotate service grafana-service fixed=yes
 
 oc adm policy add-cluster-role-to-user cluster-monitoring-view -z grafana-serviceaccount -n monitoring-grafana
@@ -598,13 +598,13 @@ echo "Monitoring will be available at https://$(oc get route -n monitoring-grafa
 ```
 
 Alternatively, there is a [RedHat blog](https://cloud.redhat.com/experts/o11y/ocp-grafana/) which details
-how to deploy grafana and connect to Thanos. 
+how to deploy grafana and connect to Thanos.
 
 #### Creating dashboards
 
 All the same queries listed above for the OCP console will work in Grafana too, and can be attached to any
 of the available visualizations.
 
-There are some example dashboards available in 
-[example-dashboards](https://github.com/IBM/waiops-tech-jam/tree/main/labs/practitioner-basics/4-monitoring/example-dashboards), 
+There are some example dashboards available in
+[example-dashboards](https://github.com/IBM/waiops-tech-jam/tree/main/labs/practitioner-basics/4-monitoring/example-dashboards),
 which can be imported into Grafana.

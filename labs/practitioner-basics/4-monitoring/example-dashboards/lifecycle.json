@@ -143,7 +143,7 @@
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
               },
-              "expr": "rate(grpc_server_msg_received_total{namespace=\"cp4waiops\"}[1m])",
+              "expr": "rate(grpc_server_msg_received_total{namespace=\"cp4aiops\"}[1m])",
               "hide": false,
               "interval": "",
               "legendFormat": "{{ grpc_method }}",
@@ -6499,7 +6499,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_events\"}>0)[1m:30s]))",
+          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_events\"}>0)[1m:30s]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Events input",
@@ -6647,7 +6647,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_events\"}>0)[1m:30s]))",
+          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_events\"}>0)[1m:30s]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Events input",
@@ -6687,7 +6687,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_alerts\"}>0)[1m:30s]))",
+          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_alerts\"}>0)[1m:30s]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Alerts input",
@@ -6700,7 +6700,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_stories\"}>0)[1m:30s]))",
+          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_stories\"}>0)[1m:30s]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Stories input",
@@ -6713,7 +6713,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_irdatalayer_changes_stories\"}>0)[1m:30s]))",
+          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_irdatalayer_changes_stories\"}>0)[1m:30s]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Stories changes",
@@ -6726,7 +6726,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_irdatalayer_changes_alerts\"}>0)[1m:30s]))",
+          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_irdatalayer_changes_alerts\"}>0)[1m:30s]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Alerts changes",
@@ -6739,7 +6739,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_internal_in_progress_executions\"}>0)[1m:30s]))",
+          "expr": "sum(irate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_internal_in_progress_executions\"}>0)[1m:30s]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Execution results",
@@ -6829,7 +6829,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(rate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_output_topology_alert_response\"}>0)[1m:30s]))",
+          "expr": "sum(rate((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_output_topology_alert_response\"}>0)[1m:30s]))",
           "interval": "",
           "legendFormat": "Responses",
           "range": true,
@@ -7010,7 +7010,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_events\"}>0))",
+          "expr": "sum((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_events\"}>0))",
           "hide": false,
           "interval": "",
           "legendFormat": "Events input",
@@ -7050,7 +7050,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_alerts\"}>0)))",
+          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_alerts\"}>0)))",
           "hide": false,
           "interval": "",
           "legendFormat": "Alerts input",
@@ -7063,7 +7063,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_stories\"}>0)))",
+          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_stories\"}>0)))",
           "hide": false,
           "interval": "",
           "legendFormat": "Stories input",
@@ -7076,7 +7076,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_irdatalayer_changes_stories\"}>0)))",
+          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_irdatalayer_changes_stories\"}>0)))",
           "hide": false,
           "interval": "",
           "legendFormat": "Stories changes",
@@ -7089,7 +7089,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_irdatalayer_changes_alerts\"}>0)))",
+          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_irdatalayer_changes_alerts\"}>0)))",
           "hide": false,
           "interval": "",
           "legendFormat": "Alerts changes",
@@ -7102,7 +7102,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_internal_in_progress_executions\"}>0)))",
+          "expr": "sum(((flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_internal_in_progress_executions\"}>0)))",
           "hide": false,
           "interval": "",
           "legendFormat": "Execution results",
@@ -7183,7 +7183,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum by (partition) (irate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_events\"}[4h:30s]))",
+          "expr": "sum by (partition) (irate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_events\"}[4h:30s]))",
           "interval": "",
           "legendFormat": "{{ partition }}",
           "refId": "A"
@@ -7286,7 +7286,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_events\"}[10m]))",
+          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_events\"}[10m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Events input",
@@ -7319,7 +7319,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_alerts\"}[10m]))",
+          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_alerts\"}[10m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Alerts input",
@@ -7330,7 +7330,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_stories\"}[10m]))",
+          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_stories\"}[10m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Stories input",
@@ -7341,7 +7341,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_irdatalayer_changes_stories\"}[10m]))",
+          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_irdatalayer_changes_stories\"}[10m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Stories changes",
@@ -7352,7 +7352,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_irdatalayer_changes_alerts\"}[10m]))",
+          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_irdatalayer_changes_alerts\"}[10m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Alerts changes",
@@ -7363,7 +7363,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_internal_in_progress_executions\"}[10m]))",
+          "expr": "sum(rate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_internal_in_progress_executions\"}[10m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Execution results",
@@ -8386,7 +8386,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum by (partition) (irate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_lifecycle_input_alerts\"}[4h:30s]))",
+          "expr": "sum by (partition) (irate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_lifecycle_input_alerts\"}[4h:30s]))",
           "interval": "",
           "legendFormat": "{{ partition }}",
           "refId": "A"
@@ -8495,7 +8495,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (partition) (irate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4waiops_cartridge_irdatalayer_changes_alerts\"}[4h:30s]))",
+          "expr": "sum by (partition) (irate(flink_taskmanager_job_task_operator_KafkaSourceReader_topic_partition_currentOffset{topic=\"cp4aiops_cartridge_irdatalayer_changes_alerts\"}[4h:30s]))",
           "interval": "",
           "legendFormat": "{{ partition }}",
           "range": true,
