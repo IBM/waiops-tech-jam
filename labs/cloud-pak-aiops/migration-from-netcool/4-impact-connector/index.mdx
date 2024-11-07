@@ -17,8 +17,8 @@ In this section, you will retrieve the two certificates used by Netcool/Impact f
 Open a command prompt and issue the following commands. Save the resulting certificates to a text editor.
 
 ```
-echo '' | openssl s_client -connect netcoolvm:16311  -showcerts 2>&1  | sed -n -e '/BEGIN\ CERTIFICATE/,/END\ CERTIFICATE/ p'
-echo '' | openssl s_client -connect netcoolvm:9081  -showcerts 2>&1  | sed -n -e '/BEGIN\ CERTIFICATE/,/END\ CERTIFICATE/ p'
+echo '' | openssl s_client -connect netcoolvm.ocp.techzone.lan:16311  -showcerts 2>&1  | sed -n -e '/BEGIN\ CERTIFICATE/,/END\ CERTIFICATE/ p'
+echo '' | openssl s_client -connect netcoolvm.ocp.techzone.lan:9081  -showcerts 2>&1  | sed -n -e '/BEGIN\ CERTIFICATE/,/END\ CERTIFICATE/ p'
 ```
 
 ### Set up the Zen API key
@@ -53,8 +53,8 @@ Use the following steps to create an instance of the Netcool/Impact Connector:
 - Type **Netcool** into the Search bar
 - Choose **IBM Tivoli Netcool Impact** and click **Get started** to create a new instance
 - **Name**: the label you want to give this integration instance
-- **GUI Server URLs of Impact endpoint**: enter: `https://netcoolvm:16311`
-- **Backend Server URLs of Impact endpoint**: enter: `https://netcoolvm:9081`
+- **GUI Server URLs of Impact endpoint**: enter: `https://netcoolvm.ocp.techzone.lan:16311`
+- **Backend Server URLs of Impact endpoint**: enter: `https://netcoolvm.ocp.techzone.lan:9081`
 - **User ID**: enter: `impactadmin`
 - **Password**: enter: `netcool`
 - **Impact certificates**: paste in the certificates you retrieved earlier
