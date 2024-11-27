@@ -92,12 +92,17 @@ This final step is where you configure the mapping between ObjectServer fields a
 ```
 (
   $isIPAddr := function($i){ $contains($i,/^[0-9]+.[0-9]+.[0-9]+.[0-9]+$/)};
+  $isProblem := function($v) { $v = 1 or $v = 3 or $v = 20 or ($v >= 7 and $v < 20) or $v = 0 };
+  $isResolution := function($v) { $v = 2 or $v = 4 or $v = 21 };
+  $isInformation := function($v) { $v = 13 }; 
   { 
     "summary": alert.@Summary,
     "deduplicationKey": alert.@Identifier,
     "sender": {
-        "service": alert.@Agent,
-        "name": alert.@Manager
+        "service": alert.@Agent ? alert.@Agent : undefined,
+        "name": alert.@Manager ? alert.@Manager : alert.@ServerName,
+        "connectorType": "netcool",
+        "managedBySender": "true"
     },
     "resource": {
         "name": alert.@Node = "" ? alert.@NodeAlias = "" ? undefined : alert.@NodeAlias : alert.@Node,
@@ -109,8 +114,7 @@ This final step is where you configure the mapping between ObjectServer fields a
         "port": alert.@PhysicalPort = 0 ? undefined : alert.@PhysicalPort,
         "physicalslot": alert.@PhysicalSlot = 0 ? undefined : alert.@PhysicalSlot,
         "physicalcard": alert.@PhysicalCard = "" ? undefined : alert.@PhysicalCard,
-        "scopeId": alert.@ScopeID = "" ? undefined : alert.@ScopeID,
-        "application": alert.@AIOpsGroup = "" ? undefined : alert.@AIOpsGroup
+        "scopeId": alert.@ScopeID = "" ? undefined : alert.@ScopeID
     },
     "type": {
         "eventType": alert.@Type = 2 ? "resolution" : alert.@Type = 4 ? "resolution" : "problem",
@@ -120,29 +124,29 @@ This final step is where you configure the mapping between ObjectServer fields a
     "signature": alert.@Identifier,
     "firstOccurrenceTime": alert.@FirstOccurrence,
     "lastOccurrenceTime": alert.@LastOccurrence,
-    "severity": alert.@Type = 13 ? 2 : alert.@Severity < 0 ? 1 : alert.@Severity = 0 ? 2 : alert.@Severity < 6 ? alert.@Severity + 1 : alert.@Severity >= 6 ? 6,
-    "state": alert.@Severity = 0 ? "clear" : "open",
+    "severity": $isInformation(alert.@Type) ? 2 : alert.@Severity < 0 ? 1 : alert.@Severity = 0 ? 2 : alert.@Severity < 6 ? alert.@Severity + 1 : alert.@Severity >= 6 ? 6,
+    "state": alert.@Severity = 0 ? (alert.@AIOpsAlertId = "" ? "open" : "clear") : "open",
     "acknowledged": alert.@Acknowledged = 1 ? true : false,
     "expirySeconds": alert.@ExpireTime = 0 ? undefined : alert.@ExpireTime,
     "suppressed": alert.@SuppressEscl = 4 ? true : false,
     "details": {
+        "alertGroup": alert.@AlertGroup,
+        "alertKey": alert.@AlertKey,
+        "customer": alert.@Customer = "" ? undefined : alert.@Customer,
         "appId": alert.@AppID = "" ? undefined : alert.@AppID,
-        "region": alert.@Region = "" ? undefined : alert.@Region,
-        "alertOrigin": "OMNIbus"
+        "region": alert.@Region = "" ? undefined : alert.@Region
     },
     "insights": [
       {
         "details": {
-          "lastProcessedEventOccurrenceTime": alert.@LastOccurrence,
-          "alertOrigin":"OMNIbus"
+          "lastProcessedEventOccurrenceTime": alert.@LastOccurrence
         },
         "id": "event-occurrence",
         "type": "aiops.ibm.com/insight-type/deduplication-details"
       }
     ]
   }
-)
-```
+)```
 
 Click **Save** to save and create the Netcool Connector instance.
 
