@@ -18,8 +18,9 @@ In this section, you will create a JavaScript policy in Netcool/Impact that will
 - Click on the pull-down menu button on the new policy button and select **JavaScript Policy**
 - Copy and paste the following sample policy into the policy editor:
 ```
+Load('AIOPS_Utils');
 // ONLY SET expirySeconds FOR EVENTS WHERE IT IS NOT SET
-if (String(EventContainer.alert.expirySeconds) == "undefined") {
+if (String(EventContainer.alert.expirySeconds) == "undefined" || String(EventContainer.alert.expirySeconds) == "0") {
   // KEEP CRITICAL ALERTS FOR SEVEN DAYS
   if (Int(EventContainer.alert.severity) == 6) {
     aiopsUtils.patchAlertNoWait(EventContainer.alert.id,{expirySeconds:604800});}

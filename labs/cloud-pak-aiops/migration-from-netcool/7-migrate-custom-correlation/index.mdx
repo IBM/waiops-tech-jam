@@ -37,11 +37,12 @@ Use the following steps to create the new AIOps automation policy:
   - Under **Policy is triggered**, check **Before an alert is created**
   - Under **Policy is triggered**, check **After an alert has been updated**
   - Under **Alert property**, select **alert.details** and set **Change** to **Changes**
-  - Under **Details name**, enter: `customCorrelation1`
-    - Under **Condition sets**:
+    - Under **Details name**, enter: `customCorrelation1`
+  - Under **Condition sets**:
     - Click on **Add condition** and select **Alert property**
     - Leave **AND** selected
     - For **Property**, select **alert.details**
+    - Change **Operator** to: **not empty**
     - For **Details name**, enter: `customCorrelation1`
   - Under **Create a scope-based grouping**:
     - Select **alert.details**
@@ -136,25 +137,9 @@ MySQL4 = "update alerts.status set CustomCorrelation1 = 'Facilities:" + GroupKey
 DirectSQL("defaultobjectserver", MySQL4, false, false);
 ```
 - Click on the **Save** button and save the policy as: `AIOPS_CustomCorrelation`
+- Click on the green **Play** button at the top of the policy creation screen
 
-## 7.6 Create, configure, and start a Policy Activator service
-
-In this section, you will create a new Policy Activator service, that will periodically target sets of events and mark them for correlation. It will do this by setting the **CustomCorrelation1** field.
-
-- Navigate to the Netcool/Impact GUI: `https://netcoolvm:16311/ibm/console`
-- Log in to Netcool/Impact as the user `impactadmin` and password `netcool`
-- Click on **Services**
-- Click on the pull-down menu button on the new service button and select **Policy Activator**
-- Under **Service Name**, enter: `CustomCorrelation`
-- Under **Activation Interval**, enter: `11` (seconds)
-- Under **Policy**, select **AIOPS_CustomCorrelation**
-- Click on the disk icon to save your new Policy Activator service
-
-![](images/new_policy_activator_service.png)
-
-- Select your newly created service and click the play button (**Start Service**) to start it
-
-## 7.7 Observe your new correlation in action
+## 7.6 Observe your new correlation in action
 
 In this final section, you will log in to the AIOps UI and observe your new correlation working.
 
@@ -165,4 +150,5 @@ In this final section, you will log in to the AIOps UI and observe your new corr
 
 ![](images/correlated_events.png)
 
+NOTE: Click on the green **Play** button again to set your **customCorrelation1** field for the new events, if your event set changes.
 
