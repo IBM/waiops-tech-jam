@@ -35,24 +35,26 @@ When installing Instana agent you have to select if you want the agent to be
 the excerpt from the
 [Instana agent documentation](https://www.ibm.com/docs/en/SSE1JP5_current/src/pages/setup_and_manage/host_agent/index.html).
 
-- A **Dynamic** host agent downloads on startup the latest set of sensors from
-  repositories. By default, a dynamic agent updates itself daily with the latest
-  and greatest capabilities that are released. It is also possible to tightly
+- A **Dynamic** host agent downloads the latest set of sensors from
+  repositories. By default, a dynamic agent updates itself at agent startup and checks daily for updates to the
+  agent and sensor code. This automatically gives you access to new features and bug fixes.  It is also possible to tightly
   control the updating of dynamic host agents by
-  [pinning a version](https://www.ibm.com/docs/en/obi/current?topic=agent-updates-dynamic-host-agents#version-pinning)
+  [pinning a version](https://www.ibm.com/docs/en/instana-observability/current?topic=agents-configuring-updates-dynamic-host#version-pinning)
+  It is also possible to change the interval that the Agent checks for updates.
 
   By default, dynamic host agents use the Instana repository to pull updates,
   but it is possible to
-  [set up your own managed mirror](https://www.ibm.com/docs/en/obi/current?topic=agent-repositories#agent-repositories).
-  Currently, the mirror must be a Nexus repository. This is probably the best
+  [set up your own managed mirror](https://www.ibm.com/docs/en/instana-observability/current?topic=agents-setting-up-agent-repositories-dynamic-host).
+  Currently, the mirror must be a Nexus or Artifactory repository. This is probably the best
   option for must customers because it allows them the benefits of automatic
   updates, while at the same time controlling the content that is in the
-  repository.
+  repository.  In addition, it eliminates the need for every Agent to have internet access to the repositories.
 
 - A **Static** host agent is a self-contained host agent that includes all the
   latest available components at the time of its release, and has no dynamic
   update capabilities. The static host agent has a stable "bill of materials"
-  that never changes after the host agent's installation.
+  that never changes after the host agent's installation.  **Static Agents** must
+  be manually upgraded or upgraded via automation such as Ansible.
 
 :::tip
 
@@ -65,8 +67,11 @@ are recommended in restrictive network setups.
 
 ## 4.2: Installing a local Instana Agent on K3s for self monitoring
 
-Self monitoring the Instana Backend when using the Standard Edition of Instana
-installed on K3s is very simple.
+Instana provides the ability to setup **self monitoring** of the **Standard Edition**
+server.  Self monitoring the Instana Backend when using the Standard Edition of Instana
+installed on K3s is very simple. During the installation, the Agent is automatically configured
+to monitor the key technologies such as cassandra, kafka, postgres, etc. so that the entire
+Instana backend server is being monitored.
 
 Open a new terminal tab by selecting **File** -> **New Tab**.
 
@@ -235,11 +240,14 @@ the **"Stan"** robot icon in the upper left corner and then clicking the
 
 ![](images/agent-deploy-ocp-helm.png)
 
-Since this OCP cluster will be used for the Quote of the Day and Robot Shop demo
-application set the following:
+Provide a meaningful name for the Cluster and specify and Agent Zone. These namespace
+will show up within the Instana UI:
 
 - **Cluster name**: `SNO`
 - **Agent Zone**: `Demo Apps`
+
+![](images/clusterZone.png)
+
 
 Setting these values will allow you to find your Agent and Kubernetes Cluster
 within the user interface and not get confused by data coming in from other
@@ -460,10 +468,30 @@ install, **BUT** it will not automatically add new sensor config as new sensors
 become available.
 
 For host based installation you can update `configuration.yaml` and agent should
-pick up changes automatically (no restart required). For Kubernetes based
-installations, there is `instana-agent` configmap where you can customize the
-same content that you see in the configuration.yaml file. Using kubernetes/oc
-commands, you can edit the configmap.
+pick up changes automatically (no restart required). 
+
+For Kubernetes based installations, you can specify the same content that would go 
+into the configuration.yaml file, but the mechanism is different.  See the product documentation
+for Operator and yaml based installations.  For helm installs, you use an **agent.configuration_yaml**
+parameter to reference a values.yaml file.   The configuration information would be placed in
+the values.yaml file. Yaml content can be placed directly in the helm command, but
+the syntax gets a little tricky.  Here is an example helm command:
+
+```sh
+helm install instana-agent \
+  --repo https://agents.instana.io/helm \
+  --namespace instana-agent \
+  --set agent.key=wxyz  \
+  --set agent.downloadKey=abcdefg \
+  --set agent.endpointHost=agent-acceptor.instana2.tivlab.raleigh.ibm.com  \
+  --set agent.endpointPort=443 \
+  --set zone.name=zone1 \
+  --set cluster.name='cluster1' \
+  --set agent.configuration_yaml="$(cat values.yaml)" \
+  --set k8s_sensor.deployment.enabled=true \
+  --set k8s_sensor.deployment.replicas=2 \
+  instana-agent
+```
 
 :::info
 
@@ -504,7 +532,7 @@ If you don't want to modify the Instana agent configuration files for each agent
 locally, you can setup a centralized git repository for configuration files and
 instruct Instana agent to use these files. To accomplish that, follow the steps
 from the
-[documentation](https://www.ibm.com/docs/en/obi/current?topic=configuration-git-based-management#git-based-configuration-management).
+[documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=agents-git-based-configuration-management).
 
 The Instana agent fetches configuration updates from the remote repository:
 
@@ -516,5 +544,5 @@ The Instana agent fetches configuration updates from the remote repository:
 
 ---
 
-Proceed to section 4, where you will install and instrument the Robot Shop
-application.
+You have now completed the Instana Server and Agent installation lab.  Feel free 
+to explore the other Instana Jam-in-a-Box labs that available on TechZone.
