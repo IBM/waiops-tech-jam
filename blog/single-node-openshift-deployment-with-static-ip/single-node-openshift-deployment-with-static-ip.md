@@ -17,6 +17,8 @@ including intermittent connectivity, portable clouds, and 5G radio access
 networks (RAN) close to a base station. The major tradeoff with an installation
 on a single node is the lack of high availability.
 
+<!-- truncate -->
+
 Furthermore Single Node Openshift (SNO) can also be used in many other scenarios
 such as:
 
