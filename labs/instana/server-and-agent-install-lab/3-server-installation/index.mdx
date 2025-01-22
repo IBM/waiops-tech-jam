@@ -14,13 +14,14 @@ on-prem). For on-premises installations, Instana offers multiple containerized
 options:
 
 - **Self Hosted Standard Edition** Installs both the Instana backend and
-  datastores on a single node K3s cluster.
+  datastores on a single node K3s cluster. There is also a 3 node option for
+  Standard Edition that improves scale and performance.
 - **Self Hosted Custom Edition** Installs the backend Kubernetes Operator on a
   RedHat OpenShift or Kubernetes cluster. The datastores are not installed by
   the operator, they require manual installation either locally on the same
   cluster or remotely.
 - **Self Hosted Classic Edition** Install both the Instana backend and the
-  datasotres on a single VM using Docker. Unlike the other options this
+  datastores on a single VM using Docker. Unlike the other options this
   deployment does not support multi-tenancy.
 
 :::tip
