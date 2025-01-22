@@ -55,7 +55,7 @@ product. It is important to know which project/namespace you are in when issuing
 `oc` commands. Run the following command:
 
 ```
-oc create namespace cp4waiops
+oc create namespace cp4aiops
 ```
 
 ### Create an OperatorGroup in your custom project (namespace)
@@ -70,11 +70,11 @@ cat << EOF | oc apply -f -
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  name: cp4waiops-operator-group
-  namespace: cp4waiops
+  name: cp4aiops-operator-group
+  namespace: cp4aiops
 spec:
   targetNamespaces:
-    - cp4waiops
+    - cp4aiops
 EOF
 
 ```
@@ -92,7 +92,7 @@ oc create secret docker-registry ibm-entitlement-key \
     --docker-username=cp \
     --docker-password=<entitlement-key> \
     --docker-server=cp.icr.io \
-    --namespace=cp4waiops
+    --namespace=cp4aiops
 ```
 
 :::tip
@@ -111,7 +111,7 @@ If interested, this install step is documented
 
 To help the development of IBM Cloud Pak for AIOps, daily aggregated usage data
 is collected to analyze how the product is used. The usage data is collected by
-the cp4waiops-metricsprocessor pod, and is sent to and stored in IBM controlled
+the cp4aiops-metricsprocessor pod, and is sent to and stored in IBM controlled
 GDPR-compliant systems. For the purpose of this Lab, we will skip this step.
 
 If interested, this install step is documented
@@ -331,7 +331,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: ibm-aiops-orchestrator
-  namespace: cp4waiops
+  namespace: cp4aiops
 spec:
   channel: v4.7
   installPlanApproval: Automatic
@@ -345,7 +345,7 @@ After a few minutes you can confirm that the Operator is fully installed by
 running the following command:
 
 ```
-oc get csv -n cp4waiops | egrep "ibm-aiops-orchestrator"
+oc get csv -n cp4aiops | egrep "ibm-aiops-orchestrator"
 ```
 
 You should see **Succeeded** messages as shown below:
@@ -389,7 +389,7 @@ apiVersion: orchestrator.aiops.ibm.com/v1alpha1
 kind: Installation
 metadata:
   name: ibm-cp-aiops
-  namespace: cp4waiops
+  namespace: cp4aiops
 spec:
   imagePullSecret: ibm-entitlement-key
   license:
@@ -416,7 +416,7 @@ Run the following command to check that the _PHASE_ of your installation is
 **Updating**:
 
 ```
-oc get installations.orchestrator.aiops.ibm.com -n cp4waiops
+oc get installations.orchestrator.aiops.ibm.com -n cp4aiops
 ```
 
 It takes around 60-90 minutes for the installation to complete (subject to the
@@ -451,13 +451,13 @@ your newly deployed instance of the Cloud Pak for AIOps.
 Find the URL to access the console with the following command:
 
 ```
-echo -e "https://$(oc get route -n cp4waiops cpd -o jsonpath='{.spec.host}')\n"
+echo -e "https://$(oc get route -n cp4aiops cpd -o jsonpath='{.spec.host}')\n"
 ```
 
 Find the password for the **cpadmin** username by running the following command:
 
 ```
-oc -n cp4waiops get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d ; echo -e "\n"
+oc -n cp4aiops get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d ; echo -e "\n"
 ```
 
 Open a Firefox browser window and copy & paste the **Cloud Pak for AIOps URL**

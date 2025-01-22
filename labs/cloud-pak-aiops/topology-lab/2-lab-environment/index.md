@@ -62,7 +62,7 @@ for step by step guidance on requesting a new lab environment in IBM Tech Zone.
 
 Request Tech Zone environment:
 
-- [Jam-in-a-Box: CP4WAIOps - Explore](https://techzone.ibm.com/my/reservations/create/64c2a0166c515100179d63e2)
+- [Jam-in-a-Box: cp4aiops - Explore](https://techzone.ibm.com/my/reservations/create/64c2a0166c515100179d63e2)
 
 ## 2.3: Accessing your Lab Environment
 
@@ -101,20 +101,20 @@ Find the **Cloud Pak for AIOps URL** to access the console by running the
 following command from the **Terminal** window:
 
 ```
-echo -e "https://$(oc get route -n cp4waiops cpd -o jsonpath='{.spec.host}')\n"
+echo -e "https://$(oc get route -n cp4aiops cpd -o jsonpath='{.spec.host}')\n"
 ```
 
 Find the **password** for the **admin** username by running the following
 command from the **Terminal** window:
 
 ```
-oc -n cp4waiops get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d ; echo -e "\n"
+oc -n cp4aiops get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d ; echo -e "\n"
 ```
 
 Open a Firefox browser window and navigate to the AIOps dashboard using the url
 you discovered in the previous step.
 
-`https://cpd-cp4waiops.apps.ocp.techzone.lan`
+`https://cpd-cp4aiops.apps.ocp.techzone.lan`
 
 :::tip
 
