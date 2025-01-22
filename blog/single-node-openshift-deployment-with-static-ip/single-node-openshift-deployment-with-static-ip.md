@@ -210,7 +210,7 @@ Take the latest version of openshift version 4.10 as an example.
    :::info
 
    The above base64 encoded string is the original **install-to-disk** script
-   content, we replace it into the value of **${newb64}** which is the one with
+   content, we replace it into the value of `${newb64}` which is the one with
    copy network action enabled.
 
    :::
