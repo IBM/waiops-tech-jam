@@ -21,15 +21,20 @@ options:
   cluster or remotely.
 - **Self Hosted Classic Edition** Install both the Instana backend and the
   datasotres on a single VM using Docker. Unlike the other options this
-  deployment does not support multi-tenancy.
+  deployment does not support multi-tenancy.  Note: **Classic Edition** is not
+  a strategic deployment option.  Many recent enhancements such as synthetics,
+  automation catalog, and more are not available with Classic Edition.
 
 :::tip
 
 On-premises (self-hosted) releases are delivered every 4 weeks. The release have
-odd numbers such as 225, 227, 229, etc. When upgrading, you may upgrade from N-1
-or N-2, but you can't skip more than one release. So, you can upgrade from 225
+odd numbers such as 225, 227, 229, etc. Historically upgrading, you may upgrade from N-1
+or N-2, but you couldn't skip more than one release. So, you can upgrade from 225
 to 229, but not to 231. Even numbered releases are for SaaS only. SaaS is
-upgraded every 2 weeks.
+upgraded every 2 weeks. With the most recent version of **Self-Hosted Standard Edition**,
+the N-1/N-2 requirement doesn't exist.  When you upgrade Instana, you will be provided a
+list of available releases that can be installed. However, we still recommend keeping your
+Instana version fairly current. For example, plan for upgrades every 2 months.
 
 :::
 
@@ -50,20 +55,28 @@ Instana will be completed on the VM named **instana**.
 
 ## 3.2: Prerequisites
 
-Instana requires a Linux server with 16 cores, 64 Gig of RAM and few hundred Gig
+Instana requires a Linux server with cores, 64 Gig of RAM and few hundred Gig
 of disk space for a POC sized deployment. It also requires fast backend storage.
 For environments with even a few hundred servers, you'll need 6000 IOPS or more.
 For larger deployments, you'll need more capacity. Several different versions of
-Linux are supported. We have chosen Ubuntu 22.04 for this environment.
+Linux are supported. We have chosen Ubuntu 22.04 for this environment. 
+
+Note: While 16 cores and 64 Gig of RAM is enough for a POC environment, if you enable 
+some of the optional feature flags, additional CPU and memory are required.  The additional
+CPU and memory requirements for each optional feature can be found 
+[here](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#cpu-and-memory-requirements)
 
 :::info
 
 Normally, you would need to ensure that the virtual machine has the correct
 ports opened in the firewall for the agent, UI, and EUM communications. We have
 already done this work for you. For reference,
-[here are the ports](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-system-requirements#networking-requirements)
-that need to be opened for the Instana Server for an on-prem deployment. The
-ports for SaaS are slightly different.
+[here are the ports](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#networking-requirements)
+that need to be opened for the Instana Server for an on-prem deployment. The ports for SaaS are slightly different.
+
+In addition, online installations need access to a number of repositories that are documented here for reference:  
+[here are the ports](https://www.ibm.com/docs/en/instana-observability/current?topic=requirements-instana-self-hosted-deployments)
+
 
 :::
 
@@ -156,15 +169,15 @@ ufw disable
 ```
 
 For production you can
-[reference the Firewall Rules documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-preparing#firewall-rules)
+[reference the Firewall Rules documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#firewall-rules)
 for the exact rules you need to set for your Operating System.
 
 Prepare the mount volumes. We will be using a single disk with multiple
 directories in this lab. In a production environment you will likely want to
 provision multiple disks to meet the
-[IOPS requirements](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-system-requirements#storage-requirements)
+[IOPS requirements](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#storage-requirements)
 of Instana. If you use more than one disk you can refer to the
-[documentaton for preparing additional disks](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-preparing#prepare-the-additional-disks)
+[documentaton for preparing additional disks](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#prepare-the-additional-disks)
 for the Instana server.
 
 ```sh
@@ -180,7 +193,8 @@ You are now ready to start the installation of the Instana Server.
 
 ## 3.4. Installing Instana
 
-Export the Download key as an environment variables
+Export the Download key as an environment variables.  In the code block below,
+replace "<your-download-key\>" with the key provided for your lab environment.
 
 ```sh
 export DOWNLOAD_KEY=<your-download-key>
@@ -209,7 +223,8 @@ wget -O- --user=_ --password="$DOWNLOAD_KEY" https://artifact-public.instana.io/
 cat /usr/share/keyrings/instana-archive-keyring.gpg
 ```
 
-Update the package list and install the Instana **stanctl** installation tool.
+Update the package list and install the Instana **stanctl** command.
+The **stanctl** is used to install Instana and perform other administrative tasks.
 
 ```sh
 apt update -y
@@ -227,17 +242,26 @@ Install Instana
 - We are installing Instana in **demo** mode.
 - DNS has already been configured in this environment for the Instana vm, it can
   be reached at _instana.techzone.lan_. Further details on
-  [required DNS entries can be found here](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-preparing#dns-settings).
+  [required DNS entries can be found here](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#dns-settings).
 - Internally, Instana has tenants, which are merely a logical construct. Each
   tenant in turn has at least one or multiple tenant units. There are
-  [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-preparing#tenant-and-unit-names).
-  In this case the tenant is IBM and the unit is unit0.
+  [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#tenant-and-unit-names).
+  In this case the tenant is **ibm** and the unit is **unit0**.
 - The default administrator password for the **admin.instana.local** user is
   **Passw0rd**.
 - We are setting the volumes to the directories we created earlier.
 - We are skipping preflight checks as the environment does not have the storage
   required to meet the minimum requirements, it is satisfactory for a small demo
   instance though.
+
+  The installation below, uses a set of optional installation flags.  If you are interested
+  in seeing all of the available installation flags, you can type:
+
+  ```sh
+  stanctl up --help
+  ```
+
+Now, execute the installation command by copying and pasting the text from below.
 
 ```sh
 stanctl up \
@@ -262,6 +286,8 @@ You can view it by running the following command:
 ```sh
 stanctl license info
 ```
+
+The installation will take approximately 20 minutes, but depends on the performance of your server.
 
 ---
 
@@ -322,6 +348,13 @@ You should see output similar to the below:
 
 ![backend-apply](images/smtp-backend-apply.png)
 
+If you are interested in all of the parameters that can get specified using the
+**stanctl backend apply** command, type:
+```sh
+stanctl backend apply --help
+```
+
+
 ## 3.7: Turning on features
 
 :::warning Do not perform these steps
@@ -345,7 +378,7 @@ stanctl backend apply --core-feature-flags feature.vsphere.enabled
 ```
 
 You can view a
-[full list of available feature flags here.](https://www.ibm.com/docs/en/instana-observability/current?topic=openshift-enabling-optional-features#enabling-optional-features)
+[full list of available feature flags here.](https://www.ibm.com/docs/en/instana-observability/current?topic=configuring-enabling-optional-features)
 
 ---
 
@@ -380,18 +413,21 @@ Then upgrade the backend:
 stanctl up
 ```
 
-The command will list the available updates. You can select **Proceed with
-installing the updates** to upgrade the backend.
+The command will list the available updates. Use the arrows on your keyboard to move up and download
+to select the version that you want to install.  For example, move the arror to **Install Instana version: 3.287.582-0**
+and press **Enter** to upgrade the backend.
 
 ---
 
 ## 3.9: Summary
 
-In this portion of the lab, you have learned how to install a self-hosted docker
-based Instana server. For a POC, we recommend either SaaS or the single server
+In this portion of the lab, you have learned how to install the **Self-Hosted 
+Standard Edition** Instana server. For a POC, we recommend either SaaS or the single server
 self-hosted docker installation of the Instana server. For production
-deployments, customers will want the kubernetes based deployments to gain
-improved scalability and resiliency.
+deployments, customers will want the **multi-node Standard Edition** or **Self-Hosted Custom Edition**. 
+**Multi-Node Standard Edition** will increase scalability.  **Self-Hosted Custom Edition** provides more
+flexibility in terms of kubernetes/OpenShift environments and dramatically improves scalability as 
+well as providing built-in resiliency.
 
 You have also learned how to configure the SMTP settings and how to enable
 feature flags.
