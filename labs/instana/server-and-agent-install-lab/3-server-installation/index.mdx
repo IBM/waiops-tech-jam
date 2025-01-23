@@ -21,20 +21,21 @@ options:
   cluster or remotely.
 - **Self Hosted Classic Edition** Install both the Instana backend and the
   datasotres on a single VM using Docker. Unlike the other options this
-  deployment does not support multi-tenancy.  Note: **Classic Edition** is not
-  a strategic deployment option.  Many recent enhancements such as synthetics,
+  deployment does not support multi-tenancy. Note: **Classic Edition** is not a
+  strategic deployment option. Many recent enhancements such as synthetics,
   automation catalog, and more are not available with Classic Edition.
 
 :::tip
 
 On-premises (self-hosted) releases are delivered every 4 weeks. The release have
-odd numbers such as 225, 227, 229, etc. Historically upgrading, you may upgrade from N-1
-or N-2, but you couldn't skip more than one release. So, you can upgrade from 225
-to 229, but not to 231. Even numbered releases are for SaaS only. SaaS is
-upgraded every 2 weeks. With the most recent version of **Self-Hosted Standard Edition**,
-the N-1/N-2 requirement doesn't exist.  When you upgrade Instana, you will be provided a
-list of available releases that can be installed. However, we still recommend keeping your
-Instana version fairly current. For example, plan for upgrades every 2 months.
+odd numbers such as 225, 227, 229, etc. Historically upgrading, you may upgrade
+from N-1 or N-2, but you couldn't skip more than one release. So, you can
+upgrade from 225 to 229, but not to 231. Even numbered releases are for SaaS
+only. SaaS is upgraded every 2 weeks. With the most recent version of
+**Self-Hosted Standard Edition**, the N-1/N-2 requirement doesn't exist. When
+you upgrade Instana, you will be provided a list of available releases that can
+be installed. However, we still recommend keeping your Instana version fairly
+current. For example, plan for upgrades every 2 months.
 
 :::
 
@@ -55,15 +56,16 @@ Instana will be completed on the VM named **instana**.
 
 ## 3.2: Prerequisites
 
-Instana requires a Linux server with cores, 64 Gig of RAM and few hundred Gig
-of disk space for a POC sized deployment. It also requires fast backend storage.
+Instana requires a Linux server with cores, 64 Gig of RAM and few hundred Gig of
+disk space for a POC sized deployment. It also requires fast backend storage.
 For environments with even a few hundred servers, you'll need 6000 IOPS or more.
 For larger deployments, you'll need more capacity. Several different versions of
-Linux are supported. We have chosen Ubuntu 22.04 for this environment. 
+Linux are supported. We have chosen Ubuntu 22.04 for this environment.
 
-Note: While 16 cores and 64 Gig of RAM is enough for a POC environment, if you enable 
-some of the optional feature flags, additional CPU and memory are required.  The additional
-CPU and memory requirements for each optional feature can be found 
+Note: While 16 cores and 64 Gig of RAM is enough for a POC environment, if you
+enable some of the optional feature flags, additional CPU and memory are
+required. The additional CPU and memory requirements for each optional feature
+can be found
 [here](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#cpu-and-memory-requirements)
 
 :::info
@@ -72,11 +74,12 @@ Normally, you would need to ensure that the virtual machine has the correct
 ports opened in the firewall for the agent, UI, and EUM communications. We have
 already done this work for you. For reference,
 [here are the ports](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#networking-requirements)
-that need to be opened for the Instana Server for an on-prem deployment. The ports for SaaS are slightly different.
+that need to be opened for the Instana Server for an on-prem deployment. The
+ports for SaaS are slightly different.
 
-In addition, online installations need access to a number of repositories that are documented here for reference:  
+In addition, online installations need access to a number of repositories that
+are documented here for reference:  
 [here are the ports](https://www.ibm.com/docs/en/instana-observability/current?topic=requirements-instana-self-hosted-deployments)
-
 
 :::
 
@@ -193,8 +196,8 @@ You are now ready to start the installation of the Instana Server.
 
 ## 3.4. Installing Instana
 
-Export the Download key as an environment variables.  In the code block below,
-replace "<your-download-key\>" with the key provided for your lab environment.
+Export the Download key as an environment variables. In the code block below,
+replace `<your-download-key>` with the key provided for your lab environment.
 
 ```sh
 export DOWNLOAD_KEY=<your-download-key>
@@ -223,8 +226,8 @@ wget -O- --user=_ --password="$DOWNLOAD_KEY" https://artifact-public.instana.io/
 cat /usr/share/keyrings/instana-archive-keyring.gpg
 ```
 
-Update the package list and install the Instana **stanctl** command.
-The **stanctl** is used to install Instana and perform other administrative tasks.
+Update the package list and install the Instana **stanctl** command. The
+**stanctl** is used to install Instana and perform other administrative tasks.
 
 ```sh
 apt update -y
@@ -254,14 +257,15 @@ Install Instana
   required to meet the minimum requirements, it is satisfactory for a small demo
   instance though.
 
-  The installation below, uses a set of optional installation flags.  If you are interested
-  in seeing all of the available installation flags, you can type:
+  The installation below, uses a set of optional installation flags. If you are
+  interested in seeing all of the available installation flags, you can type:
 
   ```sh
   stanctl up --help
   ```
 
-Now, execute the installation command by copying and pasting the text from below.
+Now, execute the installation command by copying and pasting the text from
+below.
 
 ```sh
 stanctl up \
@@ -287,7 +291,8 @@ You can view it by running the following command:
 stanctl license info
 ```
 
-The installation will take approximately 20 minutes, but depends on the performance of your server.
+The installation will take approximately 20 minutes, but depends on the
+performance of your server.
 
 ---
 
@@ -350,10 +355,10 @@ You should see output similar to the below:
 
 If you are interested in all of the parameters that can get specified using the
 **stanctl backend apply** command, type:
+
 ```sh
 stanctl backend apply --help
 ```
-
 
 ## 3.7: Turning on features
 
@@ -413,20 +418,22 @@ Then upgrade the backend:
 stanctl up
 ```
 
-The command will list the available updates. Use the arrows on your keyboard to move up and download
-to select the version that you want to install.  For example, move the arror to **Install Instana version: 3.287.582-0**
-and press **Enter** to upgrade the backend.
+The command will list the available updates. Use the arrows on your keyboard to
+move up and download to select the version that you want to install. For
+example, move the arror to **Install Instana version: 3.287.582-0** and press
+**Enter** to upgrade the backend.
 
 ---
 
 ## 3.9: Summary
 
-In this portion of the lab, you have learned how to install the **Self-Hosted 
-Standard Edition** Instana server. For a POC, we recommend either SaaS or the single server
-self-hosted docker installation of the Instana server. For production
-deployments, customers will want the **multi-node Standard Edition** or **Self-Hosted Custom Edition**. 
-**Multi-Node Standard Edition** will increase scalability.  **Self-Hosted Custom Edition** provides more
-flexibility in terms of kubernetes/OpenShift environments and dramatically improves scalability as 
+In this portion of the lab, you have learned how to install the **Self-Hosted
+Standard Edition** Instana server. For a POC, we recommend either SaaS or the
+single server self-hosted docker installation of the Instana server. For
+production deployments, customers will want the **multi-node Standard Edition**
+or **Self-Hosted Custom Edition**. **Multi-Node Standard Edition** will increase
+scalability. **Self-Hosted Custom Edition** provides more flexibility in terms
+of kubernetes/OpenShift environments and dramatically improves scalability as
 well as providing built-in resiliency.
 
 You have also learned how to configure the SMTP settings and how to enable

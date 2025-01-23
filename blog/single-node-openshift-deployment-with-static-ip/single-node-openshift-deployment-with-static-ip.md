@@ -17,6 +17,8 @@ including intermittent connectivity, portable clouds, and 5G radio access
 networks (RAN) close to a base station. The major tradeoff with an installation
 on a single node is the lack of high availability.
 
+<!-- truncate -->
+
 Furthermore Single Node Openshift (SNO) can also be used in many other scenarios
 such as:
 
@@ -64,7 +66,7 @@ First, let's go through the manual Static IP deployment steps.
 - Minimum resource requirements
 
 | vCPU         | Memory | Storage |
-| ------------ | ------ | ------- |
+|--------------|--------|---------|
 | 8 vCPU cores | 32G    | 120G    |
 
 ## Manual Steps
@@ -208,7 +210,7 @@ Take the latest version of openshift version 4.10 as an example.
    :::info
 
    The above base64 encoded string is the original **install-to-disk** script
-   content, we replace it into the value of **${newb64}** which is the one with
+   content, we replace it into the value of `${newb64}` which is the one with
    copy network action enabled.
 
    :::
