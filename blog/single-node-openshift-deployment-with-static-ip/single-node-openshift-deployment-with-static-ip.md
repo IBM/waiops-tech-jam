@@ -66,7 +66,7 @@ First, let's go through the manual Static IP deployment steps.
 - Minimum resource requirements
 
 | vCPU         | Memory | Storage |
-| ------------ | ------ | ------- |
+|--------------|--------|---------|
 | 8 vCPU cores | 32G    | 120G    |
 
 ## Manual Steps

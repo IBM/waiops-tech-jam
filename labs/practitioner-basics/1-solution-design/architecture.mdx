@@ -6,6 +6,9 @@ description:
 sidebar_position: 2
 ---
 
+import BlueprintExampleDiagramLight from './images/architecture/blueprint-example-diagram-light.svg'
+import BlueprintExampleDiagramApp from './images/architecture/blueprint-example-diagram-app.svg'
+
 :::info
 
 Whilst the examples below focus on AIOps as the subject, this guide is meant as
@@ -58,7 +61,7 @@ cluster and AIOps can result in expensive rework and project delays.
 
 To that end, a picture paints a thousand words:
 
-![Solution diagram](./images/architecture/blueprint-example-diagram-light.svg)
+<BlueprintExampleDiagramLight style={{ maxWidth: '100%', height: 'auto' }} />
 
 A diagram like this conveys a lot of contextual information in one go, and
 allows all stakeholders to work together on a single overarching view of the
@@ -106,7 +109,8 @@ For that reason, taking the time to try and capture some key high-level
 information about the applications and services, including the technology or
 platform in use, is very beneficial:
 
-![Application and service information](./images/architecture/blueprint-example-diagram-app.svg)
+
+<BlueprintExampleDiagramApp style={{ maxWidth: '100%', height: 'auto' }} />
 
 This can be as detailed as you like, however it is not necessary to depict every
 instance or detail of the stack. Rather, focus on information that can help you
