@@ -38,7 +38,7 @@ When prompted, enter the username and password that you updated earlier.
 In order to notify people when problems occur in an Instana environment, you
 must first have an **Alert Channel**. An Alert Channel is a mechanism that is
 used to get Events out of Instana and into another system when _Events_ are
-trigger.
+triggered.
 
 There are a variety of Alert Channels including _email notifications_, _slack_,
 _Watson AIOps_, and more. In this section we'll show you how to setup and an
@@ -67,6 +67,16 @@ sudo su -
 
 Now you can configure Instana to use the locally installed **Postfix** email
 server.
+
+We will be using the **stanctl backend apply** command to setup the smtp configuration.  
+This command can be used to update many parameters within
+your Instana server.  To see a full list of options, type **stanctl backend apply --help**
+
+```sh
+stanctl backend apply --help
+```
+
+Now, update the smtp settings by entering the following command.
 
 ```sh
 stanctl backend apply \

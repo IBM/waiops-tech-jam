@@ -40,7 +40,7 @@ You can safely ignore the warning about the certificate being untrusted.
 
 :::
 
-When prompted, enter the username and password that you updated earlier.
+When prompted, enter the Instana username and password as seen below.
 
 - Username: **admin@instana.local**
 - Password: **Passw0rd**
@@ -62,7 +62,14 @@ Then, click the **Add Website** button.
 
 A dialog containing **javascript** will open. In a more typical application, you
 would follow the instructions on the dialog. You copy/paste the **javascript**
-into the HTML pages.
+into the website's HTML pages.
+
+:::info
+
+Note:  For Apache and IBM HTTP Servers, you do not need to update the HTML pages. 
+You can configure the HTTP server to collect the End User Experience (EUM) data.
+
+:::
 
 ![](images/website-config-unmarked.png)
 
@@ -148,8 +155,8 @@ oc adm policy add-scc-to-user privileged -z default -n robot-shop --kubeconfig ~
 
 Install the **Robot Shop** using Helm:
 
-1. Set your reporting URL by making the substitution below and running the
-   command.
+1. Set your reporting URL by replacing **your-instana-reporting-url** with the **reporting URL**
+from your website definition in the Instana UI.  Then, run the command below.
 
 :::info
 
@@ -159,10 +166,11 @@ Install the **Robot Shop** using Helm:
 :::
 
 ```sh
-export REPORTING_URL="your-instana-reporting-url"
+export REPORTING_URL="<your-instana-reporting-url>"
 ```
 
-1. Set your key value by making the substitution below and running the command.
+1. Set your key value by replacing **your-instana-key** with the **key**
+from your website definition in the Instana UI.  Then, run the command below.
 
 :::info
 
@@ -172,7 +180,7 @@ user interface. <br /> Example: `_9ouL2yERFuYz49FAPIhQQ`.
 :::
 
 ```sh
-export EUM_KEY="your-instana-key"
+export EUM_KEY="<your-instana-key>"
 ```
 
 1. Deploy the Robot Shop application with the following Helm command:
