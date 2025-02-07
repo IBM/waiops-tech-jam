@@ -520,8 +520,10 @@ In our demo environment, we have the most common configuration.  ACE is configur
 And, we require credentials to connect to the channel.
 
 One other important factor when setting up ACE monitoring. The user that is connecting to the MQ channel
-needs to have permissions one some MQ objects such as queues and topics.  If the ACE sensor is not working, 
-look at the MQ log to see if there are any permissions errors.
+needs to have permissions on some MQ objects such as queues and topics.  If the ACE sensor is not working, 
+look at the MQ log to see if there are any permissions errors.  The MQ log path will be
+"/var/mqm/qmgrs/QM1/error/AMQERR01.LOG" where **QM1** is the Queue Manager name.  Look for the string 
+**insufficient authority** and the log will tell you which object and permissions are missing.
 
 Edit the **IBM ACE** section of the file so that it looks like this. If you
 want, you can copy this text and replace the entire section. Or, you can change
