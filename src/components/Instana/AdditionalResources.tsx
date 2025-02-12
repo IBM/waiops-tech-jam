@@ -26,7 +26,7 @@ export default function AdditionalResources() {
           <ul>
             <li>Demo and Sandbox environments</li>
             <li>
-              Instana 8-part technical essentials series
+              Instana 8-part technical essentials series:
               <ul>
                 <li>
                   A good set of prerequisite overviews for Jam-in-a-Box hands-on
