@@ -24,7 +24,7 @@ export default function AdditionalResources() {
           </a>{" "}
           containing:
           <ul>
-            <li>Demo and Sandbox environments</li>
+            <li>Demo and Sandbox environments.</li>
             <li>
               Instana 8-part technical essentials series:
               <ul>
@@ -40,7 +40,7 @@ export default function AdditionalResources() {
         </li>
         <li>
           <a href={communityPages} target="_blank" rel="noopener noreferrer">
-            Community blogs and forums
+            Community blogs and forums.
           </a>
         </li>
       </ul>
