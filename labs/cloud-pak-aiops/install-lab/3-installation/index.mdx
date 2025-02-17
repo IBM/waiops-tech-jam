@@ -153,7 +153,7 @@ spec:
   displayName: ibm-aiops-catalog
   publisher: IBM Content
   sourceType: grpc
-  image: icr.io/cpopen/ibm-aiops-catalog@sha256:9c3abcfcff17f2dfb28efa697de35a7b6bdbade58f1412a81d90283c6b93fe38
+  image: icr.io/cpopen/ibm-aiops-catalog@sha256:3d0054b251b8dd9ce698c175003b4c5fd6f3c84b5e0184806dec124e64b74ada
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
@@ -333,7 +333,7 @@ metadata:
   name: ibm-aiops-orchestrator
   namespace: cp4aiops
 spec:
-  channel: v4.7
+  channel: v4.8
   installPlanApproval: Automatic
   name: ibm-aiops-orchestrator
   source: ibm-aiops-catalog
