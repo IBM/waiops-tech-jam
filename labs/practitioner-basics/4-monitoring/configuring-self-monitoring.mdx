@@ -1,33 +1,40 @@
 ---
 title: Configuring self-monitoring
-description: How to configure self-monitoring of IBM CloudPak for AIOps with OpenShift
+description:
+  How to configure self-monitoring of IBM CloudPak for AIOps with OpenShift
 sidebar_position: 30
 ---
 
-This page covers some strategies for observing IBM CloudPak for AIOps KPIs and how to
-configure them.
+This page covers some strategies for observing IBM CloudPak for AIOps KPIs and
+how to configure them.
 
-Note that while this is correct, this information is now also in the [CP4AIOps Documentation](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=monitoring-prometheus-grafana), including several dashboards.
-
+Note that while this is correct, this information is now also in the
+[CP4AIOps Documentation](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/latest?topic=monitoring-prometheus-grafana),
+including several dashboards.
 
 ## Examining KPIs and other metrics using User Workload Monitoring
 
-OpenShift comes with a prometheus-based monitoring stack, which out of the box is used to
-track metrics about the cluster.
+OpenShift comes with a prometheus-based monitoring stack, which out of the box
+is used to track metrics about the cluster.
 
-It is possible to extend this monitoring to 'user workloads' (i.e. anything that is not a
-core OCP service), by [enabling user workload monitoring](https://docs.openshift.com/container-platform/4.15/observability/monitoring/enabling-monitoring-for-user-defined-projects.html). This will deploy a secondary prometheus instance, which can be queried alongside
-the cluster-level prometheus, as if it was one instance, using [thanos](https://thanos.io).
+It is possible to extend this monitoring to 'user workloads' (i.e. anything that
+is not a core OCP service), by
+[enabling user workload monitoring](https://docs.openshift.com/container-platform/4.15/observability/monitoring/enabling-monitoring-for-user-defined-projects.html).
+This will deploy a secondary prometheus instance, which can be queried alongside
+the cluster-level prometheus, as if it was one instance, using
+[thanos](https://thanos.io).
 
-There are various services in AIOps which are capable of exposing metrics to prometheus
-in this way.
+There are various services in AIOps which are capable of exposing metrics to
+prometheus in this way.
 
 ### Enabling user workload monitoring
 
-The first step is to enable the capability, if it has not been already. This is a
-cluster-wide setting, so care should be taken if this is being applied to a shared cluseter.
+The first step is to enable the capability, if it has not been already. This is
+a cluster-wide setting, so care should be taken if this is being applied to a
+shared cluseter.
 
-It can be enabled by running the following commands when logged into the cluster:
+It can be enabled by running the following commands when logged into the
+cluster:
 
 ```bash
 oc create -n openshift-monitoring -f - <<EOF || true
@@ -57,13 +64,15 @@ EOF
 ```
 
 More advanced configuration is possible; refer to the
-[OpenShift documentation](https://docs.openshift.com/container-platform/4.15/observability/monitoring/enabling-monitoring-for-user-defined-projects.html) for more details.
+[OpenShift documentation](https://docs.openshift.com/container-platform/4.15/observability/monitoring/enabling-monitoring-for-user-defined-projects.html)
+for more details.
 
 ### Viewing metrics in the OCP console
 
 At this point, some AIOps metrics will become available in the OCP console under
 `Observe -> Metrics`. This will allow you to enter any
-[prometheus query](https://prometheus.io/docs/prometheus/latest/querying/basics/) and graph the result.
+[prometheus query](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+and graph the result.
 
 Below are some example queries for AIOps metrics:
 
@@ -86,16 +95,16 @@ Below are some example queries for AIOps metrics:
 
 ### Enabling additional metrics
 
-While some components enable metric scraping out of the box (e.g. lifecycle, as in the examples
-above), others need additional configuration.
+While some components enable metric scraping out of the box (e.g. lifecycle, as
+in the examples above), others need additional configuration.
 
 #### Kafka
 
-A large portion of the communication in AIOps happens over Kafka, so scraping metrics from this
-is highly valuable.
+A large portion of the communication in AIOps happens over Kafka, so scraping
+metrics from this is highly valuable.
 
-The kafka prometheus exporter can be enabled and configured by running the following commands in the
-AIOps namespace:
+The kafka prometheus exporter can be enabled and configured by running the
+following commands in the AIOps namespace:
 
 ```bash
 KAFKA_METRICS_CONFIGMAP='
@@ -336,9 +345,11 @@ oc patch kafka iaf-system --type=merge -p '{
 }'
 ```
 
-One these commands are run, the kafka brokers will perform a rolling restart in order to enable the metric exporter.
+One these commands are run, the kafka brokers will perform a rolling restart in
+order to enable the metric exporter.
 
-You will then be able to explore kafka broker metrics in the openshift console, for example:
+You will then be able to explore kafka broker metrics in the openshift console,
+for example:
 
 1. Rate of messages published per kafka topic:
    ```
@@ -347,13 +358,16 @@ You will then be able to explore kafka broker metrics in the openshift console, 
 
 ### Viewing metrics in Grafana
 
-Whilst all metrics can be explored in the OCP console, it is fairly limited when it comes to visualization types
-and there is no way to construct and save a dashboard of multiple charts.
+Whilst all metrics can be explored in the OCP console, it is fairly limited when
+it comes to visualization types and there is no way to construct and save a
+dashboard of multiple charts.
 
-It is possible to install Grafana into OpenShift and configure it to connect to Thanos. This will give it access to
-all metrics across all of the prometheus instances (both cluster and user workload metrics).
+It is possible to install Grafana into OpenShift and configure it to connect to
+Thanos. This will give it access to all metrics across all of the prometheus
+instances (both cluster and user workload metrics).
 
 #### Installation
+
 As a quick start, this can be installed with the following script:
 
 ```diff
@@ -600,15 +614,15 @@ EOF
 echo "Monitoring will be available at https://$(oc get route -n monitoring-grafana grafana-route -o jsonpath='{.status.ingress[0].host}')"
 ```
 
-Alternatively, there is a [RedHat blog](https://cloud.redhat.com/experts/o11y/ocp-grafana/) which details
+Alternatively, there is a
+[RedHat blog](https://cloud.redhat.com/experts/o11y/ocp-grafana/) which details
 how to deploy grafana and connect to Thanos.
 
 #### Creating dashboards
 
-All the same queries listed above for the OCP console will work in Grafana too, and can be attached to any
-of the available visualizations.
+All the same queries listed above for the OCP console will work in Grafana too,
+and can be attached to any of the available visualizations.
 
 There are some example dashboards available in
 [example-dashboards](https://github.com/IBM/waiops-tech-jam/tree/main/labs/practitioner-basics/4-monitoring/example-dashboards),
 which can be imported into Grafana.
-
