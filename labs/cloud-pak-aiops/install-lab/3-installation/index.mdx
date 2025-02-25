@@ -46,7 +46,7 @@ Infrastructure Automation on the same cluster.
 :::
 
 If interested, this install steps we will begin to follow are documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_namespace).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=installing-starter-installation#exp_namespace).
 
 ### Create a custom project (namespace)
 
@@ -105,7 +105,7 @@ To open the **Text Editor** in the bastion VM, click on **Applications**, type
 :::
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_pull_secret).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=installing-starter-installation#exp_pull_secret).
 
 ### Usage data collection
 
@@ -115,7 +115,7 @@ the cp4aiops-metricsprocessor pod, and is sent to and stored in IBM controlled
 GDPR-compliant systems. For the purpose of this Lab, we will skip this step.
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#usage_secret).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=installing-starter-installation#usage_secret).
 
 ### Ensure external traffic access
 
@@ -128,19 +128,20 @@ if [ $(oc get ingresscontroller default -n openshift-ingress-operator -o jsonpat
 ```
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops/latest?topic=aiops-starter-installation#exp_ingress).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/latest?topic=aiops-starter-installation#exp_ingress).
 
 ### Create the catalog sources
 
-After installation, CatalogSource objects determine
-whether the upgrade of your Cloud Pak for AIOps, Cert Manager or License Service deployments are initiated automatically when a new patch becomes available.
+After installation, CatalogSource objects determine whether the upgrade of your
+Cloud Pak for AIOps, Cert Manager or License Service deployments are initiated
+automatically when a new patch becomes available.
 
-The CatalogSources object can be configured to automatically poll for and retrieve a
-newer catalog by enabling the polling attribute,
+The CatalogSources object can be configured to automatically poll for and
+retrieve a newer catalog by enabling the polling attribute,
 _spec.updateStrategy.registryPoll_. If a newer catalog for a patch is found and
-retrieved, then an automatic upgrade of the respective component is
-initiated. For the purpose of this Lab, we will disable the automatic initiation
-of patch upgrades. Run the following:
+retrieved, then an automatic upgrade of the respective component is initiated.
+For the purpose of this Lab, we will disable the automatic initiation of patch
+upgrades. Run the following:
 
 ```sh
 cat << EOF | oc apply -f -
@@ -180,7 +181,7 @@ EOF
 ```
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_catalog).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=installing-starter-installation#exp_catalog).
 
 :::tip
 
@@ -319,7 +320,7 @@ the cluster readiness. Remember to run this verification in a production
 implementation.
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#prereq_check).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=installing-starter-installation#prereq_check).
 
 ### Install the Cloud Pak for AIOps operator
 
@@ -351,11 +352,11 @@ oc get csv -n cp4aiops | egrep "ibm-aiops-orchestrator"
 You should see **Succeeded** messages as shown below:
 
 ```sh
-ibm-aiops-orchestrator.v4.7.0         IBM Cloud Pak for AIOps               4.7.0   Succeeded
+ibm-aiops-orchestrator.v4.8.1         IBM Cloud Pak for AIOps               4.8.1   Succeeded
 ```
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_operator).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=installing-starter-installation#exp_operator).
 
 :::warning
 
@@ -441,7 +442,7 @@ oc get installation.orchestrator.aiops.ibm.com -o yaml | grep 'Not Ready'
 ```
 
 If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_instance).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=installing-starter-installation#exp_instance).
 
 ## 3.5: Log in to the Cloud Pak for AIOps console
 
@@ -471,7 +472,7 @@ the previous command.
 :::tip
 
 If interested, the cluster access step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.7.0?topic=installing-starter-installation#exp_login).
+[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=installing-starter-installation#exp_login).
 
 :::
 
@@ -482,4 +483,3 @@ If interested, the cluster access step is documented
 After confirming you can login as **cpadmin** you can read through the labs
 **Custom Sizing Tool** and **Storage, HA and FIPS Considerations** and then
 complete the final Lab section **LDAP Integration**
-

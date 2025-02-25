@@ -109,7 +109,7 @@ const config: Config = {
           items: [
             {
               label: "CP4AIOps",
-              href: "https://www.ibm.com/docs/en/cloud-paks/cloud-pak-watson-aiops",
+              href: "https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops",
             },
             {
               label: "NOI",
@@ -121,7 +121,7 @@ const config: Config = {
             },
             {
               label: "Turbonomic",
-              href: "https://docs.turbonomic.com/",
+              href: "https://www.ibm.com/docs/en/tarm",
             },
           ],
         },
