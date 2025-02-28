@@ -14,7 +14,7 @@ storage.
 
 The following diagram describes the infrastructure for the Lab:
 
-![](images/intro.png)
+![](images/architecture.png)
 
 ## 2.1: Prerequisites
 

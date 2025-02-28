@@ -15,7 +15,7 @@ storage.
 
 The following diagram describes the initial infrastructure for the Lab:
 
-![](images/intro.drawio.png)
+![](images/architecture.png)
 
 :::note
 
