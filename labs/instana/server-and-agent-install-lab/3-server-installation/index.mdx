@@ -13,13 +13,16 @@ Instana backend is available as SaaS (preferred option) or self hosted (aka
 on-prem). For on-premises installations, Instana offers multiple containerized
 options:
 
-- **Self Hosted Standard Edition** Installs both the Instana backend and
-  datastores on a single node K3s cluster.
-- **Self Hosted Custom Edition** Installs the backend Kubernetes Operator on a
+- **Standard Edition**
+  - **Single-node cluster** Installs both the Instana backend and
+    datastores on a single node K3s cluster.
+  - **Multi-node cluster** Installs both the Instana backend and
+    datastores a three node K3s cluster.
+- **Custom Edition** Installs the backend Kubernetes Operator on a
   RedHat OpenShift or Kubernetes cluster. The datastores are not installed by
   the operator, they require manual installation either locally on the same
   cluster or remotely.
-- **Self Hosted Classic Edition** Install both the Instana backend and the
+- **Classic Edition** Install both the Instana backend and the
   datasotres on a single VM using Docker. Unlike the other options this
   deployment does not support multi-tenancy. Note: **Classic Edition** is not a
   strategic deployment option. Many recent enhancements such as synthetics,
@@ -40,9 +43,9 @@ current. For example, plan for upgrades every 2 months.
 :::
 
 For the installation of the Instana server, we'll be following the instructions
-from the Instana documentation for a **Self-Hosted Standard Edition**. The
+from the Instana documentation for a **Self-Hosted Standard Edition Multi-node**. The
 instructions can be found
-[here](https://www.ibm.com/docs/en/instana-observability/current?topic=backend-installing-standard-edition)
+[here](https://www.ibm.com/docs/en/instana-observability/290?topic=edition-installing)
 for your reference, but you can follow the steps below. You will be performing
 an online installation during this Tech Jam, but Instana does support off-line
 (air-gapped) installs.
@@ -50,23 +53,27 @@ an online installation during this Tech Jam, but Instana does support off-line
 The Classic Edition and Standard Editions are Instana's smallest on-premises
 installation option. Production and larger deployments are installed into
 kubernetes for horizontal scale and resiliency. For this lab the installation of
-Instana will be completed on the VM named **instana**.
+Instana will be completed on the VM's named **instana-0**, **instana-1** and
+**instana-2**.
 
 ![install instana architecture](images/architecture.png)
 
 ## 3.2: Prerequisites
 
-Instana requires a Linux server with cores, 64 Gig of RAM and few hundred Gig of
-disk space for a POC sized deployment. It also requires fast backend storage.
-For environments with even a few hundred servers, you'll need 6000 IOPS or more.
-For larger deployments, you'll need more capacity. Several different versions of
-Linux are supported. We have chosen Ubuntu 22.04 for this environment.
+In multi-node clusters, only the production installation type is supported. The three nodes in a multi-node cluster have specific uses:
 
-Note: While 16 cores and 64 Gig of RAM is enough for a POC environment, if you
-enable some of the optional feature flags, additional CPU and memory are
-required. The additional CPU and memory requirements for each optional feature
-can be found
-[here](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#cpu-and-memory-requirements)
+- The first node (instana-0), which is labeled as node-role.instana.io: "backend" during installation, is used for running backend workloads that require persistent volumes. The node also runs the gateway, acceptors, and the UI backend.
+- The second node (instana-1), which is labeled as node-role.instana.io: "datastore" during installation, is used for running data stores.
+- The third node (instana-2), which is labeled as node-role.instana.io: "other" during installation, is used for running the rest of Instana workloads.
+
+
+For this installation, Instana requires 3 Linux servers with 12 cores and 48 GB of RAM each. 1.1TB of fast storage rated at at least 6000 IOPS (preferred 9000 IOPS) for production environments is also required. Several different versions of Linux are supported. We have chosen Ubuntu 22.04 for this environment.
+
+:::tip
+
+Demo deployments only require 3000 IOPS however multi-node deployments are not supported in demo mode.
+
+:::
 
 :::info
 
@@ -78,7 +85,7 @@ that need to be opened for the Instana Server for an on-prem deployment. The
 ports for SaaS are slightly different.
 
 In addition, online installations need access to a number of repositories that
-are documented here for reference:  
+are documented here for reference:
 [here are the ports](https://www.ibm.com/docs/en/instana-observability/current?topic=requirements-instana-self-hosted-deployments)
 
 :::
@@ -98,7 +105,7 @@ From the Bastion host (Guacamole), open a terminal window by selecting
 Use the terminal to login to the Instana host:
 
 ```sh
-ssh jammer@instana
+ssh jammer@instana-0
 ```
 
 When prompted if you want to continue connecting, type: `yes`
@@ -133,13 +140,13 @@ export DOCKER_HUB_PASSWORD=<your-docker-hub-password>
 
 ```sh
 sudo mkdir -p /etc/rancher/k3s
-sudo tee /etc/rancher/k3s/registries.yaml <<EOF
+sudo bash -c "cat > /etc/rancher/k3s/registries.yaml <<EOF
 configs:
   registry-1.docker.io:
     auth:
       username: ${DOCKER_HUB_USERNAME}
       password: ${DOCKER_HUB_PASSWORD}
-EOF
+EOF"
 ```
 
 4. Confirm the new file is accurate by running:
@@ -152,8 +159,20 @@ cat /etc/rancher/k3s/registries.yaml
 
 ## 3.3. Preparing the server
 
-There are few tasks that need to be run to prepare the server for the
-installation.
+There are few tasks that need to be run to prepare the servers for installation.
+
+### 3.3.1. Prepare storage
+
+| Node       | Directory           | Path                              | Required Disk (GB) |
+|------------|---------------------|-----------------------------------|--------------------|
+| **instana-0** | Objects   | /mnt/instana/stanctl/objects      | 1000               |
+| **instana-1** | Data      | /mnt/instana/stanctl/data         | 500                |
+|            | Metrics    | /mnt/instana/stanctl/metrics      | 1000               |
+|            | Analytics  | /mnt/instana/stanctl/analytics    | 1200               |
+| **instana-2** | No additional disk | N/A                               | 0                  |
+
+
+### 3.3.2. Set the required kernel parameters
 
 Set the required kernel parameters by running the following commands:
 
