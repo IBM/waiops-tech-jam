@@ -70,7 +70,7 @@ const config: Config = {
 
   themeConfig: {
     navbar: {
-      title: "IBM SWAT",
+      title: "IBM IT & Network Automation Tiger Team",
       logo: {
         alt: "Logo",
         src: "/img/ibm-watson-logo.png",
@@ -83,7 +83,8 @@ const config: Config = {
           position: "left",
           label: "Labs",
         },
-        {to: "/blog", label: "Guides", position: "left"},
+        // TODO: Uncomment when guides are ready
+        // {to: "/blog", label: "Guides", position: "left"},
         // TODO: Automations coming soon
         // {
         //   to: "/automations",
