@@ -294,7 +294,7 @@ Verify the mount point was added correctly by running the following command:
 lsblk /dev/$OBJECTS_DISK
 ```
 
-You should now see that your device is mounted on the /mnt/instana/stanctl/objects directory.
+You should now see that your device is mounted on the `/mnt/instana/stanctl/objects` directory.
 
 ```sh title="Example Output"
 NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
@@ -465,7 +465,7 @@ sdd                         8:48   0   1.2T  0 disk /mnt/instana/stanctl/analyti
 
 There are some Kernel parameters that need to be set of each of the nodes. For full details on the parameters, please refer to the [Kernel Parameters documentation](https://www.ibm.com/docs/en/instana-observability/290?topic=cluster-preparing#kernel-parameters).
 
-Open a new terminal tab, this will default you back to the **admin** user on the **bastion-gym-lan** host. From the bastion host, run the following command to iterate over each of the nodes and set the required kernel parameters:
+**Open a new terminal tab**, this will default you back to the **admin** user on the **bastion-gym-lan** host. From the bastion host, run the following command to iterate over each of the nodes and set the required kernel parameters:
 
 :::note
 
@@ -478,19 +478,16 @@ export SSH_OPTIONS="-o StrictHostKeyChecking=no"
 
 for host in instana-0 instana-1 instana-2; do
   # Set vm.swappiness to 0 to make sure that application pages are not moved to swap space.
-  ssh $SSH_OPTIONS jammer@$host "grep -q 'vm.swappiness=0' /etc/sysctl.d/99-stanctl.conf || sudo sh -c 'echo vm.swappiness=0 >> /etc/sysctl.d/99-stanctl.conf'"
+  ssh $SSH_OPTIONS jammer@$host "grep -q 'vm.swappiness=0' /etc/sysctl.d/99-stanctl.conf 2>/dev/null || sudo sh -c 'echo vm.swappiness=0 >> /etc/sysctl.d/99-stanctl.conf'"
 
   # Set fs.inotify.max_user_instances to 8192 to make sure that the system allows a maximum of 8192 inotify instances.
-  ssh $SSH_OPTIONS jammer@$host "grep -q 'fs.inotify.max_user_instances=8192' /etc/sysctl.d/99-stanctl.conf || sudo sh -c 'echo fs.inotify.max_user_instances=8192 >> /etc/sysctl.d/99-stanctl.conf'"
+  ssh $SSH_OPTIONS jammer@$host "grep -q 'fs.inotify.max_user_instances=8192' /etc/sysctl.d/99-stanctl.conf 2>/dev/null || sudo sh -c 'echo fs.inotify.max_user_instances=8192 >> /etc/sysctl.d/99-stanctl.conf'"
 
   # Apply changes made to /etc/sysctl.d/99-stanctl.conf from the above commands
   ssh $SSH_OPTIONS jammer@$host "sudo sysctl -p /etc/sysctl.d/99-stanctl.conf"
 
   # Disable Transparent Huge Pages (THP) permanently for memory management.
-  // ssh $SSH_OPTIONS jammer@$host "sudo sed -i 's/GRUB_CMDLINE_LINUX=\"\\(.*\\)\"/GRUB_CMDLINE_LINUX=\"\\1 transparent_hugepage=never\"/' /etc/default/grub && sudo update-grub"
-
   ssh $SSH_OPTIONS jammer@$host "sudo sh -c 'echo never > /sys/kernel/mm/transparent_hugepage/enabled && echo never > /sys/kernel/mm/transparent_hugepage/defrag'"
-
 
   # Disable the firewall
   ssh $SSH_OPTIONS jammer@$host "sudo ufw disable"
@@ -547,21 +544,33 @@ Now the host **instana-0** has access to the private ssh key that has been added
 
 Navigate back to your terminal tab connected to **instana-0**. Ensure you are still operating as the **root** user.
 
-:::danger Ensure you are using the correct host and user
+:::danger Ensure you are on the right host and your keys are working before continuing
 
-Ensure you are on the correct host. If you are unsure run `hostname && whoami` to verify.
+1. Ensure you are on the correct host. If you are unsure run `hostname && whoami` to verify.
 
-You should see output similar to the following:
+    You should see output similar to the following:
 
-```sh
-instana-0
-root
-```
+    ```sh
+    instana-0
+    root
+    ```
 
-If you don't you should open a new tab, run `ssh jammer@instana-0` and `sudo -i` to become the root user.
+    If you don't you should open a new tab, run `ssh jammer@instana-0` and `sudo -i` to become the root user.
+
+2. Ensure you are able to connect to **instana-1** and **instana-2** as the root user using the newly created cluster key. Run the following:
+
+    ```sh
+    ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-2 "echo Connection to instana-2 successful"
+    ```
+
+    You should see the following output:
+
+    ```sh
+    Connection to instana-1 successful
+    Connection to instana-2 successful
+    ```
 
 :::
-
 
 Export your Instana Download and Sales keys as environment variables. Run the following after replacing `<your-download-key>` and `<your-sales-key>` with the [keys provided for your lab environment](https://ibm.seismic.com/Link/Content/DCQfMjDgqWT2B87FWXPhGXQbJGDP).
 
@@ -604,13 +613,11 @@ Install Instana
   be reached at _instana-0.ibmdte.local_. Further details on
   [required DNS entries can be found here](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#dns-settings).
 - Internally, Instana has tenants, which are a logical construct. Each
-  tenant in turn has at least one or multiple tenant units. There are
-  [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#tenant-and-unit-names).
+  tenant has one or more tenant units. There are [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#tenant-and-unit-names).
   In this installation the tenant is **ibm** and the unit is **unit0**.
-- The default administrator username is `admin.instana.local` and the password is
-  `Passw0rd`.
-- We are setting the volumes to the directories we created earlier.
-- We are setting the SMTP settings to use an SMTP server that has been configured in your lab environment.
+- The default administrator username is `admin.instana.local` and the password is `Passw0rd`.
+- We are setting the volumes to the directories we created earlier during the storage configuration tasks.
+- We are setting the SMTP configuration to use an SMTP server that has been configured in your lab environment.
 
   The installation below, uses a set of optional installation flags. If you are
   interested in seeing all of the available installation flags, you can run:
@@ -621,9 +628,10 @@ Install Instana
 
 Start the installation by running the following command:
 
-:::tip
+:::info
 
-- When prompted with "Would you like to execute the script (stanctl-preflight.sh)?" press **N** for no.
+- If prompted with "Would you like to execute the script (stanctl-preflight.sh)?" press **N** for no.
+
 - When prompted to "Enter TLS certificate file (hit ENTER to auto-generate):" press **Enter** to auto-generate the certificate.
 
 :::
