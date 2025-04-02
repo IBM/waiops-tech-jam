@@ -45,11 +45,11 @@ const config: Config = {
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
-        },
-        gtag: {
-          trackingID: "G-7WTTHT6SEH",
-          anonymizeIP: true,
-        },
+        }
+        // gtag: {
+        //   trackingID: "G-7WTTHT6SEH",
+        //   anonymizeIP: true,
+        // },
       } satisfies Preset.Options,
     ],
   ],
@@ -70,7 +70,7 @@ const config: Config = {
 
   themeConfig: {
     navbar: {
-      title: "IBM SWAT",
+      title: "IBM IT & Network Automation Tiger Team",
       logo: {
         alt: "Logo",
         src: "/img/ibm-watson-logo.png",
@@ -83,7 +83,8 @@ const config: Config = {
           position: "left",
           label: "Labs",
         },
-        {to: "/blog", label: "Guides", position: "left"},
+        // TODO: Uncomment when guides are ready
+        // {to: "/blog", label: "Guides", position: "left"},
         // TODO: Automations coming soon
         // {
         //   to: "/automations",
@@ -137,10 +138,11 @@ const config: Config = {
         {
           title: "More",
           items: [
-            {
-              label: "Blog",
-              to: "/blog",
-            },
+            // TODO: Uncomment when blogs are ready
+            // {
+            //   label: "Blog",
+            //   to: "/blog",
+            // },
             {
               label: "GitHub",
               href: "https://github.com/IBM/waiops-tech-jam",

@@ -20,15 +20,16 @@ const FeatureList: FeatureItem[] = [
       </>
     ),
   },
-  {
-    title: "SWAT Guides",
-    Svg: require("@site/static/img/undraw_guides.svg").default,
-    description: (
-      <>
-        General use <Link to="/blog/">Guides</Link> shared by the SWAT team.
-      </>
-    ),
-  },
+  // TODO: Uncomment when guides are ready
+  // {
+  //   title: "SWAT Guides",
+  //   Svg: require("@site/static/img/undraw_guides.svg").default,
+  //   description: (
+  //     <>
+  //       General use <Link to="/blog/">Guides</Link> shared by the SWAT team.
+  //     </>
+  //   ),
+  // },
   // TODO: SWAT Public Automations coming soon
   // Adjust `col--6` below to `col--4` to accommodate the additional Feature Tile
   // {
@@ -45,7 +46,7 @@ const FeatureList: FeatureItem[] = [
 
 function Feature({title, Svg, description}: FeatureItem) {
   return (
-    <div className={clsx("col col--6")}>
+    <div className={clsx("col col--12")}>
       <div className="text--center">
         <Svg className={styles.featureSvg} role="img" />
       </div>

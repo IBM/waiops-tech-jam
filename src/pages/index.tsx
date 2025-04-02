@@ -28,7 +28,7 @@ function HomepageHeader() {
 
 export default function Home(): JSX.Element {
   return (
-    <Layout description="IBM SWAT - TechJams & Guides">
+    <Layout description="IBM IT & Network Automation Tiger Team - TechJams & Guides">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
