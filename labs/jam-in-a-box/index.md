@@ -68,12 +68,10 @@ Once your requested environment has been provisioned successfully by Tech Zone
 you will receive an email letting you know provisioning has completed along with
 your environment details.
 
-Within the details you should see a URL for **OCP Console** that looks similar
+Within the details you should see a URL for **Bastion Remote Desktop** that looks similar
 to the following:
 
-```sh
-https://remote.cloud.techzone.ibm.com/guacamole/#/?username=000-000000-0000&password=00000
-```
+![bastion-url](./images/bastion-url.png)
 
 :::tip
 
@@ -85,10 +83,10 @@ If you no longer have the email you can also
 
 :::
 
-Click on the **OCP Console** URL.
+Click on the **Bastion Remote Desktop** URL.
 
 You will be taken to a page that looks similar to the below. Expand the
-_twisties_ and select the **Remote Desktop** connection to connect to your
+_twisties_ and select either **Remote Desktop** or **SSH** to establish a connection to your
 _Apache Guacamole_ Bastion host.
 
 ![access-guacamole](../_common/images/access-guacamole.png)
@@ -103,6 +101,14 @@ All access to the lab environment is behind this RHEL Bastion host named
 ## Important Tips
 
 ### Copy & Paste
+
+#### Browser Permissions
+
+If you are prompted to to allow _remote.cloud.techzone.ibm.com_ for permissions to your clipboard, respond with **Allow** to ensure you can copy and paste to the Bastion host.
+
+![allow-clipboard](images/allow-clipboard.png)
+
+#### Windows Users
 
 If you are a **Windows user** be mindful that there are no new lines inserted
 unintentionally when copying and pasting commands to the Terminal. If you have
@@ -136,4 +142,4 @@ editor **gedit** you can do so by:
   echo "export KUBE_EDITOR=/bin/gedit -w" >> ~/.bashrc
   ```
 
-## Troubleshooting
+<!-- ## Troubleshooting -->

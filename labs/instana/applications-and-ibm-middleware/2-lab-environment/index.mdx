@@ -8,26 +8,15 @@ import LicenseInfo from "@site/src/components/Instana/LicenseInfo"
 
 # Lab Environment
 
-The lab environment includes 2 Openshift clusters and 3 VMs.
+The lab environment includes 6 VMs.
 
-Openshift clusters:
-
-1. **AIOps OCP Cluster** - Not required for this lab.
-2. **Apps SNO Cluster** - An instance of Single Node OpenShift where you will
-   install the Robot Shop demo application that will be monitored using Instana.
-   There is a pre-installed demo application called Quote of the Day that will
-   be integrated with IBM MQ and ACE to demonstrate further the Instana Servers
-   monitoring capabilities.
-
-Virtual Machines:
-
-1. **Guacamole VM** - A RHEL VM that will be used as the _bastion_ host into the
-   lab network. Guacamole has access to all lab VM's and clusters and will be
+1. **Bastion VM** - A RHEL VM named `bastion-gym-lan` that will be used as the _bastion host_ for the
+   lab network. This Bastion host has access to all lab VM's and will be
    your primary workstation for these labs.
-2. **Instana** - An Ubuntu VM with an instance of Instana Server and Instana
-   Agent running running on K3s.
+2. **Instana VMs** - 3 Ubuntu VMs that are running a multi-node self-hosted Instana server on K3's.
 3. **MQACE** - An Ubuntu VM that contains the pre-installed IBM ACE and MQ
    middleware.
+4. **Demo Applications Cluster** - An Ubuntu VM running K3s, it has the Instana Agent and Quote of the Day demo application running. It will be used to install the Robot Shop demo application in this lab.
 
 ![architecture](images/architecture.png)
 
@@ -57,4 +46,4 @@ for step by step guidance on requesting a lab environment in IBM Tech Zone.
 
 Request Tech Zone environment:
 
-- [Jam-in-a-Box: Instana - Apps & IBM Middleware](https://techzone.ibm.com/my/reservations/create/6601c99adbc3b4001e5494d8)
+- [Jam-in-a-Box: Instana - Apps & IBM Middleware](https://techzone.ibm.com/my/reservations/create/67ec9e6d673783a07149cef3)
