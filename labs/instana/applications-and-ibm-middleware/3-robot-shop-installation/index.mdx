@@ -50,36 +50,35 @@ When prompted, enter the Instana username and password as seen below.
 ## 3.2: Create the Website in Instana
 
 If you want to capture EUM/RUM data within Instana, you must first create a
-website within the GUI (or via API). Open the Instana GUI within your browser.
+website within the GUI (or via API).
 
-On left side navigation, select **Websites & Mobile Apps**. You'll see a dialog
-where you can enter a Website Name. Enter `Robot Shop` as the website name.
-Then, click the **Add Website** button.
+From the Instana GUI, on left side navigation, select **Websites & Mobile Apps**. Then, click the **Add Website** button.
 
 ![](images/add-website.png)
 
+You'll see a dialog
+where you can enter a Website Name. Enter `Robot Shop` as the website name.
+
 ![](images/add-website-name.png)
 
-A dialog containing **javascript** will open. In a more typical application, you
-would follow the instructions on the dialog. You copy/paste the **javascript**
-into the website's HTML pages.
+A new dialog containing some options and javascript will open. Leave the options as is.
+
+In a more typical application, you would follow the instructions and copy/paste the javascript into the website's `<head/>` tag.
 
 :::info
 
-Note:  For Apache and IBM HTTP Servers, you do not need to update the HTML pages. 
+Note:  For Apache and IBM HTTP Servers, you do not need to update the HTML pages.
 You can configure the HTTP server to collect the End User Experience (EUM) data.
 
 :::
 
-![](images/website-config-unmarked.png)
-
-Robot Shop has already done some of the work for you by embedding this script
-with variable placeholders for the unique values into the application. When you
-deploy the application, you can pass parameters into the helm install to
-populate the unique variables. There are two parameters within the javascript
-that we will need to copy and use when we do the install. You will need the
-**key** and the **reportingURL**. Either copy those parameters now or leave this
-dialog open so that you can retrieve it later.
+Robot Shop has already done some of the work for us by embedding this script
+with variable placeholders for the unique values into the application. When we
+deploy the application, we can pass parameters into the Helm Chart to populate
+the unique variables. There are two parameters within the javascript that we will
+need to copy and use when we do the install. You will need the **key** and the
+**reportingURL**. Either copy those parameters now or leave this dialog open so
+that you can retrieve it later.
 
 ![](images/website-config-marked.png)
 
@@ -94,50 +93,55 @@ We will install Robot Shop on the **Apps Single Node OpenShift** cluster.
 The full installation instructions for **Robot Shop** can be found
 [here](https://github.com/instana/robot-shop). You'll notice that there are
 instructions for installing **Robot Shop** into a number of different
-environments including docker, kubernetes, and OpenShift. This lab uses an
-OpenShift environment, so we'll be following those steps.
+environments including docker, kubernetes, and OpenShift. This lab uses a
+Kubernetes environment, so we'll be following those steps.
 
 We have documented the steps below, so there is no need to refer to the GitHub
 instructions.
 
 :::info Important
 
-The following should be run from the terminal on the bastion host
-(**admin@bastion-gym-lan**).
+This section should be run from the **demo-apps** host.
 
-From the Bastion host (Guacamole), open a terminal window by selecting
+From the Bastion host, open a new terminal window by selecting
 **Activities** at the top left of the screen and then the terminal icon.
 
 ![open-terminal](images/open-terminal.png)
 
-Check to make sure you are in the right place by running the following:
+Run the following to connect to the **demo-apps** vm:
 
 ```sh
-cd ~ && oc cluster-info --kubeconfig kubeconfig-apps
+ssh jammer@demo-apps
 ```
 
-You should see the following output, specifically the url
-`https:api.sno.techzone.lan:6443`. If you don't try opening a new tab or
-terminal window and trying again.
+Enter `yes` when prompted _if you are sure you want to continue connecting_.
 
-![check-cluster](images/check-cluster.png)
+Run the following command to become the _root_ user:
 
-::: Clone the GitHub repository by typing:
+```sh
+sudo -i
+```
+
+:::
+
+We will use **Helm**, a package manager for Kubernetes to install Robot Shop. First install Helm by running the following commands:
+
+```sh
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
+Clone the Robot Shop GitHub repository by running the following command:
 
 ```sh
 cd ~ && git clone https://github.com/instana/robot-shop.git
 ```
 
-Change directory into the **robot-shop/K8s** directory
+Create the `robot-shop` namespace:
 
 ```sh
-cd robot-shop/K8s
-```
-
-Ensure namespace `robot-shop` is created:
-
-```sh
-cat <<EOF | oc apply --server-side --kubeconfig ~/kubeconfig-apps -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -145,15 +149,7 @@ metadata:
 EOF
 ```
 
-Next, setup **privileges** within the cluster for the **Robot Shop** application
-by issuing the following two commands:
-
-```sh
-oc adm policy add-scc-to-user anyuid -z default -n robot-shop --kubeconfig ~/kubeconfig-apps
-oc adm policy add-scc-to-user privileged -z default -n robot-shop --kubeconfig ~/kubeconfig-apps
-```
-
-Install the **Robot Shop** using Helm:
+Install the **Robot Shop** application using Helm:
 
 1. Set your reporting URL by replacing **your-instana-reporting-url** with the **reporting URL**
 from your website definition in the Instana UI.  Then, run the command below.
@@ -161,12 +157,12 @@ from your website definition in the Instana UI.  Then, run the command below.
 :::info
 
 - **your-instana-reporting-url** is the _reportingURL_ you obtained in section
-  3.2. <br/> Example: `https://instana.techzone.lan/eum/`.
+  3.2. <br/> Example: `https://instana-0.ibmdte.local/eum/`.
 
 :::
 
 ```sh
-export REPORTING_URL="<your-instana-reporting-url>"
+export REPORTING_URL="your-instana-reporting-url"
 ```
 
 1. Set your key value by replacing **your-instana-key** with the **key**
@@ -175,23 +171,24 @@ from your website definition in the Instana UI.  Then, run the command below.
 :::info
 
 **your-instana-key** is the **key** you obtained in section 3.2 from the Instana
-user interface. <br /> Example: `_9ouL2yERFuYz49FAPIhQQ`.
+user interface. <br /> Example: `cYd1TSDZQBCIUfYCGMvV8A`.
 
 :::
 
 ```sh
-export EUM_KEY="<your-instana-key>"
+export EUM_KEY="your-instana-key"
 ```
 
 1. Deploy the Robot Shop application with the following Helm command:
 
    ```sh
    helm install robot-shop \
-   --set openshift=true \
+   ./robot-shop/K8s/helm \
    --set eum.key=${EUM_KEY} \
    --set eum.url=${REPORTING_URL} \
-   -n robot-shop helm \
-   --kubeconfig ~/kubeconfig-apps
+   --set redis.storageClassName="local-path" \
+   -n robot-shop \
+   --kubeconfig=/etc/rancher/k3s/k3s.yaml
    ```
 
 If successful, you should see the results similar to what's shown below.
@@ -207,7 +204,7 @@ Type `Ctrl-C` to exit the watch loop.
 :::
 
 ```sh
-oc get pods -n robot-shop -w --kubeconfig ~/kubeconfig-apps
+kubectl get pods -n robot-shop -w
 ```
 
 If the install was successful, you'll see the following pods running.
@@ -224,23 +221,40 @@ and proceed to the next steps.
 
 ![](images/robot-shop-success-pods.png)
 
-Finally, if you want to bring up the Robot Shop user interface, you need to
-expose the service as a route. Issue the following command:
+Finally, we want to expose the Robot Shop UI. K3s includes a Traefik Ingress Controller that we can use to create a new Ingress for the app. Run the following to create the ingress:
 
 ```sh
-oc expose service web -n robot-shop --kubeconfig ~/kubeconfig-apps
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: robot-shop-ingress
+  namespace: robot-shop
+spec:
+  rules:
+  - host: robot-shop.apps.demo-apps.ibmdte.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web
+            port:
+              number: 8080
+EOF
 ```
 
-The route to the application has already been saved to a bookmark called **Robot
-Shop**. Alternatively you can issue the **oc get route** command to get the
-route to the application
+The url to the application has already been saved to a bookmark called **Robot
+Shop** in Firefox. Alternatively you can issue the following command to get the
+url to the application
 
 ```sh
-oc get route -n robot-shop --kubeconfig ~/kubeconfig-apps
+kubectl get ingress -n robot-shop
 ```
 
 The result should look similar to: `web-robot-shop.CLUSTER_DOMAIN`. In our case
-it is **web-robot-shop.apps.sno.techzone.lan**
+it is **robot-shop.apps.demo-apps.ibmdte.local**
 
 ![](images/expose-robot-shop.png)
 
@@ -252,33 +266,22 @@ Robot Shop application.
 :::tip
 
 If using the route you printed earlier make sure you pay attention to the 'Port'
-field, for this application you will be using http instead of https.
+field, for this application you will be using http (80) instead of https (443).
 
 :::
 
 ![](images/stans-robot-shop.png)
 
-### Workaround Required for Robot Shop in OpenShift Deployments
+### Workaround Required for Robot Shop
 
 You can now navigate and use the Robot Shop application, however if you navigate
-to **Websites & Mobile Apps** > **Robot Shop** you will not see the EUM data in
-Instana.
+to **Websites & Mobile Apps** > **Robot Shop** you will not see any EUM data displayed in Instana.
 
 ![No Data](images/no-data-robot-shop.png)
 
-There are two reasons for this:
+The reason this is happening is because the Instana EUM reporting URL uses HTTPS `https://instana.techzone.lan/eum/` and the browser is not able to verify the Self Signed Certificate used by Instana in this lab.
 
-1. The EUM reporting URL we used was **https://instana.techzone.lan/eum/** and
-   becuase we are using Self Signed Certificates in this lab the browser will
-   not allow the EUM data to be sent to Instana without first providing
-   approval.
-2. There is a bug in Robot Shop when deployed on OpenShift that causes the
-   trailing slash of the reporting URL to be stripped on install. Without the
-   slash the EUM data will not be correctly proxied and therefore no End User
-   Monitoring details will be shown in Instana.
-
-To fix this first issue, from Firefox select the bookmark **EUM TLS** and accept
-the certificate.
+To fix this first issue we need to manually accept the Self Signed Certificate, from Firefox select the bookmark **EUM TLS** and accept the certificate by selected **Advanced...** and then **Accept the Risk and Continue**.
 
 ![EUM TLS Cert](images/eum-tls.png)
 
@@ -287,31 +290,6 @@ If you have done this correctly you should now see the _eum.min.js_ file.
 ![eum.min.js](images/eum-min-js.png)
 
 You can now close the tab.
-
-To fix the second issue, we need to manually add the trailing slash back into
-the eum.html file.
-
-:::tip
-
-If you want to understand the issue here you can open the Firefox dev tools with
-F12 and navigate to the **Network** tab. As you click around the app you will
-notice the failing EUM beacons. Once we adjust the eum.html with the correct URL
-you will see these same EUM beacons succeeding and sending data in Instana.
-
-:::
-
-Run the following command to update the URL:
-
-```sh
-kubectl exec -n robot-shop $(kubectl get pod -l service=web -n robot-shop -o jsonpath={..metadata.name} --kubeconfig ~/kubeconfig-apps) -- sed -i 's|https://instana.techzone.lan/eum|https://instana.techzone.lan/eum/|g' /usr/share/nginx/html/eum.html
-```
-
-Now click around the Robot Shop app to generate beacons. Navigate to **Websites
-& Mobile Apps** > **Robot Shop** and you should now see EUM data in Instana. If
-you don't see it yet, adjust the time range to **Last minute** and select
-**Live**.
-
-![eum-data-showing](images/eum-data-showing.png)
 
 ---
 
@@ -323,7 +301,7 @@ some artifical traffic against the Robot-Shop application.
 Issue the following command to install the load generation pod.
 
 ```sh
-cat <<EOF | oc create --kubeconfig ~/kubeconfig-apps -f -
+cat <<EOF | kubectl create -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -350,10 +328,10 @@ spec:
 EOF
 ```
 
-Run the **oc get pods** command.
+Run the **kubectl get pods** command.
 
 ```sh
-oc get pods -n robot-shop --kubeconfig ~/kubeconfig-apps
+kubectl get pods -n robot-shop
 ```
 
 You should now see an additional pod named **rs-website-load-\*** running within
