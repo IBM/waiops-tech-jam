@@ -46,18 +46,15 @@ Use the left navigation to select **Platforms** and then **Kubernetes**
 ![](images/kubernetes.png)
 
 When you select **Platforms** in the classroom environment, you will only see
-**kubernetes** and **Cloud Foundry**. But, there are additional **feature
-flags** that can be enabled to add in other technologies like **VMware**,
-**Power HMC**, and **Z HMC**. You saw the **feature flags** for those
-technologies when you performed the Instana server installation.
+**kubernetes** and **SAP**. But, there are additional **feature
+flags** that can be enabled to add in other technologies like **VMware**, **Cloud Foundry**,
+**Power HMC**, and **Z HMC**.
 
-You will see a list of Kubernetes clusters. In this environment there is only
-the SNO cluster named **apps_cluster** that we installed the OCP Instana Agent
-onto in an earlier lab.
+You will see a list of Kubernetes clusters. In this environment there is the cluster Instana is running on and the K3s cluster named **demo-apps** where QOTD, Robot Shop and the Instana Agent have been installed.
 
 ![](images/clusters.png)
 
-Click the cluster name to open the dashboard.
+Click the **demo-apps** cluster name to open the dashboard.
 
 You should see a screen similar to the one below where you can see overall
 utilization of the Kubernetes cluster.
@@ -68,14 +65,11 @@ Select some of the other tabs to explore the Kubernetes monitoring. We recommend
 you look at the **Events**, **Nodes**, and **Pods** tabs. When you select the
 pods tab, you will see a list of all pods running within the cluster.
 
-In the upper right corner of the **Pods** tab, add `qotd` into the search
-widget. You'll notice that it will filter the list to the pods related to the
-Quote of the Day application.
+In the upper right corner of the **Pods** tab, you can filter by the current pod phase. You'll notice that it will filter the list pods by the phase selected.
 
-![](images/qotd-pods.png)
+![](images/pod-phase.png)
 
-Click on one of the links on the left side and drill into the pod utilization
-details.
+Click on one of the pod names to the left to drill into the pod utilization details.
 
 ---
 
@@ -90,7 +84,7 @@ You'll notice that there is a box surrounding the **"towers"** with the zone
 names that have been configured in the Agent configurations. The box is a
 **"zone"**. In previous labs a zone name was specified during the install of the
 Instana Agent or added to the Instana Agent configuration file. The towers
-contained within the zones represents the OpenShift SNO cluster named Apps, the
+contained within the zones represents the Demo Apps Kubernetes cluster, the
 Instana server, and the virtual machine running ACE and MQ.
 
 :::tip
@@ -123,7 +117,7 @@ the hostname of one of the servers. For example _mqace_
   In my example, I could specify **"entity.host.name:\*mqace\*"** to filter on
   the MQ/ACE server.
 
-One you have specified the filter, you'll see that the infrastructure view is
+Once you have specified the filter, you'll see that the infrastructure view is
 filtered to just a single server that matches your search.
 
 ![](images/host-query.png)
@@ -136,22 +130,21 @@ documentation found here:
 
 Clear the filter at the top of the page by clicking on the **X**
 
-Next, flyover the tower that represents the Instana server. This tower is taller
-because there are more discovered entities running on it.
+Next, flyover one of the three towers that represents the Instana server. These towers are taller than the others because there are more discovered entities running on it.
 
 ![](images/instana-flyover.png)
 
 You'll notice that a number of components were automatically discovered and are
 instrumented for monitoring.
 
-Next, flyover the ACE/MQ tower.
+Next, flyover the MQ & ACE tower.
 
 ![](images/mqace-flyover.png)
 
-This is the ACE and MQ server. You can see the MQ and ACE components along with
+This is the MQ and ACE server. You can see the MQ and ACE components along with
 a discovered JVM, and more.
 
-Next, click on the **"Comparison Table"** near the top of the page.
+Next, click on the **Comparison Table** near the top of the page.
 
 ![](images/comparison-table.png)
 
@@ -159,41 +152,39 @@ This table shows a sortable and searchable list of the Hosts that make up this
 environment. You can quickly find hosts consuming high CPU, high memory, or have
 poor health.
 
-In addition, if you select where is says **"Hosts"**, there is a dropdown list
+In addition, if you select where is says **Hosts**, there is a dropdown list
 that allows you to see lists of JVMs, containers, etc.
 
-![](images/tableContent.png)
+![](images/table-content.png)
 
-Change from **"Hosts"** to **"Docker Containers"** in the dropdown list and
+Change from **Hosts** to **Containerd Containers** in the dropdown list and
 you'll see a complete list of containers and their utilization and health.
 
-Switch back to the Map view by clicking on **"Map"** near the upper left corner.
-
-![](images/map.png)
+Switch back to the Map view by clicking on **Map** to the left of Comparison Table.
 
 Zoom in with the plus sign in the bottom right corner.
 
 ![](images/plus.png)
 
 You'll notice that each tower is actually comprised of multiple pizza boxes.
-Each one represents an **"Entity"** such as an MQ Queue Manager or an ACE
+Each one represents an **Entity** such as an MQ Queue Manager or an ACE
 Integration Node.
 
-![](images/pizzaBox.png)
+![](images/pizza-box.png)
 
-Flyover the ACE/MQ server again until you see a list of all discovered Entities.
+Flyover the MQ & ACE server again until you see a list of all discovered Entities.
 If you only see 1 entity, move your mouse to one of the corners of the tower.
 Once you see all of the entities, click your mouse. You'll see a dialog open
-
-![](images/mq-ace-open-modal.png)
 
 Use the scroll bar to scroll down. You'll notice that you see each of the types
 of Entities that were discovered. Expand the MQ entity type and you'll see the
 Queue Manager that was discovered.
 
+![](images/mq-ace-open-modal.png)
+
+
 It is possible to click on either the "Open Dashboard" button or the links for
-the individual entities. If you clicked, you could navigate to either the Host
-operating system metrics or the specific middleware entity.
+the individual entities.
 
 Click on the **Open Dashboard** button and we'll examine the Host Agent
 dashboard.
@@ -209,12 +200,10 @@ the screen. Click on the **time range** dropdown in the upper right corner and
 select **last minute**. This will filter the data to the last minute of metric
 data.
 
-![](images/lastMinute.png)
+![](images/last-minute.png)
 
 Now, click the **Live** button in the upper right corner. This will show you
 **Live** data as it is streaming into the Instana server in near-realtime.
-
-![](images/live.png)
 
 After examining the data, click the **time range** dropdown and select **Last
 Hour** to look at a more typical view within Instana.
@@ -239,7 +228,7 @@ Let's focus on the Channels. Scroll down to the table labeled **"Channels"**.
 
 ![](images/mq-channels.png)
 
-Click on the blue text on the left to drill into the Channel. Examine the
+Click on the blue text that says **ACE.SRVCONN** on the left to drill into the Channel. Examine the
 Channel metrics on the page.
 
 Next, look at the top of the screen. You'll notice that this is a breadcrumb
