@@ -250,49 +250,40 @@ Before we can investigate Applications within Instana, we need to create an
 
 **Application Perspectives** allow you to group together a number of different
 services and endpoints into dashboard that shows the health and performance of a
-business application. In this section, you will create and **Application
+business application. In this section, you will create an **Application
 Perspective** for the **Robot Shop** application.
 
-On the left hand navigation, select **"Applications"**. You will see a screen
-open up that contains a list of all applications that are defined in the
-environment. Initially, this list maybe almost empty showing just **All
-Services** generic bucket.
+On the left hand navigation, select **Applications**.
 
-The next thing you are going to do is define an application. You will see an
-**"Add"** button in the bottom right corner.
+![](images/applications-menu.png)
+
+You will see a list of all applications that are defined in the
+environment. Initially, this list only has one entry called **All
+Services**.
+
+Define a new application. Select the **Add** button in the bottom right corner.
 
 ![](images/add.png)
 
-Click the **"Add"** button
+Select **New Application Perspective**
 
-A dialog will open with two options (one if Smart Alerts feature is not enabled
-yet on your server). We'll examine the "Global Smart Alerts" in the
-Administrative section of this lab. For now, click on the **"New Application
-Perspective"** button
-
-![](images/newApplication.png)
+![](images/add-app-perspective.png)
 
 **Switch to the Advanced Mode** in the upper right corner. Complete the
 definition to look like below.
 
-First, give the Application Perspective the name `Robot Shop`.
-
-Add a filter, type in **kubernetes** and then select **namespace**. Then, click
+1. Name the Application Perspective `Robot Shop`
+2. Add a filter, type in **kubernetes** and then select **namespace**. Then, click
 in the **value** field. You'll notice that when you click on it, the field is
 pre-populated with kubernetes namespaces that have applications being monitored.
 Select the **robot-shop** namespace.
-
-Next select **All downstream services**. This selection will allow the
+3. Select **All downstream services**. This selection will allow the
 application perspective to limit the scope to all transactions within the
 _robot-shop_ kubernetes namespace.
+4. Select to include **All Calls**
+5. Click the **Create** button to create the application perspective.
 
-![](images/addRobotShop.png)
-
-Scroll down further in the dialog and select to include **All Calls**.
-
-![](images/all-downstream-services.png)
-
-Finally, click the **Create** button to create the application perspective.
+![](images/add-robot-shop.png)
 
 ---
 
@@ -301,26 +292,18 @@ Finally, click the **Create** button to create the application perspective.
 We can now repeat a similar process to the previous section to configure an
 **Application Perspective** for the **Quote of the Day** application.
 
-On the left hand navigation, select **"Applications"**.
+On the left hand navigation, select **Applications**.
 
-Click the **"Add"** button in the bottom right corner.
-
-![](images/add.png)
-
-A dialog will open with two options (one if Smart Alerts feature is not enabled
-yet on your server). We'll examine the "Global Smart Alerts" in the
-Administrative section of this lab. For now, click on the **"New Application
-Perspective"** button
-
-![](images/newApplication.png)
+Click the **"Add"** button in the bottom right corner and select **New Application Perspective**
 
 **Swich to the Advanced Mode** in the upper right corner. Then complete the
 definition to look like below.
 
-As you add filters, you'll notice that Instana automatically populates the
-fields like the service name. As you add filters, notice that you need to add a
-combination of **AND** and **OR** conditions to achieve the results that you
-want.
+1. Name the Application Perspective `Quote of the Day`
+2. Add filters for Service Name, Kubernetes Namespace and Endpoint Name as per the image below. As you add filters, notice that you need to add a combination of **AND** and **OR** conditions to achieve the results that you want.
+3. Select **All downstream services**.
+4. Select to include **All Calls**
+5. Click the **Create** button to create the application perspective.
 
 :::note
 
@@ -328,14 +311,14 @@ Pay close attention to the filters. The last filter is a **not equal** filter.
 
 :::
 
-![](images/2022-05-27-18-48-03.png)
+![](images/add-qotd-app-perspective.png)
 
 What this Application Perspective is doing is the following:
 
 - We are including the MQ Service by matching any service that contains the
-  Queue Manager Name of QM1.
+  Queue Manager Name of **QM1@mqace**.
 - We're including any service that includes the name of our ACE Integration
-  Server named BK1.
+  Server named **mqace-BK1:EG2**.
 - We're including any transactions that are in the **qotd** kubernetes
   **namespace** where the Quote of the Day application is installed. Using
   namespaces makes it very easy to build **Application Perspectives** for cloud
@@ -346,20 +329,8 @@ What this Application Perspective is doing is the following:
   These transactions are not part of the application, so we want to exclude
   them.
 
-:::note
-
-If the lab environments are slow and the service names, kubernetes namespace,
-and endpoint name may not be available yet. For example, if you start typing
-kubernetes and can't find it, you can use an alternative method of defining the
-application. Add a filter with Service->Name contains **qotd** as shown below
-
-![](images/alternative.png)
-
-:::
-
-You have now created an Application Perspective. In the next section, you'll
-explore the application (it can take few minutes before the data for application
-is populated).
+You have now created an Application Perspective for the Quote of the Day application. In the next section, you'll
+explore the application (it can take few minutes before the data for application is populated).
 
 ---
 
@@ -369,17 +340,17 @@ After creating the application, your screen should have automatically changed
 context to show the Application Perspective that you just defined.
 
 Initially, you probably won't see any metrics on the screen. In the upper right
-corner, click the **"Live"** button and within a short amount of time you should
+corner, click the **Live** button and within a short amount of time you should
 start to see metrics in the widgets.
 
-![](images/2022-05-27-18-51-01.png)
+![](images/qotd-stats.png)
 
 On this page you can see the golden signals which include **transaction
 volumes**, the **number of erroneous calls**, and **latency**. You'll also see
 the top services that make up the application.
 
 You'll notice a number of tabs across the top of the screen. Explore these tabs.
-In particular, let's take a look at the **"Dependencies"** tab.
+In particular, let's take a look at the **Dependencies** tab.
 
 Click on the **Dependencies** tab.
 
@@ -393,8 +364,6 @@ ends in **BK1:EG2**. BK1 is the ACE Integration Node and EG2 is the ACE
 Integration Server. The QM1 node in the topology is the MQ Queue Manager named
 **"QM1"**.
 
-![](images/qotd-dependencies-map.png)
-
 Fly your mouse over the **QM1** node. Flying over any node in the dependency
 graph will show you a summary of the traces going through that service. You'll
 see the percentage of calls that are erroneous and the latency of the calls.
@@ -406,15 +375,17 @@ you to navigate to the MQ dashboard, the transaction Flow within MQ, or analyze
 the transaction calls through MQ. For now, we'll skip this navigation, but we
 suggest you explore those options later.
 
+![](images/click-qm.png)
+
 Click on **"Upstream/Downsteam"** near the top of the page. This will allow you
 to see a list of Upstream and Downstream services for the application.
 
-![](images/upstreamDownstream.png)
+![](images/upstream-downstream.png)
 
 Click on **"Stack"** where you can view the Application, Kubernetes, and
 Infrastructure stack that makes up the application.
 
-![](images/2022-05-27-18-56-01.png)
+![](images/qotd-stack.png)
 
 All of this contextual and relationship data helps you analyze and debug you
 applications to get to root cause as quickly as possible. In addition, Instana's
@@ -432,25 +403,21 @@ There are a few other tabs on this screen that you can explore on your own.
 
 Click on the **Services tab**
 
-![](images/2022-05-27-18-57-07.png)
+![](images/qotd-services.png)
 
 You will see a list of services that make up the application.
 
-Scroll down on the page until you see the **"qotd-engraving"** service.
-
 Click on the **qotd-engraving** link on the left Column. The qotd-engraving
-service is the service that calls and ACE flow and then puts a message on the MQ
+service is the service that calls the ACE flow and then puts a message on the MQ
 queue. We want to explore this service in more detail.
-
-![](images/qotdEngraving.png)
 
 You should see a page showing the transactional data filtered down to just the
 qotd-engraving service.
 
 Click on the **"Analyze Calls"** button to analyze the individual transactions
-that are executing within the **"qotd-engraving"** service.
+that are executing within the **qotd-engraving** service.
 
-![](images/analyzeCalls.png)
+![](images/analyze-calls.png)
 
 This will take you to a screen showing all of the different types of calls
 taking place within the qotd-engraving service. At the top, there is a summary
@@ -461,11 +428,9 @@ latency.
 
 On the right side, click the arrow to expand the list of qotd-engraving **"POST
 /order"** calls. Instana is capturing 100% of the transactions so that you don't
-miss intermittent problems that might be occurring in the environment.
+miss intermittent problems that might be occurring in the environment. Select one of the requests.
 
-![](images/engravingCalls.png)
-
-Select one of the requests
+![](images/engraving-calls.png)
 
 You are now looking at the tracing data for a single transaction. At the top of
 the screen, you will see a summary of the latency, sub-calls and timeline. On
@@ -473,12 +438,11 @@ the right side of the screen, you'll see the details and stack trace.
 
 ![](images/call1.png)
 
-Scroll down and you will see the service endpoint list
+Scroll to the bottom of the screen and you will see  the service endpoint list
 
 ![](images/qotd-engraving-service-endpoint-list.png)
 
-Finally, scroll to the bottom of the screen and you will see a detailed call
-stack **Calls**. The call stack gives you the timing and sequence of the call
+Scroll back up and you will see a detailed call stack **Calls**. The call stack gives you the timing and sequence of the call
 going through the application.
 
 :::note
@@ -491,15 +455,11 @@ screen, below the call stack.
 If you select the text on the left or the timeline bar, the **"Details & Stack
 Trace"** context to the right of the page will change.
 
-![](images/engraving-calls.png)
+![](images/qotd-analyze-engraving-calls.png)
 
 Explore the different types of calls going through this transaction by selecting
 the individual call. When you select an entry, examine the detailed information
 on the right.
-
-You should notice that different request types are color coded differently. Blue
-represents the HTTP requests going through an App Server or java process. Orange
-represents a database call. And green represents a messaging call (ACE and MQ).
 
 When you select the Node.js App Server requests, you'll see the **StackTrace**
 on the right hand side. Within the **StackTrace**, click one of the URLs.
@@ -574,10 +534,10 @@ on some of the other tabs.
 
 Next, explore the **Filters** that you see at the top of the screen.
 
-![](images/websiteQOTD3.png)
+![](images/website-filters.png)
 
-In this environment, the filters will not be very interesting because there is
-only automated workload coming from a single location. But, usually, you can use
+In this environment, the filters will not be limited in their usefulness because there is
+only automated workload coming from a load generation script. But, usually, you can use
 this information to filter the web traffic down to specific browser types, OS's,
 geographic locations and key metadata tags. This can be very useful in
 identifying whether specific network locations, browser, or OS's are having
@@ -586,12 +546,11 @@ of the IBM sales or Business Partner demo environments.
 
 At the top of the screen, click on the **Analyze Page Loads** button
 
-![](images/analyzePageLoads.png)
+![](images/analyze-page-loads.png)
 
 You will see a detailed list of the web requests grouped by URL path.
 
-Select the **Group** icon next to one of the URL paths (robot-shop only has
-one). This will give you a page that is filtered to the transactions for just
+Select the only **Group** available. This will give you a page that is filtered to the transactions for just
 that single URL path. As with Tracing, Instana is capturing 100% of the web
 transactions.
 
@@ -617,11 +576,11 @@ including timings for the key page content.
 Expand one of the entries on the right by clicking the down arrow to view more
 details.
 
-![](images/robot-shop-web-trace.png)
-
 We are not going to do it for this lab, but if you click on the **View Backend
 Trace** button, you can investigate the backend trace data that you saw earlier
 in the lab.
+
+![](images/robot-shop-web-trace.png)
 
 ---
 
@@ -638,7 +597,7 @@ view other options. For example, you could analyze the traces, websites, mobile
 applications, or profiles. For now, close the dialog and we'll analyze the
 **Application Calls**
 
-![](images/typeOfCalls.png)
+![](images/type-of-calls.png)
 
 One of the key Instana capabilities is **Unbounded Analytics**. This allows you
 to apply ad-hoc queries to easily find the data you are looking for. On the
@@ -649,7 +608,7 @@ One the left side, you'll see a number of about of the box filters. Expand the
 dropdown arrows to see the options. Then, select one of the checkboxes to filter
 the data.
 
-![](images/analytics-filter-qotd.png)
+![](images/analytics-filter-robot.png)
 
 Now, uncheck the checkbox to remove the filter.
 
