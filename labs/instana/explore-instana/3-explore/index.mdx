@@ -340,7 +340,7 @@ After creating the application, your screen should have automatically changed
 context to show the Application Perspective that you just defined.
 
 Initially, you probably won't see any metrics on the screen. In the upper right
-corner, click the **Live** button and within a short amount of time you should
+corner, click the **Live** button and change the filter to **Last 5 minutes** and within a short amount of time you should
 start to see metrics in the widgets.
 
 ![](images/qotd-stats.png)
@@ -364,7 +364,7 @@ ends in **BK1:EG2**. BK1 is the ACE Integration Node and EG2 is the ACE
 Integration Server. The QM1 node in the topology is the MQ Queue Manager named
 **"QM1"**.
 
-Fly your mouse over the **QM1** node. Flying over any node in the dependency
+Fly your mouse over the **QM1@mqace** node. Flying over any node in the dependency
 graph will show you a summary of the traces going through that service. You'll
 see the percentage of calls that are erroneous and the latency of the calls.
 
@@ -387,8 +387,8 @@ Infrastructure stack that makes up the application.
 
 ![](images/qotd-stack.png)
 
-All of this contextual and relationship data helps you analyze and debug you
-applications to get to root cause as quickly as possible. In addition, Instana's
+All of this contextual and relationship data helps you analyze and debug your
+applications to get to the root cause as quickly as possible. In addition, Instana's
 built analytics uses this data to automatically group multiple related
 **"Events"** into a single **"Incident"** for diagnosis.
 
@@ -428,7 +428,17 @@ latency.
 
 On the right side, click the arrow to expand the list of qotd-engraving **"POST
 /order"** calls. Instana is capturing 100% of the transactions so that you don't
-miss intermittent problems that might be occurring in the environment. Select one of the requests.
+miss intermittent problems that might be occurring in the environment.
+
+:::tip
+
+The QOTD application simulates failure events randomly. If you only see red _"Contains Errors"_ status call you can either wait until the successful calls start again or adjust the view time at the top right of the page to display some successful calls.
+
+![](images/qotd-error-calls.png)
+
+:::
+
+Select one of the successful requests.
 
 ![](images/engraving-calls.png)
 
@@ -584,6 +594,8 @@ in the lab.
 
 ---
 
+## 3.7: Unbound Analytics
+
 Next, we're going to investigate Instana's unbounded analytics. Navigate to the
 **Analytics** using the left side navigation.
 
@@ -604,11 +616,10 @@ to apply ad-hoc queries to easily find the data you are looking for. On the
 screen, you'll see a couple of different ways that you can query/filter the
 metrics.
 
-One the left side, you'll see a number of about of the box filters. Expand the
-dropdown arrows to see the options. Then, select one of the checkboxes to filter
+Firstly ensure your time filter is set to show data for the last hour. Once that is set, on the left side, you'll see a number of ways to filter. Expand the **Applications** dropdown arrows to see the available options. Then, select one of the checkboxes to filter
 the data.
 
-![](images/analytics-filter-robot.png)
+![](images/analytics-filter-qotd.png)
 
 Now, uncheck the checkbox to remove the filter.
 
@@ -620,7 +631,7 @@ to accomplish that.
 Select the **Add Filter** button at the top of the page. Then, select **Call
 Type** and select **Database**
 
-![](images/databaseFilter.png)
+![](images/upper-filter.png)
 
 This will filter the calls to just the database calls. But, the calls are not
 organized in a meaningful way. So, let's use the **group** option to group the
@@ -629,7 +640,7 @@ statements.
 Click on the **Add Group** button. Then, type **database** in the filter box and
 select **Statement**
 
-![](images/groupStatements.png)
+![](images/group-statements.png)
 
 This will group all of the Database statements by unique SQL statements. You can
 then take these statements and sort them by latency, erroneous calls, etc.
@@ -646,25 +657,26 @@ percentile.
 
 ---
 
-Now, let's explore one more key capability within Instana.
+## 3.8: Sharing Instana URLs
 
-In the upper right corner of the screen, there is an icon of a chain link. Click
-on the **link** and a dialog will open. By clicking the **Copy** button, you can
-send a link to a team member. When they open the link, it will take them to a
-screen with the exact same context that you are looking at. This can be very
-valuable when collaborating with team members to diagnose a problem. Within the
-dialog, you'll see that there is a checkbox to **Lock current time range**. By
-locking the current time range, when the link it opened, it will take the person
-to a view with the exact same time range that you are looking at. Otherwise,
-they are taken to the most recent time range.
+Let's explore one more key capability within Instana.
 
-![](images/get-page-link.png)
+In the upper right corner of the screen, there is a **Share** button.
 
-That completes the Explore section of the lab.
+![](images/share-button.png)
+
+Click **Share** and a dialog will open.
+
+From here you can share a link that includes your current context so that when the recipient opens the link, it will take them to a
+screen with the exact same view you are seeing. This can be very valuable when collaborating with team members to diagnose a problem.
+
+Within the dialog, there is also a checkbox to **Lock current time range**. By locking the current time range, when the link it opened, it will take the person to a view with the exact same time range that you are looking at. Otherwise, they are taken to the most recent time range.
+
+![](images/share-dialog.png)
 
 ---
 
-## 3.7: Summary
+## 3.9: Summary
 
 In this exercise lab have explored some of the key capabilities within Instana.
 You explored Kubernetes monitoring and the Infrastructure view. You also created
