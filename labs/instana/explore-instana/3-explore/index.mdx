@@ -76,13 +76,13 @@ Click on one of the pod names to the left to drill into the pod utilization deta
 ## 3.2: Explore the Infrastructure View
 
 Next, explore the Infrastructure view. To do this, click on the
-**"Infrastructure"** icon on the left side.
+**Infrastructure** menu item on the left navigation.
 
 ![](images/infra-zones.png)
 
-You'll notice that there is a box surrounding the **"towers"** with the zone
+You'll notice that there is a box surrounding the **towers** with the zone
 names that have been configured in the Agent configurations. The box is a
-**"zone"**. In previous labs a zone name was specified during the install of the
+**zone**. In previous labs a zone name was specified during the install of the
 Instana Agent or added to the Instana Agent configuration file. The towers
 contained within the zones represents the Demo Apps Kubernetes cluster, the
 Instana server, and the virtual machine running ACE and MQ.
@@ -107,10 +107,10 @@ Or, you can use the lucene query language in the filter/search bar at the top of
 the page. Before beginning the search, flyover one of the towers and identify
 the hostname of one of the servers. For example _mqace_
 
-- Click in the filter bar and select **"Entity"**
+- Click in the filter bar and select **Entity**
 - A list will popup. Start typing **host** and you will see the list filtered to
   "host". Once you see the single entry, select **host**.
-- Once you have select "Host", another list will popup. Select **name**.
+- Once you have selected "Host", another list will popup. Select **name**.
 - Now, you will see **"entity.host.name:"**. After the ":", you can do a
   wildcard search. For example **"entity.host.name:\*abc\*"**. Type in a
   wildcard string that matches the beginning of the hostname you found earlier.
@@ -224,7 +224,7 @@ Expand the IBM MQ Queue Manager section and select the link for the
 You will navigate to the dashboard for the MQ Queue Manager. Scroll down the
 page and examine the metrics. There are many tables that contain links that
 would allow you to drill into the listener, topics, queues, channels, and more.
-Let's focus on the Channels. Scroll down to the table labeled **"Channels"**.
+Let's focus on the Channels. Scroll down to the table labeled **Channels**.
 
 ![](images/mq-channels.png)
 
@@ -362,7 +362,7 @@ between the different nodes in the topology. Most of these services are node.js
 based cloud-native services. There should be also be a node with a name that
 ends in **BK1:EG2**. BK1 is the ACE Integration Node and EG2 is the ACE
 Integration Server. The QM1 node in the topology is the MQ Queue Manager named
-**"QM1"**.
+**QM1**.
 
 Fly your mouse over the **QM1@mqace** node. Flying over any node in the dependency
 graph will show you a summary of the traces going through that service. You'll
@@ -370,7 +370,7 @@ see the percentage of calls that are erroneous and the latency of the calls.
 
 ![](images/flyover-qm.png)
 
-Click on the **"QM1"** node. Notice that there are 3 options that would allow
+Click on the **QM1@mqace** node. Notice that there are 3 options that would allow
 you to navigate to the MQ dashboard, the transaction Flow within MQ, or analyze
 the transaction calls through MQ. For now, we'll skip this navigation, but we
 suggest you explore those options later.
@@ -390,7 +390,7 @@ Infrastructure stack that makes up the application.
 All of this contextual and relationship data helps you analyze and debug your
 applications to get to the root cause as quickly as possible. In addition, Instana's
 built analytics uses this data to automatically group multiple related
-**"Events"** into a single **"Incident"** for diagnosis.
+**Events** into a single **Incident** for diagnosis.
 
 Close the **Stack** dialog by either clicking on the **Stack** button or
 somewhere else on the background of the Instana GUI.
@@ -414,7 +414,7 @@ queue. We want to explore this service in more detail.
 You should see a page showing the transactional data filtered down to just the
 qotd-engraving service.
 
-Click on the **"Analyze Calls"** button to analyze the individual transactions
+Click on the **Analyze Calls** button to analyze the individual transactions
 that are executing within the **qotd-engraving** service.
 
 ![](images/analyze-calls.png)
@@ -462,8 +462,8 @@ screen, below the call stack.
 
 :::
 
-If you select the text on the left or the timeline bar, the **"Details & Stack
-Trace"** context to the right of the page will change.
+If you select the text on the left or the timeline bar, the **Details & Stack
+Trace** context to the right of the page will change.
 
 ![](images/qotd-analyze-engraving-calls.png)
 
@@ -496,7 +496,7 @@ related to the MQ environment on the right. The information includes the Queue
 Manager, Queue Name, and the message ID that was posted on the queue.
 
 Scroll down to the very bottom on the right side of the screen and you will see
-a link named **"CP4I.DEMO.API.Q"**. Click on the **"CP4I.DEMO.API.Q"** link and
+a link named **CP4I.DEMO.API.Q**. Click on the **CP4I.DEMO.API.Q** link and
 you will navigate to the Queue page of the MQ sensor for the CP4I.DEMO.API.Q
 queue. Instana places these links in context to make it easier to diagnose
 problems.
@@ -516,7 +516,7 @@ rates, and more.
 
 :::note
 
-When you installed Robot Shop you also installed a load generator. The load
+When Robot Shop was installed it included a load generator. The load
 generator is a bot accessing the Robot Shop web application and mimics real
 users so that you can see metrics collected by Instana.
 
