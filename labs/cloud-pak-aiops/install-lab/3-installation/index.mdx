@@ -117,19 +117,6 @@ GDPR-compliant systems. For the purpose of this Lab, we will skip this step.
 If interested, this install step is documented
 [**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=installing-starter-installation#usage_secret).
 
-### Ensure external traffic access
-
-Run the following command to update the endpointPublishingStrategy.type. This is
-done to allow traffic in case the ingresscontroller its set to HostNetwork. Run
-the following command:
-
-```
-if [ $(oc get ingresscontroller default -n openshift-ingress-operator -o jsonpath='{.status.endpointPublishingStrategy.type}') = "HostNetwork" ]; then oc patch namespace default --type=json -p '[{"op":"add","path":"/metadata/labels","value":{"network.openshift.io/policy-group":"ingress"}}]'; fi
-```
-
-If interested, this install step is documented
-[**_here_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/latest?topic=aiops-starter-installation#exp_ingress).
-
 ### Create the catalog sources
 
 After installation, CatalogSource objects determine whether the upgrade of your
@@ -230,8 +217,7 @@ spec:
 EOF
 ```
 
-Run the following command to ensure that the IBM Cert Manager pods have a STATUS
-of Running before proceeding to the next step:
+Run the following command to ensure that the IBM Cert Manager pods have a STATUS of Running before proceeding to the next step:
 
 ```sh
 oc -n ibm-cert-manager get pods
@@ -249,7 +235,7 @@ ibm-cert-manager-operator-c96957695-dkxnm   1/1     Running   0          8d
 
 :::warning
 
-Ensure you see all pods in a **Ready 1/1** state before proceeding to the next
+Ensure you see all pods in a **Running 1/1** state before proceeding to the next
 step.
 
 :::
@@ -308,7 +294,7 @@ ibm-licensing-operator-db4cd746c-xzmlf            1/1     Running   0          8
 
 :::warning
 
-Ensure you see all pods in a **Ready 1/1** state before proceeding to the next
+Ensure you see all pods in a **Running 1/1** state before proceeding to the next
 step.
 
 :::
