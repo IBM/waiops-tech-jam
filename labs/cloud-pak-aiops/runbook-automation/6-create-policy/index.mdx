@@ -1,0 +1,42 @@
+---
+title: 6. Create a runbook policy
+description: Create a new runbook policy to associate incoming alerts to our runbook
+sidebar_position: 6
+---
+
+## 3.1: Overview
+
+In this lab, you will create a new AIOps policy to associate specific alerts with our newly created runbook.
+
+## 3.2: Create a runbook policy
+
+Use the following steps to set up the new runbook policy:
+
+- Log in to the AIOps console and select **Automations** from the main menu
+- Select the **Policies** tab
+- Click the **Create policy** button to create a new policy
+- Find the **Assign a runbook to alerts** policy type and click **Create**
+- Enter a **Policy name** for the poliyc: `Branched example`
+- Leave the **Execution order** as the default value
+- Under **Policy triggers**: check **After an alert is created**
+- Under **Policy triggers**: uncheck **After an alert has been updated**
+- Scroll down to **Conditions sets**
+- Click the **Add condition** button to add a condition for this policy
+- Select **Alert property** from the drop-down menu
+- Set: **Property** to: `summary`
+- Set: **Operator** to: `equal to`
+- Set: **Matches** to: `only`
+- Type into **Value** box: `Branched example` and select **String: Branched example** from the popup
+- Scroll down to **Assign Runbook(s)**
+- Check: **Branched example** from the list of available runbooks
+
+:::note
+Multiple runbooks can be assigned to an alert but we will only be assigning one in this lab.
+:::
+
+- Scroll down to **Hostname** to set the value for our runbook parameter
+- Set: **Select mapping type** to: **Choose from alert**
+- Click on the box and select: `resource.name`
+- Scroll back to the top, checking your settings as you go
+- Click the **Save** button to save your new runbook
+
