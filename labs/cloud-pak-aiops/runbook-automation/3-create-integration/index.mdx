@@ -1,0 +1,33 @@
+---
+title: 3. Create an SSH integration
+description: Set up an SSH integration with the virtual machine
+sidebar_position: 3
+---
+
+## 3.1: Overview
+
+In this lab, you will set up an SSH integration with the `netcoolvm` Linux virtual machine which will be used by AIOps to execute our sample script. This lab will include the task of creating the new integration and then copying the SSH key to the target host so that the script we will run later will do so without requiring additional authentication.
+
+## 3.2: Create an SSH integration
+
+Use the following steps to set up the new SSH integration:
+
+- Log in to the AIOps console and select **Integrations** from the main menu
+- Click the **Add integration** button to add a new integration
+- Type **SSH** into the Search bar
+- Choose the **SSH** integration and click **Get started** to create a new instance
+- Copy the SSH key the integration generates and save it to your clipboard
+
+## 3.3 Configure Linux host for seamless SSH connection
+
+Open a command terminal and connect to the Netcool VM via SSH:
+```
+ssh netcool@netcoolvm
+```
+
+Edit the `.ssh/authorized_keys` file using vi and append the copied SSH key:
+```
+vi .ssh/authorized_keys
+```
+
+
