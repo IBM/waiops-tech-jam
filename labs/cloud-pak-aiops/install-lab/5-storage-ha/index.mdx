@@ -12,9 +12,13 @@ must have allowVolumeExpansion enabled. This allows persistent volumes to be
 expanded if necessary, to avoid storage from filling up and causing
 unrecoverable failures.
 
-:::note If you require your Cloud Pak for AIOps environment to support the
-Federal Information Processing Standards (FIPS), there are storage related
-requirements as described later in this section. :::
+:::note
+
+If you require your Cloud Pak for AIOps environment to support the Federal
+Information Processing Standards (FIPS), there are storage related requirements
+as described later in this section.
+
+:::
 
 ### Recommended Storage Providers
 
@@ -61,7 +65,8 @@ should recovery be necessary.
 - Disaster Recovery (DR) methods are outside the scope of this Lab but
   additional information can be found in the
   [**_public documentation_**](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.8.1?topic=a-backup-restore)
-  :::
+
+:::
 
 #### Failure Domains
 
@@ -81,9 +86,12 @@ failure domain has implications on the availability of an application.
 
 :::caution At the time of writing this Lab:
 
-- only two deployment options are supported: single-zone and multi-zone
-  deployments
-- there is no support for geographical region failures :::
+- only two deployment options are supported:
+  [single-zone](#single-zone-deployment) and
+  [multi-zone](#multi-zone-deployment) deployments
+- there is no support for geographical region failures
+
+:::
 
 ### Single-Zone Deployment
 
@@ -128,9 +136,6 @@ In summary, a single-zone deployment supports:
 ### Multi-Zone Deployment
 
 ![](images/multi-zone.png)
-
-:::caution Note that Multi-Zone support is only available for ROSA (Red Hat
-OpenShift on AWS) and is considered a "Tech Preview" feature for v4.1 :::
 
 A multi-zone cluster is similar to a single zone cluster, but its worker nodes
 spread across multiple availability zones. Each zone has isolated network, power
@@ -187,9 +192,12 @@ also need to complete some tasks before and while you are installing the product
 on your cluster.
 
 :::warning You can only enable FIPS support when you are installing the product.
+
 You cannot upgrade a non-FIPS enabled environment to a FIPS enabled environment.
 You cannot backup the Cloud Pak for AIOps from a non-FIPS enabled environment
-and restore it into a FIPS enabled environment. :::
+and restore it into a FIPS enabled environment.
+
+:::
 
 To enable FIPS support, the following links describe the tasks required for the
 OpenShift cluster and Cloud Pak for AIOps installation:
