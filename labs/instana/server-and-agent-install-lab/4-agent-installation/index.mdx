@@ -42,14 +42,14 @@ When installing the Instana agent you have to select if you want the agent to be
   checks daily for updates to the agent and sensor code. This automatically
   gives you access to new features and bug fixes. It is also possible to tightly
   control the updating of dynamic host agents by
-  [pinning a version](https://www.ibm.com/docs/en/instana-observability/current?topic=agents-configuring-updates-dynamic-host#version-pinning)
+  [pinning a version](https://www.ibm.com/docs/en/instana-observability/current?topic=agents-configuring-updates-dynamic-host#setting-agent-version-update-controls).
   It is also possible to change the interval that the Agent checks for updates.
 
   By default, dynamic host agents use the Instana repository to pull updates,
   but it is possible to
   [set up your own managed mirror](https://www.ibm.com/docs/en/instana-observability/current?topic=agents-setting-up-agent-repositories-dynamic-host).
   Currently, the mirror must be a Nexus or Artifactory repository. This is
-  probably the best option for must customers because it allows them the
+  probably the best option for most customers because it allows them the
   benefits of automatic updates, while at the same time controlling the content
   that is in the repository. In addition, it eliminates the need for every Agent
   to have internet access to the repositories.
@@ -347,7 +347,7 @@ Wait for all pods to be in a `Running` state before continuing:
 
 - Press `CTRL+C` to return to the shell prompt if needed.
 
-This completes the installation of Instana agent on OpenShift cluster.
+This completes the installation of Instana agent on Kubernetes cluster.
 
 ---
 
@@ -472,13 +472,13 @@ agent environment sit in other \*.cfg files.
 
 :::info
 
-The Agent will read and use ANY yaml file in the
+The Agent will read and use `configuration.yaml` and `configuration-<suffix>.yaml` files in the
 `/opt/instana/agent/etc/instana` directory.
 
 :::
 
 Some customers choose to have separate yaml files for each key technology. For
-example, you could create a mq.yaml file and an ace.yaml file in the same
+example, you could create a configuration-mq.yaml file and a configuration-ace.yaml file in the same
 directory and it would read both files. `configuration.yaml` will contain sample
 configuration entries and comments for ALL available sensors at the time of your
 install, **BUT** it will not automatically add new sensor config as new sensors
