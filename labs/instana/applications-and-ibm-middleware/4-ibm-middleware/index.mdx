@@ -57,7 +57,7 @@ stopped_. We are only interested in:
 
 :::
 
-![ace-mq-status](images/ace-mq-status.png)
+![ace-mq-status](images/ace-mq-status-inited-profile.png)
 
 Carefully compare your output to the screenshot above.
 
@@ -203,7 +203,7 @@ Enterprise (ACE) need to be configured for monitoring. There are certain
 configuration settings within MQ and ACE that are required in order to get the
 monitoring KPIs. For ACE, the key KPI's that need to be enabled are Resource Stats and
 Flow Stats. The requirements are documented in the
-[sensor configuration guide](https://www.ibm.com/docs/en/instana-observability/288?topic=ace-configuring-sensor)
+[sensor configuration guide](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-sensor)
 that is online. You'll see links to those guides further down in this document.
 
 :::note
@@ -351,7 +351,7 @@ quit
 
 :::warning Information Only
 
-This section 5.5 is here for informational purposes. There are no steps to
+This section 4.5 is here for informational purposes. There are no steps to
 execute.
 
 :::
@@ -381,13 +381,12 @@ In this lab, we will be using the Instana User Exit.
 
 This section is simply going to describe the process. The procedure is well
 documented within the Instana online documentation. You will find a **Tracing**
-section within the sensor documentation that can be found here:
-https://www.ibm.com/docs/en/instana-observability/288?topic=ace-configuring-tracing-in
+section within the sensor documentation that can be found [here](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-tracing-in).
 
 For ACE, you perform the following steps
 
 - Download a small TAR file from IBM Fix Central. There is a link for **artifactory** within the
-  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/288?topic=ace-configuring-tracing-in).
+  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-tracing-in).
 - Extract the tar file into the **/var/mqsi/shared-classes** directory
 - Stop the ACE server
 - Run the following command to "Install" the **User Exit**:
@@ -399,7 +398,7 @@ For ACE, you perform the following steps
 The MQ procedure is similar.
 
 - Download a small TAR file from either **artifactory** or IBM Fix Central. There are links within the
-  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/288?topic=mq-tracing).
+  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=mq-tracing).
 - Extract the tar file to **/var/mqm/exits64**
 - Edit the **/var/mqm/mqs.ini** file
 - Add a small section within the **/var/mqm/mqs.ini** file. The content can be

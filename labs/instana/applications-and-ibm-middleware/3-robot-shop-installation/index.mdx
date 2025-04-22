@@ -52,12 +52,16 @@ When prompted, enter the Instana username and password as seen below.
 If you want to capture EUM/RUM data within Instana, you must first create a
 website within the GUI (or via API).
 
-From the Instana GUI, on left side navigation, select **Websites & Mobile Apps**. Then, click the **Add Website** button.
+From the Instana GUI, on left side navigation, select **Websites & Mobile Apps**. Then, click the **Add Website** link.
 
 ![](images/add-website.png)
 
-You'll see a dialog
-where you can enter a Website Name. Enter `Robot Shop` as the website name.
+You'll see a dialog where you can enter a Website Name(If it's the first time you 
+open the Website & Mobile Apps page, you won't have any existing website configured, 
+then you'll directly see this dialog). Enter `Robot Shop` as the website name and 
+click the **Add website** button.
+
+
 
 ![](images/add-website-name.png)
 
@@ -67,8 +71,13 @@ In a more typical application, you would follow the instructions and copy/paste 
 
 :::info
 
-Note:  For Apache and IBM HTTP Servers, you do not need to update the HTML pages.
-You can configure the HTTP server to collect the End User Experience (EUM) data.
+Note: For Apache and IBM HTTP Servers, 
+you do not need to update the HTML pages. 
+You can configure the Instana agent where the Apache HTTP Server is present, 
+to automatically inject the JavaScript agent into the website to enable website monitoring. 
+Refer to [Website automatic instrumentation](https://www.ibm.com/docs/en/instana-observability/current?topic=websites-automatic-instrumentation) 
+for more details.
+
 
 :::
 
@@ -86,7 +95,7 @@ that you can retrieve it later.
 
 ## 3.3: Install Robot Shop
 
-We will install Robot Shop on the **Apps Single Node OpenShift** cluster.
+We will install Robot Shop on the Demo Applications Cluster in the **demo-apps** vm.
 
 ![install-robot-shop-architecture](images/architecture-robot-shop.png)
 
@@ -162,7 +171,7 @@ from your website definition in the Instana UI.  Then, run the command below.
 :::
 
 ```sh
-export REPORTING_URL="your-instana-reporting-url"
+export REPORTING_URL=<your-instana-reporting-url>
 ```
 
 1. Set your key value by replacing **your-instana-key** with the **key**
@@ -176,7 +185,7 @@ user interface. <br /> Example: `cYd1TSDZQBCIUfYCGMvV8A`.
 :::
 
 ```sh
-export EUM_KEY="your-instana-key"
+export EUM_KEY=<your-instana-key>
 ```
 
 1. Deploy the Robot Shop application with the following Helm command:
