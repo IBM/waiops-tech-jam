@@ -76,7 +76,7 @@ For this multi-node installation, Instana requires the following:
 
 **Storage**
 
-~4TB of storage rated at at least 6000 IOPS (preferred 9000 IOPS) for production environments. A detailed storage breakdown can be found [here](https://www.ibm.com/docs/en/instana-observability/290?topic=mnc-system-requirements#storage-requirements).
+~4TB of storage rated at at least 6000 IOPS (preferred 9000 IOPS) for production environments. A detailed storage breakdown can be found [here](https://www.ibm.com/docs/en/instana-observability/current?topic=mnc-system-requirements#storage-requirements).
 
 :::tip
 
@@ -88,10 +88,10 @@ It is worth noting that Demo deployments only require 3000 IOPS however multi-no
 
 Normally, you would need to ensure that the virtual machine has the correct
 ports opened in the firewall for the agent, UI, and EUM communications. We have
-already done this work for you. For reference,
-[here are the ports](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#networking-requirements)
-that need to be opened for the Instana Server for an on-prem deployment. The
-ports for SaaS are slightly different.
+already done this work for you. For reference, in an on-prem deployment, 
+please check the ports on your host must be open and accessible for the [Single-node cluster](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#networking-requirements) 
+and [Multi-node cluster](https://www.ibm.com/docs/en/instana-observability/current?topic=mnc-system-requirements#required-ports).
+The ports for SaaS are slightly different.
 
 In addition, online installations need access to a number of repositories that
 are documented here for reference:
@@ -463,7 +463,7 @@ sdd                         8:48   0   1.2T  0 disk /mnt/instana/stanctl/analyti
 
 ### 3.4.2. Set kernel parameters
 
-There are some Kernel parameters that need to be set of each of the nodes. For full details on the parameters, please refer to the [Kernel Parameters documentation](https://www.ibm.com/docs/en/instana-observability/290?topic=cluster-preparing#kernel-parameters).
+There are some Kernel parameters that need to be set of each of the nodes. For full details on the parameters, please refer to the [Kernel Parameters documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#kernel-parameters).
 
 **Open a new terminal tab**, this will default you back to the **admin** user on the **bastion-gym-lan** host. From the bastion host, run the following command to iterate over each of the nodes and set the required kernel parameters:
 
@@ -494,6 +494,22 @@ for host in instana-0 instana-1 instana-2; do
 
   echo "$host completed"
 done
+```
+
+```sh title="Example Output"
+vm.swappiness = 0
+fs.inotify.max_user_instances = 8192
+Firewall stopped and disabled on system startup
+instana-0 completed
+vm.swappiness = 0
+fs.inotify.max_user_instances = 8192
+Firewall stopped and disabled on system startup
+instana-1 completed
+Warning: Permanently added 'instana-2' (ECDSA) to the list of known hosts.
+vm.swappiness = 0
+fs.inotify.max_user_instances = 8192
+Firewall stopped and disabled on system startup
+instana-2 completed
 ```
 
 You are now ready to start the installation of the Instana Server.
@@ -615,7 +631,7 @@ Install Instana
 - Internally, Instana has tenants, which are a logical construct. Each
   tenant has one or more tenant units. There are [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#tenant-and-unit-names).
   In this installation the tenant is **ibm** and the unit is **unit0**.
-- The default administrator username is `admin.instana.local` and the password is `Passw0rd`.
+- The default administrator username is `admin@instana.local` and the password is `Passw0rd`.
 - We are setting the volumes to the directories we created earlier during the storage configuration tasks.
 - We are setting the SMTP configuration to use an SMTP server that has been configured in your lab environment.
 
