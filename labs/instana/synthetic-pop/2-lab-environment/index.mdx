@@ -18,18 +18,29 @@ The lab environment includes Openshift cluster with Instana.
 
 Openshift clusters:
 
-1. **Instana cluster** - An instance of Single Node OpenShift cluster that will
-   be used to install the Instana and KubeTurbo agents and the sample
-   _RobotShop_ application. The _Quote Of The Day_ sample application has been
-   pre-installed.
+1. **Instana cluster** - An instance of three-node K3s cluster that will
+   be used to install the Instana and Synthetic Point Of Presence.
+2. **Application cluster** - one node K3s cluster with 2 applications used
+   as a target for synthetic tests.
 
-![](images/architecture.png)
+![alt text](images/architecture.png)
 
 ## Prerequisites
 
 To complete this lab you will need:
 
-- <LicenseInfo />
+- **Instana License**
+
+  <!-- > IBM Business Partners can get a 2 week trial Instana License from
+  > [IBM PartnerWorld - Software Access Catalog](https://www.ibm.com/partnerworld/program/benefits/software-access-catalog)
+  > as part of the
+  > [IBM Partner Packages](https://www.ibm.com/partnerworld/public/partner-package).
+
+  > IBMers can get access to an Instana License
+  > [here](https://ibm.seismic.com/Link/Content/DCj2qgpG29qPj8cHGVFXH8jppBRj) -->
+
+  - Download/Agent Key (Required when requesting the lab environment)
+  - Sales Key (Required when requesting the lab environment)
 
 ## Requesting a Lab Environment
 
