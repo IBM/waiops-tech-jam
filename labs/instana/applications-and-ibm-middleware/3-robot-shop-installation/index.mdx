@@ -52,42 +52,42 @@ When prompted, enter the Instana username and password as seen below.
 If you want to capture EUM/RUM data within Instana, you must first create a
 website within the GUI (or via API).
 
-From the Instana GUI, on left side navigation, select **Websites & Mobile Apps**. Then, click the **Add Website** link.
+From the Instana GUI, on left side navigation, select **Websites & Mobile
+Apps**. Then, click the **Add Website** link.
 
 ![](images/add-website.png)
 
-You'll see a dialog where you can enter a Website Name(If it's the first time you 
-open the Website & Mobile Apps page, you won't have any existing website configured, 
-then you'll directly see this dialog). Enter `Robot Shop` as the website name and 
-click the **Add website** button.
-
-
+You'll see a dialog where you can enter a Website Name (If it's the first time
+you open the Website & Mobile Apps page, you won't have any existing website
+configured, then you'll directly see this dialog). Enter `Robot Shop` as the
+website name and click the **Add website** button.
 
 ![](images/add-website-name.png)
 
-A new dialog containing some options and javascript will open. Leave the options as is.
+A new dialog containing some options and javascript will open. Leave the options
+as is.
 
-In a more typical application, you would follow the instructions and copy/paste the javascript into the website's `<head/>` tag.
+In a more typical application, you would follow the instructions and copy/paste
+the javascript into the website's `<head/>` tag.
 
 :::info
 
-Note: For Apache and IBM HTTP Servers, 
-you do not need to update the HTML pages. 
-You can configure the Instana agent where the Apache HTTP Server is present, 
-to automatically inject the JavaScript agent into the website to enable website monitoring. 
-Refer to [Website automatic instrumentation](https://www.ibm.com/docs/en/instana-observability/current?topic=websites-automatic-instrumentation) 
+Note: For Apache and IBM HTTP Servers, you do not need to update the HTML pages.
+You can configure the Instana agent where the Apache HTTP Server is present, to
+automatically inject the JavaScript agent into the website to enable website
+monitoring. Refer to
+[Website automatic instrumentation](https://www.ibm.com/docs/en/instana-observability/current?topic=websites-automatic-instrumentation)
 for more details.
-
 
 :::
 
 Robot Shop has already done some of the work for us by embedding this script
 with variable placeholders for the unique values into the application. When we
 deploy the application, we can pass parameters into the Helm Chart to populate
-the unique variables. There are two parameters within the javascript that we will
-need to copy and use when we do the install. You will need the **key** and the
-**reportingURL**. Either copy those parameters now or leave this dialog open so
-that you can retrieve it later.
+the unique variables. There are two parameters within the javascript that we
+will need to copy and use when we do the install. You will need the **key** and
+the **reportingURL**. Either copy those parameters now or leave this dialog open
+so that you can retrieve it later.
 
 ![](images/website-config-marked.png)
 
@@ -95,7 +95,8 @@ that you can retrieve it later.
 
 ## 3.3: Install Robot Shop
 
-We will install Robot Shop on the Demo Applications Cluster in the **demo-apps** vm.
+We will install Robot Shop on the Demo Applications Cluster in the **demo-apps**
+vm.
 
 ![install-robot-shop-architecture](images/architecture-robot-shop.png)
 
@@ -112,8 +113,8 @@ instructions.
 
 This section should be run from the **demo-apps** host.
 
-From the Bastion host, open a new terminal window by selecting
-**Activities** at the top left of the screen and then the terminal icon.
+From the Bastion host, open a new terminal window by selecting **Activities** at
+the top left of the screen and then the terminal icon.
 
 ![open-terminal](images/open-terminal.png)
 
@@ -133,7 +134,8 @@ sudo -i
 
 :::
 
-We will use **Helm**, a package manager for Kubernetes to install Robot Shop. First install Helm by running the following commands:
+We will use **Helm**, a package manager for Kubernetes to install Robot Shop.
+First install Helm by running the following commands:
 
 ```sh
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
@@ -160,8 +162,9 @@ EOF
 
 Install the **Robot Shop** application using Helm:
 
-1. Set your reporting URL by replacing **your-instana-reporting-url** with the **reporting URL**
-from your website definition in the Instana UI.  Then, run the command below.
+1. Set your reporting URL by replacing **your-instana-reporting-url** with the
+   **reporting URL** from your website definition in the Instana UI. Then, run
+   the command below.
 
 :::info
 
@@ -174,8 +177,8 @@ from your website definition in the Instana UI.  Then, run the command below.
 export REPORTING_URL=<your-instana-reporting-url>
 ```
 
-1. Set your key value by replacing **your-instana-key** with the **key**
-from your website definition in the Instana UI.  Then, run the command below.
+1. Set your key value by replacing **your-instana-key** with the **key** from
+   your website definition in the Instana UI. Then, run the command below.
 
 :::info
 
@@ -230,7 +233,9 @@ and proceed to the next steps.
 
 ![](images/robot-shop-success-pods.png)
 
-Finally, we want to expose the Robot Shop UI. K3s includes a Traefik Ingress Controller that we can use to create a new Ingress for the app. Run the following to create the ingress:
+Finally, we want to expose the Robot Shop UI. K3s includes a Traefik Ingress
+Controller that we can use to create a new Ingress for the app. Run the
+following to create the ingress:
 
 ```sh
 cat <<EOF | kubectl apply -f -
@@ -284,13 +289,18 @@ field, for this application you will be using http (80) instead of https (443).
 ### Workaround Required for Robot Shop
 
 You can now navigate and use the Robot Shop application, however if you navigate
-to **Websites & Mobile Apps** > **Robot Shop** you will not see any EUM data displayed in Instana.
+to **Websites & Mobile Apps** > **Robot Shop** you will not see any EUM data
+displayed in Instana.
 
 ![No Data](images/no-data-robot-shop.png)
 
-The reason this is happening is because the Instana EUM reporting URL uses HTTPS `https://instana.techzone.lan/eum/` and the browser is not able to verify the Self Signed Certificate used by Instana in this lab.
+The reason this is happening is because the Instana EUM reporting URL uses HTTPS
+`https://instana.techzone.lan/eum/` and the browser is not able to verify the
+Self Signed Certificate used by Instana in this lab.
 
-To fix this first issue we need to manually accept the Self Signed Certificate, from Firefox select the bookmark **EUM TLS** and accept the certificate by selected **Advanced...** and then **Accept the Risk and Continue**.
+To fix this first issue we need to manually accept the Self Signed Certificate,
+from Firefox select the bookmark **EUM TLS** and accept the certificate by
+selected **Advanced...** and then **Accept the Risk and Continue**.
 
 ![EUM TLS Cert](images/eum-tls.png)
 
