@@ -6,11 +6,11 @@ sidebar_position: 50
 
 # Synthetic Monitoring
 
-:::warning Work In Progress
+<!-- :::warning Work In Progress
 
 This lab is currently under development.
 
-:::
+::: -->
 
 This lab focuses on new Instana features - synthetic monitoring.
 
@@ -18,6 +18,7 @@ Key capabilities that will be exercised are:
 
 - Setting up the synthetic "Point of Presence" This is the component that
   executes the synthetic test.
+- Creating test fot TLS certificate checking
 - Single REST API synthetic test
 - Using javascript to execute a scripted synthetic test that exercises multiple
   REST calls
@@ -33,11 +34,19 @@ network or load balancer rather than the application.
 
 In the lab, we will begin by installing the "Synthetic Point of Presence".
 
+## Open bastion terminal
+
+Open Guakamole link from techzone environment dashboard:
+![alt text](images/GuakamoleLink.png)
+
+In the Red Hat Linux desktop click "Actions" -> "Terminal" to open bastion terminal:
+![alt text](images/OpenTerminal.png)
+
 ## Enable backend feature "Synthetic Point of Presence"
 
 We will be installing the Synthetic Point of Presence onto the same K3s cluster with Instana backend. In order to do that, we'll need a CLI with access to the K3s cluster.
 
-From the student VM, open a terminal window and type:
+In the bastion terminal window use the following command to connect to instana cluster:
 
 ```sh
 ssh jammer@instana-0
@@ -75,18 +84,18 @@ instana-core      synthetics-reader-65fb59499f-vq667              1/1     Runnin
 instana-core      synthetics-writer-6fbfc76b56-kpg4d              1/1     Running   0   44s
 ```
 
-At this point, the Instana cluster is capable of displaying synthetic tests, but you still need to install the "Synthetic Point of Presence".
+At this point, the Instana cluster is capable of displaying synthetic tests, but you still need to install the "Synthetic Point of Presence" a component which  will run the tests.
 
 ## Install "Synthetic Point Of Presence"
 
-"Synthetic Point Of Presence" is a component that plays synthetic tests and reports result to Instana backend server
+"Synthetic Point Of Presence" is a component that plays synthetic tests and reports result to Instana backend server.
 
-Install helm with command from instana-0 node:
+Install helm using command on instana-0 node:
 ```bash
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 ```
 
-from top left corner of dashboard click Activities, select Firefox to open browser. Select Instana bookmark from bar.
+From top left corner of Red Hat Linux dashboard click "Activities", select Firefox to open browser. Select Instana from bookmark bar.
 Login to Instana.
 
 by default username: `admin@instana.local`, password: `Passw0rd`
@@ -96,11 +105,13 @@ From the left menu select "Synthetic Monitoring" and then click on "Deploy a PoP
 
 Use **Simple** tab for Helm command.
 
-You will need to edit the information contained in the helm command, so copy and paste the text into a temporary file where you can use an editor such as **vi** to edit the content.
 ![alt text](images/PoPCommand.png)
 
-For Synthetic Point of Presence we need to modify some of the parameters and provide one additional parameter.  
+You will need to copy and edit parameters of the helm command, so copy and paste the text into a temporary file where you can edit the content before executing it, for example "Text editor":
 
+![alt text](images/TextEditor.png)
+
+For Synthetic Point of Presence we need to modify some of the parameters and provide one additional parameter.
 - Set **namespace** for PoP on a new cluster, let's use "instana-synthetic".
 - Modify the **controller.clusterName** parameter and provide a meaningful name, let's set i as "MyInstanaCluster".
 - In the **controller.location**, specify a name, display name, country, etc. for your "Point of Presence".   The "0;0" parameter represents the longitude and latitude of the "Point of Presence".  These parameters help identify the Point of Presence when there multiples deployed. For example: "Local;on Instana cluster;Serbia;Belgrade;39.54;116.23;A test Synthetic Point of Presence".
@@ -136,17 +147,16 @@ APP VERSION: 1.292.0
 
 ## Verify installation
 
-After the Synthetic point of presence is installed verify its appearance in the interface:
-
-![](images/PointOfPresence_Location.png)
-
-You can also confirm that all pods of the Synthetic Point of Presence are running by typing:
+Confirm that all pods of the Synthetic Point of Presence are running by typing:
 ```sh
-kubectl get pods -n instana-synthetic
+watch "kubectl get pods -n instana-synthetic"
 ```
 
-Confirm that the pods are all running.
+Wait for all pods to be running and stop watch command with "Ctrl + C".
 
+After the Synthetic point of presence is installed verify its appearance in the interface (refresh the browser page):
+
+![](images/PointOfPresence_Location.png)
 
 ## Certificate expiration check with Synthetic Tests
 The functionality allows to establish certificate expiration check for websites. In the lab we will use a test application "Quote of the day" which is installed on VM demo-apps.
@@ -212,8 +222,8 @@ A new dialog will open prompting for the REST API **GET** URL.   Enter the follo
 https://qotd.apps.demo-apps.ibmdte.local
 ```
 
-This could be any REST request. In this case, we are testing the **Random** API
-call within the **Quote of the Day** application.
+This could be any REST request. In this case, we are testing the /random API
+call within the "Quote of the Day" application.
 
 Then, select your **Point of Presence** location and click **Next**. This allows
 you to choose the location(s) where you want your synthetic script to execute.
@@ -243,15 +253,15 @@ synthetic test.
 
 It will take up to a minute for the synthetic tests to begin executing.
 
-On the screen, you can see a summary of the synthetic results. You can also
-click on the **Results** tab and see the detailed results of each synthetic
-test.
+On the screen, you can see a summary of the synthetic results. 
 
 ![alt text](images/syntheticResults.png)
 
+You can also click on the **Results** tab and see the detailed results of each synthetic test.
+
 You have now created a synthetic test against a single REST API.  Next, we will be learning how to create more complex synthetics using javascript.  
 
-The example we will be using will be executing against test JSON-server. That will be our next step.
+The example we will be using against test "Quote of the Day" application. That will be our next step.
 
 
 ### Creating a scripted REST API test
@@ -333,9 +343,7 @@ Adjust time slider to run test every minute:
 
 and click "Next" button.
 
-Give the test meaningful name and description: ![](images/CreateSynthTest.png)
-
-Give the test meaningful name and description:
+Give the test meaningful name and description and click "Next":
 
 ![alt text](images/CreateSynthTest.png)
 
@@ -357,7 +365,7 @@ Click on the test name to access the dashboard of the synthetic test, open "Resu
 ![alt text](images/SyntheticTestDashboard.png)
 
 Next let's adjust threshold of the assert so that it fails.
-In a new browser tab open address `http://qotd-api.apps.demo-apps.ibmdte.local/usecase` to see the reply JSON server returns to Instana:
+In a new browser tab open address `http://qotd-api.apps.demo-apps.ibmdte.local/usecase` to see the reply of REST API of "Quote of the Day" returned to Instana:
 
 ![alt text](images/JSON-Server-db.png)
 
@@ -372,7 +380,7 @@ $http.get(options, function(error, response, body) {
 });
 ```
 
-To edit the existing test, click on the **Configuration** tab and then select
+To edit the existing test, Open Instana tab in a browser and click **Synthetic Monitoring -> Tests**, select recently created test **"Quote of the Day REST API check"** to return to the test, click on the **Configuration** tab and then select
 the **edit** pencil.
 
 ![alt text](images/editTest.png)
@@ -389,7 +397,7 @@ When you have finished editing the javascript, click **Save** to save the
 javascript and then **Save** again to save the synthetic test.
 
 Click on the **Results** tab and then click the **Live** button to view the results of the synthetic tests as they become available.
-Now, wait about a minute and you will see new test results that have a failure status:
+Now, wait about a minute and you will see new test results that have a failure status (to avoid waiting for automatic refresh you can change timeframe on top right corner, next to "Live" button):
 
 ![alt text](images/results.png)
 
@@ -409,15 +417,14 @@ Click "Synthetic Monitoring" -> "Add"
 
 ![alt text](images/AddSynthetic.png)
 
-Then, select "Add Synthetic Smart Alert":
+Then, select **"Add Synthetic Smart Alert"**:
 
-![alt text](images/AddSynthetics2.png)
+![alt text](images/AddSynthetics2-1.png)
 
-Click "Add Synthetic Test"
+Click **"Add Synthetic Test"**
 ![alt text](images/selectSyntheticTest.png)
 
-Find the test you created earlier and select the **checkbox**. Then, click **Add
-1 Test**
+Find the test you created earlier and select the **checkbox**. Then, click **Add 1 Test**
 
 ![alt text](images/selectTest.png)
 
@@ -437,36 +444,36 @@ Select **"Select Alert Channels"**, **"Create Alert Channel"** to create new cha
 
 ![alt text](images/SA_Step4_CreateChannel.png)
 
-Then, click "Create Alert Channel".
+Then, click **"Create Alert Channel"**.
 
-Select created channel and click "Add 1 Channel":
+Select created channel and click **"Add 1 Channel"**:
 
 ![alt text](images/SA_Step4_AddChannel.png)
 
-And click "Next" to proceed to step 5.
+And click **"Next"** to proceed to step 5.
 
-Configure the alert that will be visible when the threshold violated. Set meaningful values for Title, Alert Level and Description, then click "Create" button:
+Configure the alert that will be visible when the threshold violated. **Set meaningful values for Title, Alert Level and Description**, then click **"Create"** button:
 
 ![alt text](images/SA_Step5.png)
 
-Refresh page to have the alert appeared:
+Click **"Smart Alerts"**, refresh page to have the alert appeared:
 
 ![alt text](images/ConfiguredAlert.png)
 
-Check Events appeared:
+Click **Events -> Issues** to ensure that event was generated:
 
 ![alt text](images/Events.png)
 
-When new Events trigger on the synthetic test, an e-mail will be sent out via
-the **Alert Channel** notifying the people of the failure.
+When new Events trigger on the synthetic test, an e-mail will be sent out via the **Alert Channel** notifying the people of the failure.
+Click on the event to investigate details.
 
 ## Summary
 
-During the lab we:
+During the lab we have:
 
-- Configured target monitored system (created Token to request parameters)
-- Created a TLS certificate expiration check
-- Created a simple synthetic test using a REST GET call.
-- Created a complex synthetic test that uses javascript to exercise multiple
-  REST calls and perform an evaluation.
-- Created Smart Alert for a synthetic test
+- enabled Synthetic feature that allows Instana backend receive and display synthetic test results
+- installed Synthetic Point of Presence that executes tests and report results to Instana Backend
+- created a TLS certificate expiration check
+- created a simple synthetic test using a REST GET call that checks if we receive code 200
+- created a complex synthetic test that uses javascript to exercise two REST calls and perform an evaluation
+- configured Smart Alert for a synthetic test to report issues in Instana Events dashboard and send notification to admins via email.
