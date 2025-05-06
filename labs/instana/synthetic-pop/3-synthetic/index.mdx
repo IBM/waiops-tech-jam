@@ -327,10 +327,10 @@ var options = {
     }
 };
 
-// Send request and check if the response is "1_cascade_failure"
+// Send request and check if the status is empty
 $http.get(options, function(error, response, body) {
     var bodyObj = JSON.parse(body);
-    assert.ok(bodyObj[0].id == "1_cascade_failure", "First record value: " + bodyObj[0].id);
+    assert.ok(bodyObj[0].status == "", "First anomaly status: " + bodyObj[0].status);
 });
 ```
 
@@ -372,48 +372,48 @@ Click on the test name to access the dashboard of the synthetic test, open "Resu
 
 ![alt text](images/SyntheticTestDashboard.png)
 
-Next let's adjust threshold of the assert so that it fails.
-In a new browser tab open address `http://qotd-api.apps.demo-apps.ibmdte.local/usecase` to see the reply of REST API of "Quote of the Day" returned to Instana:
-
-![alt text](images/JSON-Server-db.png)
-
-At the moment we're checking status of first record id "0", which returns value `1_cascade_failure`, let's check the second record, with the same value. As soon as server returns another value the test wil fail.
-For that edit the synthetic test and adjust the assertion to check element "1": `assert.ok(bodyObj[1].id,` to cause the test to fail as shown below:
-
+In the Lab we use "Anomaly generator" as an example of the application with REST API interface.
+The script is checking status of the first task "Quote, PDF, Web, Rating service cascade failure" of "Anomaly generator":
 ```javascript
-...
+. . .
+// Send request and check if the status is empty
 $http.get(options, function(error, response, body) {
     var bodyObj = JSON.parse(body);
-    assert.ok(bodyObj[1].id == "1_cascade_failure", "First record value: " + bodyObj[1].id);
+    assert.ok(bodyObj[0].status == "", "First anomaly status: " + bodyObj[0].status);
 });
 ```
+there are two possible values "" (empty) and "running". Once we execute the anomaly test "Quote, PDF, Web, Rating service cascade failure" which is first in the list, the status of the record becomes "running" and our API REST script test fails because it expects empty value.
 
-To edit the existing test, Open Instana tab in a browser and click **Synthetic Monitoring -> Tests**, select recently created test **"Quote of the Day REST API check"** to return to the test, click on the **Configuration** tab and then select
-the **edit** pencil.
+Check status of the first record by opening the address in a new browser tab:
+```text
+http://qotd-api.apps.demo-apps.ibmdte.local/usecase
+```
+![alt text](images/JSON-Server-db.png)
 
-![alt text](images/editTest.png)
+Open "Anomaly generator" in a separate tab of Firefox browser: 
+```text
+http://qotd-api.apps.demo-apps.ibmdte.local
+``` 
 
-Next, click on **Configuration** and then **Edit Script**.  Alternatively you may need to scroll down slightly on the page.
 
-![alt text](images/editScript.png)
+Click on first anomaly "Quote, PDF, Web, Rating service cascade failure":
+![alt text](images/AnomalyGenerator-Tasks.png)
 
-You can now edit the javascript and change the assertion as below:
 
-![alt text](images/editScript2.png)
+Click "Start" to generate anomaly:
+![alt text](images/AnomalyGenerator-Anomaly.png)
 
-When you have finished editing the javascript, click **Save** to save the
-javascript and then **Save** again to save the synthetic test.
 
-Click on the **Results** tab and then click the **Live** button to view the results of the synthetic tests as they become available.
+Switch to Instana browser tab, click on the **Results** tab and then click the **Live** button to view the results of the synthetic tests as they become available.
 Now, wait about a minute and you will see new test results that have a failure status (to avoid waiting for automatic refresh you can change timeframe on top right corner, next to "Live" button):
 
 ![alt text](images/results.png)
 
-Click on the failed tests and you will see text similar to the following:
 
+Click on the failed tests and you will see text similar to the following:
 ![alt text](images/results-failed.png)
 
-The test fails because we got second record `id` with value "1_cert_warning", while expected "1_cascade_failure" like with first record.
+The test fails because Synthetic API test expects empty status, while it receives status "running".
 
 ## Create smart Alert for test
 
@@ -436,7 +436,7 @@ Find the test you created earlier and select the **checkbox**. Then, click **Add
 
 ![alt text](images/selectTest.png)
 
-Click **Next** to go to the next step of the dialog.
+Click **Next** to go to the step 2 of the dialog.
 
 You may optionally add filters for monitored what is being monitored. In this case, we will not be adding any filters.
 
@@ -444,7 +444,7 @@ Click **Next** to go to step 3
 
 We choose 1 consecutive occurrence to fire an alert, click **Next** to go to Step 4
 
-In the next step, we will be selecting an Alert Channel. Alert Channels allow
+On this step, we will be selecting an Alert Channel. Alert Channels allow
 you to notify people and teams various **channels** such as email, slack,
 ServiceNow, etc.
 
