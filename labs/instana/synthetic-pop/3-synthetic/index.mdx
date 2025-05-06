@@ -114,7 +114,15 @@ You will need to copy and edit parameters of the helm command, so copy and paste
 For Synthetic Point of Presence we need to modify some of the parameters and provide one additional parameter.
 - Set **namespace** for PoP on a new cluster, let's use "instana-synthetic".
 - Modify the **controller.clusterName** parameter and provide a meaningful name, let's set i as "MyInstanaCluster".
-- In the **controller.location**, specify a name, display name, country, etc. for your "Point of Presence".   The "0;0" parameter represents the longitude and latitude of the "Point of Presence".  These parameters help identify the Point of Presence when there multiples deployed. For example: "Local;on Instana cluster;Serbia;Belgrade;39.54;116.23;A test Synthetic Point of Presence".
+- In the **controller.location**, specify a name, display name, country, etc. for your "Point of Presence".
+  
+  Format of location parameter is `label; displayLabel; country; city; latitude; longitude; description`, where label acts as the PoP identifier, it must be a single string without any space characters. The `label` field can contain only letters, numbers, hyphens, and the underscore character.
+  
+  For example: 
+  ```text
+  "Local;on Instana cluster;Serbia;Belgrade;39.54;116.23;A test Synthetic Point of Presence"
+  ```
+
 - Enter a redis password.  This can be any value since you are setting the password. For example "a1fc5d01bcbb".
 - ***If OpenShift versions 4.11 and above is used*** add `--set seccompDefault=true \`.  This parameter is **not** required for the lab as in our case seccompProfile is of DefaultRuntime type by default.
 
