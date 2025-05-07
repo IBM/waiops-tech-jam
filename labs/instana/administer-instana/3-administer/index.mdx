@@ -44,21 +44,26 @@ There are a variety of Alert Channels including:
 
 - Email
 - Slack,
-- Watson AIOps
+- AIOps
 - and more...
 
-In this section we'll show you how to setup an Alert Channel. Later, in the Administrative section, we'll use that Alert
-Channel to get notifications when an Event triggers.
+In this section we'll show you how to setup an Alert Channel. Later, in the
+Administrative section, we'll use that Alert Channel to get notifications when
+an Event triggers.
 
 :::info
 
-In this lab Instana has already been installed with SMTP configured. If you would like to review when that was configured you can [view the Instana installation in the Server & Agent Installation lab](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/server-installation/#35-installing-instana).
+In this lab Instana has already been installed with SMTP configured. If you
+would like to review when that was configured you can
+[view the Instana installation in the Server & Agent Installation lab](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/server-installation/#35-installing-instana).
 
-There is also an information section giving details on [how to configure SMTP post installation](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/server-installation/#36-setting-up-smtp).
+There is also an information section giving details on
+[how to configure SMTP post installation](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/server-installation/#36-setting-up-smtp).
 
 :::
 
-From the Instana UI select the **Settings** gear in the left side navigation. Then, select **Alert Channel**
+From the Instana UI select the **Settings** gear in the left side navigation.
+Then, select **Alert Channels**
 
 ![](images/select-alert-channels.png)
 
@@ -73,35 +78,36 @@ dropdown and select **Email**
 There are several different types of **Alert Channels** to integrate **Events**
 into a variety of solutions. The **Generic Webhook** is the most flexible and
 supports integration into an number of tools like ServiceNow that support
-Webhooks.
+webhooks.
 
 :::
 
 ![](images/email.png)
 
 After selecting **Email** the screen will change to show the fields required to
-configure the **Email** **Alert Channel**. An Alert Channel can be setup to
-notify specific users or to notify a large groups of users. For example, you
-might want all database related Events to be sent to a _database team email
-alias_ for the DBAs. Or, you might want to notify a specific line of business or
-the IT Operations team.
+configure the **Email Alert Channel**. An Alert Channel can be setup to notify
+specific users or to notify a large group of users. For example, you might want
+all database related Events to be sent to a _database team email alias_ for the
+DBAs. Or, you might want to notify a specific line of business or the IT
+Operations team.
 
 Here are the steps for setting up the **Email** channel.
 
 - Enter a name for the Alert Channel. The name can be anything, but should be
   meaningful. For example, if the Alert Channel will be used to notify the MQ
-  admins, like in this case call it something MQ related such as
+  admins, like in this case, call it something MQ related such as
   `MQ Email Channel`
 - Enter the email address to notify. Notice that there is an **Add Email** link
-  on the right side if you want to add multiple Email addresses. For this lab
-  we could use `mqadmins@example.com`.
+  on the form if you want to add multiple email addresses. For this lab we will
+  use `mqadmins@example.com`.
 
-Next, click the **Test Channel** button. This will attempt to send a test Email
-to the address you specified.
+Next, click the **Send Test Email** button. This will attempt to send a test
+email to the address you specified.
 
 ![](images/mq-alert-channel.png)
 
-Check for the test email by opening the Firefox bookmark called **Mail** in a new tab
+Check for the test email by opening the Firefox bookmark called **Mail** in a
+new tab
 
 ![](images/mail-bookmark.png)
 
@@ -153,9 +159,8 @@ Leave the default Threshold as **Static**
 
 ![](images/smart-alert-trigger.png)
 
-
-Scroll down to the **Scope** section. You'll see that there are number of options to determine which
-calls you want to analyze.
+Scroll down to the **Scope** section. You'll see that there are number of
+options to determine which calls you want to analyze.
 
 - You can analyze the calls for this application or you can analyze specific
   services or endpoints.
@@ -169,8 +174,6 @@ Leave the default settings.
 
 Scroll down further to the **Thresholds** section.
 
-![](images/thresholds-options.png)
-
 You'll notice that there are a variety of options including:
 
 - The ability to change the percentile that is used for the evaluation
@@ -180,9 +183,9 @@ You'll notice that there are a variety of options including:
 
 :::info
 
-You can try out some of the options, but keep in mind that analytics based thresholds
-will require 5 days of data and your system has only been running for a few
-hours. You will see the below warning until you have enough data.
+You can try out some of the options, but keep in mind that analytics based
+thresholds will require 5 days of data and your system has only been running for
+a few hours. You will see the below warning until you have enough data.
 
 ![](images/lack-of-data-warn.png)
 
@@ -190,8 +193,10 @@ hours. You will see the below warning until you have enough data.
 
 :::tip
 
-Here is an example from an app that has been running longer. When you adjust the sensitivity, the number of red triangles shown on the screen will change.
-These red triangles indicate when thresholds would trigger if you had chosen that setting.
+Here is an example from an app that has been running longer. When you adjust the
+sensitivity, the number of red triangles shown on the screen will change. These
+red triangles indicate when thresholds would trigger if you had chosen that
+setting.
 
 ![](images/sensitivity.png)
 
@@ -202,7 +207,11 @@ and the mission criticality of the application.
 
 :::
 
-In our case we will need to leave the default **Static Threshold** for this section as we do not have enough historical data.
+In our case we will leave the default as **Static Threshold** for this section
+as we do not have enough historical data, and update the warning threshold value
+to `350ms` as in the screenshot below:
+
+![](images/thresholds-options.png)
 
 Scroll down further to the **Time Threshold** options.
 
@@ -214,18 +223,20 @@ raised.
 
 We can leave this section as default too.
 
-Scroll down further to the **Alert Channel**. Here we can select the Email Alert Channel that you created in the previous section.
+Scroll down further to the **Alert Channel**. Here we can select the Email Alert
+Channel that you created in the previous section.
 
 Select the **Select Alert Channels** button.
 
 ![add-mq-alert-channel](images/add-mq-alert-channel.png)
 
-A dialog will open with the Alert Channel that you created earlier. Select the channel.
+A dialog will open with the Alert Channel that you created earlier. Select the
+channel we set up earlier in this lab.
 
 :::note
 
 It is possible to select multiple Alert Channels. For example, you can notify
-people via Email and Slack. Or, let's assume there is a database Event, you can
+people via Email and Slack. Or, let's assume there is a database event, you can
 notify the DBAs and you can notify that line of business that uses the database.
 
 :::
@@ -248,12 +259,13 @@ Fill in the fields as you desire. Then, click the **Create** button to create
 the **Smart Alert**
 
 The **Smart Alert** dialog will close and you'll be back in the context of your
-application. You'll see a notification letting you know your Smart Alert has been created.
+application. You'll see a notification letting you know your Smart Alert has
+been created.
 
 ![](images/qotd-smart-alert-notification.png)
 
-To see the **Smart Alert** that you just created, click on the
-**Smart Alerts** tab at the top of the screen.
+To see the **Smart Alert** that you just created, click on the **Smart Alerts**
+tab at the top of the screen.
 
 ![](images/qotd-smart-alert-display.png)
 
@@ -274,9 +286,9 @@ Users, Groups, Log Management Integration, and more.
 
 Ensure **Events** is selected
 
-You will see a list of 300+ Events that are defined as out of the box thresholds within Instana. If you want to filter the
-list, you can do that in a number of ways via the drop down lists at the top of
-the page.
+You will see a list of 300+ Events that are defined as out of the box thresholds
+within Instana. If you want to filter the list, you can do that in a number of
+ways via the drop down lists at the top of the page.
 
 ![filter-events](images/filter-events.png)
 
@@ -310,25 +322,27 @@ Fill in the following information for the new Event **Event Details** section:
 - Give your Event a name, for example; `IBM MQ Queue Depth`
 - Enter a description for the Event, for example; `Queue depth event`
 - Select **Critical** severity
-- Select the option of whether you want your Event to get correlated into Incidents
+- Select the option of whether you want your Event to get correlated into
+  Incidents
 - Select a Grace Period.
 
 ![](images/new-event-1.png)
 
 :::info
 
-The Grace Period is a capability that allow you to avoid getting multiple alerts
-during flapping. Let's say you are monitoring for high CPU utilization on a
-server. If CPU utilization goes High, then Low, then High over a short period of
-time, you typically only want to see **ONE** event. By setting a "Grace Period"
-of something like 60 seconds, you would only receive 1 Event during that
+The Grace Period is a capability that allows you to avoid getting multiple
+alerts during flapping. Let's say you are monitoring for high CPU utilization on
+a server. If CPU utilization goes High, then Low, then High over a short period
+of time, you typically only want to see **ONE** event. By setting a "Grace
+Period" of something like 60 seconds, you would only receive 1 Event during that
 interval.
 
 :::
 
 Fill in the following information for the **Condition** section:
 
-Select the dropdown and choose **Built-in Metrics**. Most of your thresholds will be written against these **Built-in Metrics**.
+Select the dropdown and choose **Built-in Metrics**. Most of your thresholds
+will be written against these **Built-in Metrics**.
 
 :::info
 
@@ -373,7 +387,8 @@ exceeded 90%. If it did exceed 90%, then the Event will trigger.
 
 Finally, you now have to select the **Scope** that this threshold will apply to.
 
-Select the dropdown list. In the dropdown list, you'll see the following options:
+Select the dropdown list. In the dropdown list, you'll see the following
+options:
 
 - You have the option of applying this threshold to an **Application
   Perspective**. This would limit the scope of the threshold to a specific
@@ -568,7 +583,8 @@ Finally, click the **Create** button to save your Alert.
 
 :::tip
 
-You can use the **Mail** bookmark to view alert emails that are sent for the alerts you have setup.
+You can use the **Mail** bookmark to view alert emails that are sent for the
+alerts you have setup.
 
 ![](images/email-alerts.png)
 
