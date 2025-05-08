@@ -8,20 +8,16 @@ import LicenseInfo from "@site/src/components/Instana/LicenseInfo"
 
 # Lab Environment
 
-<!-- :::warning Work In Progress
+The lab environment includes 5 VMs.
 
-This lab is currently under development.
-
-::: -->
-
-The lab environment includes Openshift cluster with Instana.
-
-Openshift clusters:
-
-1. **Instana cluster** - An instance of three-node K3s cluster that will
-   be used to install the Instana and Synthetic Point Of Presence.
-2. **Application cluster** - one node K3s cluster with application "Quote of the Day" used
-   as a target for synthetic tests.
+1. **Bastion VM** - A RHEL VM named `bastion-gym-lan` that will be used as the
+   _bastion host_ for the lab network. This Bastion host has access to all lab
+   VM's and will be your primary workstation for these labs.
+2. **Instana VMs** - 3 Ubuntu VMs that are running a multi-node self-hosted
+   Instana server on K3s.
+3. **Demo Applications Cluster** - An Ubuntu VM running K3s, which has the Quote
+   of the Day demo application running on it that will be the target for
+   synthetic tests in this lab.
 
 ![alt text](images/architecture.png)
 
@@ -29,19 +25,7 @@ Openshift clusters:
 
 To complete this lab you will need:
 
-- **Instana License**
-
-  <!-- > IBM Business Partners can get a 2 week trial Instana License from
-  > [IBM PartnerWorld - Software Access Catalog](https://www.ibm.com/partnerworld/program/benefits/software-access-catalog)
-  > as part of the
-  > [IBM Partner Packages](https://www.ibm.com/partnerworld/public/partner-package).
-
-  > IBMers can get access to an Instana License
-  > [here](https://ibm.seismic.com/Link/Content/DCj2qgpG29qPj8cHGVFXH8jppBRj) -->
-
-  - Download/Agent Key (Required when requesting the lab environment)
-  - Sales Key (Required when requesting the lab environment)
-<!-- <LicenseInfo /> -->
+- <LicenseInfo />
 
 ## Requesting a Lab Environment
 
@@ -52,13 +36,6 @@ requesting your environment it would be wise to select the region that has the
 most capacity available.
 
 <TechZoneStatus />
-
-<!-- :::warning Work In Progress
-
-The Self Service Tech Zone lab environment for this lab is currently under
-development.
-
-::: -->
 
 :::info
 
