@@ -17,7 +17,12 @@ import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
 <MultiChoiceQuestion
   questionNumber="1"
   question="Which of the following is not an Instana on-premises deployment option?"
-  answers={["Custom Edition", "Standard Edition (K3S)", "Instana Appliance", "Classic Edition (Docker)"]}
+  answers={[
+    "Custom Edition",
+    "Standard Edition (K3s)",
+    "Instana Appliance",
+    "Classic Edition (Docker)",
+  ]}
   correctAnswer="Instana Appliance"
 />
 
@@ -35,7 +40,7 @@ import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
     "Updating the **configuration.yaml** file",
     "Updating the **settings.hcl** file",
     "Specify the --core-feature-flags flag with **stanctl backend apply**",
-    "Editing the **instana configmap**"
+    "Editing the **instana configmap**",
   ]}
   correctAnswer="Specify the --core-feature-flags flag with **stanctl backend apply**"
 />
