@@ -8,22 +8,18 @@ import LicenseInfo from "@site/src/components/Instana/LicenseInfo"
 
 # Lab Environment
 
-:::warning Work In Progress
+The lab environment includes 5 VMs.
 
-This lab is currently under development.
+1. **Bastion VM** - A RHEL VM named `bastion-gym-lan` that will be used as the
+   _bastion host_ for the lab network. This Bastion host has access to all lab
+   VM's and will be your primary workstation for these labs.
+2. **Instana VMs** - 3 Ubuntu VMs that are running a multi-node self-hosted
+   Instana server on K3s.
+3. **Demo Applications Cluster** - An Ubuntu VM running K3s, which has the Quote
+   of the Day demo application running on it that will be the target for
+   synthetic tests in this lab.
 
-:::
-
-The lab environment includes Openshift cluster with Instana.
-
-Openshift clusters:
-
-1. **Instana cluster** - An instance of Single Node OpenShift cluster that will
-   be used to install the Instana and KubeTurbo agents and the sample
-   _RobotShop_ application. The _Quote Of The Day_ sample application has been
-   pre-installed.
-
-![](images/architecture.png)
+![alt text](images/architecture.png)
 
 ## Prerequisites
 
@@ -40,13 +36,6 @@ requesting your environment it would be wise to select the region that has the
 most capacity available.
 
 <TechZoneStatus />
-
-:::warning Work In Progress
-
-The Self Service Tech Zone lab environment for this lab is currently under
-development.
-
-:::
 
 :::info
 
