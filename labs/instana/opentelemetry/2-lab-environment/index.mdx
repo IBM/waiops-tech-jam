@@ -10,14 +10,16 @@ import LicenseInfo from "@site/src/components/Instana/LicenseInfo"
 
 The lab environment includes 6 VMs.
 
-1. **Bastion VM** - A RHEL VM named `bastion-gym-lan` that will be used as the _bastion host_ for the
-   lab network. This Bastion host has access to all lab VM's and will be
-   your primary workstation for these labs.
-2. **Instana VMs** - 3 Ubuntu VMs that are running a multi-node self-hosted Instana server on K3's.
-3. **Bluebox** - An Ubuntu VM that contains the pre-installed OtelCol Contrib Collector and Instana Agent
-4. **Demo Applications Cluster** - An Ubuntu VM running K3s, it has the OpenTelemetry Demo Application running. 
-It will be used to install the OpenTelemetry Demo Application in this lab.
-
+1. **Bastion VM** - A RHEL VM named `bastion-gym-lan` that will be used as the
+   _bastion host_ for the lab network. This Bastion host has access to all lab
+   VM's and will be your primary workstation for these labs.
+2. **Instana VMs** - 3 Ubuntu VMs that are running a multi-node self-hosted
+   Instana server on K3s.
+3. **Bluebox** - An Ubuntu VM that contains the pre-installed OtelCol Contrib
+   Collector and Instana Agent
+4. **Demo Applications Cluster** - An Ubuntu VM running K3s, it has the
+   OpenTelemetry Demo Application running, which will be further configured
+   during this lab.
 
 ![](images/architecture.png)
 
@@ -37,13 +39,6 @@ most capacity available.
 
 <TechZoneStatus />
 
-:::warning Work In Progress
-
-The Self Service Tech Zone lab environment for this lab is currently under
-development.
-
-:::
-
 :::info
 
 You can follow
@@ -53,5 +48,5 @@ if you need guidance on how to request a lab.
 :::
 
 For this lab we will be using the
-[Jam-in-a-Box: Instana - OpenTelemetry](https://techzone.ibm.com/my/reservations/create/64b8b2e0a06bca0017539c00)
+[Jam-in-a-Box: Instana - OpenTelemetry](https://techzone.ibm.com/my/reservations/create/673d043277fa7ddf3fca1c9e)
 collection.
