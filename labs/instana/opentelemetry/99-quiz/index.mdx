@@ -16,7 +16,7 @@ import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
 
 <MultiChoiceQuestion
   questionNumber="1"
-  question="Can Instana combine native Instana tracing and OpenTelemetry tracing under the same transaction?"
+  question="Can Instana combine Instana metrics and OpenTelemetry tracing under the same transaction?"
   answers={["No", "Yes"]}
   correctAnswer="Yes"
 />
@@ -33,12 +33,22 @@ import MultiChoiceQuestion from "../../../_common/components/multi-choice.jsx"
 
 <MultiChoiceQuestion
   questionNumber="3"
-  question="Do I need additional license in Instana to use OpenTelemetry"
+  question="Do I need additional license in Instana to use OpenTelemetry tracing?"
   answers={[
     "No, it is all included",
     "Yes, it costs ~100 USD/host"
   ]}
   correctAnswer="No, it is all included"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="3"
+  question="Do I need License Add-on in Instana to use OpenTelemetry custom logs ingestion?"
+  answers={[
+    "No",
+    "Yes"
+  ]}
+  correctAnswer="Yes"
 />
 
 </div>
