@@ -111,11 +111,14 @@ zone** parameters. Setting these values allow you to find your Agent and
 Kubernetes Cluster within the Instana UI and not get confused by data coming in
 from other agents.
 
-Use the `demo-apps` as the value for both parameters.
+Provide a meaningful name for the Cluster and specify and Agent Zone. 
+These namespace will show up within the Instana UI:
 
-- Ensure you click the **Add "demo-apps"** popup to set the zone name:
+    Cluster name: `demo-apps`
 
-  ![](images/agent-install-014.png)
+    Agent Zone: `Demo Apps`
+
+  ![](images/add-agent-zone.png)
 
 :::tip
 
@@ -195,7 +198,7 @@ helm install instana-agent \
    --set agent.endpointHost= [REMOVED] \
    --set agent.endpointPort=443 \
    --set cluster.name='demo-apps' \
-   --set zone.name='demo-apps' \
+   --set zone.name='Demo Apps' \
    instana-agent
 ```
 
