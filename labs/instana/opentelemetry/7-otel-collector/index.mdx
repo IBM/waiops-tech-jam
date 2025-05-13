@@ -7,7 +7,7 @@ sidebar_position: 7
 # OpenTelemetry Collector
 
 Besides the application metrics and traces, OpenTelemetry standard also supports ingesting logs content. 
-In this scenario, you will learn how to deliver custom logs to the Instana backend using OpenTelemetry Contrib Collector.
+In this scenario, you will learn how to deliver custom logs to the Instana backend using OpenTelemetry Collector Contrib.
 
 The OpenTelemetry Collector offers a vendor-agnostic implementation of how to receive, process and export telemetry data.
 It removes the need to run, operate, and maintain multiple agents/collectors. This works with improved scalability 
@@ -29,7 +29,10 @@ In this lab, we will be using OpenTelemetry Collector Contrib, which source-code
 
 ## Instana backend - configuration
 
-Instana Logging feature is available as a beta functionality, which means, it requires additional configuration inside the Instana backend. In order to enable logging feature, please follow the below steps:
+Depending on when you are executing this lab, Logging is setup as an optional feature and it's not enabled by default. The log collection via the runtimes is collected by default. 
+If you want OpenTelemetry base logging, you need to enable the feature flag. 
+
+Let's enable that feature, by following these steps:
 
 Use the ssh terminal and login to the instana backend server
 
@@ -62,8 +65,15 @@ exit
 ```
 
 :::tip
-Please note, the Logging feature accepting the OpenTelemetry custom logs require License Add-on. Please read and
-follow this instructions https://www.ibm.com/docs/en/instana-observability/current?topic=opentelemetry-collecting-linux-system-logs
+Please note, the Logging feature accepting the OpenTelemetry custom logs require License Add-on
+
+For the Instana SaaS, additional logging licenses need to be purchase
+
+For the Instana self-hosted there is no add-on charge for short-term log collection
+
+In both cases, you need to update the license.
+
+Please read and follow this instructions https://www.ibm.com/docs/en/instana-observability/current?topic=opentelemetry-collecting-linux-system-logs
 :::
 ## Instana backend - verification 
 
@@ -151,12 +161,13 @@ Other elements of the configuration file (based on the Otel protocol):
 
 - processors - allow you to process the data before the data is sent to the exporter, for example data cleaning, re-formatting, enriching, etc.
 
-- exporters - which system should receive the Otel data, in our case that's Instana backend. It is possible to send data to multiple exporters
+- exporters - indicate that it exports the data from the collector contrib to a target that is capable of receiving OpenTelemetry data. In our case that's Instana backend. It is possible to send data to multiple exporters
 
 Other interesting settings within the configuration file:
+- The "include" section at the top indicates which file(s) to monitor. In our case - example.log. You can specify one or more filenames as well as directories. When specifying a directory, you can also specify an "exclude" condition.
 - Setting the severity to "Fatal" if we find *FATAL* in the log
-- Instana's Agent is listing for GRPC data on port 4317, so we are configuring our exporter to send data to that port on localhost.
-- The "include" section at the top indicates which file(s) to monitor. In our case - example.log
+- Instana's Agent is listing for GRPC data on port 4317. By default, the Instana Agent listens on the loopback address, so you MUST configure the OpenTelemetry collector contrib to use either "localhost" or "127.0.0.1"
+
 
 
 The file is ready to be used by the OpenTelemetry collector, let's close the configuration file:
@@ -224,7 +235,15 @@ It pulls out a couple of key pieces of information from the FDC log.
 Let's stop the OtelContrib collector, as we will be using other configuration file. Go back to the console with running
 service and hit CTRL+C to stop the ingestion
 
-Let's review the more advanced log example. Please open a example.FDC file by typing
+Let's review the more advanced log example. 
+
+Make sure you are still in the right directory
+
+```bash
+cd /root/otelcol-contrib
+```
+
+Please open a example.FDC file by typing
 
 ```bash
 vim example.FDC
@@ -313,6 +332,11 @@ Data: 0xffffffff 0x00000000
 Data: 0xffffffff 0x00000000
 Data: 0xffffffff 0x00000000
 ```
+
+As you can see in the above example, there are specific fields and values which we would like to extract.
+For example, we are particularly interested in "Probe ID", "Application Name", "Major Errorcode" and "Minor Errorcode".
+Our filtering should remove all other, not important parts of the log file and focus on the information which brings
+a value to the team.
 
 Close the file by typing 
 
@@ -409,10 +433,33 @@ service:
       exporters:  [otlp/instanaAgent, debug, file]
 ```
 
-As you can see, the configuration is more complex, comparing to the previous example. We've added "operators"
-section to make sure, the log file will be parsed correctly.
+As you can see, the configuration is more complex, comparing to the previous example. There are couple of important parts of the file:
 
-Let's start the OtelCol Contrib Collector using the new config-advanced.yaml by this command
+1. Operators – We've added an **"operators"** section to ensure the log file is parsed correctly and efficiently, enabling structured and meaningful log data extraction.
+
+- The **recombine** operator is used to merge consecutive log lines into a single log entry based on defined expression rules. This is particularly 
+useful for multi-line logs, such as stack traces or verbose error messages, which would otherwise be split and misinterpreted.
+
+- The **is_last_entry** operator helps identify the final log entry in a file that should be processed. This is essential for ensuring that only complete and relevant 
+log data is passed downstream, avoiding partial or incomplete entries.
+
+- The **filter** operator allows selective processing by filtering incoming log entries that match a specific expression. This helps reduce noise and focus on 
+logs that are relevant for analysis or alerting.
+
+- The **regex_parser** operator extracts structured data from unstructured log messages. It parses a string-type field (specified by parse_from) using a regular expression pattern, 
+enabling the extraction of fields like timestamps, log levels, or error codes.
+
+- The **regex_replace** operator modifies the content of a string-typed field (specified by field) using a user-defined or 
+well-known regular expression. It can be used to clean, mask, or standardize log data, such as anonymizing sensitive information or normalizing formats.
+
+2. Processors – We've added a **processors** section to enrich the content of log messages, making them more informative and context-aware for Instana.
+
+- The **insert** processor is used to add custom metadata to each log entry. In this case, it creates an additional tag called "BusinessApp" with the value "QOTD". 
+This enrichment adds business context to the logs, making it easier to filter, search, and correlate logs in Instana. 
+It also supports better tagging and grouping of logs by application, which is especially valuable in environments with multiple services.
+
+
+Let's start the OpenTelemetry Contrib Collector using the new config-advanced.yaml by the below command
 
 ```bash
 sudo otelcol-contrib --config=config-advanced.yaml
@@ -435,10 +482,20 @@ After a short moment, please navigate to the Instana UI / Analytics / Logs secti
 
 It was shown, that Instana can accept custom, multi-line log content, using external OpenTelemetry Collector.
 
+Please note additional fields visible on the above screen:
+
+1. **Business App** - the extra context field added during log parsing. The field allows you to create a filter or search over the provided value.
+
+2. **Major Error Code** - additional contextual information about the specific error code visible within the log file. This will help to
+understand the potential root cause of a problem captured by Instana
+
+3. **Probe ID** - additional value we've extracted from a long log file - will help with faster identification of an impacted
+infrastructure resource.
+
 ## Summary
 
 This section concludes the Lab. In this section you have learned:
-1. How to setup, configure and run the OpenTelemetry Contrib Collector,
+1. How to setup, configure and run the OpenTelemetry Collector Contrib,
 2. How to configure traditional Instana Agent to accept the Otel communication,
 3. How to explore the Instana Analytics/Logs UI 
 

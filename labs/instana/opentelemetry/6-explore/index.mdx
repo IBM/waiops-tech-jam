@@ -34,8 +34,17 @@ service names, and operation names, allowing you to see the complete path of a r
 services and components. This ensures that all spans within a trace are linked together, providing a 
 coherent view of the request's journey
 
-Let's find an example of an OpenTelemetry trace in your environment. Go to Instana UI/Analytics search for calls
-which meet these criteria:
+
+## Exploring Instana
+
+Let's open the newly created Application Perspective "Otel-demo" and click on the "Analyze calls" at the top of the screen
+as presented on the picture below
+
+![explore8](images/otel-explore-011.png)
+
+The Instana will navigate you to the Analytics view, but with already populated filters, narrowing down calls to Otel-demo application only.
+
+You can now filter down calls and search only these, which meet specific criteria:
 
 - Application name: your application name
 - Service name: checkout
@@ -64,9 +73,23 @@ view, with a full path beginning from the host, the platform, the pod, namespace
 ![explore10](images/otel-explore-010.png)
 
 The above example proves the Instana can combine traces from OpenTelemetry
-and Instana infrastructure data within the same screen under one transaction ID.
+and Instana infrastructure data within the same screen under one transaction ID. The Node details are 
+coming from the Instana Agent and the rest od the Infrastructure data is coming from the Instana k8sensor.
+
+:::tip
+K8sensor is a part of the Instana Agent Kubernetes monitoring solution. Read more about the sensor 
+here https://www.ibm.com/docs/en/instana-observability/1.0.294?topic=instana-monitoring-kubernetes#kubernetes-sensors
+:::
+
+Instana can combine Instana's proprietary traces and OpenTelemetry traces into a single end-to-end trace.
 
 ## OpenTelemetry tracing - code examples
+
+:::info
+
+This section is here for informational purposes. There are no steps to execute.
+
+:::
 
 If you wish to use OpenTelemetry in your application, here is the example
 snippet which shows, how to build the proper instrumentation.
@@ -132,6 +155,21 @@ return function (App $app) {
 Please note the use of **OpenTelemetry/API** and further use of the span builders.
 
 [The source code can be found here](https://github.com/open-telemetry/opentelemetry-demo/blob/main/src/quote/app/routes.php)
+
+## OpenTelemetry as out-of-the-box observability
+
+More and more middleware platforms are embedding OpenTelemetry tracing capabilities to provide out-of-the-box observability. For example, 
+**IBM MQ** now supports OpenTelemetry to trace message flows across queues and topics, helping teams monitor message delivery latency and 
+identify processing delays. 
+
+**IBM App Connect Enterprise (ACE)** integrates OpenTelemetry to trace message flows through integration nodes 
+and flows, offering visibility into how data transformations and routing decisions are made. 
+
+Similarly, **IBM DataPower Gateway** includes OpenTelemetry support to trace API calls and security processing, which is crucial for 
+understanding performance and enforcing compliance in API-driven architectures. 
+
+These integrations allow organizations to gain deep insights into complex, hybrid environments without needing
+to manually instrument every component, accelerating troubleshooting and improving system reliability.
 
 ## Summary
 

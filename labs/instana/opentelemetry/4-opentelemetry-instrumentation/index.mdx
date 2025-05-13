@@ -6,11 +6,19 @@ sidebar_position: 5
 
 # OpenTelemetry
 
-OpenTelemetry is an open-source observability framework with a collection of software development kits (SDKs), vendor-neutral or vendor-agnostic APIs, and tools for instrumentation. This technology can generate, collect, export, and instrument telemetry data to analyze your platform's behavior and performance. OpenTelemetry, also known as OTel, is designed to provide comprehensive insights into distributed systems, making it easier to monitor and troubleshoot complex applications. By standardizing the way telemetry data is collected and processed, OpenTelemetry helps ensure consistency and interoperability across different platforms and tools.
+OpenTelemetry is an open-source observability framework with a collection of software development kits (SDKs), vendor-neutral or 
+vendor-agnostic APIs, and tools for instrumentation. This technology can generate, collect, export, and instrument telemetry data 
+to analyze your platform's behavior and performance. OpenTelemetry, also known as OTel, is designed to provide comprehensive insights 
+into distributed systems, making it easier to monitor and troubleshoot complex applications. By standardizing the way telemetry data is 
+collected and processed, OpenTelemetry helps ensure consistency and interoperability across different platforms and tools.
 
-One of the key advantages of OpenTelemetry is its flexibility and extensibility. Developers can integrate it with various back-end systems and observability tools, allowing them to tailor their monitoring solutions to specific needs. Additionally, OpenTelemetry supports multiple programming languages, making it accessible to a wide range of developers and applications.
+One of the key advantages of OpenTelemetry is its flexibility and extensibility. Developers can integrate it with various back-end 
+systems and observability tools, allowing them to tailor their monitoring solutions to specific needs. Additionally, OpenTelemetry 
+supports multiple programming languages, making it accessible to a wide range of developers and applications.
 
-OpenTelemetry is included in the Instana license, meaning users can leverage its powerful capabilities without incurring additional costs. This integration simplifies the process of setting up observability for applications monitored by Instana, providing a seamless experience for users looking to enhance their performance monitoring and troubleshooting capabilities.
+OpenTelemetry is included in the Instana license, meaning users can leverage its powerful capabilities without incurring additional costs. 
+This integration simplifies the process of setting up observability for applications monitored by Instana, providing a seamless experience 
+for users looking to enhance their performance monitoring and troubleshooting capabilities.
 
 
 # OpenTelemetry instrumentation
@@ -35,11 +43,38 @@ Use Instana's dashboard to monitor the incoming telemetry and ensure trace conti
 4. **Analyze and Optimize**: Utilize Instana's analytics tools to analyze the collected data, identify performance bottlenecks, 
 and optimize your application's performance based on the insights gained.
 
-By following these steps, you can fully leverage the capabilities of OpenTelemetry and Instana to achieve robust monitoring and observability for your microservice-based applications.
+By following these steps, you can fully leverage the capabilities of OpenTelemetry and Instana to achieve robust monitoring and observability for 
+your microservice-based applications.
+
+## OpenTelemetry signals
+
+OpenTelemetry signals are the core components used to capture and represent telemetry data from software systems, enabling observability into their behavior and performance. 
+These signals come in three primary forms: traces, metrics, and logs. 
+
+1. **Traces** provide insight into the flow of requests through distributed systems, helping identify bottlenecks and latency issues. 
+2. **Metrics** offer numerical data about system performance, such as CPU usage, request counts, or error rates, which are essential for monitoring and alerting. 
+3. **Logs** contain timestamped records of events that occur within a system, useful for debugging and auditing. 
+
+Together, these signals form a view of system health and performance, allowing developers and operators to detect, diagnose, and resolve issues more effectively. 
+OpenTelemetry standardizes the collection and export of these signals, making it easier to integrate with various observability tools.
+
+Instana is capable of monitoring OpenTelemetry tracing, metrics, and logs. The lab is going to focus on tracing and logs.
 
 ## Enable OpenTelemetry in Instana agent
 
-A collection of OpenTelemetry data in Instana agent is enabled by default. You can confirm, the Instana agent is waiting
+By default, the OpenTelemetry data ingestion in the Instana host agent is activated. There are no actions which you need to take
+in order to enable the data ingestion. The example of a configuration.yaml with the manually enabled OpenTelemetry ingestion
+looks like below 
+
+```yaml
+com.instana.plugin.opentelemetry:
+  grpc:
+    enabled: true
+  http:
+    enabled: true
+```
+
+You can confirm, the Instana agent is waiting
 for the data by checking, if the agent is exposing Otel standard ports - 4317 and 4318. In order to check it, please run 
 the below command against the "demo-apps" K3S cluster
 
