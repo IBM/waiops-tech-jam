@@ -1,6 +1,6 @@
 ---
 title: 3. Instana agent installation
-description: Install the Instana agent on K3S cluster
+description: Install the Instana agent on K3s cluster
 sidebar_position: 4
 ---
 
@@ -131,7 +131,7 @@ need to execute it in your Kubernetes environment to complete the installation.
 ![agent2](images/agent-install-007.png)
 
 Once you have copied the Helm chart installation script, switch back to your
-terminal console in order to connect to your K3S cluster.
+terminal console in order to connect to your K3s cluster.
 
 ```bash
 ssh jammer@demo-apps
@@ -163,20 +163,27 @@ this command
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 ```
 
-You are now all set, to begin the Helm chart Instana agent installation, please
+You are now all set. To begin the Helm chart Instana agent installation, please
 paste the copied Helm chart installation script.
 
-:::info This script contains all the necessary commands to install the Instana
-agent on your Kubernetes cluster using Helm. :::
+:::info
+
+This script contains all the necessary commands to install the Instana agent on
+your Kubernetes cluster using Helm.
+
+:::
 
 After pasting the script, hit enter to execute the commands. The installation
 process will begin, and you should see output indicating the progress of the
 deployment. Monitor the console for any messages that may require your attention
 to complete the installation successfully.
 
-:::caution Please note the below example does not contain real values. The
-fields like key, endpoint, etc. have been replaced with [REMOVED] value. You
-need to use values from your environment. :::
+:::caution Please note the below example does not contain real values.
+
+The fields like key, endpoint, etc. have been replaced with [REMOVED] value. You
+need to use values from your environment.
+
+:::
 
 ```bash
 helm install instana-agent \
@@ -192,15 +199,15 @@ helm install instana-agent \
    instana-agent
 ```
 
-The results of the action, should be similar to the presented image
+The results of the action should be similar to the presented image
 
 ![agent10](images/agent-install-010.png)
 
 Once you have executed the Helm chart installation script in your terminal, it's
 important to verify that the installation was successful. To do this, you can
-use specific commands to check the status of the deployed resources. Use kubectl
-get pods -n instana-agent to list all the pods in the instana-agent namespace
-and ensure they are running correctly.
+use specific commands to check the status of the deployed resources. Use the
+command below to list all the pods in the `instana-agent` namespace and ensure
+they are running correctly:
 
 ```sh
 kubectl get pods -n instana-agent
@@ -211,8 +218,12 @@ has been deployed successfully and is functioning as expected.
 
 ![agent11](images/agent-install-011.png)
 
-:::tip All pods should be in RUNNING state, all of them should also have READY
-1/1 values as explained on the picture above. :::
+:::tip
+
+All pods should be in a `RUNNING` phase, all of them should also have a `READY`
+state of `1/1` values as explained on the picture above.
+
+:::
 
 ## Verify Kubernetes monitoring
 
