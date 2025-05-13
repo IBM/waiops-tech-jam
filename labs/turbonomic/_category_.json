@@ -1,4 +1,5 @@
 {
   "label": "Turbonomic Labs",
-  "position": 30
+  "position": 30,
+  "className": "wip-docs"
 }

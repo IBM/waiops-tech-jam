@@ -9,10 +9,10 @@ sidebar_position: 5
 
 ## 4.1: Introduction
 
-Positioning Instana at existing IBM customers often requires presenting the Instana
-value proposition in the context of other IBM middleware used by the client. In this
-section, you will find guidance about configuring and using Instana with the
-following IBM technologies:
+Positioning Instana at existing IBM customers often requires presenting the
+Instana value proposition in the context of other IBM middleware used by the
+client. In this section, you will find guidance about configuring and using
+Instana with the following IBM technologies:
 
 - MQ
 - App Connect Enterprise (ACE)
@@ -57,13 +57,14 @@ stopped_. We are only interested in:
 
 :::
 
-![ace-mq-status](images/ace-mq-status.png)
+![ace-mq-status](images/ace-mq-status-inited-profile.png)
 
 Carefully compare your output to the screenshot above.
 
 ## 4.3: Configure Quote of the Day Application to use MQ & ACE
 
-The **Quote of the Day** application has been installed for you on the **Demo Apps** cluster.
+The **Quote of the Day** application has been installed for you on the **Demo
+Apps** cluster.
 
 For more information about the **Quote of the Day** application, you can go to
 the [GitLab repository](https://gitlab.com/quote-of-the-day/quote-of-the-day),
@@ -77,7 +78,8 @@ things are running.
 
 :::info IMPORTANT
 
-The following should be completed from the **demo-apps** host running as the **root** user.
+The following should be completed from the **demo-apps** host running as the
+**root** user.
 
 Open a new terminal tab, ssh to the **demo-apps** machine and change to the root
 user:
@@ -175,8 +177,8 @@ In Firefox, open the **Quote of the Day** bookmark.
 :::note
 
 You can manually find the URL by running the command
-`kubectl get ingress -n qotd` and opening the URL with
-open this URL with http:// in front.
+`kubectl get ingress -n qotd` and opening the URL with open this URL with
+http:// in front.
 
 :::
 
@@ -201,9 +203,9 @@ execute.
 This section of the lab will help you understand how IBM MQ and IBM App Connect
 Enterprise (ACE) need to be configured for monitoring. There are certain
 configuration settings within MQ and ACE that are required in order to get the
-monitoring KPIs. For ACE, the key KPI's that need to be enabled are Resource Stats and
-Flow Stats. The requirements are documented in the
-[sensor configuration guide](https://www.ibm.com/docs/en/instana-observability/288?topic=ace-configuring-sensor)
+monitoring KPIs. For ACE, the key KPI's that need to be enabled are Resource
+Stats and Flow Stats. The requirements are documented in the
+[sensor configuration guide](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-sensor)
 that is online. You'll see links to those guides further down in this document.
 
 :::note
@@ -216,11 +218,11 @@ what the monitoring requirements are.
 
 ### Verify the ACE configuration
 
-The "Resource Monitoring" (Resource Stats) KPIs are already enabled in most customer
-environments. But it is worth validating the configuration. It is less common to see **Flow Stats**
-enabled.  For example, you can
-use the ACE `mqsireportresourcestats` and `mqsireportflowstats` commands to view
-the configuration for ACE.
+The "Resource Monitoring" (Resource Stats) KPIs are already enabled in most
+customer environments. But it is worth validating the configuration. It is less
+common to see **Flow Stats** enabled. For example, you can use the ACE
+`mqsireportresourcestats` and `mqsireportflowstats` commands to view the
+configuration for ACE.
 
 Open in a new Terminal tab and SSH to the **mqace** server
 
@@ -249,9 +251,9 @@ You might see _'mqsiprofile repetition disallowed'_, this can be safely ignored.
 :::info
 
 In the commands listed, BK1 is the Integration Node name and would be different
-if the Integration Node had a different name.  EG2 is the name of the Integration Server
-and will vary from environment to environment.  There can also be multiple Integration Servers
-configured on a single Integration Node.
+if the Integration Node had a different name. EG2 is the name of the Integration
+Server and will vary from environment to environment. There can also be multiple
+Integration Servers configured on a single Integration Node.
 
 :::
 
@@ -263,7 +265,8 @@ mqsireportresourcestats BK1 -e EG2
 ```
 
 You will see results similar to those shown below. Notice that the "state" is
-set to "true" indicating that **"Resource Stats"** are enabled and it is set to **"Active"**
+set to "true" indicating that **"Resource Stats"** are enabled and it is set to
+**"Active"**
 
 ![](images/resourcestats.png)
 
@@ -351,7 +354,7 @@ quit
 
 :::warning Information Only
 
-This section 5.5 is here for informational purposes. There are no steps to
+This section 4.5 is here for informational purposes. There are no steps to
 execute.
 
 :::
@@ -366,14 +369,16 @@ and ACE environments. In this section, we've documented the steps.
 Typically, these steps are performed by the MQ and ACE admins, so you don't need
 to know the step by step procedure.
 
-There are multiple options for Tracing transactions through ACE and MQ.  You options
-depend on the version of ACE and MQ as well as the platform.  In older versions of ACE and
-MQ, it was necessary to install an Instana **User Exit** in order to monitor the traces.
-In recent versions of ACE and MQ, these products have added support for OpenTelemetry tracing.
+There are multiple options for Tracing transactions through ACE and MQ. You
+options depend on the version of ACE and MQ as well as the platform. In older
+versions of ACE and MQ, it was necessary to install an Instana **User Exit** in
+order to monitor the traces. In recent versions of ACE and MQ, these products
+have added support for OpenTelemetry tracing.
 
-For ACE, we recommend using OpenTelemetry tracing because it has less overhead.  For MQ, the
-Instana User Exit and OpenTelemetry have similar characteristics.  For information on OpenTelemtry
-tracing within ACE and MQ, see the product documentation for ACE and MQ.
+For ACE, we recommend using OpenTelemetry tracing because it has less overhead.
+For MQ, the Instana User Exit and OpenTelemetry have similar characteristics.
+For information on OpenTelemtry tracing within ACE and MQ, see the product
+documentation for ACE and MQ.
 
 In this lab, we will be using the Instana User Exit.
 
@@ -381,13 +386,14 @@ In this lab, we will be using the Instana User Exit.
 
 This section is simply going to describe the process. The procedure is well
 documented within the Instana online documentation. You will find a **Tracing**
-section within the sensor documentation that can be found here:
-https://www.ibm.com/docs/en/instana-observability/288?topic=ace-configuring-tracing-in
+section within the sensor documentation that can be found
+[here](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-tracing-in).
 
 For ACE, you perform the following steps
 
-- Download a small TAR file from IBM Fix Central. There is a link for **artifactory** within the
-  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/288?topic=ace-configuring-tracing-in).
+- Download a small TAR file from IBM Fix Central. There is a link for
+  **artifactory** within the
+  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-tracing-in).
 - Extract the tar file into the **/var/mqsi/shared-classes** directory
 - Stop the ACE server
 - Run the following command to "Install" the **User Exit**:
@@ -398,8 +404,9 @@ For ACE, you perform the following steps
 
 The MQ procedure is similar.
 
-- Download a small TAR file from either **artifactory** or IBM Fix Central. There are links within the
-  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/288?topic=mq-tracing).
+- Download a small TAR file from either **artifactory** or IBM Fix Central.
+  There are links within the
+  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=mq-tracing).
 - Extract the tar file to **/var/mqm/exits64**
 - Edit the **/var/mqm/mqs.ini** file
 - Add a small section within the **/var/mqm/mqs.ini** file. The content can be
@@ -420,11 +427,13 @@ middleware component.
 
 ## 4.6: Configure the ACE and MQ Sensors
 
-In this section, you will continue to perform these commands as root on the **mqace** server.
+In this section, you will continue to perform these commands as root on the
+**mqace** server.
 
 :::note
 
-If you do not have a terminal opened to the **mqace** server you can run the following:
+If you do not have a terminal opened to the **mqace** server you can run the
+following:
 
 ```sh
 ssh jammer@mqace
@@ -438,7 +447,8 @@ Change to the instana agent configuration directory:
 :::info
 
 Reminder: The Instana Agent you are about to modify was pre-installed for you on
-this server. If you want to learn more about the Instana Agent you can complete [Server & Agent Installation lab](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/introduction/)
+this server. If you want to learn more about the Instana Agent you can complete
+[Server & Agent Installation lab](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/introduction/)
 
 :::
 
@@ -495,10 +505,11 @@ You will need to uncomment the required entries and change the parameters to
 match the ACE/MQ configuration on this server. If you read the description on
 each line, you'll see that some parameters are optional.
 
-For more information about about the ACE configuration [view the online
-documentation](https://www.ibm.com/docs/en/obi/current?topic=technologies-monitoring-app-connect-enterprise)
+For more information about about the ACE configuration
+[view the online documentation](https://www.ibm.com/docs/en/instana-observability/1.0.291?topic=technologies-monitoring-app-connect-enterprise-ace)
 
-In addition, [here is a blog that provides additional information on configuring the sensor](https://community.ibm.com/community/user/blogs/hou-fang-zhao/2022/05/24/usefule-tips-for-ace-sensor-configuration)
+In addition,
+[here is a blog that provides additional information on configuring the sensor](https://community.ibm.com/community/user/blogs/hou-fang-zhao/2022/05/24/usefule-tips-for-ace-sensor-configuration)
 
 There are multiple options for configuring the sensor. The information shown
 matches this particular environment. A few key possibilities:
@@ -511,14 +522,17 @@ matches this particular environment. A few key possibilities:
   some environments the MQ Channel Authentication is disabled and you don't need
   to specify credentials.
 
-In our demo environment, we have the most common configuration.  ACE is configured to use MQ instead of MQTT.
-And, we require credentials to connect to the channel.
+In our demo environment, we have the most common configuration. ACE is
+configured to use MQ instead of MQTT. And, we require credentials to connect to
+the channel.
 
-One other important factor when setting up ACE monitoring. The user that is connecting to the MQ channel
-needs to have permissions on some MQ objects such as queues and topics.  If the ACE sensor is not working,
-look at the MQ log to see if there are any permissions errors.  The MQ log path will be
-"/var/mqm/qmgrs/QM1/error/AMQERR01.LOG" where **QM1** is the Queue Manager name.  Look for the string
-**insufficient authority** and the log will tell you which object and permissions are missing.
+One other important factor when setting up ACE monitoring. The user that is
+connecting to the MQ channel needs to have permissions on some MQ objects such
+as queues and topics. If the ACE sensor is not working, look at the MQ log to
+see if there are any permissions errors. The MQ log path will be
+"/var/mqm/qmgrs/QM1/error/AMQERR01.LOG" where **QM1** is the Queue Manager name.
+Look for the string **insufficient authority** and the log will tell you which
+object and permissions are missing.
 
 Edit the **IBM ACE** section of the file so that it looks like this. If you
 want, you can copy this text and replace the entire section. Or, you can change
@@ -546,9 +560,9 @@ the admin username for MQ, but the sensor does not require administrative
 permissions. Any valid MQ user can be specified as long as it has permissions to
 connect to the channel.
 
-The Instana engineering team has created a [script that will setup all
-of the required permissions within MQ](https://github.com/instana/content/tree/main/ace-setup-mq) .
-
+The Instana engineering team has created a
+[script that will setup all of the required permissions within MQ](https://github.com/instana/content/tree/main/ace-setup-mq)
+.
 
 ### MQ Configuration
 
@@ -559,19 +573,19 @@ number of mandatory and optional parameters. For more information on the
 configuration settings, see the online documentation:
 [link](https://www.ibm.com/docs/en/obi/current?topic=technologies-monitoring-mq)
 
+The MQ sensor also has a number of different possible configurations. The most
+common is for the sensor to connect to a channel using credentials. But, it is
+possible to configure without credentials by disabling MQ channel
+authentication. In addition, if the Instana Agent runs as a user that is a
+member of the **mqm** group, then the sensor will automatically discover and
+instrument MQ.
 
-The MQ sensor also has a number of different possible configurations.  The most common
-is for the sensor to connect to a channel using credentials.  But, it is possible to
-configure without credentials by disabling MQ channel authentication.  In addition,
-if the Instana Agent runs as a user that is a member of the **mqm** group, then the
-sensor will automatically discover and instrument MQ.
-
-For more information on configuring the MQ sensor, see the product documentation:
+For more information on configuring the MQ sensor, see the product
+documentation:
 [link](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-mq#configuring)
 
 In addition, this blog contains additional debugging steps:
-[link](https://community.ibm.com/community/user/instana/blogs/tianxing-33ed/2024/05/20/how-to-debug-mq-sensor-connection-problem)
-
+[link](https://community.ibm.com/community/user/blogs/tianxing-33ed/2024/05/20/how-to-debug-mq-sensor-connection-problem)
 
 Edit the **# IBM MQ** section of the file so that it looks like this. If you
 want, you can copy this text and replace the entire section. Or, you can change
@@ -589,7 +603,8 @@ com.instana.plugin.ibmmq:
       password: "Passw0rd"
 ```
 
-Save the changes and exit the editor, press the **esc** key to enter command mode and write your changes and exit the file by typing:
+Save the changes and exit the editor, press the **esc** key to enter command
+mode and write your changes and exit the file by typing:
 
 ```sh
 :wq
@@ -602,7 +617,8 @@ Save the changes and exit the editor, press the **esc** key to enter command mod
 After installing an Instana Agent, one of the first things you want to do is set
 a Zone name. This allows you to organize your Agents to make them easier to
 find. The Zones can also be used for custom queries, threshold distribution, and
-more. In this environment the zone for the **mqace** server is **MQACE**, lets update that to **IBM MQ & ACE**.
+more. In this environment the zone for the **mqace** server is **MQACE**, lets
+update that to **IBM MQ & ACE**.
 
 Once again open the configuration.yaml file for editing:
 
