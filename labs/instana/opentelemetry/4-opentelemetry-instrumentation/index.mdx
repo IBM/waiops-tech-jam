@@ -60,12 +60,36 @@ By following these steps, you can fully leverage the capabilities of
 OpenTelemetry and Instana to achieve robust monitoring and observability for
 your microservice-based applications.
 
+## OpenTelemetry signals
+
+OpenTelemetry signals are the core components used to capture and represent telemetry data from software systems, enabling observability into their behavior and performance. 
+These signals come in three primary forms: traces, metrics, and logs. 
+
+1. **Traces** provide insight into the flow of requests through distributed systems, helping identify bottlenecks and latency issues. 
+2. **Metrics** offer numerical data about system performance, such as CPU usage, request counts, or error rates, which are essential for monitoring and alerting. 
+3. **Logs** contain timestamped records of events that occur within a system, useful for debugging and auditing. 
+
+Together, these signals form a view of system health and performance, allowing developers and operators to detect, diagnose, and resolve issues more effectively. 
+OpenTelemetry standardizes the collection and export of these signals, making it easier to integrate with various observability tools.
+
+Instana is capable of monitoring OpenTelemetry tracing, metrics, and logs. The lab is going to focus on tracing and logs.
+
 ## Enable OpenTelemetry in Instana agent
 
-A collection of OpenTelemetry data in Instana agent is enabled by default. You
-can confirm the Instana agent is waiting for the data by checking if the agent
-is exposing Otel standard ports - `4317` and `4318`. In order to check, please
-run the below command against the `demo-apps` K3s cluster:
+By default, the OpenTelemetry data ingestion in the Instana host agent is activated. There are no actions which you need to take
+in order to enable the data ingestion. The example of a configuration.yaml with the manually enabled OpenTelemetry ingestion
+looks like below 
+
+```yaml
+com.instana.plugin.opentelemetry:
+  grpc:
+    enabled: true
+  http:
+    enabled: true
+```
+
+You can confirm, the Instana agent is waiting for the data by checking, if the agent is exposing Otel standard ports - `4317` and `4318`. In order to check it, please run 
+the below command against the `demo-apps` K3S cluster:
 
 ```bash
 kubectl get services -n instana-agent
