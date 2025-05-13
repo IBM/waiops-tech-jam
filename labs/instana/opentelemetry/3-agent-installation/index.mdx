@@ -111,11 +111,11 @@ zone** parameters. Setting these values allow you to find your Agent and
 Kubernetes Cluster within the Instana UI and not get confused by data coming in
 from other agents.
 
-Use the `otel-test` as the value for both parameters.
+Use the `demo-apps` as the value for both parameters.
 
-- Ensure you click the **Add "otel-test"** popup to set the zone name:
+- Ensure you click the **Add "demo-apps"** popup to set the zone name:
 
-  ![](images/add-agent-zone.png)
+  ![](images/agent-install-014.png)
 
 :::tip
 
@@ -194,8 +194,8 @@ helm install instana-agent \
    --set agent.downloadKey= [REMOVED] \
    --set agent.endpointHost= [REMOVED] \
    --set agent.endpointPort=443 \
-   --set cluster.name='otel-test' \
-   --set zone.name='otel-test' \
+   --set cluster.name='demo-apps' \
+   --set zone.name='demo-apps' \
    instana-agent
 ```
 
