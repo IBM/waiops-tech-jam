@@ -6,144 +6,143 @@ sidebar_position: 5
 
 # OpenTelemetry
 
-OpenTelemetry is an open-source observability framework with a collection of software development kits (SDKs), vendor-neutral or 
-vendor-agnostic APIs, and tools for instrumentation. This technology can generate, collect, export, and instrument telemetry data 
-to analyze your platform's behavior and performance. OpenTelemetry, also known as OTel, is designed to provide comprehensive insights 
-into distributed systems, making it easier to monitor and troubleshoot complex applications. By standardizing the way telemetry data is 
-collected and processed, OpenTelemetry helps ensure consistency and interoperability across different platforms and tools.
+OpenTelemetry is an open-source observability framework with a collection of
+software development kits (SDKs), vendor-neutral or vendor-agnostic APIs, and
+tools for instrumentation. This technology can generate, collect, export, and
+instrument telemetry data to analyze your platform's behavior and performance.
+OpenTelemetry, also known as OTel, is designed to provide comprehensive insights
+into distributed systems, making it easier to monitor and troubleshoot complex
+applications. By standardizing the way telemetry data is collected and
+processed, OpenTelemetry helps ensure consistency and interoperability across
+different platforms and tools.
 
-One of the key advantages of OpenTelemetry is its flexibility and extensibility. Developers can integrate it with various back-end 
-systems and observability tools, allowing them to tailor their monitoring solutions to specific needs. Additionally, OpenTelemetry 
-supports multiple programming languages, making it accessible to a wide range of developers and applications.
+One of the key advantages of OpenTelemetry is its flexibility and extensibility.
+Developers can integrate it with various back-end systems and observability
+tools, allowing them to tailor their monitoring solutions to specific needs.
+Additionally, OpenTelemetry supports multiple programming languages, making it
+accessible to a wide range of developers and applications.
 
-OpenTelemetry is included in the Instana license, meaning users can leverage its powerful capabilities without incurring additional costs. 
-This integration simplifies the process of setting up observability for applications monitored by Instana, providing a seamless experience 
-for users looking to enhance their performance monitoring and troubleshooting capabilities.
-
+OpenTelemetry is included in the Instana license, meaning users can leverage its
+powerful capabilities without incurring additional costs. This integration
+simplifies the process of setting up observability for applications monitored by
+Instana, providing a seamless experience for users looking to enhance their
+performance monitoring and troubleshooting capabilities.
 
 # OpenTelemetry instrumentation
 
-For the purpose of this lab, we will use OpenTelemetry Demo Application. 
-The source code is available here https://github.com/open-telemetry/opentelemetry-demo.
+For the purpose of this lab, we will use the **OpenTelemetry Demo Application**.
+The source code is available here
+https://github.com/open-telemetry/opentelemetry-demo.
 
-The OpenTelemetry Demo Application is a microservice-based application designed to showcase the seamless 
-integration with an Instana backend. This demo highlights the capabilities of Instana in collecting OpenTelemetry data, 
-correlating OpenTelemetry tracing with the underlying monitored infrastructure, and demonstrating trace continuity 
-between Instana tracing and OpenTelemetry.
+The OpenTelemetry Demo Application is a microservice-based application designed
+to showcase the seamless integration with an Instana backend. This demo
+highlights the capabilities of Instana in collecting OpenTelemetry data,
+correlating OpenTelemetry tracing with the underlying monitored infrastructure,
+and demonstrating trace continuity between Instana tracing and OpenTelemetry.
 
-The OpenTelemetry Demo Application has already been installed for you in the lab environment, 
-providing a ready-to-use setup for exploring its features. To enable OpenTelemetry in the Instana agent, 
-we will follow these steps:
+The OpenTelemetry Demo Application has already been installed for you in the lab
+environment, providing a ready-to-use setup for exploring its features. To
+enable OpenTelemetry in the Instana agent, we will follow these steps:
 
-1. **Configure the Instana Agent**: Ensure the Instana agent is properly configured to collect OpenTelemetry data. 
-2. **Instrument Your Application**: Integrate OpenTelemetry SDKs into your application code to start generating telemetry data. 
-This includes adding tracing and metrics instrumentation to capture relevant data points.
-3. **Verify Data Collection**: Check that the Instana agent is successfully collecting and correlating OpenTelemetry data. 
-Use Instana's dashboard to monitor the incoming telemetry and ensure trace continuity.
-4. **Analyze and Optimize**: Utilize Instana's analytics tools to analyze the collected data, identify performance bottlenecks, 
-and optimize your application's performance based on the insights gained.
+1. **Configure the Instana Agent**: Ensure the Instana agent is properly
+   configured to collect OpenTelemetry data.
+2. **Instrument Your Application**: Integrate OpenTelemetry SDKs into your
+   application code to start generating telemetry data. This includes adding
+   tracing and metrics instrumentation to capture relevant data points.
+3. **Verify Data Collection**: Check that the Instana agent is successfully
+   collecting and correlating OpenTelemetry data. Use Instana's dashboard to
+   monitor the incoming telemetry and ensure trace continuity.
+4. **Analyze and Optimize**: Utilize Instana's analytics tools to analyze the
+   collected data, identify performance bottlenecks, and optimize your
+   application's performance based on the insights gained.
 
-By following these steps, you can fully leverage the capabilities of OpenTelemetry and Instana to achieve robust monitoring and observability for 
+By following these steps, you can fully leverage the capabilities of
+OpenTelemetry and Instana to achieve robust monitoring and observability for
 your microservice-based applications.
-
-## OpenTelemetry signals
-
-OpenTelemetry signals are the core components used to capture and represent telemetry data from software systems, enabling observability into their behavior and performance. 
-These signals come in three primary forms: traces, metrics, and logs. 
-
-1. **Traces** provide insight into the flow of requests through distributed systems, helping identify bottlenecks and latency issues. 
-2. **Metrics** offer numerical data about system performance, such as CPU usage, request counts, or error rates, which are essential for monitoring and alerting. 
-3. **Logs** contain timestamped records of events that occur within a system, useful for debugging and auditing. 
-
-Together, these signals form a view of system health and performance, allowing developers and operators to detect, diagnose, and resolve issues more effectively. 
-OpenTelemetry standardizes the collection and export of these signals, making it easier to integrate with various observability tools.
-
-Instana is capable of monitoring OpenTelemetry tracing, metrics, and logs. The lab is going to focus on tracing and logs.
 
 ## Enable OpenTelemetry in Instana agent
 
-By default, the OpenTelemetry data ingestion in the Instana host agent is activated. There are no actions which you need to take
-in order to enable the data ingestion. The example of a configuration.yaml with the manually enabled OpenTelemetry ingestion
-looks like below 
-
-```yaml
-com.instana.plugin.opentelemetry:
-  grpc:
-    enabled: true
-  http:
-    enabled: true
-```
-
-You can confirm, the Instana agent is waiting
-for the data by checking, if the agent is exposing Otel standard ports - 4317 and 4318. In order to check it, please run 
-the below command against the "demo-apps" K3S cluster
+A collection of OpenTelemetry data in Instana agent is enabled by default. You
+can confirm the Instana agent is waiting for the data by checking if the agent
+is exposing Otel standard ports - `4317` and `4318`. In order to check, please
+run the below command against the `demo-apps` K3s cluster:
 
 ```bash
 kubectl get services -n instana-agent
 ```
 
-You should be able to see similar response, to the one presented below
+You should be able to see a similar response to the one presented below:
 
 ![otel-010](images/otel-instrumentation-010.png)
 
-:::tip 
-The OpenTelemetry data ingestion can be disabled. For more details, please
-check the Instana agent documentation https://www.ibm.com/docs/en/instana-observability/current?topic=instana-agent#enabling-the-opentelemetry-data-ingestion
+:::tip The OpenTelemetry data ingestion can be disabled.
+
+For more details, please check the Instana
+[agent documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=instana-agent#enabling-the-opentelemetry-data-ingestion).
+
 :::
 
 ## Verify OpenTelemetry Demo Application state
 
-Let's find out if the OpenTelemetry Demo Application pods are up and healthy, by running the below command
+Let's find out if the OpenTelemetry Demo Application pods are up and healthy by
+running the below command:
 
 ```bash
 kubectl get pods -n otel-demo
 ```
 
-You should be able to see similar results, as presented on the below picture 
+You should be able to see similar results as shown below:
 
 ![otel-011](images/otel-instrumentation-011.png)
 
-Having pods in RUNNING state will guarantee, that the OpenTelemetry Demo Application will works just fine. 
-In case some of the pods are in CRASH state, try to restart them by the below command
+Having pods in a `RUNNING` phase will guarantee, that the OpenTelemetry Demo
+Application will works just fine. In case some of the pods are in a non-running
+state, try to restart them using the below command:
 
 ```bash
-kubectl delete pod [POD NAME REPLACE THIS] -n otel-demo
+kubectl delete pod <REPLACE-WITH-POD-NAME> -n otel-demo
 ```
 
 ## Verify OpenTelemetry Demo Application configuration
 
-As stated in the beginning of this lab, the Demo application has been already pre-configured to work with Instana agent.
-Let's see an example location of the configuration, where you can see, how the link between application and Instana agent
-looks like.
+As stated in the beginning of this lab, the Demo application has already been
+pre-configured to work with the Instana agent. Let's see an example location of
+the configuration, where you can see, how the link between application and
+Instana agent looks like.
 
-Let's check how the "configmap" of OpenTelemetry Demo application looks like, by running this command
+Let's check what the OpenTelemetry Demo application `configmap` looks like by
+running this command:
 
 ```bash
 kubectl edit configmap -n otel-demo
 ```
-As a result, you will see a long configuration file with all of the application-specific settings. 
+
+As a result, you will see a long configuration file with all of the
+application-specific settings.
 
 ![otel-012](images/otel-instrumentation-012.png)
 
-Now, let's find
-the port "4317" which we already know, the agent is waiting for the OpenTelemetry data. Search the file by typing 
-the below command
+Now, let's find the port `4317` which we already know, the agent is waiting for
+the OpenTelemetry data. Search the file by typing the below command:
 
 ```bash
 ?4317
 ```
-and then hit "n" for the next result, you should see a direct link to an Instana agent port 4317 configured within the configmap
+
+and then hit `n` for the next result, you should see a direct link to an Instana
+agent port `4317` configured within the configmap:
 
 ![otel-013](images/otel-instrumentation-013.png)
 
-This is the confirmation, that the OpenTelemetry Demo Application was configured to send OpenTelemetry data to Instana agent
-on port 4317.
+This is the confirmation that the OpenTelemetry Demo Application was configured
+to send OpenTelemetry data to the Instana agent on port `4317`.
 
-You can now close the configmap by hitting ESC and typing 
+You can now close the configmap by hitting ESC and typing
 
 ```bash
 :q!
 ```
+
 ## Verify OpenTelemetry Demo Application live state
 
 Your instance of OpenTelemetry Demo Application is available under the
@@ -151,18 +150,22 @@ https://otel-demo.apps.demo-apps.ibmdte.local. Let's use a browser to open that
 page. Please note the **https** in the address bar. Also, do not worry about the
 security message - accept the self-signed certificate.
 
-![otel-014](images/otel-instrumentation-014.png) 
+![otel-014](images/otel-instrumentation-014.png)
 
-If you are able to see the page presented within the above picture, it means the application is up and delivering content 
-correctly.
+If you are able to see the page presented within the above picture, it means the
+application is up and delivering content correctly.
 
 ## Summary
 
-So far you have been able to accomplish the below steps:
-1. There's an installed and running Instana agent on the cluster,
-2. The agent accepts the OpenTelemetry data on ports 4317 and 4318,
-3. There's up and running OpenTelemetry Demo Application installed on the cluster,
-4. The Demo Application is configured to send OpenTelemetry data to the agent's hostname on port 4317,
-5. The Demo Application is reachable in the browser.
+So far you have been able to accomplish the following:
 
-Now, it's time to move to the next step, please continue to the next section of the lab.
+1. Have installed the Instana agent on the `demo-apps` cluster.
+2. Have the the agent accepting the OpenTelemetry data on ports `4317` and
+   `4318`.
+3. Have the OpenTelemetry Demo Application installed on the cluster.
+4. Have the demo application configured to send OpenTelemetry data to the
+   agent's hostname on port `4317`.
+5. Have the demo application accessible in the browser.
+
+Now, it's time to move to the next step, please continue to the next section of
+the lab.
