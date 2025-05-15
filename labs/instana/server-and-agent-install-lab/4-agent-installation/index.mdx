@@ -245,6 +245,9 @@ etc
 
 Select the **Copy** button to copy the yaml content.
 
+Note: If you try to highlight the text block containing the yaml, you must
+first click on the **show more** link in the lower right corner.
+
 Open a new tab in your terminal. SSH to the _demo-apps_ kubernetes cluster:
 
 ```sh
@@ -501,7 +504,7 @@ helm install instana-agent \
   --namespace instana-agent \
   --set agent.key=wxyz  \
   --set agent.downloadKey=abcdefg \
-  --set agent.endpointHost=agent-acceptor.instana2.tivlab.raleigh.ibm.com  \
+  --set agent.endpointHost=agent-acceptor.instana-0.ibmdte.local  \
   --set agent.endpointPort=443 \
   --set zone.name=zone1 \
   --set cluster.name='cluster1' \

@@ -622,6 +622,15 @@ Hold the stanctl package to prevent it from being upgraded unintentionally.
 apt-mark hold stanctl
 ```
 
+You can now verify your stanctl version by typing:
+
+```sh
+stanctl -v
+```
+
+You should see that the version is 1.8.2.
+
+
 Install Instana
 
 - We are installing Instana in **production** mode. A multi-node cluster only supports production mode.
@@ -676,6 +685,29 @@ stanctl up \
   --core-smtp-start-tls=false \
   --core-smtp-use-ssl=false
 ```
+
+:::info
+
+Many of these installation parameters are optional if you are performing a default install.
+If you do not specify the mandatory parameters such as the SALES_KEY, you will be prompted
+during the installation.
+
+The --timeout parameter is important for slower environments. The default timeout is 30 minutes.
+If the install doesn't complete in the required time, the install will fail.
+
+The core-base-domain, unit-tenant-name, and unit-unit-name are important parameters. 
+The core-base-domain is typically the fully qualified hostname of the server and must be in DNS.
+The unit name, tenant name, and base domain get concatenated into the URL that you use to Log
+into the Instana UI.
+
+Example:  https://unit0-ibm.instana-0.ibmdte.local
+
+This name must also be in the DNS server.
+
+:::
+
+
+
 
 The instana license is automatically applied during the installation process.
 You can view it by running the following command:
