@@ -414,6 +414,7 @@ The MQ procedure is similar.
 - Restart the Queue Manager
 
 The mqs.ini file should contain the following additional information:
+
 ```sh
 ApiExitCommon:
    Sequence=100
@@ -430,8 +431,9 @@ you can examine the files and directories specified above.
 Even though the TAR files for ACE and MQ look similar, they are unique for each
 middleware component.
 
-In addition, it is important that you select the tar file for the platform that 
-you are running.  There are unique packages for x64_64 Linux, Power Linux, AIX, etc.
+In addition, it is important that you select the tar file for the platform that
+you are running. There are unique packages for x64_64 Linux, Power Linux, AIX,
+etc.
 
 :::
 
@@ -615,7 +617,7 @@ com.instana.plugin.ibmmq:
       password: "Passw0rd"
 ```
 
-If you edit the default yaml, you will see QUEUE_MANAGER_1.  You will be 
+If you edit the default yaml, you will see QUEUE_MANAGER_1. You will be
 replacing QUEUE_MANAGER_1 with the actual queue manager name (QM1).
 
 Save the changes and exit the editor, press the **esc** key to enter command
@@ -718,9 +720,9 @@ com.instana.plugin.process:
 
 :::note
 
-Another option is to specify combineTopProcesses as seen below.  This option
-causes Instana to monitor the top 10 processes in terms of CPU usage and the
-top 10 based on memory usage
+Another option is to specify `combineTopProcesses` as seen below. This option
+causes Instana to monitor the top 10 processes in terms of CPU usage and the top
+10 based on memory usage
 
 ```yaml
 com.instana.plugin.host:
@@ -728,7 +730,6 @@ com.instana.plugin.host:
 ```
 
 :::
-
 
 :::note
 

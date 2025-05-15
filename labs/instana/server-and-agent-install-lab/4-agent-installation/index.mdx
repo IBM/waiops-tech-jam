@@ -245,8 +245,12 @@ etc
 
 Select the **Copy** button to copy the yaml content.
 
-Note: If you try to highlight the text block containing the yaml, you must
-first click on the **show more** link in the lower right corner.
+:::note
+
+If you try to highlight the text block containing the yaml, you must first click
+on the **show more** link in the lower right corner.
+
+:::
 
 Open a new tab in your terminal. SSH to the _demo-apps_ kubernetes cluster:
 
@@ -475,17 +479,18 @@ agent environment sit in other \*.cfg files.
 
 :::info
 
-The Agent will read and use `configuration.yaml` and `configuration-<suffix>.yaml` files in the
-`/opt/instana/agent/etc/instana` directory.
+The Agent will read and use `configuration.yaml` and
+`configuration-<suffix>.yaml` files in the `/opt/instana/agent/etc/instana`
+directory.
 
 :::
 
 Some customers choose to have separate yaml files for each key technology. For
-example, you could create a configuration-mq.yaml file and a configuration-ace.yaml file in the same
-directory and it would read both files. `configuration.yaml` will contain sample
-configuration entries and comments for ALL available sensors at the time of your
-install, **BUT** it will not automatically add new sensor config as new sensors
-become available.
+example, you could create a configuration-mq.yaml file and a
+configuration-ace.yaml file in the same directory and it would read both files.
+`configuration.yaml` will contain sample configuration entries and comments for
+ALL available sensors at the time of your install, **BUT** it will not
+automatically add new sensor config as new sensors become available.
 
 For host based installation you can update `configuration.yaml` and the Agent
 should pick up changes automatically (no restart required).

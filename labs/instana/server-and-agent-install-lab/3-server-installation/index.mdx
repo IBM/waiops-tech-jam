@@ -14,19 +14,19 @@ on-prem). For on-premises installations, Instana offers multiple containerized
 options:
 
 - **Standard Edition**
-  - **Single-node cluster** Installs both the Instana backend and
-    datastores on a single node K3s cluster.
-  - **Multi-node cluster** Installs both the Instana backend and
-    datastores a three node K3s cluster.
-- **Custom Edition** Installs the backend Kubernetes Operator on a
-  RedHat OpenShift or Kubernetes cluster. The datastores are not installed by
-  the operator, they require manual installation either locally on the same
-  cluster or remotely.
-- **Classic Edition** Install both the Instana backend and the
-  datasotres on a single VM using Docker. Unlike the other options this
-  deployment does not support multi-tenancy. Note: **Classic Edition** is not a
-  strategic deployment option. Many recent enhancements such as synthetics,
-  automation catalog, and more are not available with Classic Edition.
+  - **Single-node cluster** Installs both the Instana backend and datastores on
+    a single node K3s cluster.
+  - **Multi-node cluster** Installs both the Instana backend and datastores a
+    three node K3s cluster.
+- **Custom Edition** Installs the backend Kubernetes Operator on a RedHat
+  OpenShift or Kubernetes cluster. The datastores are not installed by the
+  operator, they require manual installation either locally on the same cluster
+  or remotely.
+- **Classic Edition** Install both the Instana backend and the datasotres on a
+  single VM using Docker. Unlike the other options this deployment does not
+  support multi-tenancy. Note: **Classic Edition** is not a strategic deployment
+  option. Many recent enhancements such as synthetics, automation catalog, and
+  more are not available with Classic Edition.
 
 :::tip
 
@@ -43,18 +43,17 @@ current. For example, plan for upgrades every 2 months.
 :::
 
 For the installation of the Instana server, we'll be following the instructions
-from the Instana documentation for a **Self-Hosted Standard Edition Multi-node**. The
-instructions can be found
+from the Instana documentation for a **Self-Hosted Standard Edition
+Multi-node**. The instructions can be found
 [here](https://www.ibm.com/docs/en/instana-observability/290?topic=edition-installing)
 for your reference, but you can follow the steps below. You will be performing
 an online installation during this Tech Jam, but Instana does support off-line
 (air-gapped) installs.
 
 The Classic Edition and Standard Editions are Instana's smallest on-premises
-installation options. Larger deployments are installed into
-kubernetes for horizontal scale and resiliency. For this lab the installation of
-Instana will be completed on the VM's named **instana-0**, **instana-1** and
-**instana-2**.
+installation options. Larger deployments are installed into kubernetes for
+horizontal scale and resiliency. For this lab the installation of Instana will
+be completed on the VM's named **instana-0**, **instana-1** and **instana-2**.
 
 ![install instana architecture](images/architecture.png)
 
@@ -62,9 +61,13 @@ Instana will be completed on the VM's named **instana-0**, **instana-1** and
 
 The three nodes in a multi-node cluster have specific uses:
 
-- **instana-0** is labeled `node-role.instana.io: "backend"`. It is used for running backend workloads that require persistent volumes. The node also runs the gateway, acceptors, and the UI backend.
-- **instana-1** is labeled `node-role.instana.io: "datastore"`. It is used for running data stores.
-- **instana-2** is labeled `node-role.instana.io: "other"`. It used for running the rest of Instana workloads.
+- **instana-0** is labeled `node-role.instana.io: "backend"`. It is used for
+  running backend workloads that require persistent volumes. The node also runs
+  the gateway, acceptors, and the UI backend.
+- **instana-1** is labeled `node-role.instana.io: "datastore"`. It is used for
+  running data stores.
+- **instana-2** is labeled `node-role.instana.io: "other"`. It used for running
+  the rest of Instana workloads.
 
 ## 3.3 Prerequisites
 
@@ -76,11 +79,14 @@ For this multi-node installation, Instana requires the following:
 
 **Storage**
 
-~4TB of storage rated at at least 6000 IOPS (preferred 9000 IOPS) for production environments. A detailed storage breakdown can be found [here](https://www.ibm.com/docs/en/instana-observability/current?topic=mnc-system-requirements#storage-requirements).
+~4TB of storage rated at at least 6000 IOPS (preferred 9000 IOPS) for production
+environments. A detailed storage breakdown can be found
+[here](https://www.ibm.com/docs/en/instana-observability/current?topic=mnc-system-requirements#storage-requirements).
 
 :::tip
 
-It is worth noting that Demo deployments only require 3000 IOPS however multi-node deployments can only be installed in _production_ mode.
+It is worth noting that Demo deployments only require 3000 IOPS however
+multi-node deployments can only be installed in _production_ mode.
 
 :::
 
@@ -88,9 +94,11 @@ It is worth noting that Demo deployments only require 3000 IOPS however multi-no
 
 Normally, you would need to ensure that the virtual machine has the correct
 ports opened in the firewall for the agent, UI, and EUM communications. We have
-already done this work for you. For reference, in an on-prem deployment, 
-please check the ports on your host must be open and accessible for the [Single-node cluster](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#networking-requirements) 
-and [Multi-node cluster](https://www.ibm.com/docs/en/instana-observability/current?topic=mnc-system-requirements#required-ports).
+already done this work for you. For reference, in an on-prem deployment, please
+check the ports on your host must be open and accessible for the
+[Single-node cluster](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#networking-requirements)
+and
+[Multi-node cluster](https://www.ibm.com/docs/en/instana-observability/current?topic=mnc-system-requirements#required-ports).
 The ports for SaaS are slightly different.
 
 In addition, online installations need access to a number of repositories that
@@ -99,63 +107,17 @@ are documented here for reference:
 
 ## 3.4. Preparing the server
 
-
-
 :::tip
 
-Prior to installing Instana, always ensure there is no instance of snap Docker on
-the machine/s you will use as it can
+Prior to installing Instana, always ensure there is no instance of snap Docker
+on the machine/s you will use as it can
 [conflict with K3s](https://docs.k3s.io/known-issues#snap-docker).
 
-:::
+There are few tasks that need to be run to prepare the servers for installation.
+Lets start by ensuring you can connect to the first Instana host.
 
-{/*
-TODO: Move to Robot Shop lab
-This tip is no longer required here as Instana images are now hosted on Artifact.
-
-:::tip Optional Tip
-
-Due to the large number of requests that can be made to Docker Hub from the IBM
-network rate limiting may occur when you try to install Instana. You can prevent
-this by adding your own Docker Hub credentials.
-
-1. [Sign up](https://hub.docker.com/signup) to Docker Hub if you don't already
-   have an account.
-2. From the Instana VM export the following environment variables:
-
-```sh
-export DOCKER_HUB_USERNAME=<your-docker-hub-username>
-export DOCKER_HUB_PASSWORD=<your-docker-hub-password>
-```
-
-3. Run the following commands to create the authentication file for Docker Hub
-   in the K3s directory:
-
-```sh
-sudo mkdir -p /etc/rancher/k3s
-sudo bash -c "cat > /etc/rancher/k3s/registries.yaml <<EOF
-configs:
-  registry-1.docker.io:
-    auth:
-      username: ${DOCKER_HUB_USERNAME}
-      password: ${DOCKER_HUB_PASSWORD}
-EOF"
-```
-
-4. Confirm the new file is accurate by running:
-
-```sh
-cat /etc/rancher/k3s/registries.yaml
-```
-
-::: */}
-
-
-
-There are few tasks that need to be run to prepare the servers for installation. Lets start by ensuring you can connect to the first Instana host.
-
-From the Bastion host, open a terminal window by selecting
-**Activities** at the top left of the screen and then the terminal icon.
+From the Bastion host, open a terminal window by selecting **Activities** at the
+top left of the screen and then the terminal icon.
 
 :::tip
 
@@ -184,31 +146,38 @@ You are now operating as root on the first Instana host.
 
 ### 3.4.1. Prepare storage
 
-The largest allocation of storage (3.7TB) for a multi-node installation is split across four data storage directories on two nodes. The allocation for these directories is as follows:
+The largest allocation of storage (3.7TB) for a multi-node installation is split
+across four data storage directories on two nodes. The allocation for these
+directories is as follows:
 
-| Node       | Directory           | Path                              | Required Disk (GB) |
-|------------|---------------------|-----------------------------------|--------------------|
-| instana-0 | **Objects**   | /mnt/instana/stanctl/objects      | 1000               |
-| instana-1 | **Data**      | /mnt/instana/stanctl/data         | 500                |
-|            | **Metrics**    | /mnt/instana/stanctl/metrics      | 1000               |
-|            | **Analytics**  | /mnt/instana/stanctl/analytics    | 1200               |
-| instana-2 | No additional disks | N/A                               | N/A                  |
+| Node      | Directory           | Path                           | Required Disk (GB) |
+| --------- | ------------------- | ------------------------------ | ------------------ |
+| instana-0 | **Objects**         | /mnt/instana/stanctl/objects   | 1000               |
+| instana-1 | **Data**            | /mnt/instana/stanctl/data      | 500                |
+|           | **Metrics**         | /mnt/instana/stanctl/metrics   | 1000               |
+|           | **Analytics**       | /mnt/instana/stanctl/analytics | 1200               |
+| instana-2 | No additional disks | N/A                            | N/A                |
 
-The storage devices have been added to the hosts that require them but they must be prepared with a filesystem and mounted prior to installation.
+The storage devices have been added to the hosts that require them but they must
+be prepared with a filesystem and mounted prior to installation.
 
 #### 3.4.1.1. Prepare storage on **instana-0**
 
-Open your terminal window connected to **instana-0** and run the following to list the available storage devices:
+Open your terminal window connected to **instana-0** and run the following to
+list the available storage devices:
 
 ```sh
 lsblk
 ```
 
-As per the above table, we should expect to see a spare disk with the size of 1TB (1000GB) for the **Objects** directory. You should see output similar to the below:
+As per the above table, we should expect to see a spare disk with the size of
+1TB (1000GB) for the **Objects** directory. You should see output similar to the
+below:
 
 :::info
 
-In this example, the device with 1000GB free is named **sdb**, the device name may be different on your host.
+In this example, the device with 1000GB free is named **sdb**, the device name
+may be different on your host.
 
 :::
 
@@ -251,7 +220,8 @@ OBJECTS_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
 ' | head -1)
 ```
 
-You can run the following command to verify the value of the variable matches the device name of the spare disk:
+You can run the following command to verify the value of the variable matches
+the device name of the spare disk:
 
 ```php
 echo $OBJECTS_DISK
@@ -266,13 +236,15 @@ for disk in $OBJECTS_DISK ; do
 done
 ```
 
-Now you will need to create the Objects directory that will be used to mount the device:
+Now you will need to create the Objects directory that will be used to mount the
+device:
 
 ```php
 mkdir -p /mnt/instana/stanctl/objects
 ```
 
-Then make a backup of the existing fstab file, get the UUID of the device and add the new mount point for it:
+Then make a backup of the existing fstab file, get the UUID of the device and
+add the new mount point for it:
 
 ```php
 # Backup the existing fstab file
@@ -294,7 +266,8 @@ Verify the mount point was added correctly by running the following command:
 lsblk /dev/$OBJECTS_DISK
 ```
 
-You should now see that your device is mounted on the `/mnt/instana/stanctl/objects` directory.
+You should now see that your device is mounted on the
+`/mnt/instana/stanctl/objects` directory.
 
 ```sh title="Example Output"
 NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
@@ -303,7 +276,8 @@ sdb    8:16   0 1000G  0 disk /mnt/instana/stanctl/objects
 
 #### 3.4.1.2. Prepare storage on **instana-1**
 
-Now we have to repeat the same steps for the 3 storage directories required on the **instana-1** host.
+Now we have to repeat the same steps for the 3 storage directories required on
+the **instana-1** host.
 
 Leave you current tab open, you will need it later.
 
@@ -327,7 +301,8 @@ Run the following to list the available storage devices:
 lsblk
 ```
 
-As per the above table, we should expect to see three spare disks with the size of 500GB, 1000GB and 1200GB. You should see output similar to the below:
+As per the above table, we should expect to see three spare disks with the size
+of 500GB, 1000GB and 1200GB. You should see output similar to the below:
 
 :::info
 
@@ -362,11 +337,15 @@ sdc                         8:32   0  1000G  0 disk
 sdd                         8:48   0   1.2T  0 disk
 ```
 
-Capture the device names of the spare disks into the variables **DATA_DISK**, **METRICS_DISK** and **ANALYTICS_DISK**.
+Capture the device names of the spare disks into the variables **DATA_DISK**,
+**METRICS_DISK** and **ANALYTICS_DISK**.
 
 :::info
 
-You could manually assign the device names to the variables DATA_DISK, METRICS_DISK and ANALYTICS_DISK and continue however these commands will ensure that the correct device names are used based on the size of the disk and the partition status.
+You could manually assign the device names to the variables DATA_DISK,
+METRICS_DISK and ANALYTICS_DISK and continue however these commands will ensure
+that the correct device names are used based on the size of the disk and the
+partition status.
 
 :::
 
@@ -417,7 +396,8 @@ for disk in $DATA_DISK $METRICS_DISK $ANALYTICS_DISK ; do
 done
 ```
 
-Now you will need to create the data, metrics and analytics directories that will be used to mount the devices:
+Now you will need to create the data, metrics and analytics directories that
+will be used to mount the devices:
 
 ```php
 mkdir -p /mnt/instana/stanctl/data
@@ -425,7 +405,8 @@ mkdir -p /mnt/instana/stanctl/metrics
 mkdir -p /mnt/instana/stanctl/analytics
 ```
 
-Then make a backup of the existing fstab file, get the UUID of the device and add the new mount point for it:
+Then make a backup of the existing fstab file, get the UUID of the device and
+add the new mount point for it:
 
 ```php
 # Backup the existing fstab file
@@ -451,7 +432,9 @@ Verify the mount points were added correctly by running the following commands:
 lsblk
 ```
 
-You should now see that your devices are mounted on the /mnt/instana/stanctl/data, /mnt/instana/stanctl/metrics and /mnt/instana/stanctl/analytics directories.
+You should now see that your devices are mounted on the
+/mnt/instana/stanctl/data, /mnt/instana/stanctl/metrics and
+/mnt/instana/stanctl/analytics directories.
 
 ```sh title="Example Output"
 NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
@@ -463,13 +446,18 @@ sdd                         8:48   0   1.2T  0 disk /mnt/instana/stanctl/analyti
 
 ### 3.4.2. Set kernel parameters
 
-There are some Kernel parameters that need to be set of each of the nodes. For full details on the parameters, please refer to the [Kernel Parameters documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#kernel-parameters).
+There are some Kernel parameters that need to be set of each of the nodes. For
+full details on the parameters, please refer to the
+[Kernel Parameters documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#kernel-parameters).
 
-**Open a new terminal tab**, this will default you back to the **admin** user on the **bastion-gym-lan** host. From the bastion host, run the following command to iterate over each of the nodes and set the required kernel parameters:
+**Open a new terminal tab**, this will default you back to the **admin** user on
+the **bastion-gym-lan** host. From the bastion host, run the following command
+to iterate over each of the nodes and set the required kernel parameters:
 
 :::note
 
-StrictHostKeyChecking is set to no to avoid the need to accept the SSH key for the instana-2 machine that we have not connected to yet.
+StrictHostKeyChecking is set to no to avoid the need to accept the SSH key for
+the instana-2 machine that we have not connected to yet.
 
 :::
 
@@ -518,23 +506,29 @@ You are now ready to start the installation of the Instana Server.
 
 ## 3.5. Installing Instana
 
-First we need to ensure that the host **instana-0** has root access to the other hosts in the Instana cluster. This is required to allow the **stanctl** tool to install Instana components on the other hosts. To do this we need to:
+First we need to ensure that the host **instana-0** has root access to the other
+hosts in the Instana cluster. This is required to allow the **stanctl** tool to
+install Instana components on the other hosts. To do this we need to:
 
 1. Create a new ssh key
 2. Add the public key to the root user on the other hosts
-4. Copy the private key to the **instana-0** host
-5. Move the key to root's .ssh directory and set permissions
-6. Ensure the new ssh key is used by by **instana-0** when connecting to **instana-1** and **instana-2**
+3. Copy the private key to the **instana-0** host
+4. Move the key to root's .ssh directory and set permissions
+5. Ensure the new ssh key is used by by **instana-0** when connecting to
+   **instana-1** and **instana-2**
 
-Ensure you are on the **bastion-gym-lan** host and operating as the **admin** user.
+Ensure you are on the **bastion-gym-lan** host and operating as the **admin**
+user.
 
-Run the following commands to create a new ssh key and store it in the environment variable **PUBLIC_KEY**.
+Run the following commands to create a new ssh key and store it in the
+environment variable **PUBLIC_KEY**.
 
 ```sh
 ssh-keygen -t rsa -f ~/.ssh/instana-cluster -N "" -C "Instana Cluster Key"
 ```
 
-Run the following to add the new public ssh key to the root user on **instana-1** and **instana-2** hosts.
+Run the following to add the new public ssh key to the root user on
+**instana-1** and **instana-2** hosts.
 
 ```php
 PUBLIC_KEY=$(cat ~/.ssh/instana-cluster.pub)
@@ -543,7 +537,8 @@ for i in 1 2; do
 done
 ```
 
-Setup the **root** user on **instana-0** to use the new ssh key to connect to **instana-1** and **instana-2**:
+Setup the **root** user on **instana-0** to use the new ssh key to connect to
+**instana-1** and **instana-2**:
 
 ```sh
 scp ~/.ssh/instana-cluster jammer@instana-0:/tmp/instana_key && echo "Key copied successfully" && \
@@ -556,39 +551,47 @@ echo \"    StrictHostKeyChecking no\" >> ~/.ssh/config && \
 chmod 600 ~/.ssh/config && echo \"All operations completed successfully\"'"
 ```
 
-Now the host **instana-0** has access to the private ssh key that has been added to the other hosts.
+Now the host **instana-0** has access to the private ssh key that has been added
+to the other hosts.
 
-Navigate back to your terminal tab connected to **instana-0**. Ensure you are still operating as the **root** user.
+Navigate back to your terminal tab connected to **instana-0**. Ensure you are
+still operating as the **root** user.
 
-:::danger Ensure you are on the right host and your keys are working before continuing
+:::danger Ensure you are on the right host and your keys are working before
+continuing
 
-1. Ensure you are on the correct host. If you are unsure run `hostname && whoami` to verify.
+1. Ensure you are on the correct host. If you are unsure run
+   `hostname && whoami` to verify.
 
-    You should see output similar to the following:
+   You should see output similar to the following:
 
-    ```sh
-    instana-0
-    root
-    ```
+   ```sh
+   instana-0
+   root
+   ```
 
-    If you don't you should open a new tab, run `ssh jammer@instana-0` and `sudo -i` to become the root user.
+   If you don't you should open a new tab, run `ssh jammer@instana-0` and
+   `sudo -i` to become the root user.
 
-2. Ensure you are able to connect to **instana-1** and **instana-2** as the root user using the newly created cluster key. Run the following:
+2. Ensure you are able to connect to **instana-1** and **instana-2** as the root
+   user using the newly created cluster key. Run the following:
 
-    ```sh
-    ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-2 "echo Connection to instana-2 successful"
-    ```
+   ```sh
+   ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-2 "echo Connection to instana-2 successful"
+   ```
 
-    You should see the following output:
+   You should see the following output:
 
-    ```sh
-    Connection to instana-1 successful
-    Connection to instana-2 successful
-    ```
+   ```sh
+   Connection to instana-1 successful
+   Connection to instana-2 successful
+   ```
 
 :::
 
-Export your Instana Download and Sales keys as environment variables. Run the following after replacing `<your-download-key>` and `<your-sales-key>` with the [keys provided for your lab environment](https://ibm.seismic.com/Link/Content/DCQfMjDgqWT2B87FWXPhGXQbJGDP).
+Export your Instana Download and Sales keys as environment variables. Run the
+following after replacing `<your-download-key>` and `<your-sales-key>` with the
+[keys provided for your lab environment](https://ibm.seismic.com/Link/Content/DCQfMjDgqWT2B87FWXPhGXQbJGDP).
 
 ```sh
 export AGENT_DOWNLOAD_KEY=<your-download-key>
@@ -609,7 +612,9 @@ EOF
 wget -nv -O- --user=_ --password="$AGENT_DOWNLOAD_KEY" https://artifact-public.instana.io/artifactory/api/security/keypair/public/repositories/rel-debian-public-virtual | gpg --dearmor > /usr/share/keyrings/instana-archive-keyring.gpg
 ```
 
-Update the package list and install the Instana **stanctl** utility. The **stanctl** tool is used to install Instana and perform other Instana administrative tasks.
+Update the package list and install the Instana **stanctl** utility. The
+**stanctl** tool is used to install Instana and perform other Instana
+administrative tasks.
 
 ```sh
 apt update -y && \
@@ -630,19 +635,23 @@ stanctl -v
 
 You should see that the version is 1.8.2.
 
-
 Install Instana
 
-- We are installing Instana in **production** mode. A multi-node cluster only supports production mode.
-- DNS has already been configured in this environment for the Instana vm's. Instana can
-  be reached at _instana-0.ibmdte.local_. Further details on
+- We are installing Instana in **production** mode. A multi-node cluster only
+  supports production mode.
+- DNS has already been configured in this environment for the Instana vm's.
+  Instana can be reached at _instana-0.ibmdte.local_. Further details on
   [required DNS entries can be found here](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#dns-settings).
-- Internally, Instana has tenants, which are a logical construct. Each
-  tenant has one or more tenant units. There are [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#tenant-and-unit-names).
+- Internally, Instana has tenants, which are a logical construct. Each tenant
+  has one or more tenant units. There are
+  [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#tenant-and-unit-names).
   In this installation the tenant is **ibm** and the unit is **unit0**.
-- The default administrator username is `admin@instana.local` and the password is `Passw0rd`.
-- We are setting the volumes to the directories we created earlier during the storage configuration tasks.
-- We are setting the SMTP configuration to use an SMTP server that has been configured in your lab environment.
+- The default administrator username is `admin@instana.local` and the password
+  is `Passw0rd`.
+- We are setting the volumes to the directories we created earlier during the
+  storage configuration tasks.
+- We are setting the SMTP configuration to use an SMTP server that has been
+  configured in your lab environment.
 
   The installation below, uses a set of optional installation flags. If you are
   interested in seeing all of the available installation flags, you can run:
@@ -655,9 +664,11 @@ Start the installation by running the following command:
 
 :::info
 
-- If prompted with "Would you like to execute the script (stanctl-preflight.sh)?" press **N** for no.
+- If prompted with "Would you like to execute the script
+  (stanctl-preflight.sh)?" press **N** for no.
 
-- When prompted to "Enter TLS certificate file (hit ENTER to auto-generate):" press **Enter** to auto-generate the certificate.
+- When prompted to "Enter TLS certificate file (hit ENTER to auto-generate):"
+  press **Enter** to auto-generate the certificate.
 
 :::
 
@@ -688,26 +699,24 @@ stanctl up \
 
 :::info
 
-Many of these installation parameters are optional if you are performing a default install.
-If you do not specify the mandatory parameters such as the SALES_KEY, you will be prompted
-during the installation.
+Many of these installation parameters are optional if you are performing a
+default install. If you do not specify the mandatory parameters such as the
+`SALES_KEY`, you will be prompted during the installation.
 
-The --timeout parameter is important for slower environments. The default timeout is 30 minutes.
-If the install doesn't complete in the required time, the install will fail.
+The `--timeout` parameter is important for slower environments. The default
+timeout is 30 minutes. If the install doesn't complete in the required time, the
+install will fail.
 
-The core-base-domain, unit-tenant-name, and unit-unit-name are important parameters. 
-The core-base-domain is typically the fully qualified hostname of the server and must be in DNS.
-The unit name, tenant name, and base domain get concatenated into the URL that you use to Log
-into the Instana UI.
+The `core-base-domain`, `unit-tenant-name`, and `unit-unit-name` are important
+parameters. The `core-base-domain` is typically the fully qualified hostname of
+the server and must be in DNS. The unit name, tenant name, and base domain get
+concatenated into the URL that you use to Log into the Instana UI.
 
-Example:  https://unit0-ibm.instana-0.ibmdte.local
+Example: https://unit0-ibm.instana-0.ibmdte.local
 
 This name must also be in the DNS server.
 
 :::
-
-
-
 
 The instana license is automatically applied during the installation process.
 You can view it by running the following command:
@@ -760,7 +769,11 @@ You should not perform any steps in this section, it is for information only.
 
 :::
 
-If you look back at the command used for installation you will see you have already configured an SMTP server in this environment. You do not need to configure your server at the time of installation, the SMTP settings can be later modified using the stanctl tool. The following command will update the SMTP settings of the Instana server:
+If you look back at the command used for installation you will see you have
+already configured an SMTP server in this environment. You do not need to
+configure your server at the time of installation, the SMTP settings can be
+later modified using the stanctl tool. The following command will update the
+SMTP settings of the Instana server:
 
 ```sh
 stanctl backend apply \
@@ -841,25 +854,25 @@ Then upgrade the backend:
 stanctl up
 ```
 
-The command will list the available update options. Use the arrows on your keyboard to
-move up and download to select the version that you want to install from the list provided.
+The command will list the available update options. Use the arrows on your
+keyboard to move up and download to select the version that you want to install
+from the list provided.
 
 ---
 
 ## 3.9: Summary
 
-In this portion of the lab, you have learned how to prepare an environment for the
-installation of the **Self-Hosted Multi-node Standard Edition** Instana server. You have
-also learned how to configure SMTP settings and how to enable feature flags.
+In this portion of the lab, you have learned how to prepare an environment for
+the installation of the **Self-Hosted Multi-node Standard Edition** Instana
+server. You have also learned how to configure SMTP settings and how to enable
+feature flags.
 
-For a POC, we recommend either SaaS or the
-single node Standard Edition. For production deployments, customers will want the **multi-node Standard Edition**
+For a POC, we recommend either SaaS or the single node Standard Edition. For
+production deployments, customers will want the **multi-node Standard Edition**
 or **Self-Hosted Custom Edition**. **Multi-Node Standard Edition** will increase
 scalability. **Self-Hosted Custom Edition** provides more flexibility in terms
 of kubernetes/OpenShift environments and dramatically improves scalability as
 well as providing built-in resiliency.
-
-
 
 You are now ready to learn how to install and configure an Instana Agent.
 
