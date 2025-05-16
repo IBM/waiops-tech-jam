@@ -413,6 +413,16 @@ The MQ procedure is similar.
   copied and pasted from the Instana documentation.
 - Restart the Queue Manager
 
+The mqs.ini file should contain the following additional information:
+
+```sh
+ApiExitCommon:
+   Sequence=100
+   Function=EntryPoint
+   Module=/var/mqm/exits64/mqtracingexit
+   Name=TracingApiExit
+```
+
 In the lab environment, these steps have already been performed. If you want,
 you can examine the files and directories specified above.
 
@@ -420,6 +430,10 @@ you can examine the files and directories specified above.
 
 Even though the TAR files for ACE and MQ look similar, they are unique for each
 middleware component.
+
+In addition, it is important that you select the tar file for the platform that
+you are running. There are unique packages for x64_64 Linux, Power Linux, AIX,
+etc.
 
 :::
 
@@ -595,13 +609,16 @@ the individual parameters.
 # IBM MQ
 com.instana.plugin.ibmmq:
   enabled: true
-  poll_rate: 5
+  poll_rate: 30
   queueManagers: # Multiple Queue Manager instances can be specified
     QM1:
       channel: "ACE.SVRCONN" # Remote administration channel
       username: "mqm"
       password: "Passw0rd"
 ```
+
+If you edit the default yaml, you will see QUEUE_MANAGER_1. You will be
+replacing QUEUE_MANAGER_1 with the actual queue manager name (QM1).
 
 Save the changes and exit the editor, press the **esc** key to enter command
 mode and write your changes and exit the file by typing:
@@ -700,6 +717,19 @@ com.instana.plugin.process:
     - "amqzmgr0"
     - "runmqlsr"
 ```
+
+:::note
+
+Another option is to specify `combineTopProcesses` as seen below. This option
+causes Instana to monitor the top 10 processes in terms of CPU usage and the top
+10 based on memory usage
+
+```yaml
+com.instana.plugin.host:
+  combineTopProcesses: true
+```
+
+:::
 
 :::note
 
