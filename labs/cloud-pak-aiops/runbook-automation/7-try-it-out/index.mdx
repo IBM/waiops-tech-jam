@@ -20,8 +20,9 @@ Use the following steps to inject a synthetic alert into AIOps:
 
 - Open a command terminal, connect to the virtual machine `netcoolvm` via SSH, and log in to the Netcool/OMNIbus ObjectServer:
 ```
-ssh netcool@netcoolvm
-$OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool
+$ ssh jammer@netcoolvm
+$ sudo su - netcool
+$ $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool
 ```
 
 - Copy and paste the following SQL into the SQL prompt:
@@ -32,8 +33,13 @@ LastOccurrence, Class, Service, AlertGroup, Manager, ExpireTime) values
 getdate, getdate, 40057, 'Banking', 'CiscoLink', 'SNMP', 86400);
 go
 ```
-- Type: `exit` and press enter to exit the command prompt
-- Log in to the AIOps console and select **Alerts** from the main menu
+- Type: `exit` and press the enter key to exit the command prompt
+
+- Log in to the AIOps console
+- Select **Alerts** from the **Quick navigation** menu or **Operate** → **Alerts** from the main menu
+
+![](images/operate_menu.png)
+
 - Type: `Branched` into the Search box at the top of the Alerts viewer
 
 You should see your synthetic alert in your Alerts viewer:

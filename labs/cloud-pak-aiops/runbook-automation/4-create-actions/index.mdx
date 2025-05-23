@@ -14,37 +14,62 @@ The first of the two actions calls an external website that returns a fact about
 
 Use the following steps to create the first action:
 
-- Log in to the AIOps console and select **Automations** from the main menu
+- Log in to the AIOps console
+- Select **Automations** from the **Quick navigation** menu or **Operate** → **Automations** from the main menu
+
+![](images/operate_menu.png)
+
 - Select the **Actions** tab
 - Click the **Create action** button to create the action
 - Select **HTTP** from the **Type** drop-down menu
 - Enter a **Name** for the action: `Fix problem`
+- Expand the **Action HTTP request** section
+
+![](images/expand_http_section.png)
+
 - Select **Custom API** from the **Target API** drop-down menu
 - Enter the following for the **API endpoint**: `https://catfact.ninja/fact?max_length=140`
 - Select **GET** from the **Method** drop-down menu
-- Click on the **Test** button to test the action
-- Click on the **Run** button to run the action
-- Observe the output
+- Click on the **Test** button at the bottom to test the action
+- You will see the following pop-up - click **Continue** to continue:
 
-We have not applied the filter yet to the action output so we see the full response from the target server:
+![](images/test_action.png)
+
+- Click on the **Run** button to run the action and observe the output - it should look similar to the below screenshot:
 
 ![](images/unfiltered-cat-fact.png)
 
-Click **Edit action** to return to the action edit screen and continue:
+:::note
+
+We have not applied the filter to the action output yet, so we will see the full response from the target server.
+
+:::
+
+Click **Edit action** to return to the action edit screen to continue editing your action.
 
 - Scroll down to the **Action output** section
 - Toggle the **Filter action output** switch on
 - Select **JSONPath** from the **Choose query syntax** drop-down menu
 - Enter: `length` into the **Enter query pattern** box
-- Click on the **Test** button to test the action
-- Click on the **Run** button to run the action
-- Observe the output
 
-This type of action output filter specifies that the output should parse the JSON payload returned and extract the value of the `length` attribute:
+![](images/action_output.png)
+
+- Click on the **Test** button to retest the action
+- You will see the following pop-up - click **Continue** to continue:
+
+![](images/test_action.png)
+
+- Click on the **Run** button to run the action and observe the output - it should look similar to the below screenshot:
 
 ![](images/filtered-cat-fact.png)
 
-Click **Edit action** to return to the action edit screen and continue:
+:::note
+
+This type of action output filter specifies that the output should parse the JSON payload returned, extract the value of the `length` attribute, and only display that.
+
+:::
+
+Click **Edit action** to return to the action edit screen to continue editing your action.
 
 - Click on the **Publish** button to save the action and make it available for use
 
@@ -55,7 +80,7 @@ Use the following steps to create the second action:
 - Log in to the AIOps console and select **Automations** from the main menu
 - Select the **Actions** tab
 - Click the **Create action** button to create the action
-- Select **SSH (Bash)** from the **Type** drop-down menu
+- Select **SSH** from the **Type** drop-down menu
 - Enter a **Name** for the action: `Create file`
 - Scroll down to the **Action script** section
 - Select **Bash** from the **Shell** drop-down menu
@@ -71,20 +96,32 @@ ls -alrt *.txt
 echo "--"
 echo "Done."
 ```
-- Click on the 3 dots next to the `target` parameter and select **Edit**
+- Your **Action details** should look something like the following:
+
+![](images/action_details.png)
+
+- On the top-right of the screen, click on the 3 dots next to the `target` parameter and select **Edit**
+
+![](images/2parameters.png)
+
 - Check the box marked **Set a default value**
 - Enter: `netcoolvm` in the **Default value (optional)** box and click **Save**
-- Click on the 3 dots next to the `user` parameter and select **Edit**
+- Next, click on the 3 dots next to the `user` parameter and select **Edit**
 - Check the box marked **Set a default value**
 - Enter: `netcool` in the **Default value (optional)** box and click **Save**
 - Click the **Add parameter** button to add a third parameter
-- Type: `$filename` into the **Parameter** box
+- Type: `filename` into the **Parameter** box
 - Select **A single string value** from the **Type** drop-down menu
 - Click **Save** to save your new parameter
-- Click on the **Test** button to test the action
-- Click on the **Run** button to run the action
 
-You will notice that the **target** and **user** parameters are prepopulated with the default values. Because the third attribute **$filename** doesn't specify a default value, you will need to enter a value to test it out.
+![](images/3parameters.png)
+
+- Click on the **Test** button to test the action
+- You will see the following pop-up - click **Continue** to continue:
+
+![](images/test_action.png)
+
+On the test action screen, you will notice that the **target** and **user** parameters are prepopulated with the default values. Because the third attribute **$filename** doesn't specify a default value, you will need to enter a value to test it out.
 
 - Enter: `123` into the **$filename** box
 
@@ -101,4 +138,9 @@ Click **Edit action** to return to the action edit screen and continue:
 
 - Click on the **Publish** button to save the action and make it available for use
 
-You should now have two new actions which we will use to create our runbook in the next module.
+You should now have two new actions which we will use to create our runbook in the next module:
+
+![](images/2actions.png)
+
+
+

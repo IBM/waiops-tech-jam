@@ -12,22 +12,42 @@ In this lab, you will set up an SSH integration with the `netcoolvm` Linux virtu
 
 Use the following steps to set up the new SSH integration:
 
-- Log in to the AIOps console and select **Integrations** from the main menu
+- Log in to the AIOps console
+- Select **Integrations** from the **Quick navigation** menu or **Define** → **Integrations** from the main menu
+
+![](images/select_integrations.png)
+
 - Click the **Add integration** button to add a new integration
 - Type **SSH** into the Search bar
 - Choose the **SSH** integration and click **Get started** to create a new instance
 - Copy the SSH key the integration generates and save it to your clipboard
+- Click **Next** to advance to the next screen
+- Click **Done** to complete the setup - no need to enable a jump server
+
+You should now see a successful SSH integration configured:
+
+![](images/ssh_integration_success.png)
 
 ## 3.3 Configure Linux host for seamless SSH connection
 
-Open a command terminal and connect to the Netcool VM via SSH:
+Open a notepad window and paste the following:
 ```
-ssh netcool@netcoolvm
+export PUBLIC_KEY="<ssh-key-from-aiops-here>"
+ssh jammer@netcoolvm "sudo -i bash -c 'mkdir -p /home/netcool/.ssh && chmod 700 /home/netcool/.ssh && echo \"${PUBLIC_KEY}\" >> /home/netcool/.ssh/authorized_keys && chmod 600 /home/netcool/.ssh/authorized_keys && chown -R netcool:ncoadmin /home/netcool/.ssh' && echo \"SSH key added to netcoolvm for netcool user successfully\""
 ```
+Next replace `<ssh-key-from-aiops-here>` with the API key you obtained in the previous step.
 
-Edit the `.ssh/authorized_keys` file using vi and append the copied SSH key:
+:::note
+
+Double check your API key to ensure it has copied cleanly and there are no extra spaces or stray characters.
+
+:::
+
+From your command terminal, execute your prepared commands from your notepad session.
+
+You should see the following confirmation message if the commands execute correctly:
 ```
-vi .ssh/authorized_keys
+SSH key added to netcoolvm for netcool user successfully
 ```
 
 
