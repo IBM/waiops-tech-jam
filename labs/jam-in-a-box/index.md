@@ -38,7 +38,7 @@ Select when you would like to reserve the environment for.
 
 ![reserve-env-schedule](../_common/images/reserve-env-schedule.png)
 
-import TechZoneStatus from "../\_common/components/tech-zone-status.tsx"
+import TechZoneStatus from "@site/src/components/techZoneStatus/techZoneStatus.tsx"
 
 :::info
 
