@@ -44,7 +44,7 @@ register for a 60 day trial using the following link:
 
 ## 2.2: Requesting a Lab Environment
 
-import TechZoneStatus from "../../../\_common/components/tech-zone-status.tsx"
+import TechZoneStatus from "@site/src/components/techZoneStatus/techZoneStatus.tsx"
 
 Below is a live chart showing Tech Zone capacity in each available region. When
 requesting your environment it would be wise to select the region that has the

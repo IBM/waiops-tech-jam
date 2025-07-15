@@ -183,7 +183,7 @@ const config: Config = {
           },
         },
       ],
-      additionalLanguages: ["php"],
+      additionalLanguages: ["bash"],
     },
     docs: {
       sidebar: {

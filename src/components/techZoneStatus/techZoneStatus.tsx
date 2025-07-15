@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"
-import styles from "./tech-zone-status.module.css"
+import styles from "./techZoneStatus.module.css"
 
 type Status = "Operational" | "Limited Capacity"
 
