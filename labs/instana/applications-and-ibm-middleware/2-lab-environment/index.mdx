@@ -5,6 +5,7 @@ sidebar_position: 2
 ---
 
 import LicenseInfo from "@site/src/components/Instana/LicenseInfo"
+import RequestingLabEnvironment from "@site/src/components/requestingLabEnvironment/RequestingLabEnvironment"
 
 # Lab Environment
 
@@ -31,22 +32,7 @@ To complete this lab you will need:
 
 ## Requesting a Lab Environment
 
-import TechZoneStatus from "@site/src/components/techZoneStatus/techZoneStatus.tsx"
-
-Below is a live chart showing Tech Zone capacity in each available region. When
-requesting your environment it would be wise to select the region that has the
-most capacity available.
-
-<TechZoneStatus />
-
-:::info
-
-Follow
-[these instructions](/waiops-tech-jam/labs/jam-in-a-box/#requesting-a-lab-environment)
-for step by step guidance on requesting a lab environment in IBM Tech Zone.
-
-:::
-
-Request Tech Zone environment:
-
-- [Jam-in-a-Box: Instana - Apps & IBM Middleware](https://techzone.ibm.com/my/reservations/create/67ec9e6d673783a07149cef3)
+<RequestingLabEnvironment
+   environmentName="Jam-in-a-Box: Instana - Apps & IBM Middleware"
+   environmentUrl="https://techzone.ibm.com/my/reservations/create/67ec9e6d673783a07149cef3"
+/>

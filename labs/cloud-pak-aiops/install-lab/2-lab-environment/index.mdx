@@ -1,0 +1,40 @@
+---
+title: 2. Lab Environment
+description: Lab Environment
+sidebar_position: 2
+---
+
+import RequestingLabEnvironment from "@site/src/components/requestingLabEnvironment/RequestingLabEnvironment"
+import ObtainingEntitlementKey from "@site/src/components/obtainingEntitlementKey/ObtainingEntitlementKey"
+
+In this Lab, you will have access to one OpenShift cluster via a bastion virtual
+machine that has installed Red Hat Enterprise Linux (RHEL). Note that inside
+OpenShift, the cluster has installed a Lightweight Directory Access Protocol
+(LDAP) server called OpenLDAP that will be used later in the lab. It also has
+installed the Red Hat OpenShift Data Foundation (ODF) which is a
+software-defined, container-native storage solution that provides storage
+classes that will be used by the Cloud Pak for AIOps to dynamically request
+storage.
+
+The following diagram describes the initial infrastructure for the Lab:
+
+![](images/architecture.png)
+
+:::note
+
+One key objective of this Lab is to expose the product public documentation to
+the practitioners. With this in mind, each installation steps will reference the
+product documentation.
+
+:::
+
+## 2.1: Prerequisites
+
+<ObtainingEntitlementKey />
+
+## 2.2: Requesting a Lab Environment
+
+<RequestingLabEnvironment
+   environmentName="Jam-in-a-Box: CP4AIOps - Install"
+   environmentUrl="https://techzone.ibm.com/my/reservations/create/649aada63a6943001721722a"
+/>

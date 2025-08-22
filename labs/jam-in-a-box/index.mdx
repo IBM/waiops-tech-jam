@@ -2,6 +2,7 @@
 title: Jam-in-a-Box
 description: Jam-in-a-Box Overview
 ---
+import TechZoneStatus from "@site/src/components/techZoneStatus/techZoneStatus.tsx"
 
 ## Access an Environment
 
@@ -38,8 +39,6 @@ Select when you would like to reserve the environment for.
 
 ![reserve-env-schedule](../_common/images/reserve-env-schedule.png)
 
-import TechZoneStatus from "@site/src/components/techZoneStatus/techZoneStatus.tsx"
-
 :::info
 
 When requesting your environment it would be wise to select the region that has
@@ -66,12 +65,16 @@ will not provision correctly without them.
 
 Once your requested environment has been provisioned successfully by Tech Zone
 you will receive an email letting you know provisioning has completed along with
-your environment details.
+your environment details. Within the details there are two important pieces of information to take note of
 
-Within the details you should see a URL for **Bastion Remote Desktop** that looks similar
-to the following:
+1. Your Reservation ID
 
-![bastion-url](./images/bastion-url.png)
+      ![reservation-id](./images/reservation-id.png)
+
+
+2. A URL for your **Bastion Remote Desktop**
+
+      ![bastion-url](./images/bastion-url.png)
 
 :::tip
 
@@ -83,10 +86,11 @@ If you no longer have the email you can also
 
 :::
 
-Click on the **Bastion Remote Desktop** URL.
+Click on the **Bastion Remote Desktop** URL and sign in with your IBM ID if prompted.
 
-You will be taken to a page that looks similar to the below. Expand the
-_twisties_ and select either **Remote Desktop** or **SSH** to establish a connection to your
+Once logged in you will be taken to a page that looks similar to the below.
+
+Expand the twisties for the environment that matches your Reservation ID and select either **Remote Desktop** or **SSH** to establish a connection to your
 _Apache Guacamole_ Bastion host.
 
 ![access-guacamole](../_common/images/access-guacamole.png)
@@ -141,5 +145,3 @@ editor **gedit** you can do so by:
   # More permanent change (open a new tab or window after making the change)
   echo "export KUBE_EDITOR=/bin/gedit -w" >> ~/.bashrc
   ```
-
-<!-- ## Troubleshooting -->
