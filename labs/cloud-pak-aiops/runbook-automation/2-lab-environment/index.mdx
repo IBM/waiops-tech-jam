@@ -8,6 +8,9 @@ import RequestingLabEnvironment from "@site/src/components/requestingLabEnvironm
 import ObtainingEntitlementKey from "@site/src/components/obtainingEntitlementKey/ObtainingEntitlementKey"
 import RunningOcCommands from "@site/src/components/runningOcCommands/RunningOcCommands"
 import LogInAiopsConsole from "@site/src/components/logInAiopsConsole/LogInAiopsConsole"
+import CreateIbmId from "@site/src/components/createIbmId/CreateIbmId"
+import AiopsTrialLicenseAdmonition from "@site/src/components/trialLicense/TrialLicense"
+
 
 In this lab, you will have access to one OpenShift cluster via a bastion virtual machine that has installed Red Hat Enterprise Linux (RHEL). Note that inside
 OpenShift, the cluster has installed the Cloud Pak for AIOps. It also has installed the Red Hat OpenShift Data Foundation (ODF) which is a
@@ -26,7 +29,11 @@ There is also a regular virtual machine present that has Netcool/OMNIbus and Net
 
 ## 2.1: Prerequisites
 
+<CreateIbmId />
+
 <ObtainingEntitlementKey />
+
+<AiopsTrialLicenseAdmonition />
 
 ## 2.2: Requesting a Lab Environment
 

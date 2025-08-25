@@ -1,17 +1,17 @@
 import React from "react"
-
-const licenseInfoLink =
-  "https://ibm.seismic.com/Link/Content/DCQfMjDgqWT2B87FWXPhGXQbJGDP"
+import Heading from "@theme/Heading"
 
 /**
  * Reusable license information for Instana labs.
  */
 export default function InstanaLicenseInfo({
   requiredWhen = "when requesting the lab environment",
+  licenseInfoLink = "https://ibm.seismic.com/Link/Content/DCQfMjDgqWT2B87FWXPhGXQbJGDP"
 }) {
   return (
-    <div>
-      <strong>Instana license keys (Required {requiredWhen}):</strong>
+    <>
+      <Heading as="h3">Instana license keys</Heading>
+      <p>Required {requiredWhen}:</p>
       <ul>
         <li>Agent / Download Key</li>
         <li>Sales Key</li>
@@ -31,6 +31,6 @@ export default function InstanaLicenseInfo({
           </strong>
         </p>
       </blockquote>
-    </div>
+    </>
   )
 }

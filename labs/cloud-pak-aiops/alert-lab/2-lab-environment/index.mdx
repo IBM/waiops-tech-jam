@@ -8,6 +8,8 @@ import RequestingLabEnvironment from "@site/src/components/requestingLabEnvironm
 import ObtainingEntitlementKey from "@site/src/components/obtainingEntitlementKey/ObtainingEntitlementKey"
 import RunningOcCommands from "@site/src/components/runningOcCommands/RunningOcCommands"
 import LogInAiopsConsole from "@site/src/components/logInAiopsConsole/LogInAiopsConsole"
+import CreateIbmId from "@site/src/components/createIbmId/CreateIbmId"
+import AiopsTrialLicenseAdmonition from "@site/src/components/trialLicense/TrialLicense"
 
 In this Lab, you will have access to one OpenShift cluster via a bastion virtual
 machine that has installed Red Hat Enterprise Linux (RHEL). Note that inside
@@ -23,7 +25,11 @@ The following diagram describes the infrastructure for the Lab:
 
 ## 2.1: Prerequisites
 
+<CreateIbmId />
+
 <ObtainingEntitlementKey />
+
+<AiopsTrialLicenseAdmonition />
 
 ## 2.2: Requesting a Lab Environment
 
