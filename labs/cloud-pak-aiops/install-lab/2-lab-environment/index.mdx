@@ -6,29 +6,27 @@ sidebar_position: 2
 
 import RequestingLabEnvironment from "@site/src/components/requestingLabEnvironment/RequestingLabEnvironment"
 import ObtainingEntitlementKey from "@site/src/components/obtainingEntitlementKey/ObtainingEntitlementKey"
-import RunningOcCommands from "@site/src/components/runningOcCommands/RunningOcCommands"
-import LogInAiopsConsole from "@site/src/components/logInAiopsConsole/LogInAiopsConsole"
 import CreateIbmId from "@site/src/components/createIbmId/CreateIbmId"
 import AiopsTrialLicenseAdmonition from "@site/src/components/trialLicense/TrialLicense"
 
 In this Lab, you will have access to one OpenShift cluster via a bastion virtual
 machine that has installed Red Hat Enterprise Linux (RHEL). Note that inside
-OpenShift, the cluster has installed the Cloud Pak for AIOps. It also has
+OpenShift, the cluster has installed a Lightweight Directory Access Protocol
+(LDAP) server called OpenLDAP that will be used later in the lab. It also has
 installed the Red Hat OpenShift Data Foundation (ODF) which is a
 software-defined, container-native storage solution that provides storage
 classes that will be used by the Cloud Pak for AIOps to dynamically request
 storage.
 
-The following diagram describes the infrastructure for the Lab:
+The following diagram describes the initial infrastructure for the Lab:
 
 ![](images/architecture.png)
 
 :::note
 
-There is also a regular virtual machine present that has Netcool/OMNIbus and
-Netcool/Impact installed. A Simnet Probe is running and feeding a stream of
-events into Netcool/OMNIbus. The Netcool assets on this virtual machine will be
-used in this lab.
+One key objective of this Lab is to expose the product public documentation to
+the practitioners. With this in mind, each installation steps will reference the
+product documentation.
 
 :::
 
@@ -43,16 +41,6 @@ used in this lab.
 ## 2.2: Requesting a Lab Environment
 
 <RequestingLabEnvironment
-   environmentName="Jam-in-a-Box: CP4AIOps - Migrate from Netcool"
-   environmentUrl="https://techzone.ibm.com/my/reservations/create/6694a5c277b630001e0ce877"
+   environmentName="Jam-in-a-Box: CP4AIOps - Install"
+   environmentUrl="https://techzone.ibm.com/my/reservations/create/649aada63a6943001721722a"
 />
-
-## 2.3: Logging In
-
-### Connecting to the OpenShift Cluster
-
-<RunningOcCommands />
-
-### Cloud Pak for AIOps Console
-
-<LogInAiopsConsole />

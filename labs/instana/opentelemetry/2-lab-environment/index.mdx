@@ -5,6 +5,8 @@ sidebar_position: 2
 ---
 
 import LicenseInfo from "@site/src/components/Instana/LicenseInfo"
+import RequestingLabEnvironment from "@site/src/components/requestingLabEnvironment/RequestingLabEnvironment"
+import CreateIbmId from "@site/src/components/createIbmId/CreateIbmId"
 
 # Lab Environment
 
@@ -25,28 +27,13 @@ The lab environment includes 6 VMs.
 
 ## Prerequisites
 
-To complete this lab you will need:
+<CreateIbmId />
 
-- <LicenseInfo />
+<LicenseInfo />
 
 ## Requesting a Lab Environment
 
-import TechZoneStatus from "@site/src/components/techZoneStatus/techZoneStatus.tsx"
-
-Below is a live chart showing Tech Zone capacity in each available region. When
-requesting your environment it would be wise to select the region that has the
-most capacity available.
-
-<TechZoneStatus />
-
-:::info
-
-You can follow
-[these instructions](/waiops-tech-jam/labs/jam-in-a-box/#requesting-a-lab-environment)
-if you need guidance on how to request a lab.
-
-:::
-
-For this lab we will be using the
-[Jam-in-a-Box: Instana - OpenTelemetry](https://techzone.ibm.com/my/reservations/create/673d043277fa7ddf3fca1c9e)
-collection.
+<RequestingLabEnvironment
+   environmentName="Jam-in-a-Box: Instana - OpenTelemetry"
+   environmentUrl="https://techzone.ibm.com/my/reservations/create/673d043277fa7ddf3fca1c9e"
+/>
