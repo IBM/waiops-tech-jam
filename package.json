@@ -15,11 +15,11 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@easyops-cn/docusaurus-search-local": "^0.51.1",
+    "@easyops-cn/docusaurus-search-local": "^0.52.1",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@docusaurus/core": "^3.8.1",
@@ -29,9 +29,9 @@
     "@docusaurus/types": "^3.8.1",
     "@mdx-js/react": "^3.1.0",
     "@tsconfig/docusaurus": "^2.0.3",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "typescript": "^5.8.3"
+    "@types/react": "^19.1.11",
+    "@types/react-dom": "^19.1.8",
+    "typescript": "^5.9.2"
   },
   "browserslist": {
     "production": [

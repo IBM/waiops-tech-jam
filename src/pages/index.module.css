@@ -1,18 +1,79 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
 .heroBanner {
-  padding: 4rem 0;
+  padding: 6rem 0;
   text-align: center;
   position: relative;
   overflow: hidden;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+}
+
+.heroBanner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #0f62fe, #8a3ffc);
+  z-index: -1;
+}
+
+.heroBanner::after {
+  content: '';
+  position: absolute;
+  bottom: -15%;
+  right: -15%;
+  width: 1000px;
+  height: 1000px;
+  background: url('/img/ibm-watson-logo.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.heroBanner .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.heroBanner h1.hero__title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.cardRow {
+  justify-content: center;
+  margin-top: 4rem;
 }
 
 @media screen and (max-width: 996px) {
   .heroBanner {
-    padding: 2rem;
+    padding: 3rem 2rem;
+    min-height: auto;
+  }
+
+  .heroBanner h1.hero__title {
+    font-size: 2.5rem;
+  }
+
+  .heroBanner::after {
+    width: 400px;
+    height: 400px;
+    opacity: 0.05;
+    bottom: -10%;
+    right: -10%;
+  }
+
+  .cardRow {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
   }
 }
 

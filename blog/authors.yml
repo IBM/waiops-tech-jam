@@ -1,0 +1,9 @@
+# Team announcements
+automation_team:
+  name: Automation Team
+  title: IBM IT Automation Tiger Team
+  image_url: /img/automation-logo.png
+instana_team:
+  name: Instana Team
+  title: IBM IT Automation Tiger Team
+  image_url: /img/instana-stan.png

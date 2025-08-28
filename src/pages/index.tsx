@@ -1,10 +1,13 @@
 import clsx from "clsx"
-import HomepageFeatures from "@site/src/components/HomepageFeatures"
+import FeatureCard from "@site/src/components/FeatureCard"
 import Layout from "@theme/Layout"
 import Link from "@docusaurus/Link"
 import React from "react"
 import styles from "./index.module.css"
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
+import { FlaskIcon } from "@site/src/components/icons/Flask"
+import { BlogIcon } from "@site/src/components/icons/Blog"
+import { BestPracticeIcon } from "@site/src/components/icons/BestPractice"
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext()
@@ -12,27 +15,40 @@ function HomepageHeader() {
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className="container">
         <h1 className="hero__title">{siteConfig.title}</h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/labs/jam-in-a-box"
-          >
-            View the latest AIOps TechJam Lab 🧑‍🔬
-          </Link>
+        <div className={clsx("row", styles.cardRow)}>
+          <FeatureCard
+            icon={<BestPracticeIcon />}
+            title="Best Practices Guides"
+            description="Documentation and step-by-step guides covering implementation, troubleshooting, and performance-tuning strategies from the IBM Automation Tiger Team."
+            link="/best-practice/practitioner-basics"
+            linkText="Explore Guides"
+          />
+          <FeatureCard
+            icon={<FlaskIcon />}
+            title="Jam-in-a-Box Labs"
+            description="Self-paced, hands-on lab environments leveraging IBM TechZone where you can practice scenarios, test configurations, and learn through guided tutorials."
+            link="/labs/jam-in-a-box"
+            linkText="Start Lab"
+          />
+          <FeatureCard
+            icon={<BlogIcon />}
+            title="Expert Insights Blog"
+            description="Stay updated with the latest technical insights from the IBM Automation Tiger Team."
+            link="/blog"
+            linkText="Read Blog"
+          />
         </div>
       </div>
     </header>
   )
 }
 
-export default function Home(): JSX.Element {
+export default function Home() {
+  const {siteConfig} = useDocusaurusContext()
+
   return (
-    <Layout description="IBM IT & Network Automation Tiger Team - TechJams & Guides">
+    <Layout description={`${siteConfig.title} - TechJams & Guides`}>
       <HomepageHeader />
-      <main>
-        <HomepageFeatures />
-      </main>
     </Layout>
   )
 }
