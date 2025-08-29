@@ -7,6 +7,6 @@ tags: [announcement]
 
 # Guides Coming Soon!
 
-IBM Automation Tiger Team Blog coming soon.
+IBM IT & Network Automation Tiger Team Blog coming soon.
 
 <!-- truncate -->

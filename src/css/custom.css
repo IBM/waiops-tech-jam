@@ -77,3 +77,10 @@
 .wip-docs {
   display: none !important;
 }
+
+/* Increase navbar logo size and crop whitespace */
+.navbar__brand .navbar__logo {
+  height: 25px;
+  width: auto;
+  margin-right: 15px;
+}

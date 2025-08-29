@@ -1,9 +1,17 @@
 # Team announcements
 automation_team:
   name: Automation Team
-  title: IBM IT Automation Tiger Team
+  title: IT & Network Automation Tiger Team
   image_url: /img/automation-logo.png
 instana_team:
   name: Instana Team
-  title: IBM IT Automation Tiger Team
+  title: IT & Network Automation Tiger Team
   image_url: /img/instana-stan.png
+aiops_team:
+  name: AIOps Team
+  title: IT & Network Automation Tiger Team
+  image_url: /img/automation-logo.png
+network_team:
+  name: Network Team
+  title: IT & Network Automation Tiger Team
+  image_url: /img/automation-logo.png

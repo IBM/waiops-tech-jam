@@ -3,8 +3,8 @@ import type * as Preset from "@docusaurus/preset-classic"
 import {themes} from "prism-react-renderer"
 
 const config: Config = {
-  title: "IT Automation Tiger Team",
-  tagline: "IBM IT Automation Tiger Team",
+  title: "IT & Network Automation Tiger Team",
+  tagline: "IBM IT & Network Automation Tiger Team",
   url: "https://github.com/",
   baseUrl: "/waiops-tech-jam/",
   onBrokenLinks: "throw",
@@ -85,21 +85,24 @@ const config: Config = {
 
   themeConfig: {
     navbar: {
-      title: "IT Automation Tiger Team",
+      title: "IT & Network Automation Tiger Team",
       logo: {
         alt: "Logo",
-        src: "/img/ibm-watson-logo.png",
+        src: "/img/IBM_logo_blue.png",
+        srcDark: "/img/IBM_logo_white.png", // Optional: different logo for dark mode
       },
       items: [
         {
           to: "/best-practice/practitioner-basics",
-          position: "left",
           label: "Best Practice",
+          position: "left",
+          activeBaseRegex: 'best-practice/',
         },
         {
           to: "/labs/jam-in-a-box",
-          position: "left",
-          label: "Labs",
+          label: 'Labs',
+          position: 'left',
+          activeBaseRegex: 'labs/'
         },
         {to: "/blog", label: "Blog", position: "left"},
         // TODO: Automations coming soon

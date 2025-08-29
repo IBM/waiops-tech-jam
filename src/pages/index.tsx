@@ -19,7 +19,7 @@ function HomepageHeader() {
           <FeatureCard
             icon={<BestPracticeIcon />}
             title="Best Practices Guides"
-            description="Documentation and step-by-step guides covering implementation, troubleshooting, and performance-tuning strategies from the IBM Automation Tiger Team."
+            description="Documentation and step-by-step guides covering implementation, troubleshooting, and performance-tuning strategies from the IBM IT & Network Automation Tiger Team."
             link="/best-practice/practitioner-basics"
             linkText="Explore Guides"
           />
@@ -33,7 +33,7 @@ function HomepageHeader() {
           <FeatureCard
             icon={<BlogIcon />}
             title="Expert Insights Blog"
-            description="Stay updated with the latest technical insights from the IBM Automation Tiger Team."
+            description="Stay updated with the latest technical insights from the IBM IT & Network Automation Tiger Team."
             link="/blog"
             linkText="Read Blog"
           />
