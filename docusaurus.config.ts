@@ -85,6 +85,7 @@ const config: Config = {
 
   themeConfig: {
     navbar: {
+      style: "dark",
       title: "IT & Network Automation Tiger Team",
       logo: {
         alt: "Logo",
