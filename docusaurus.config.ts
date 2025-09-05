@@ -3,8 +3,8 @@ import type * as Preset from "@docusaurus/preset-classic"
 import {themes} from "prism-react-renderer"
 
 const config: Config = {
-  title: "IBM AIOps Automation SWAT",
-  tagline: "SWAT TechJams & Guides",
+  title: "IT & Network Automation Tiger Team",
+  tagline: "IBM IT & Network Automation Tiger Team",
   url: "https://github.com/",
   baseUrl: "/waiops-tech-jam/",
   onBrokenLinks: "throw",
@@ -54,48 +54,69 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "best-practice",
+        path: "best-practice",
+        routeBasePath: "best-practice",
+        sidebarPath: require.resolve("./sidebars.js"),
+        editUrl: "https://github.com/IBM/waiops-tech-jam/tree/main",
+      },
+    ],
+  ],
+
   themes: [
     [
       require.resolve("@easyops-cn/docusaurus-search-local"),
       {
         // `hashed` is recommended as long-term-cache of index file is possible.
-        hashed: true,
-        docsDir: "labs",
-        docsRouteBasePath: "labs",
+        hashed: "filename",
+        docsDir: ["labs", "best-practice"],
+        docsRouteBasePath: ["labs", "best-practice"],
         highlightSearchTermsOnTargetPage: true,
-        // explicitSearchResultPath: true,
+        indexDocs: true,
+        indexBlog: true,
+        indexPages: false,
       },
-    ],
+    ]
   ],
 
   themeConfig: {
     navbar: {
-      title: "IBM IT & Network Automation Tiger Team",
+      style: "dark",
+      title: "IT & Network Automation Tiger Team",
       logo: {
         alt: "Logo",
-        src: "/img/ibm-watson-logo.png",
+        src: "/img/IBM_logo_blue.png",
+        srcDark: "/img/IBM_logo_white.png", // Optional: different logo for dark mode
       },
       items: [
         {
-          // type: "doc",
-          // docId: "intro",
-          to: "/labs/jam-in-a-box",
+          to: "/best-practice/practitioner-basics",
+          label: "Best Practice",
           position: "left",
-          label: "Labs",
+          activeBaseRegex: 'best-practice/',
         },
-        // TODO: Uncomment when guides are ready
-        // {to: "/blog", label: "Guides", position: "left"},
+        {
+          to: "/labs/jam-in-a-box",
+          label: 'Labs',
+          position: 'left',
+          activeBaseRegex: 'labs/'
+        },
+        {to: "/blog", label: "Blog", position: "left"},
         // TODO: Automations coming soon
         // {
         //   to: "/automations",
         //   label: "Automations",
         //   position: "left",
         // },
-        {
-          href: "https://github.com/IBM/waiops-tech-jam",
-          label: "GitHub",
-          position: "right",
-        },
+        // {
+        //   href: "https://github.com/IBM/waiops-tech-jam",
+        //   label: "GitHub",
+        //   position: "right",
+        // },
         {
           type: "search",
           position: "right",
@@ -109,20 +130,20 @@ const config: Config = {
           title: "Docs",
           items: [
             {
+              label: "Instana",
+              href: "https://www.ibm.com/docs/en/instana-observability",
+            },
+            {
+              label: "Concert",
+              href: "https://www.ibm.com/docs/en/concert",
+            },
+            {
               label: "CP4AIOps",
               href: "https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops",
             },
             {
               label: "NOI",
               href: "https://www.ibm.com/docs/en/noi/",
-            },
-            {
-              label: "Instana",
-              href: "https://www.ibm.com/docs/en/obi/current",
-            },
-            {
-              label: "Turbonomic",
-              href: "https://www.ibm.com/docs/en/tarm",
             },
           ],
         },
@@ -138,11 +159,10 @@ const config: Config = {
         {
           title: "More",
           items: [
-            // TODO: Uncomment when blogs are ready
-            // {
-            //   label: "Blog",
-            //   to: "/blog",
-            // },
+            {
+              label: "Blog",
+              to: "/blog",
+            },
             {
               label: "GitHub",
               href: "https://github.com/IBM/waiops-tech-jam",

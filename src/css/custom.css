@@ -6,13 +6,13 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #0047FF;
+  --ifm-color-primary-dark: #002d9c;
+  --ifm-color-primary-darker: #001d6c;
+  --ifm-color-primary-darkest: #001141;
+  --ifm-color-primary-light: #4589ff;
+  --ifm-color-primary-lighter: #78a9ff;
+  --ifm-color-primary-lightest: #a6c8ff;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
@@ -76,4 +76,11 @@
 
 .wip-docs {
   display: none !important;
+}
+
+/* Increase navbar logo size and crop whitespace */
+.navbar__brand .navbar__logo {
+  height: 25px;
+  width: auto;
+  margin-right: 15px;
 }

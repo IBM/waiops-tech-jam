@@ -1,0 +1,68 @@
+.featureCard {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  height: 100%;
+  text-align: left;
+
+  /* Glass Effect */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+
+  /* Transition for hover */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.featureCard:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.iconContainer {
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconContainer svg {
+  fill: rgba(0, 0, 0, 0.75);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Push button to the bottom */
+}
+
+.title {
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.description {
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  flex-grow: 1;
+  margin-bottom: 1.5rem;
+}
+
+.button {
+  margin-top: auto;
+  width: fit-content;
+  background-color: var(--ifm-color-primary);
+  border: none;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: var(--ifm-color-primary-dark);
+}
