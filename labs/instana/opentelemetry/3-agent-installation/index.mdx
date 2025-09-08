@@ -6,6 +6,10 @@ sidebar_position: 4
 
 # Instana agent
 
+import WorkshopAdhocPlaybook from "@site/src/components/workshop/AdhocPlaybook"
+
+<WorkshopAdhocPlaybook playbookFullPath="~/demo-scenarios-aiops/ws_instana_101/playbooks/ad_hoc_bluebox_instana_agent_deploy.yml" />
+
 In this section, you will proceed with the installation of the Instana Agent to
 enable monitoring and observability of your Kubernetes (K3s) cluster. The
 Instana agent is designed to automatically discover and monitor all running
@@ -111,14 +115,14 @@ zone** parameters. Setting these values allow you to find your Agent and
 Kubernetes Cluster within the Instana UI and not get confused by data coming in
 from other agents.
 
-Provide a meaningful name for the Cluster and specify and Agent Zone. 
-These namespace will show up within the Instana UI:
+Provide a meaningful name for the Cluster and specify and Agent Zone. These
+namespace will show up within the Instana UI:
 
     Cluster name: `demo-apps`
 
     Agent Zone: `Demo Apps`
 
-  ![](images/add-agent-zone.png)
+![](images/add-agent-zone.png)
 
 :::tip
 
