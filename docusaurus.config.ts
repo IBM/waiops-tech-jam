@@ -10,6 +10,9 @@ const config: Config = {
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.svg",
+  markdown: {
+    mermaid: true,
+  },
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -45,7 +48,7 @@ const config: Config = {
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
-        }
+        },
         // gtag: {
         //   trackingID: "G-7WTTHT6SEH",
         //   anonymizeIP: true,
@@ -80,7 +83,8 @@ const config: Config = {
         indexBlog: true,
         indexPages: false,
       },
-    ]
+    ],
+    "@docusaurus/theme-mermaid",
   ],
 
   themeConfig: {
@@ -97,13 +101,13 @@ const config: Config = {
           to: "/best-practice/practitioner-basics",
           label: "Best Practice",
           position: "left",
-          activeBaseRegex: 'best-practice/',
+          activeBaseRegex: "best-practice/",
         },
         {
           to: "/labs/jam-in-a-box",
-          label: 'Labs',
-          position: 'left',
-          activeBaseRegex: 'labs/'
+          label: "Labs",
+          position: "left",
+          activeBaseRegex: "labs/",
         },
         {to: "/blog", label: "Blog", position: "left"},
         // TODO: Automations coming soon

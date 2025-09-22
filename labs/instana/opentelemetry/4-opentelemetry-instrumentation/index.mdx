@@ -62,14 +62,14 @@ your microservice-based applications.
 
 ## OpenTelemetry signals
 
-OpenTelemetry signals are the core components used to capture and represent telemetry data from software systems, enabling observability into their behavior and performance. 
-These signals come in three primary forms: traces, metrics, and logs. 
+OpenTelemetry signals are the core components used to capture and represent telemetry data from software systems, enabling observability into their behavior and performance.
+These signals come in three primary forms: traces, metrics, and logs.
 
-1. **Traces** provide insight into the flow of requests through distributed systems, helping identify bottlenecks and latency issues. 
-2. **Metrics** offer numerical data about system performance, such as CPU usage, request counts, or error rates, which are essential for monitoring and alerting. 
-3. **Logs** contain timestamped records of events that occur within a system, useful for debugging and auditing. 
+1. **Traces** provide insight into the flow of requests through distributed systems, helping identify bottlenecks and latency issues.
+2. **Metrics** offer numerical data about system performance, such as CPU usage, request counts, or error rates, which are essential for monitoring and alerting.
+3. **Logs** contain timestamped records of events that occur within a system, useful for debugging and auditing.
 
-Together, these signals form a view of system health and performance, allowing developers and operators to detect, diagnose, and resolve issues more effectively. 
+Together, these signals form a view of system health and performance, allowing developers and operators to detect, diagnose, and resolve issues more effectively.
 OpenTelemetry standardizes the collection and export of these signals, making it easier to integrate with various observability tools.
 
 Instana is capable of monitoring OpenTelemetry tracing, metrics, and logs. The lab is going to focus on tracing and logs.
@@ -78,7 +78,7 @@ Instana is capable of monitoring OpenTelemetry tracing, metrics, and logs. The l
 
 By default, the OpenTelemetry data ingestion in the Instana host agent is activated. There are no actions which you need to take
 in order to enable the data ingestion. The example of a configuration.yaml with the manually enabled OpenTelemetry ingestion
-looks like below 
+looks like below
 
 ```yaml
 com.instana.plugin.opentelemetry:
@@ -88,10 +88,10 @@ com.instana.plugin.opentelemetry:
     enabled: true
 ```
 
-You can confirm, the Instana agent is waiting for the data by checking, if the agent is exposing Otel standard ports - `4317` and `4318`. In order to check it, please run 
+You can confirm, the Instana agent is waiting for the data by checking, if the agent is exposing Otel standard ports - `4317` and `4318`. In order to check it, please run
 the below command against the `demo-apps` K3S cluster:
 
-```bash
+```bash title="Host: demo-apps"
 kubectl get services -n instana-agent
 ```
 
@@ -111,7 +111,7 @@ For more details, please check the Instana
 Let's find out if the OpenTelemetry Demo Application pods are up and healthy by
 running the below command:
 
-```bash
+```bash title="Host: demo-apps"
 kubectl get pods -n otel-demo
 ```
 
@@ -123,7 +123,7 @@ Having pods in a `RUNNING` phase will guarantee, that the OpenTelemetry Demo
 Application will works just fine. In case some of the pods are in a non-running
 state, try to restart them using the below command:
 
-```bash
+```bash title="Host: demo-apps"
 kubectl delete pod <REPLACE-WITH-POD-NAME> -n otel-demo
 ```
 
@@ -137,7 +137,7 @@ Instana agent looks like.
 Let's check what the OpenTelemetry Demo application `configmap` looks like by
 running this command:
 
-```bash
+```bash title="Host: demo-apps"
 kubectl edit configmap -n otel-demo
 ```
 

@@ -15,6 +15,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@docusaurus/theme-mermaid": "^3.8.1",
     "@easyops-cn/docusaurus-search-local": "^0.52.1",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.1",

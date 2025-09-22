@@ -140,7 +140,7 @@ need to execute it in your Kubernetes environment to complete the installation.
 Once you have copied the Helm chart installation script, switch back to your
 terminal console in order to connect to your K3s cluster.
 
-```bash
+```bash title="Host: bastion-gym-lan"
 ssh jammer@demo-apps
 ```
 
@@ -155,7 +155,7 @@ similar prompt as presented on the below picture
 
 Now, let's switch user from "jammer" to a "root" by using this commands
 
-```bash
+```bash title="Host: demo-apps"
 sudo -i
 ```
 
@@ -166,7 +166,7 @@ The results should be similar as below
 Let's also make sure, we have a proper KUBECONFIG variable value. Please run
 this command
 
-```bash
+```bash title="Host: demo-apps"
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 ```
 
@@ -192,7 +192,7 @@ need to use values from your environment.
 
 :::
 
-```bash
+```bash title="Host: demo-apps"
 helm install instana-agent \
    --repo https://agents.instana.io/helm \
    --namespace instana-agent \
@@ -216,7 +216,7 @@ use specific commands to check the status of the deployed resources. Use the
 command below to list all the pods in the `instana-agent` namespace and ensure
 they are running correctly:
 
-```sh
+```sh title="Host: demo-apps"
 kubectl get pods -n instana-agent
 ```
 

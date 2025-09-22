@@ -84,19 +84,19 @@ Open a new terminal tab by selecting **File** -> **New Tab**.
 
 SSH to the Instana server with the _stanctl_ cli tool installed:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@instana-0
 ```
 
 Become the root user:
 
-```sh
+```sh title="Host: instana-0"
 sudo -i
 ```
 
 Run the following command:
 
-```sh
+```sh title="Host: instana-0"
 stanctl agent apply
 ```
 
@@ -152,7 +152,7 @@ Open a new terminal tab by selecting **File** -> **New Tab**.
 
 SSH to the ACE/MQ server as follows:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@mqace
 ```
 
@@ -160,7 +160,7 @@ When prompted if you want to continue connecting, type: `yes`
 
 Use sudo to switch to the root user:
 
-```sh
+```sh title="Host: mqace"
 sudo -i
 ```
 
@@ -170,13 +170,13 @@ window and answer `y` when prompted.
 At this point the Agent is installed and up and running. You can confirm this by
 running:
 
-```sh
+```sh title="Host: mqace"
 ps -ef | grep instana
 ```
 
 You should see a process running, the short version looks like this:
 
-```sh
+```sh  title="Example Output"
 root       22012       1 99 12:35 ?        00:00:11 /opt/instana/agent/jvm/bin/java .....
 ```
 
@@ -254,7 +254,7 @@ on the **show more** link in the lower right corner.
 
 Open a new tab in your terminal. SSH to the _demo-apps_ kubernetes cluster:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@demo-apps
 ```
 
@@ -262,13 +262,13 @@ When prompted if you want to continue connecting, type: `yes`
 
 Use sudo to switch to the root user:
 
-```sh
+```sh title="Host: demo-apps"
 sudo -i
 ```
 
 You can check to ensure you are in the right place by running the following:
 
-```sh
+```sh title="Host: demo-apps"
 kubectl get nodes
 ```
 
@@ -282,13 +282,13 @@ demo-apps   Ready    control-plane,master   19h   v1.32.2+k3s1
 We not need to paste the yaml content into a text document. Start by creating
 and opening a new file called **instana-agent.yaml** using the vi editor.
 
-```sh
+```sh title="Host: demo-apps"
 vi instana-agent.yaml
 ```
 
-Now enter paste mode by typing the following command:
+Now enter paste mode by typing the following command inside the vim editor:
 
-```sh
+```sh title="Host: demo-apps"
 :set paste
 ```
 
@@ -308,7 +308,7 @@ then `Enter`.
 
 You can now apply the yaml file to the cluster by running the following command:
 
-```sh
+```sh title="Host: demo-apps"
 kubectl apply -f instana-agent.yaml
 ```
 
@@ -334,7 +334,7 @@ serviceaccount/k8sensor created
 
 Next, wait for the agent pods to be running in the agent namespace:
 
-```sh
+```sh title="Host: demo-apps"
 kubectl get pods -n instana-agent -w
 ```
 
@@ -395,14 +395,14 @@ If you cannot see the **MQACE** host in the Instana UI you should read the
 Instana agent logs on the mqace host. From the bastion host run the following
 command:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@mqace
 sudo -i
 ```
 
 View the Instana agent log file:
 
-```sh
+```sh title="Host: mqace"
 cat /opt/instana/agent/data/log/agent.log
 ```
 
@@ -415,7 +415,7 @@ of minutes, you need to troubleshoot the Instana Agent.
 
 From the bastion host run the following command:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@demo-apps
 sudo -i
 ```
@@ -424,13 +424,13 @@ Check to make sure that all pods are running. Since Instana agent runs as a
 DaemonSet the number of pods should be equal to number of nodes in your cluster,
 in this case one.
 
-```sh
+```sh title="Host: demo-apps"
 kubectl get pods -n instana-agent
 ```
 
 You can check the Instana Agent pod logs by running:
 
-```sh
+```sh title="Host: demo-apps"
 kubectl logs $(kubectl get pods -n instana-agent -o custom-columns=POD:.metadata.name --no-headers | grep instana-agent) -n instana-agent -c instana-agent
 ```
 

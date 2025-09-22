@@ -124,7 +124,7 @@ the top left of the screen and then the terminal icon.
 
 Run the following to connect to the **demo-apps** vm:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@demo-apps
 ```
 
@@ -132,7 +132,7 @@ Enter `yes` when prompted _if you are sure you want to continue connecting_.
 
 Run the following command to become the _root_ user:
 
-```sh
+```sh title="Host: demo-apps"
 sudo -i
 ```
 
@@ -141,7 +141,7 @@ sudo -i
 We will use **Helm**, a package manager for Kubernetes to install Robot Shop.
 First install Helm by running the following commands:
 
-```sh
+```sh title="Host: demo-apps"
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
@@ -149,13 +149,13 @@ chmod 700 get_helm.sh
 
 Clone the Robot Shop GitHub repository by running the following command:
 
-```sh
+```sh title="Host: demo-apps"
 cd ~ && git clone https://github.com/instana/robot-shop.git
 ```
 
 Create the `robot-shop` namespace:
 
-```sh
+```sh title="Host: demo-apps"
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Namespace
@@ -177,7 +177,7 @@ Install the **Robot Shop** application using Helm:
 
 :::
 
-```sh
+```sh title="Host: demo-apps"
 export REPORTING_URL=<your-instana-reporting-url>
 ```
 
@@ -191,13 +191,13 @@ user interface. <br /> Example: `cYd1TSDZQBCIUfYCGMvV8A`.
 
 :::
 
-```sh
+```sh title="Host: demo-apps"
 export EUM_KEY=<your-instana-key>
 ```
 
 1. Deploy the Robot Shop application with the following Helm command:
 
-   ```sh
+   ```sh title="Host: demo-apps"
    helm install robot-shop \
    ./robot-shop/K8s/helm \
    --set eum.key=${EUM_KEY} \
@@ -219,7 +219,7 @@ Type `Ctrl-C` to exit the watch loop.
 
 :::
 
-```sh
+```sh title="Host: demo-apps"
 kubectl get pods -n robot-shop -w
 ```
 
@@ -241,7 +241,7 @@ Finally, we want to expose the Robot Shop UI. K3s includes a Traefik Ingress
 Controller that we can use to create a new Ingress for the app. Run the
 following to create the ingress:
 
-```sh
+```sh title="Host: demo-apps"
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -267,7 +267,7 @@ The url to the application has already been saved to a bookmark called **Robot
 Shop** in Firefox. Alternatively you can issue the following command to get the
 url to the application
 
-```sh
+```sh title="Host: demo-apps"
 kubectl get ingress -n robot-shop
 ```
 
@@ -323,7 +323,7 @@ some artifical traffic against the Robot-Shop application.
 
 Issue the following command to install the load generation pod.
 
-```sh
+```sh title="Host: demo-apps"
 cat <<EOF | kubectl create -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -353,7 +353,7 @@ EOF
 
 Run the **kubectl get pods** command.
 
-```sh
+```sh title="Host: demo-apps"
 kubectl get pods -n robot-shop
 ```
 

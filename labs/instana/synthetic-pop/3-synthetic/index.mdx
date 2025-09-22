@@ -51,7 +51,7 @@ a CLI with access to the K3s cluster.
 In the bastion terminal window use the following command to connect to the
 primary Instana host:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@instana-0
 ```
 
@@ -59,7 +59,7 @@ When prompted if you want to continue connecting, type: `yes`
 
 Use sudo to become root.
 
-```bash
+```bash title="Host: instana-0"
 sudo -i
 ```
 
@@ -67,13 +67,13 @@ You are now operating as root on the primary Instana host.
 
 You can check to ensure you are in the right place by running the following:
 
-```bash
+```bash title="Host: instana-0"
 kubectl get nodes
 ```
 
 You should see the following output:
 
-```bash title="Example output"
+```bash title="Example Output"
 NAME        STATUS   ROLES                       AGE   VERSION
 instana-0   Ready    control-plane,etcd,master   25h   v1.31.5+k3s1
 instana-1   Ready    control-plane,etcd,master   25h   v1.31.5+k3s1
@@ -89,7 +89,7 @@ in different locations, into the same Instana Backend.
 
 Enable the synthetic feature of the core component:
 
-```bash
+```bash title="Host: instana-0"
 stanctl backend apply --core-feature-flags feature.synthetics.enabled=true
 ```
 
@@ -97,13 +97,13 @@ If prompted, press ENTER to auto-generate TLS certificate.
 
 Ensure synthetic pods have started successfully:
 
-```bash
+```bash title="Host: instana-0"
 watch -n 2 "kubectl get pods -A | grep synthetic"
 ```
 
 list of pods should include 5 components:
 
-```text
+```text title="Example Output"
 instana-core      sli-synthetics-filter-6b4d4cc884-g9qfv          1/1     Running   0   45s
 instana-core      synthetics-acceptor-6cfff7c567-b867k            1/1     Running   0   45s
 instana-core      synthetics-health-processor-79d9998465-b8w5r    1/1     Running   0   45s
@@ -127,7 +127,7 @@ We will use **Helm**, a package manager for Kubernetes to install the _Synthetic
 Point of Presence_ component. First install Helm by running the following
 commands:
 
-```sh
+```sh title="Host: instana-0"
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
@@ -247,7 +247,7 @@ APP VERSION: 1.292.0
 
 Confirm that all pods of the _Synthetic Point Of Presence_ are running:
 
-```sh
+```sh title="Host: instana-0"
 watch -n 2 "kubectl get pods -n instana-synthetic"
 ```
 
@@ -358,8 +358,7 @@ test. Leave the default of **API Simple** and click the **Next** button:
 
 ![](images/addSynthetics3.png)
 
-A new dialog will open prompting for the REST API **GET** URL. Enter the
-following URL:
+A new dialog will open prompting for the REST API **GET** URL. Enter the following URL:
 
 ```sh
 https://qotd.apps.demo-apps.ibmdte.local/random
