@@ -130,7 +130,7 @@ If you are unsure how to get access to the Bastion host (Guacamole) see
 
 Use the terminal to login to the first Instana host:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@instana-0
 ```
 
@@ -138,7 +138,7 @@ When prompted if you want to continue connecting, type: `yes`
 
 Use sudo to become root.
 
-```sh
+```sh title="Host: instana-0"
 sudo -i
 ```
 
@@ -166,7 +166,7 @@ be prepared with a filesystem and mounted prior to installation.
 Open your terminal window connected to **instana-0** and run the following to
 list the available storage devices:
 
-```sh
+```sh title="Host: instana-0"
 lsblk
 ```
 
@@ -181,7 +181,7 @@ may be different on your host.
 
 :::
 
-```sh {23}
+```sh {23} title="Example Output"
 NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
 loop0                       7:0    0     4K  1 loop /snap/bare/5
 loop1                       7:1    0  55.6M  1 loop /snap/core18/2566
@@ -209,7 +209,7 @@ sdb                         8:16   0  1000G  0 disk
 
 Capture the device name of the spare disk into the variable **OBJECTS_DISK**.
 
-```php
+```php title="Host: instana-0"
 OBJECTS_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
   $2 == "1000G" && $3 == "disk" {
     cmd = "lsblk -n /dev/" $1 " | wc -l";
@@ -223,13 +223,13 @@ OBJECTS_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
 You can run the following command to verify the value of the variable matches
 the device name of the spare disk:
 
-```php
+```php title="Host: instana-0"
 echo $OBJECTS_DISK
 ```
 
 You can now create an Ext4 filesystem on the device.
 
-```php
+```php title="Host: instana-0"
 for disk in $OBJECTS_DISK ; do
     echo "make filesystem for $disk"
     mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/$disk
@@ -239,14 +239,14 @@ done
 Now you will need to create the Objects directory that will be used to mount the
 device:
 
-```php
+```php title="Host: instana-0"
 mkdir -p /mnt/instana/stanctl/objects
 ```
 
 Then make a backup of the existing fstab file, get the UUID of the device and
 add the new mount point for it:
 
-```php
+```php title="Host: instana-0"
 # Backup the existing fstab file
 cp /etc/fstab /etc/fstab.backup
 
@@ -262,7 +262,7 @@ mount -a
 
 Verify the mount point was added correctly by running the following command:
 
-```php
+```php title="Host: instana-0"
 lsblk /dev/$OBJECTS_DISK
 ```
 
@@ -283,13 +283,13 @@ Leave you current tab open, you will need it later.
 
 Open a new terminal tab and connect to **instana-1**:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@instana-1
 ```
 
 Use sudo to become root.
 
-```sh
+```sh title="Host: instana-1"
 sudo -i
 ```
 
@@ -297,7 +297,7 @@ You are now operating as root on the **instana-1** host.
 
 Run the following to list the available storage devices:
 
-```sh
+```sh  title="Host: instana-1"
 lsblk
 ```
 
@@ -310,7 +310,7 @@ The device names may be different for each storage allocation on your host.
 
 :::
 
-```sh {22-24}
+```sh {22-24} title="Example Output"
 NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
 loop0                       7:0    0  55.6M  1 loop /snap/core18/2566
 loop1                       7:1    0     4K  1 loop /snap/bare/5
@@ -349,7 +349,7 @@ partition status.
 
 :::
 
-```bash
+```bash title="Host: instana-1"
 DATA_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
   $2 == "500G" && $3 == "disk" {
     cmd = "lsblk -n /dev/" $1 " | wc -l";
@@ -381,7 +381,7 @@ ANALYTICS_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
 
 You can run the following command to verify the value of the variable:
 
-```sh
+```sh title="Host: instana-1"
 echo $DATA_DISK
 echo $METRICS_DISK
 echo $ANALYTICS_DISK
@@ -389,7 +389,7 @@ echo $ANALYTICS_DISK
 
 You can now create an Ext4 filesystem on the device.
 
-```php
+```php title="Host: instana-1"
 for disk in $DATA_DISK $METRICS_DISK $ANALYTICS_DISK ; do
     echo "make filesystem for $disk"
     mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/$disk
@@ -399,7 +399,7 @@ done
 Now you will need to create the data, metrics and analytics directories that
 will be used to mount the devices:
 
-```php
+```php title="Host: instana-1"
 mkdir -p /mnt/instana/stanctl/data
 mkdir -p /mnt/instana/stanctl/metrics
 mkdir -p /mnt/instana/stanctl/analytics
@@ -408,7 +408,7 @@ mkdir -p /mnt/instana/stanctl/analytics
 Then make a backup of the existing fstab file, get the UUID of the device and
 add the new mount point for it:
 
-```php
+```php title="Host: instana-1"
 # Backup the existing fstab file
 cp /etc/fstab /etc/fstab.backup
 
@@ -428,7 +428,7 @@ mount -a
 
 Verify the mount points were added correctly by running the following commands:
 
-```sh
+```sh title="Host: instana-1"
 lsblk
 ```
 
@@ -461,7 +461,7 @@ the instana-2 machine that we have not connected to yet.
 
 :::
 
-```php
+```php title="Host: bastion-gym-lan"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
 
 for host in instana-0 instana-1 instana-2; do
@@ -508,12 +508,38 @@ You are now ready to start the installation of the Instana Server.
 
 First we need to ensure that the host **instana-0** has root access to the other
 hosts in the Instana cluster. This is required to allow the **stanctl** tool to
-install Instana components on the other hosts. To do this we need to:
+install Instana components on the other hosts. To do this we need to generate a new public/private key pair and distribute the new keys to the Instana hosts.
 
-1. Create a new ssh key
-2. Add the public key to the root user on the other hosts
+```mermaid
+sequenceDiagram
+    participant Bastion as bastion-gym-lan
+    participant Instana0 as instana-0
+    participant Instana1 as instana-1
+    participant Instana2 as instana-2
+
+    Bastion->>Bastion: 1. Generate SSH key pair (private & public)
+
+    Bastion->>Instana1: 2. Add public key to root's authorized_keys on instana-1
+    Bastion->>Instana2: 2. Add public key to root's authorized_keys on instana-2
+
+    Note right of Bastion: The private key will be copied to instana-0 only.
+    Bastion->>Instana0: 3. Copy the private key to instana-0
+    Bastion->>Instana0: 4. Connect to instana-0 and configure the root users SSH client to <br> use the private key when connecting to instana-1 & instana-2
+
+    %% The hotpink color is used to target the rectangle with css, it is not the final colour.
+    rect hotpink
+        note right of Instana0: Final Result: Passwordless SSH from instana-0 to instana-1 & instana-2
+        Instana0->>Instana1: ssh root@instana-1 (Authenticates using private key)
+        Instana1-->>Instana0: Success
+        Instana0->>Instana2: ssh root@instana-2 (Authenticates using private key)
+        Instana2-->>Instana0: Success
+    end
+```
+
+1. Create a new ssh key pair
+2. Add the public key to the root user on the **instana-1** and **instana-2** hosts
 3. Copy the private key to the **instana-0** host
-4. Move the key to root's .ssh directory and set permissions
+4. Add the private key to the root users .ssh directory and set permissions on **instana-0**
 5. Ensure the new ssh key is used by by **instana-0** when connecting to
    **instana-1** and **instana-2**
 
@@ -523,14 +549,14 @@ user.
 Run the following commands to create a new ssh key and store it in the
 environment variable **PUBLIC_KEY**.
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh-keygen -t rsa -f ~/.ssh/instana-cluster -N "" -C "Instana Cluster Key"
 ```
 
 Run the following to add the new public ssh key to the root user on
 **instana-1** and **instana-2** hosts.
 
-```php
+```php title="Host: bastion-gym-lan"
 PUBLIC_KEY=$(cat ~/.ssh/instana-cluster.pub)
 for i in 1 2; do
   ssh jammer@instana-$i "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys' && echo \"SSH key added to instana-$i successfully\""
@@ -540,7 +566,7 @@ done
 Setup the **root** user on **instana-0** to use the new ssh key to connect to
 **instana-1** and **instana-2**:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 scp ~/.ssh/instana-cluster jammer@instana-0:/tmp/instana_key && echo "Key copied successfully" && \
 ssh jammer@instana-0 "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && \
 mv /tmp/instana_key ~/.ssh/instana-cluster && chmod 600 ~/.ssh/instana-cluster && chown root:root ~/.ssh/instana-cluster && \
@@ -557,8 +583,7 @@ to the other hosts.
 Navigate back to your terminal tab connected to **instana-0**. Ensure you are
 still operating as the **root** user.
 
-:::danger Ensure you are on the right host and your keys are working before
-continuing
+:::danger Ensure you are on the right host and your keys are working before continuing
 
 1. Ensure you are on the correct host. If you are unsure run
    `hostname && whoami` to verify.
@@ -576,7 +601,7 @@ continuing
 2. Ensure you are able to connect to **instana-1** and **instana-2** as the root
    user using the newly created cluster key. Run the following:
 
-   ```sh
+   ```sh title="Host: instana-0"
    ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-2 "echo Connection to instana-2 successful"
    ```
 
@@ -593,14 +618,14 @@ Export your Instana Download and Sales keys as environment variables. Run the
 following after replacing `<your-download-key>` and `<your-sales-key>` with the
 [keys provided for your lab environment](https://ibm.seismic.com/Link/Content/DCQfMjDgqWT2B87FWXPhGXQbJGDP).
 
-```sh
+```sh title="Host: instana-0"
 export AGENT_DOWNLOAD_KEY=<your-download-key>
 export SALES_KEY=<your-sales-key>
 ```
 
 Run the following commands to add the Instana repository.
 
-```sh
+```sh title="Host: instana-0"
 echo 'deb [signed-by=/usr/share/keyrings/instana-archive-keyring.gpg] https://artifact-public.instana.io/artifactory/rel-debian-public-virtual generic main' > /etc/apt/sources.list.d/instana-product.list
 
 cat << EOF > /etc/apt/auth.conf
@@ -616,20 +641,20 @@ Update the package list and install the Instana **stanctl** utility. The
 **stanctl** tool is used to install Instana and perform other Instana
 administrative tasks.
 
-```sh
+```sh title="Host: instana-0"
 apt update -y && \
 apt install -y stanctl=1.8.2-1
 ```
 
 Hold the stanctl package to prevent it from being upgraded unintentionally.
 
-```sh
+```sh title="Host: instana-0"
 apt-mark hold stanctl
 ```
 
 You can now verify your stanctl version by typing:
 
-```sh
+```sh title="Host: instana-0"
 stanctl -v
 ```
 
@@ -656,7 +681,7 @@ Install Instana
   The installation below, uses a set of optional installation flags. If you are
   interested in seeing all of the available installation flags, you can run:
 
-  ```sh
+  ```sh title="Host: instana-0"
   stanctl up --help
   ```
 
@@ -672,7 +697,7 @@ Start the installation by running the following command:
 
 :::
 
-```sh
+```sh title="Host: instana-0"
 stanctl up \
   --instana-version="3.291.396-0" \
   --multi-node-enable \
@@ -721,7 +746,7 @@ This name must also be in the DNS server.
 The instana license is automatically applied during the installation process.
 You can view it by running the following command:
 
-```sh
+```sh title="Host: instana-0"
 stanctl license info
 ```
 
@@ -730,7 +755,7 @@ performance of your server.
 
 ---
 
-## 3.5: Launch the Instana User interface
+## 3.6: Launch the Instana User interface
 
 Once the installation finished and you are prompted with the message....
 
@@ -761,7 +786,7 @@ upcoming section of the lab.
 
 ---
 
-## 3.6: Setting up SMTP
+## 3.7: Setting up SMTP
 
 :::warning Do not perform these steps
 
@@ -775,7 +800,7 @@ configure your server at the time of installation, the SMTP settings can be
 later modified using the stanctl tool. The following command will update the
 SMTP settings of the Instana server:
 
-```sh
+```sh title="Host: instana-0"
 stanctl backend apply \
   --core-smtp-from="server@instana.com" \
   --core-smtp-host="X.X.X.X" \
@@ -792,11 +817,11 @@ Once updated you should see output similar to the below:
 If you are interested in all of the parameters that can get specified using the
 **stanctl backend apply** command, type:
 
-```sh
+```sh title="Host: instana-0"
 stanctl backend apply --help
 ```
 
-## 3.7: Turning on features
+## 3.8: Turning on features
 
 :::warning Do not perform these steps
 
@@ -814,7 +839,7 @@ are disabled by default.
 As an example to enable VMware/vSphere monitoring, you would run the following
 command:
 
-```sh
+```sh title="Host: instana-0"
 stanctl backend apply --core-feature-flags feature.vsphere.enabled
 ```
 
@@ -823,7 +848,7 @@ You can view a
 
 ---
 
-## 3.8: Upgrading the Instana server
+## 3.9: Upgrading the Instana server
 
 :::warning Do not perform these steps
 
@@ -837,7 +862,7 @@ is to first upgrade **stanctl** and then upgrade the Instana backend.
 Upgrading the **stanctl** tool is different depending on the Operating System
 you are using. As an example for Ubuntu you would run the following commands:
 
-```sh
+```sh title="Host: instana-0"
 # Unhold the stanctl package if it is held
 sudo apt-mark unhold stanctl
 
@@ -850,7 +875,7 @@ apt-mark hold stanctl
 
 Then upgrade the backend:
 
-```sh
+```sh title="Host: instana-0"
 stanctl up
 ```
 
@@ -860,7 +885,7 @@ from the list provided.
 
 ---
 
-## 3.9: Summary
+## 3.10: Summary
 
 In this portion of the lab, you have learned how to prepare an environment for
 the installation of the **Self-Hosted Multi-node Standard Edition** Instana

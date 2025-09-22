@@ -31,14 +31,14 @@ user:
 
 > Type **yes** when asked if you are sure that you want to continue connecting.
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@mqace
 sudo -i
 ```
 
 Check the current status of MQ and ACE by running the following:
 
-```sh
+```sh title="Host: mqace"
 /opt/mqm/bin/dspmq -m QM1 -o all
 source /opt/ace-11.0.0.11/server/bin/mqsiprofile
 /opt/ace-11.0.0.11/server/bin/mqsilist
@@ -84,7 +84,7 @@ The following should be completed from the **demo-apps** host running as the
 Open a new terminal tab, ssh to the **demo-apps** machine and change to the root
 user:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@demo-apps
 sudo -i
 ```
@@ -93,7 +93,7 @@ sudo -i
 
 Issue the **kubectl get pods** command against the **qotd** namespace/project.
 
-```sh
+```sh title="Host: demo-apps"
 kubectl get pods -n qotd
 ```
 
@@ -111,7 +111,7 @@ You can do this by editing the deployment for the qotd-engraving.
 
 Type the following command:
 
-```sh
+```sh title="Host: demo-apps"
 kubectl edit deployment qotd-engraving -n qotd
 ```
 
@@ -165,7 +165,7 @@ As soon as you save your changes, kubernetes will automatically redeploy the
 
 Wait for the `qotd-engraving` pod rollout to complete:
 
-```sh
+```sh title="Host: demo-apps"
 kubectl rollout status deployment qotd-engraving -n qotd
 ```
 
@@ -226,13 +226,13 @@ configuration for ACE.
 
 Open in a new Terminal tab and SSH to the **mqace** server
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@mqace
 ```
 
 Become root user on mqace node:
 
-```sh
+```sh title="Host: mqace"
 sudo -i
 ```
 
@@ -244,7 +244,7 @@ You might see _'mqsiprofile repetition disallowed'_, this can be safely ignored.
 
 :::
 
-```sh
+```sh title="Host: mqace"
 . /opt/ace-11.0.0.11/server/bin/mqsiprofile
 ```
 
@@ -260,7 +260,7 @@ Integration Servers configured on a single Integration Node.
 Here are example commands that you can issue to see the ACE configuration for
 Integration Node BK1 and Integration Server EG2:
 
-```sh
+```sh title="Host: mqace"
 mqsireportresourcestats BK1 -e EG2
 ```
 
@@ -272,7 +272,7 @@ set to "true" indicating that **"Resource Stats"** are enabled and it is set to
 
 To see the configuration of the "flow" stats, issue the following command:
 
-```sh
+```sh title="Host: mqace"
 mqsireportflowstats BK1 -s -e EG2
 ```
 
@@ -295,13 +295,13 @@ commands.
 To run the following commands you have to source the `setmqenv` and specify the
 queue manager name (QM1) like below:
 
-```sh
+```sh title="Host: mqace"
 . /opt/mqm/bin/setmqenv -m QM1
 ```
 
 You first need to run the **"runmqsc"** command.
 
-```sh
+```sh title="Host: mqace"
 /opt/mqm/bin/runmqsc QM1
 ```
 
@@ -311,11 +311,11 @@ typing the commands.
 Within the runmqsc command prompt you can issue other MQ commands. Type the
 following commands:
 
-```sh
+```sh title="Host: mqace"
 display QMGR PUBSUB CHLEV
 ```
 
-```sh
+```sh title="Host: mqace"
 display QMGR CLUSTER PERFMEV
 ```
 
@@ -328,14 +328,14 @@ In the output, you can see that the CHLEV (Channel Events) and PERFMEV
 
 To enable run the following commands:
 
-```sh
+```sh title="Host: mqace"
 ALTER QMGR CHLEV(ENABLED)
 ALTER QMGR PERFMEV(ENABLED)
 ```
 
 Re-run the display command to verify that configuration was changed
 
-```sh
+```sh title="Host: mqace"
 display QMGR PUBSUB CHLEV
 display QMGR CLUSTER PERFMEV
 ```
@@ -344,7 +344,7 @@ display QMGR CLUSTER PERFMEV
 
 Type **"quit"** to exit the runmqsc command prompt.
 
-```sh
+```sh title="Host: mqace"
 quit
 ```
 
@@ -449,7 +449,7 @@ In this section, you will continue to perform these commands as root on the
 If you do not have a terminal opened to the **mqace** server you can run the
 following:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@mqace
 sudo -i
 ```
@@ -466,7 +466,7 @@ this server. If you want to learn more about the Instana Agent you can complete
 
 :::
 
-```sh
+```sh title="Host: mqace"
 cd /opt/instana/agent/etc/instana
 ```
 
@@ -483,21 +483,21 @@ of the configuration settings for the sensors.
 
 Take a backup before you actually edit the configuration.yaml file:
 
-```sh
+```sh title="Host: mqace"
 cp configuration.yaml configuration.yaml.bak
 ```
 
 This environment is provisioned with Ansible which sets some defaults. Reset the
 configuration.yaml file to the default settings before you start editing it.
 
-```sh
+```sh title="Host: mqace"
 sed -i '/# BEGIN ANSIBLE MANAGED BLOCK/,/# END ANSIBLE MANAGED BLOCK/d' /opt/instana/agent/etc/instana/configuration.yaml
 ```
 
 Edit configuration.yaml using either "vi" or use other editor like `nano` if you
 prefer.
 
-```sh
+```sh title="Host: mqace"
 vi configuration.yaml
 ```
 
@@ -639,7 +639,7 @@ update that to **IBM MQ & ACE**.
 
 Once again open the configuration.yaml file for editing:
 
-```sh
+```sh title="Host: mqace"
 vi configuration.yaml
 ```
 

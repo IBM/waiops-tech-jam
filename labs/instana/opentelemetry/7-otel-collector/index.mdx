@@ -48,13 +48,13 @@ Let's enable that feature, by following these steps:
 
 Use the ssh terminal and login to the instana backend server
 
-```bash
+```bash title="Host: bastion-gym-lan"
 ssh jammer@instana-0
 ```
 
 and then switch to the root user
 
-```bash
+```bash title="Host: instana-0"
 sudo -i
 ```
 
@@ -64,7 +64,7 @@ as presented in the below screen
 
 Enable the logging feature by running the below command
 
-```bash
+```bash title="Host: instana-0"
 stanctl backend apply --core-feature-flags feature.logging.enabled=true
 ```
 
@@ -74,7 +74,7 @@ after the changes, you should see the below message
 
 you can close this terminal window by running the below command:
 
-```bash
+```bash title="Host: instana-0"
 exit
 ```
 
@@ -116,26 +116,26 @@ The agent was pre-installed into your Lab environment.
 Open a new terminal window and login to the "bluebox" host using the below
 command:
 
-```bash
+```bash title="Host: bastion-gym-lan"
 ssh jammer@bluebox
 ```
 
 and then let's switch to the root user
 
-```bash
+```bash title="Host: bluebox"
 sudo -i
 ```
 
 Please run the following command to start the agent on "bluebox" host:
 
-```bash
+```bash title="Host: bluebox"
 systemctl start instana-agent
 ```
 
 After a moment, please check the status of the recently started agent by typing
 below command
 
-```bash
+```bash title="Host: bluebox"
 systemctl status instana-agent
 ```
 
@@ -173,7 +173,7 @@ which is more advanced version of the standard Collector.
 Let's review the OpenTelemetry Collector configuration file, by viewing
 config.yaml:
 
-```bash
+```bash title="Host: bluebox"
 cd /root/otelcol-contrib
 vim config-simple.yaml
 ```
@@ -232,7 +232,7 @@ configuration file:
 
 and start the OpenTelemetry Collector service
 
-```bash
+```bash title="Host: bluebox"
 sudo otelcol-contrib --config=config-simple.yaml
 ```
 
@@ -256,25 +256,25 @@ Please open a new terminal and login (again) to the "bluebox" host. We need two
 active sessions, because the previous one keeps the OpenTelemetry Collector up
 and running. Please login to the "bluebox" host:
 
-```bash
+```bash title="Host: bastion-gym-lan"
 ssh jammer@bluebox
 ```
 
 switch to the root user
 
-```bash
+```bash title="Host: bluebox"
 sudo -i
 ```
 
 navigate to the OpenTelemetry directory
 
-```bash
+```bash title="Host: bluebox"
 cd /root/otelcol-contrib
 ```
 
 run these commands, which will add new lines into the existing log file
 
-```bash
+```bash title="Host: bluebox"
 echo "2024-02-02 ERROR first line message1" >> example-simple.log
 echo "2024-03-02 ERROR second line message2" >> example-simple.log
 echo "2024-04-02 ERROR third line message3" >> example-simple.log
@@ -307,19 +307,19 @@ Let's review the more advanced log example.
 
 Make sure you are still in the right directory
 
-```bash
+```bash title="Host: bluebox"
 cd /root/otelcol-contrib
 ```
 
 Please open a example.FDC file by typing
 
-```bash
+```bash title="Host: bluebox"
 vim example.FDC
 ```
 
 The content will be like presented below. Please note, the multi-line entries
 
-```bash
+```bash title="Example Output"
 +-----------------------------------------------------------------------------+
 |                                                                             |
 | IBM MQ First Failure Symptom Report                                         |
@@ -415,7 +415,7 @@ Close the file by typing
 
 Let's examine the config-advanced.yaml with a command
 
-```bash
+```bash title="Host: bluebox"
 vim config-advanced.yaml
 ```
 
@@ -546,7 +546,7 @@ example. There are couple of important parts of the file:
 Let's start the OpenTelemetry Contrib Collector using the new
 config-advanced.yaml by the below command
 
-```bash
+```bash title="Host: bluebox"
 sudo otelcol-contrib --config=config-advanced.yaml
 ```
 
@@ -556,7 +556,7 @@ Similarly as before, let's now open a new terminal window, login to the
 Once done, we should create a new FDC file, so that our Collector could pick it
 up and deliver to Instana backend. Let's copy the existing FDC file
 
-```bash
+```bash title="Host: bluebox"
 cd /root/otelcol-contrib
 cp example.FDC example-new.FDC
 ```
