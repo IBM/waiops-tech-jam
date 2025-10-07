@@ -21,11 +21,19 @@ Use the following steps to create an instance of the Netcool Connector:
 
 ### Configure ObjectServer
 
+:::warning
+Ignore the instructions in the UI and follow the steps below instead, which are specific to this lab.
+:::
+
 The first part of the Netcool Connector instance configuration, is to prepare the ObjectServer to be connected to by AIOps. This involves adding a few fields and a trigger that facilitates the two-way update mechanism between AIOps and Netcool.
 
-Open a command terminal, connect to the ObjectServer VM via SSH, and log in to the ObjectServer:
+Open a command terminal, connect to the ObjectServer VM via SSH. Type **netcool** when prompted for the password
 ```
 ssh netcool@netcoolvm
+```
+
+Login to the ObjectServer:
+```
 $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool
 ```
 
@@ -60,6 +68,10 @@ begin
 end;
 go
 ```
+:::warning
+Make sure to type Enter/Return after the last `go` to execute the SQL.
+Type `quit` to exit the SQL prompt.
+:::
 
 :::tip
 In a production environment, this SQL would need to be added to both the primary and backup ObjectServers. In this lab however, we will only be using a single primary ObjectServer.
@@ -86,6 +98,10 @@ In a production environment, we would enter the connection details for both the 
 :::
 
 ### Collect event data
+
+:::warning
+Again, ignore the instructions in the UI and follow the steps below instead, which are specific to this lab.
+:::
 
 This final step is where you configure the mapping between ObjectServer fields and AIOps. Replace the mapping shown with the following mapping instead:
 
@@ -171,6 +187,11 @@ delete from alerts.status;
 go
 ```
 
+::::warning
+Make sure to exit the SSH session with the netcool VM by typing `exit`.
+Your terminal prompt should show `admin@bastion-gym-lan` 
+::::  
+
 ## 3.4: View the Alerts viewer
 
 The final confirmation step is to log in to AIOps and inspect the **Alerts viewer**.
@@ -183,7 +204,8 @@ The final confirmation step is to log in to AIOps and inspect the **Alerts viewe
 
 ## 3.5 Add custom fields to your view
 
-Finally, you will add your custom-mapped fields to your Alerts viewer **View**. To do this, click on the **View configuration** button, then select **Manage selected view**. Type in the name of the field in the **Search and select a column** box and check the ones you want to add:
+Finally, you will add your custom-mapped fields to your Alerts viewer **View**. To do this, click on the **View configuration** button, then select **Manage selected view**. 
+Type in the name of the field (**details.appId**) in the **Search and select a column** box and check the ones you want to add:
 
 ![](images/search_field.png)
 

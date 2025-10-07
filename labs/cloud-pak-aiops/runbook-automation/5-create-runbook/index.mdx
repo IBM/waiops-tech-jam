@@ -41,32 +41,15 @@ Note that we are adding this action step twice. We will be creating a branch sho
 :::
 
 - Scroll back up to **Step 1**
-- Click the **Configure conditional branches** button to configure branching for **Step 1**
-
-![](images/configure_conditional_branches.png)
-
-- Set: **Property**: `Status` **Operator**: `equals` **Status**: `Successful`
-- Set: **If the conditional branch matches, then go to**: `Step 3`
+- Set the **Use configure branching (optional)** selector to **Yes** (green) to configure branching for **Step 1**
+- Under **If the action is successful, then go to** select **Step 3** from the drop-down menu
+- Under **Else, if the action is not successful, then go to** select **Step 2** from the drop-down menu
 
 :::note
-
-The branch select drop-down menu contains **Step 2** by default. To change it, you will need to click on the **X** at the right of the first drop-down menu item, then reselect the drop-down menu and choose **Step 3**.
-
-![](images/click_X.png)
-
+The select drop-down menu contains Step 2 by default. To change it, you will need to click on the X at the right of the first drop-down menu item, then reselect the drop-down menu and choose Step 3.
 :::
 
-- Click the **Add conditional branch** button to add a further conditional branch
-
-![](images/add_conditional_branch.png)
-
-- Set: **Property**: `Status` **Operator**: `does not equal` **Status**: `Successful`
-- Set: **If the conditional branch matches, then go to**: `Step 2`
-- Once complete, your branching configuration should look as follows:
-
-![](images/configure-branching.png)
-
-- Click **Save** to save the branching configuration
+![](images/configure_conditional_branches.png)
 
 :::note
 - If action **Step 1** is successful, execution should jump to **Step 3**, bypassing **Step 2**
