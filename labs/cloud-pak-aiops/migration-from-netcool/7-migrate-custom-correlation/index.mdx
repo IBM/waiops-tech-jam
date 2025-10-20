@@ -60,16 +60,8 @@ The first step is to create a custom field to hold the key data value that will 
 
 Use the following steps to create the custom field in Netcool/OMNIbus:
 
-Open a command terminal, connect to the ObjectServer VM via SSH. Type **netcool** when prompted for the password
-```
-ssh netcool@netcoolvm
-```
-
-Login to the ObjectServer:
-```
-$OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool
-```
-
+- From the bastion host: `ssh jammer@netcoolvm` (no password required)
+- `$OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool`
 - Execute the following SQL at the SQL command prompt:
 ```
 ALTER TABLE alerts.status ADD COLUMN CustomCorrelation1 VARCHAR(64)
