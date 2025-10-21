@@ -49,6 +49,13 @@ Multiple runbooks can be assigned to an alert but we will only be assigning one 
 :::
 
 - Scroll down to **Hostname** to set the value for our runbook parameter
+- Do not check the **Automatically run this runbook** check box (we will be running the runbook manually after the alert arrives)
+
+:::note
+In a real production scenario, you would likely want to check this box so that the runbook runs automatically when the alert arrives.
+For example, the runbook could be used to automatically open a ticket in a ticketing system, or automatically run a script to remediate the issue.
+:::
+
 - Set: **Select mapping type** to: **Choose from alert**
 - Click on the selection box and select: **alert.resource.name** to set the mapping to: `Value of: alert.resource.name`:
 

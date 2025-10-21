@@ -69,7 +69,7 @@ As part of the Netcool/Impact Connector instance creation, AIOps creates a numbe
 
 - Navigate to the Netcool/Impact GUI: `https://netcoolvm:16311/ibm/console`
 - Log in to Netcool/Impact as the user `impactadmin` and password `netcool`
-- Click on **Data Model**
+- Click on the **Data Model** tab
 - Identify the RESTful API DSA instance created by AIOps by its name starting with `AIOps-`
 - Double click the AIOps DSA instance to edit it
 - Set **Host Name** to the AIOps host name: `cpd-cp4aiops.apps.ocp.techzone.lan`
@@ -78,14 +78,17 @@ As part of the Netcool/Impact Connector instance creation, AIOps creates a numbe
 - **Reuse Connection**: checked
 - **Cache Response**: unchecked
 - **Authentication method to use**: select `No Authentication`
-- Scroll down to: **Protected Request Headers**
-- Create a new header with the following details:
+- Scroll down to: **Request Headers**
+- Update the existing **Authorization** header with the following details:
   - **Header Name**: `Authorization`
   - **Header Value**: `ZenApiKey <your-ZENAPIKEY-created-earlier>`
-- Click **OK** to save your new header
+- Click **OK** to save the header
+
+:::warning
 - Click on the Save button with the small disk icon at the top of the page to save your changes
-- Click on the X to close the DSA instance
-- Right click on the DSA instance and select **Test Connection** and verify it responds with **Connection OK**
+:::
+
+- Scroll down and select **Test Connection**. Verify it responds with **Connection OK**
 
 :::note
 The header value should be the exact string `ZenApiKey`, followed by a space character, followed by the `ZENAPIKEY` output you saved to a text editor earlier. If your DSA connection test fails, check each of the steps above to ensure they are correct.

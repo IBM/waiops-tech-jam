@@ -151,7 +151,7 @@ Lets create a folder for the topology files in the home directory and change to
 this new folder. Run the following command from the **Terminal** window:
 
 ```
-cd; mkdir lab; cd lab
+cd; mkdir lab-topology; cd lab-topology
 ```
 
 Create a file called **infrastructure.txt** by running the following command in
@@ -250,7 +250,13 @@ Log into the Cloud Pak for AIOps:
 In the **New observer job: File** form, fill the Unique ID field as
 "infrastructure". Keep the **File Mode** as **Upload local file**, upload the
 **infrastructure.txt** file that you created in the previous step and click the
-**Save** button. The Provider field will be automatically populated when you
+**Save** button. 
+
+:::warning
+Make sure you upload the file under the **lab-topology** folder you created earlier.
+:::
+
+The Provider field will be automatically populated when you
 click **Save**.
 
 ![](images/infrajob.png)
