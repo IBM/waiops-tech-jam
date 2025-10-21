@@ -14,7 +14,7 @@ In this section, you will create a JavaScript policy in Netcool/Impact that will
 
 - Navigate to the Netcool/Impact GUI: `https://netcoolvm:16311/ibm/console`
 - Log in to Netcool/Impact as the user `impactadmin` and password `netcool`
-- Click on **Policies**
+- Click on the **Policies** tab
 - Click on the pull-down menu button on the new policy button and select **JavaScript Policy**
 - Copy and paste the following sample policy into the policy editor:
 ```
@@ -73,13 +73,13 @@ You can check that the policy is firing by checking the **Last run** timestamp i
 
 Reset the event set in your system by clearing out all the old events in the source: Netcool/OMNIbus.
 
-Open a command terminal, connect to the ObjectServer VM via SSH, and log in to the ObjectServer:
+Open a command terminal, connect to the ObjectServer VM via SSH (use **netcool** as password) and log in to the ObjectServer:
 ```
-ssh jammer@netcoolvm
+ssh netcool@netcoolvm
 $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool
 ```
 
-Copy and paste the following SQL into the SQL prompt:
+Copy and paste the following SQL into the SQL prompt. Make sure to type Enter after **go** to execute the command:
 ```
 delete from alerts.status;
 go

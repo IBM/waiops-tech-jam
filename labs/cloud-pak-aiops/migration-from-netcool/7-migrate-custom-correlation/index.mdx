@@ -47,6 +47,7 @@ Use the following steps to create the new AIOps automation policy:
   - Under **Create a scope-based grouping**:
     - Select **alert.details**
     - For **Details name**, enter: `customCorrelation1`
+    - Click **Apply**
   - Under **Time window**:
     - For **Specify a time period**, enter: `300`. This represents 300 seconds (5 minutes).
     - Under **Type**, select **Rolling**. This means that alerts will continue to be grouped as long as they are not separated by more than 15 minutes.
@@ -55,22 +56,29 @@ Use the following steps to create the new AIOps automation policy:
 ## 7.3 Create a custom field in Netcool/OMNIbus
 
 In this section, you will create a custom field in Netcool/OMNIbus to hold the custom correlation attribute.
-
 The first step is to create a custom field to hold the key data value that will tie each event set together.
 
 Use the following steps to create the custom field in Netcool/OMNIbus:
 
-- From the bastion host: `ssh jammer@netcoolvm` (no password required)
-- `$OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool`
+Open a command terminal, from the bastion host connect to the ObjectServer VM via SSH (no password required):
+```
+ssh jammer@netcoolvm
+```
+
+Login to the ObjectServer:
+```
+$OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool
+```
+
 - Execute the following SQL at the SQL command prompt:
 ```
-1> ALTER TABLE alerts.status ADD COLUMN CustomCorrelation1 VARCHAR(64)
-2> go
+ALTER TABLE alerts.status ADD COLUMN CustomCorrelation1 VARCHAR(64)
+go
 ```
 - Type the following to validate the creation of your new field:
 ```
-1> describe alerts.status
-2> go
+describe alerts.status
+go
 ```
 You should see your newly created field at the bottom of the table listing.
 
@@ -143,7 +151,7 @@ DirectSQL("defaultobjectserver", MySQL4, false, false);
 In this final section, you will log in to the AIOps UI and observe your new correlation working.
 
 - Log in to the AIOps console and select **Alerts** from the main menu
-- Add the new **customCorrelation1** field to your View as you did in [lab 3.5](../3-netcool-connector/index.mdx)
+- Add the new **details.customCorrelation1** field to your View as you did in [lab 3.5](../3-netcool-connector/index.mdx)
 - View your Simnet alerts with the **customCorrelation1** field populated
 - See your Simnet alerts grouped via a scope-based correlation:
 

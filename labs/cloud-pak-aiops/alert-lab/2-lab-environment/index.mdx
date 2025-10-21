@@ -48,3 +48,69 @@ The following diagram describes the infrastructure for the Lab:
 ### Cloud Pak for AIOps Console
 
 <LogInAiopsConsole />
+
+
+## 2.4: Lab Data Cleanup
+
+If you have just provisioned a new lab environment from TechZone, you can skip this section.
+
+Otherwise, if this environment has been used for a previous lab, **ask the Lab Instructor** if you need to remove any leftover configuration and data
+before you proceed with the lab exercises. If you need to do a cleanup, follow the steps below. 
+
+### Integrations Cleanup
+
+From the burger menu in the top-left navigate to: **Define → Integrations**. 
+Delete all integrations listed. To delete an integration: 
+Select the integration type, and click on the trash can icon on the right, on the popup dialog type the integration name and click on **Delete**
+ as shown below. Don't wait for the deletion to complete, you can proceed to the next step.
+
+![](images/delete-integration.png) 
+
+### Alert Cleanup
+
+From the burger menu in the top-left navigate to: **Operate → Alerts**. If you see any alerts listed:
+
+* Select all the Alerts, right-click and select **Clear**. Select **Continue** on the popup dialog.
+* The Alerts will change state from Open to Clear and eventually to Closed.
+* Don't need to wait for them to be Closed, you can proceed to the next step.
+
+### Topology Cleanup: resource groups
+
+From the burger menu in the top-left, navigate to: **Operate → Resource
+management**. In the **Resource management** page, click on the **Resource group
+templates** icon in the top-right.
+
+![](images/group-templates.png)
+
+In the **Resource group templates** page, select any existing templates and click on the **Delete topology template** in the top-right.
+Click **Delete** on the popup dialog.
+
+### Topology Cleanup: resources
+
+From the burger menu in the top-left, navigate to: **Operate → Resource
+management**. In the **Resource management** page, click on the **Settings**
+gear icon in the top-right as shown below:
+
+![](images/gear-icon.png)
+
+Select **Topology configuration**. From the **Topology configuration** page, in
+the **Data administration routines** card shown below select **Configure**.
+On the **Data administration routines** page, in the top-right select **Run a routine**
+and on the popup dialog select **Delete provider resources** as shown below:
+
+![](images/delete-provider-resources.png)
+
+On the **Run delete provider resources** dialog, select FILE.OBSERVER:infrastructure.txt 
+and click on **Run** as shown below. Click **Yes** on the popup dialog to confirm.
+
+![](images/run-delete-provider-resources.png)
+
+Repeat this step for every FILE.OBSERVER:*filename.txt* that you see listed.
+
+### Topology Cleanup: observer jobs
+
+* From the burger menu in the top-left navigate to: Define → Integrations
+* From the Integrations page, click on **Manager observer jobs** and select **Configure, schedule, and manage observer jobs**
+* Delete all existing jobs by clicking on the 3 dots on the right and selecting **Delete** as shown below. Confirm the deletion on the popup dialog.
+
+![](images/delete-jobs.png)
