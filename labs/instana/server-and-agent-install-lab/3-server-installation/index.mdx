@@ -119,6 +119,8 @@ Lets start by ensuring you can connect to the first Instana host.
 From the Bastion host, open a terminal window by selecting **Activities** at the
 top left of the screen and then the terminal icon.
 
+:::
+
 :::tip
 
 If you are unsure how to get access to the Bastion host (Guacamole) see
@@ -569,10 +571,10 @@ Setup the **root** user on **instana-0** to use the new ssh key to connect to
 ```sh title="Host: bastion-gym-lan"
 scp ~/.ssh/instana-cluster jammer@instana-0:/tmp/instana_key && echo "Key copied successfully" && \
 ssh jammer@instana-0 "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && \
-mv /tmp/instana_key ~/.ssh/instana-cluster && chmod 600 ~/.ssh/instana-cluster && chown root:root ~/.ssh/instana-cluster && \
+mv /tmp/instana_key ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && chown root:root ~/.ssh/id_rsa && \
 echo \"Host instana-1 instana-2 192.168.252.30 192.168.252.31 192.168.252.32\" > ~/.ssh/config && \
 echo \"    User root\" >> ~/.ssh/config && \
-echo \"    IdentityFile ~/.ssh/instana-cluster\" >> ~/.ssh/config && \
+echo \"    IdentityFile ~/.ssh/id_rsa\" >> ~/.ssh/config && \
 echo \"    StrictHostKeyChecking no\" >> ~/.ssh/config && \
 chmod 600 ~/.ssh/config && echo \"All operations completed successfully\"'"
 ```
@@ -641,9 +643,9 @@ Update the package list and install the Instana **stanctl** utility. The
 **stanctl** tool is used to install Instana and perform other Instana
 administrative tasks.
 
-```sh title="Host: instana-0"
+```txt title="Host: instana-0"
 apt update -y && \
-apt install -y stanctl=1.8.2-1
+apt install -y stanctl=1.10.2-1
 ```
 
 Hold the stanctl package to prevent it from being upgraded unintentionally.
@@ -658,7 +660,7 @@ You can now verify your stanctl version by typing:
 stanctl -v
 ```
 
-You should see that the version is 1.8.2.
+You should see that the version is 1.10.2.
 
 Install Instana
 
@@ -699,7 +701,7 @@ Start the installation by running the following command:
 
 ```sh title="Host: instana-0"
 stanctl up \
-  --instana-version="3.291.396-0" \
+  --instana-version="3.297.463-0" \
   --multi-node-enable \
   --multi-node-ips="192.168.252.30,192.168.252.31,192.168.252.32" \
   --install-type="production" \
@@ -717,7 +719,7 @@ stanctl up \
   --core-smtp-from="server@instana.com" \
   --core-smtp-host="192.168.252.33" \
   --core-smtp-port="30025" \
-  --core-smtp-check-server-identity false \
+  --core-smtp-check-server-identity=false \
   --core-smtp-start-tls=false \
   --core-smtp-use-ssl=false
 ```

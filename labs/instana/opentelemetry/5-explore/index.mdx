@@ -1,53 +1,53 @@
 ---
-title: 6. Exploring Instana
+title: 5. Exploring Instana
 description: Explore Instana
 sidebar_position: 7
 ---
 
 # Explore Instana and OpenTelemetry traces
 
-Once the Instana and OpenTelemetry Demo Application are in sync, you can start exploring the captured data. 
-This synchronization allows you to delve into the rich telemetry data collected from your microservices. 
-You can analyze various metrics, traces, and logs to gain insights into the performance and behavior of your application. 
+Once the Instana and OpenTelemetry Demo Application are in sync, you can start exploring the captured data.
+This synchronization allows you to delve into the rich telemetry data collected from your microservices.
+You can analyze various metrics, traces, and logs to gain insights into the performance and behavior of your application.
 
-The Instana dashboard provides a comprehensive view of the data, enabling you to identify performance bottlenecks, 
-monitor resource utilization, and track the flow of requests across different services. 
+The Instana dashboard provides a comprehensive view of the data, enabling you to identify performance bottlenecks,
+monitor resource utilization, and track the flow of requests across different services.
 
-By examining the detailed traces, you can pinpoint the root causes of issues, optimize your application's 
-performance, and ensure a seamless user experience. 
+By examining the detailed traces, you can pinpoint the root causes of issues, optimize your application's
+performance, and ensure a seamless user experience.
 
-Additionally, the correlation of OpenTelemetry data with the underlying infrastructure helps you understand 
+Additionally, the correlation of OpenTelemetry data with the underlying infrastructure helps you understand
 the impact of infrastructure changes on your application, facilitating proactive management and troubleshooting.
 
-## OpenTelemetry tracing
+## 5.1 OpenTelemetry tracing
 
-Tracing in OpenTelemetry is a fundamental concept that involves tracking the execution of transactions or 
-workflows through multiple distributed systems. It provides visibility into how requests propagate through services, 
+Tracing in OpenTelemetry is a fundamental concept that involves tracking the execution of transactions or
+workflows through multiple distributed systems. It provides visibility into how requests propagate through services,
 helping to identify performance bottlenecks, latency issues, and errors.
 
 Key aspects of tracing in OpenTelemetry:
 
-1. **Spans and Traces**: A trace represents the entire journey of a request through the system, 
-while spans are individual units of work within that trace. Each span includes metadata such as timestamps, 
+1. **Spans and Traces**: A trace represents the entire journey of a request through the system,
+while spans are individual units of work within that trace. Each span includes metadata such as timestamps,
 service names, and operation names, allowing you to see the complete path of a request
-2. **Context Propagation**: OpenTelemetry uses context propagation to maintain trace continuity across different 
-services and components. This ensures that all spans within a trace are linked together, providing a 
+2. **Context Propagation**: OpenTelemetry uses context propagation to maintain trace continuity across different
+services and components. This ensures that all spans within a trace are linked together, providing a
 coherent view of the request's journey
 
 
-## Exploring Instana
+## 5.2 Exploring Instana
 
 Let's open the newly created Application Perspective "Otel-demo" and click on the "Analyze calls" at the top of the screen
 as presented on the picture below
 
 ![explore8](images/otel-explore-011.png)
 
-The Instana will navigate you to the Analytics view, but with already populated filters, narrowing down calls to Otel-demo application only.
+You will be taken to the Analytics view, with populated filters, narrowing down calls to Otel-demo application only.
 
-You can now filter down calls and search only these, which meet specific criteria:
+You can now filter calls and search only within these results, which meet specific criteria:
 
-- Application name: your application name
-- Service name: checkout
+- **Application name**: `otel-demo`
+- **Service name**: `checkout`
 
 Click on the call link to see the transaction details.
 
@@ -60,10 +60,10 @@ proves that the content is coming from the OpenTelemetry tracer.
 
 ![explore9](images/otel-explore-009.png)
 
-## Instana and OpenTelemetry combined
+## 5.3 Instana and OpenTelemetry combined
 
 Instana can combine traces coming from applications instrumented by
-OpenTelemetry and Instana infrastructure metrics delivered by the Instana agent. 
+OpenTelemetry and Instana infrastructure metrics delivered by the Instana agent.
 Please follow the below instructions to find an example of such transaction in your environment.
 
 Using the trace from the previous example (the "checkout" service), please navigate to the right
@@ -73,19 +73,19 @@ view, with a full path beginning from the host, the platform, the pod, namespace
 ![explore10](images/otel-explore-010.png)
 
 The above example proves the Instana can combine traces from OpenTelemetry
-and Instana infrastructure data within the same screen under one transaction ID. The Node details are 
+and Instana infrastructure data within the same screen under one transaction ID. The Node details are
 coming from the Instana Agent and the rest od the Infrastructure data is coming from the Instana k8sensor.
 
 :::tip
-K8sensor is a part of the Instana Agent Kubernetes monitoring solution. Read more about the sensor 
+K8sensor is a part of the Instana Agent Kubernetes monitoring solution. Read more about the sensor
 here https://www.ibm.com/docs/en/instana-observability/1.0.294?topic=instana-monitoring-kubernetes#kubernetes-sensors
 :::
 
 Instana can combine Instana's proprietary traces and OpenTelemetry traces into a single end-to-end trace.
 
-## OpenTelemetry tracing - code examples
+## 5.4 OpenTelemetry tracing - code examples
 
-:::info
+:::warning Information Only
 
 This section is here for informational purposes. There are no steps to execute.
 
@@ -156,21 +156,21 @@ Please note the use of **OpenTelemetry/API** and further use of the span builder
 
 [The source code can be found here](https://github.com/open-telemetry/opentelemetry-demo/blob/main/src/quote/app/routes.php)
 
-## OpenTelemetry as out-of-the-box observability
+## 5.5 OpenTelemetry as out-of-the-box observability
 
-More and more middleware platforms are embedding OpenTelemetry tracing capabilities to provide out-of-the-box observability. For example, 
-**IBM MQ** now supports OpenTelemetry to trace message flows across queues and topics, helping teams monitor message delivery latency and 
-identify processing delays. 
+More and more middleware platforms are embedding OpenTelemetry tracing capabilities to provide out-of-the-box observability. For example,
+**IBM MQ** now supports OpenTelemetry to trace message flows across queues and topics, helping teams monitor message delivery latency and
+identify processing delays.
 
-**IBM App Connect Enterprise (ACE)** integrates OpenTelemetry to trace message flows through integration nodes 
-and flows, offering visibility into how data transformations and routing decisions are made. 
+**IBM App Connect Enterprise (ACE)** integrates OpenTelemetry to trace message flows through integration nodes
+and flows, offering visibility into how data transformations and routing decisions are made.
 
-Similarly, **IBM DataPower Gateway** includes OpenTelemetry support to trace API calls and security processing, which is crucial for 
-understanding performance and enforcing compliance in API-driven architectures. 
+Similarly, **IBM DataPower Gateway** includes OpenTelemetry support to trace API calls and security processing, which is crucial for
+understanding performance and enforcing compliance in API-driven architectures.
 
 These integrations allow organizations to gain deep insights into complex, hybrid environments without needing
 to manually instrument every component, accelerating troubleshooting and improving system reliability.
 
-## Summary
+## 5.6 Summary
 
 In this section, you've learnt that Instana can easily represent merged data collected from OpenTelemetry and Instana native agent.
