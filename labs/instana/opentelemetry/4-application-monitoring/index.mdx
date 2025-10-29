@@ -1,5 +1,5 @@
 ---
-title: 5. Application monitoring
+title: 4. Application monitoring
 description: Configure Instana to monitor an Application
 sidebar_position: 6
 ---
@@ -34,22 +34,21 @@ Key features and benefits of Application Perspectives:
    signals, providing a comprehensive view of the application's health and
    performance.
 
-## Create an Application in Instana
+## 4.1 Create an Application in Instana
 
 Let's create an application perspective in Instana. Log in to your Instana UI
 and create a new application perspective as described in the below picture:
 
 ![otel-015](images/otel-app-015.png)
 
-Switch to "Advanced mode" and provide all necessary values like name of your 
-choice, scope.
+Switch to "Advanced mode" and name your application `otel-demo`.
 
-To configured the "Scope" please type "kubernetes pod" and then select 
+To configured the "Scope" please type "kubernetes pod" and then select
 "namespace" as described on the below picture
 
-![otel-015](images/otel-app-019.png) 
+![otel-015](images/otel-app-019.png)
 
-Once the scope is configured, select "All downstream services" and "All calls", 
+Once the scope is configured, select "All downstream services" and "All calls",
 click "Create".
 
 ![otel-015](images/otel-app-016.png)
@@ -66,7 +65,7 @@ from the moment of when it was defined.
 
 :::
 
-## Review Application Perspective
+## 4.2 Review Application Perspective
 
 After a few minutes, you should be able to see the metrics collected and
 displayed as a part of your new Application Perspective.
@@ -86,7 +85,7 @@ or configured tracing collection from native Instana toolbox.
 
 :::
 
-## Summary
+## 4.3 Summary
 
 In this section, you've learnt how to create an Application Perspective. Please
 proceed to the next section of the labs.

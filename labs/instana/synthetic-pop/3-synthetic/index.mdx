@@ -28,8 +28,6 @@ the network or load balancer rather than the application.
 
 In the lab, we will begin by installing the "_Synthetic Point Of Presence_".
 
-## Open a terminal session on the bastion host
-
 From the Bastion host, open a terminal window by selecting **Activities** at the
 top left of the screen and then the terminal icon.
 
@@ -42,7 +40,7 @@ If you are unsure how to get access to the Bastion host (Guacamole) see
 
 ![open-terminal](images/open-terminal.png)
 
-## Enable the _Synthetic Point Of Presence_ backend feature
+## 3.1 Enable the _Synthetic Point Of Presence_ backend feature
 
 We will be installing the _Synthetic Point Of Presence_ onto the same K3s
 cluster that the Instana backend is running on. In order to do that, we'll need
@@ -74,11 +72,10 @@ kubectl get nodes
 You should see the following output:
 
 ```bash title="Example Output"
-NAME        STATUS   ROLES                       AGE   VERSION
-instana-0   Ready    control-plane,etcd,master   25h   v1.31.5+k3s1
-instana-1   Ready    control-plane,etcd,master   25h   v1.31.5+k3s1
-instana-2   Ready    control-plane,etcd,master   25h   v1.31.5+k3s1
-
+NAME        STATUS   ROLES                       AGE     VERSION
+instana-0   Ready    control-plane,etcd,master   4h21m   v1.32.4+k3s1
+instana-1   Ready    control-plane,etcd,master   4h20m   v1.32.4+k3s1
+instana-2   Ready    control-plane,etcd,master   4h20m   v1.32.4+k3s1
 ```
 
 A synthetic feature must be enabled in the Instana backend in order to execute
@@ -118,7 +115,7 @@ At this point, the Instana cluster is capable of displaying synthetic tests, but
 you still need to install the "_Synthetic Point Of Presence_", the component
 which will run the tests.
 
-## Install the _Synthetic Point Of Presence_ component
+## 3.2 Install the _Synthetic Point Of Presence_ component
 
 This is the component that plays synthetic tests and reports results to the
 Instana backend server.
@@ -231,19 +228,21 @@ root@instana-0:~# helm install synthetic-pop \
         --set redis.tls.enabled=false \
         --set redis.password="a1fc5d01bcbb" \
         synthetic-pop
+
 NAME: synthetic-pop
-LAST DEPLOYED: Sun Apr  6 17:53:51 2025
+LAST DEPLOYED: Tue Oct 28 03:07:44 2025
 NAMESPACE: instana-synthetic
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 NOTES:
 CHART NAME: synthetic-pop
-CHART VERSION: 1.2.13
-APP VERSION: 1.292.0
+CHART VERSION: 1.2.30
+APP VERSION: 1.307.0
+
 ```
 
-## Verify installation
+## 3.3 Verify installation
 
 Confirm that all pods of the _Synthetic Point Of Presence_ are running:
 
@@ -258,7 +257,7 @@ the interface (refresh the browser page):
 
 ![](images/PointOfPresence_Location.png)
 
-## Certificate expiration check with synthetic tests
+## 3.4 Certificate expiration check with synthetic tests
 
 This functionality allows you to establish certificate expiration checks for
 websites. In the lab we will use a test application, _Quote of the day_, which
@@ -299,8 +298,8 @@ and set the frequency of the SSL checks to run every `1` hour:
 Scroll to the **Identify: What is the test going to do?** section and give the
 test a name and description. We will use values:
 
-- **Name:** Quote of the Day: Certificate check
-- **Description:** The test checks TLS certificate expiration date every hour.
+- **Name:** `Quote of the Day: Certificate check`
+- **Description:** `The test checks TLS certificate expiration date every hour.`
 
 ![](images/SSL-certificate-name.png)
 
@@ -330,11 +329,11 @@ update, toggle on the **Live** button to get the latest updates.
 ![alt text](images/SSL-certificate-health.png)
 
 Click on the name of the test to investigate the summary of the certificate
-check. If you see a message like `No results for this time frame`, then change
-time the frame to a longer period, for example `last 30 minutes` and refresh the
-browser page.
+check. If you see a message like `No results for this time frame`, then wait
+a few minutes, change time the frame to a longer period, for example
+`last 30 minutes` and refresh the browser page.
 
-## REST API Synthetic Tests
+## 3.5 REST API Synthetic Tests
 
 In this exercise we will create a series of probes to test application REST API
 endpoints.
@@ -529,7 +528,7 @@ It may take up to a minute for Instana to perform the first test and show the
 results. You can refresh the browser window or change the time duration for the
 dashboard on right top of the window to speed up the status update.
 
-For this lab, change the time window to `Last 5 minutes`.
+For this lab, change the time window to `Last 5 minutes` and wait for a few minutes.
 
 By now you should see a list of tests:
 
@@ -625,7 +624,7 @@ the next section.
 The test fails because the Synthetic API test expects an empty status, but in
 this case it receives status `running`.
 
-## Create a Smart Alert for a test
+## 3.6 Create a Smart Alert for a test
 
 Smart Alerts allow you to identify a threshold violation. Then, if desired,
 alert people via external systems like AIOps, Email, Slack, Service Now, etc. In
@@ -718,11 +717,16 @@ that an event was generated:
 
 ![](images/Events.png)
 
+
 When new events trigger on the synthetic test, an email will be sent out via the
 **Alert Channel** notifying the recipients of the failure. Click on the event to
 investigate the details.
 
-## Summary
+You can view the email Alert by navigating to the **Mail** bookmark in Firefox.
+
+![](images/synthetic-email-alert.png)
+
+## 3.7 Summary
 
 During this lab we have:
 

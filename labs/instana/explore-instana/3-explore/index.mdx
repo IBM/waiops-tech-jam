@@ -279,7 +279,7 @@ Select **New Application Perspective**
 definition to look like below.
 
 1. Name the Application Perspective `Robot Shop`
-2. Add a filter, type in **kubernetes** and then select **namespace**. Then,
+2. Add a filter, type in **kubernetes namespace** and then select **Kubernetes namespace name**. Then,
    click in the **value** field. You'll notice that when you click on it, the
    field is pre-populated with kubernetes namespaces that have applications
    being monitored. Select the **robot-shop** namespace.
@@ -307,7 +307,7 @@ Application Perspective**
 definition to look like below.
 
 1. Name the Application Perspective `Quote of the Day`
-2. Add filters for Service Name, Kubernetes Namespace and Endpoint Name as per
+2. Add filters for Service Name, Kubernetes Namespace Name and Endpoint Name as per
    the image below. As you add filters, notice that you need to add a
    combination of **AND** and **OR** conditions to achieve the results that you
    want.
@@ -366,10 +366,19 @@ In particular, let's take a look at the **Dependencies** tab.
 
 Click on the **Dependencies** tab.
 
+:::tip
+
+You may need to wait a short while for Instana to generate the complete topology.
+
+:::
+
 ![](images/dependencies.png)
 
+
 On the dependencies tab, you'll see a full topology of the application services.
-This topology is discovered automatically. You can see transactions flowing
+This topology is discovered automatically.
+
+You can see transactions flowing
 between the different nodes in the topology. Most of these services are node.js
 based cloud-native services. There should be also be a node with a name that
 ends in **BK1:EG2**. BK1 is the ACE Integration Node and EG2 is the ACE
