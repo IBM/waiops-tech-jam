@@ -9,13 +9,15 @@ import ObtainingEntitlementKey from "@site/src/components/obtainingEntitlementKe
 import CreateIbmId from "@site/src/components/createIbmId/CreateIbmId"
 import AiopsTrialLicenseAdmonition from "@site/src/components/trialLicense/TrialLicense"
 
-In this lab, you will initially connect to a bastion virtual machine that has Red Hat Enterprise Linux (RHEL) installed on it from which you will carry out the tasks outlined in the instructions. Once you have finished your installation, you will open a Firefox browser on this bastion host and log in to your newly installed AIOps instance.
+In this lab, you will initially connect to a bastion virtual machine that has Red Hat Enterprise Linux (RHEL) installed on it from which you will carry out the deployment. Once you have finished your installation, you will open a Firefox browser on this bastion host and log in to your newly installed AIOps instance.
 
 In your environment, you will also have a set of ten Linux virtual machines installed with Red Hat Enterprise Linux 9.4. The specification and eventual use of these machines will be as follows:
 
-* 1 x load balancer server - 2 CPU, 16 Gi RAM, 500 Gi disk
-* 3 x control plane nodes - 16 CPU 16 Gi RAM, 200 Gi disk + (2 x 200 Gi disks)
-* 6 x worker nodes - 16 CPU, 46 Gi RAM, 200 Gi disk + (1 x 200 Gi disk)
+* 1 x load balancer server - `aiopslb` - 2 CPU, 16 Gi RAM, 500 Gi disk
+* 3 x control plane nodes - `aiopsc1` to `aiopsc3` - 16 CPU 16 Gi RAM, 200 Gi disk + (2 x 200 Gi disks)
+* 6 x worker nodes - `aiopsw1` to `aioipsw6`- 16 CPU, 46 Gi RAM, 200 Gi disk + (1 x 200 Gi disk)
+
+![](images/architecture.linux.png)
 
 :::note
 
