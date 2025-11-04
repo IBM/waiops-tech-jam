@@ -194,30 +194,60 @@ Connect to each of your cluster nodes and `su` to the `root` user:
 [jammer@aiopsc1 ~]$ sudo su -
 [root@aiopsc1 ~]# 
 ```
-Run the following command to discover your what your additional disks are.
+Run the following command block on each of your **control plane** hosts to discover your what your additional disks are for each one:
 ```
-[root@aiopsc1 ~]# lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
-NAME                SIZE TYPE MOUNTPOINT
-sda                 150G disk 
---sda1                1G part /boot/efi
---sda2                1G part /boot
---sda3               38G part 
-  --sysvg-lv_root    12G lvm  /
-  --sysvg-lv_swap     1G lvm  [SWAP]
-  --sysvg-lv_audit    4G lvm  /var/log/audit
-  --sysvg-lv_log      4G lvm  /var/log
-  --sysvg-lv_var    157G lvm  /var
-  --sysvg-lv_tmp      4G lvm  /tmp
-  --sysvg-lv_opt      2G lvm  /opt
-  --sysvg-lv_home     4G lvm  /home
-sdb                 150G disk 
---sdb1              150G part 
-  --sysvg-lv_var    157G lvm  /var
-sdc                 200G disk 
-sdd                 200G disk 
+DISK_ONE=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
+  $2 == "200G" && $3 == "disk" {
+    cmd = "lsblk -n /dev/" $1 " | wc -l";
+    cmd | getline lines;
+    close(cmd);
+    if (lines == 1) print $1;
+  }
+' | head -1)
+
+DISK_TWO=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
+  $2 == "200G" && $3 == "disk" {
+    cmd = "lsblk -n /dev/" $1 " | wc -l";
+    cmd | getline lines;
+    close(cmd);
+    if (lines == 1) print $1;
+  }
+' | grep -v "$DISK_ONE" | head -1) # <- This is the difference between DISK_ONE and DISK_TWO
+echo "Your additional disks are:"
+echo /dev/$DISK_ONE
+echo /dev/$DISK_TWO
+```
+Example output:
+```
+...
+Your additional disks are:
+/dev/sdc
+/dev/sdd
 [root@aiopsc1 ~]# 
 ```
-In this case, you can see the primary control plane node `aiopsc1` has two additional 200G disks: `sdc` and `sdd`. When you configure your local volumes, one will be allocated for the storage of AIOps application data (`APP_STORAGE_PATH`), and one will be allocated for the storage of the Kubernetes platform data (`PLATFORM_STORAGE_PATH`).
+In this case, you can see the primary control plane node `aiopsc1` has two additional 200G disks: `/dev/sdc` and `/dev/sdd`. When you configure your local volumes, one will be allocated for the storage of AIOps application data (`APP_STORAGE_PATH`), and one will be allocated for the storage of the Kubernetes platform data (`PLATFORM_STORAGE_PATH`).
+
+Run the following command block on each of your **worker node** hosts to discover your what your additional disk is for each one:
+```
+DISK_ONE=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
+  $2 == "200G" && $3 == "disk" {
+    cmd = "lsblk -n /dev/" $1 " | wc -l";
+    cmd | getline lines;
+    close(cmd);
+    if (lines == 1) print $1;
+  }
+' | head -1)
+
+echo "Your additional disk is:"
+echo /dev/$DISK_ONE
+```
+Example output:
+```
+...
+Your additional disk is:
+/dev/sdc
+[jammer@aiopsw1 ~]$ 
+```
 
 :::note
 
@@ -225,11 +255,11 @@ The control plane nodes will have two additional disks as described above. The w
 
 :::
 
-Once you have identified your additional disks, follow the steps on the link below to set these volumes up:
+Now you have identified your additional disks for each host, follow the steps on the link below to set these volumes up:
 
 [https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.1?topic=requirements-configuring-local-volumes](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.1?topic=requirements-configuring-local-volumes)
 
-After you have successfully configured your volumes, you should see something like the following for your control plane nodes:
+After you have successfully configured your volumes, you should see something like the following for your **control plane** hosts:
 
 ```
 [root@aiopsc1 ~]# lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
@@ -256,7 +286,7 @@ sdd                 200G disk
 [root@aiopsc1 ~]# 
 ```
 
-After you have successfully configured your volumes, you should see something like the following for your worker nodes:
+After you have successfully configured your volumes, you should see something like the following for your **worker node** hosts:
 
 ```
 [root@aiopsw1 ~]# lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
