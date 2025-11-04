@@ -13,20 +13,20 @@ In this lab, you will initially connect to a bastion virtual machine that has Re
 
 In your environment, you will also have a set of ten Linux virtual machines installed with Red Hat Enterprise Linux 9.4. The specification and eventual use of these machines will be as follows:
 
-* 1 x proxy server - 4 CPU, 16 Gi RAM, 300 Gi disk
-* 3 x control plane nodes - 16 CPU 32 Gi RAM, 300 Gi disk + (2 x 300 Gi disks)
-* 6 x worker nodes - 16 CPU, 64 Gi RAM, 300 Gi disk + (1 x 300 Gi disk)
+* 1 x load balancer server - 2 CPU, 16 Gi RAM, 500 Gi disk
+* 3 x control plane nodes - 16 CPU 16 Gi RAM, 200 Gi disk + (2 x 200 Gi disks)
+* 6 x worker nodes - 16 CPU, 46 Gi RAM, 200 Gi disk + (1 x 200 Gi disk)
 
 :::note
 
-A Netcool server is also set up for you to use in subsequent labs.
+A pre-provisioned Netcool server (`netcoolvm`) is also set up for you to use in subsequent labs.
 
 :::
 
 :::note
 
-One key objective of this Lab is to expose the product public documentation to
-the practitioners. With this in mind, each installation steps will reference the
+One key objective of this lab is to expose the product public documentation to
+the students. With this in mind, each installation steps will reference the
 product documentation.
 
 :::

@@ -8,18 +8,18 @@ sidebar_position: 3
 
 This module focuses on the initial deployment of the Cloud Pak for AIOps using the Linux VM based installer. It will include the prerequisite steps of preparing the virtual machines prior to installation.
 
-The hosts provided in this lab include the following (hostname, FQDN, purpose):
+All machines provided in this lab are in DNS already hence no hosts file setup is required. In a POC environment without DNS however, it would be advisable to add all hostnames and IP addresses to all of the hosts before beginning the setup of AIOps.
 ```
-aiopsc1 aiopsc1.ibmdte.local - control plane node 1
-aiopsc2 aiopsc2.ibmdte.local - control plane node 2
-aiopsc3 aiopsc3.ibmdte.local - control plane node 3
-aiopsw1 aiopsw1.ibmdte.local - worker node 1
-aiopsw2 aiopsw2.ibmdte.local - worker node 2
-aiopsw3 aiopsw3.ibmdte.local - worker node 3
-aiopsw4 aiopsw4.ibmdte.local - worker node 4
-aiopsw5 aiopsw5.ibmdte.local - worker node 5
-aiopsw6 aiopsw6.ibmdte.local - worker node 6
-aiopslb aiopslb.ibmdte.local - the load balancer host
+aiopslb - load balancer host
+aiopsc1 - control plane node 1
+aiopsc2 - control plane node 2
+aiopsc3 - control plane node 3
+aiopsw1 - worker node 1
+aiopsw2 - worker node 2
+aiopsw3 - worker node 3
+aiopsw4 - worker node 4
+aiopsw5 - worker node 5
+aiopsw6 - worker node 6
 ```
 
 :::note
@@ -28,60 +28,32 @@ An additional VM is included in your environment (`netcoolvm`) and is preinstall
 
 :::
 
-## 3.2: Prepare your hosts
-
-The first step is to update the operating system on the set of VMs so that they are at the latest patch levels.
-
-SSH to each box in your environment and update the systems per the following:
-```
-ssh jammer@aiopsc1
-sudo su -
-```
-Run the following to update and reboot them:
-```
-yum update -y
-shutdown -r now
-```
-Next, install the following package on the load balancer host (`aiopslb`):
-```
-yum install -y haproxy
-```
-Finally, install the following package on the control plane and worker nodes:
-```
-yum install -y lvm2
-```
-The control plane nodes are provisioned with two additional disks and the worker nodes with one additional disk. These must be prepared for use before attempting any installation. Follow the instructions on the link below to set these volumes up.
-
-Documentation reference: [Configuring local volumes](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/latest?topic=requirements-configuring-local-volumes)
-
-:::caution
-
-Do not proceed past this point until all the additional volumes have been configured. After completing this step, you should have two additional volumes on each of the control plane nodes and one additional volume on each of the worker nodes.
-
-:::
-
-## 3.3: Modify the hosts so that root can SSH to  them
+## 3.2: Modify the hosts so that root can SSH to  them
 
 The installation process connects to the hosts as the root user. The first step to enabling this is to update each host and allow SSH logins as the root user.
 
-Connect to each of your hosts and `su` to the root user:
+Connect to each of your hosts and `su` to the `root` user:
 ```
-ssh jammer@aiopsc1
-sudo su -
+[admin@bastion-gym-lan ~]$ ssh jammer@aiopsc1
+[jammer@aiopsc1 ~]$ sudo su -
+[root@aiopsc1 ~]# 
 ```
 Run the following command to enable root SSH logins:
 ```
-sed -i 's/^#? *PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/^PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+grep "^PermitRoot" /etc/ssh/sshd_config
+systemctl restart sshd
 ```
 
-## 3.4: Set up an SSH key on the primary control plane node
+## 3.3: Set up an SSH key on the primary control plane node
 
 The installation of AIOps is done through the primary control plane node. As such, you need to create an SSH key on the primary control node, and then add it to the authorized keys file on each of the other control plane and worker nodes.
 
-Connect to your primary control plane node and `su` to the root user:
+Connect to your primary control plane node and `su` to the `root` user:
 ```
-ssh jammer@aiopsc1
-sudo su -
+[admin@bastion-gym-lan ~]$ ssh jammer@aiopsc1
+[jammer@aiopsc1 ~]$ sudo su -
+[root@aiopsc1 ~]# 
 ```
 Run the following command on your primary control plane node to create an SSH key:
 ```
@@ -89,22 +61,51 @@ cd ~/.ssh
 ssh-keygen -o
 ```
 
+Accept all the defaults. There is no need to set a passphrase for your key.
+
 You should see a new file created called `id_rsa.pub`. Copy the contents of this file to your clipboard as you will need to paste it shortly.
 
-## 3.5: Copy the SSH key to the other nodes and test
+:::tip
 
-Next, SSH as the root user to each of the other control plane nodes as well as each of the worker nodes and append this copied key to the end of the `/root/.ssh/authorized_keys` file on each one.
-
-After you have done so, test that you can SSH to each control plane and worker node from the primary control plane node without having to enter a password.
-
-:::note
-
-It is important to connect at least once to each control plane and worker node from the primary control plane node, and answer "yes" when prompted. If you miss out this step, the the AIOps deployment will likely fail later, as the installer will not be able to seamlessly connect to each node from the primary, as it will be awaiting an answer to this question behind the scenes.
+Open the Text Editor on your bastion host and save your public key and various other commands there to make copying and pasting easier.
 
 :::
 
+## 3.4: Copy the SSH key to the other nodes and test
+
+Next, SSH to each of the other control plane nodes as well as each of the worker nodes and append this key generated on `aiopsc1` to the end of the `/root/.ssh/authorized_keys` file on each of the targets.
+
+The list of nodes to add the key from `aiopsc1` to includes:
+```
+aiopsc2 - control plane node 2
+aiopsc3 - control plane node 3
+aiopsw1 - worker node 1
+aiopsw2 - worker node 2
+aiopsw3 - worker node 3
+aiopsw4 - worker node 4
+aiopsw5 - worker node 5
+aiopsw6 - worker node 6
+aiopslb - the load balancer host
+```
+
+As an example, connect to your second control plane node and `su` to the `root` user:
+```
+[admin@bastion-gym-lan ~]$ ssh jammer@aiopsc2
+[jammer@aiopsc2 ~]$ sudo su -
+[root@aiopsc2 ~]# vi .ssh/authorized_keys
+<add-the-key-and-save-and-exit>
+[root@aiopsc2 ~]# exit
+[jammer@aiopsc2 ~]$ exit
+[admin@bastion-gym-lan ~]$ 
+
+```
+
+After you have added the key generated on `aiopsc1` to the `authorized_keys` file on `aiopsc2`, repeatedly test that you can SSH from `aiopsc1` to `aiopsc2` until you can do so without having to answer any prompts or enter a password.
+
 The following is an example first connection where the user is prompted to add the target host to the list of known hosts:
 ```
+[admin@bastion-gym-lan ~]$ ssh jammer@aiopsc1
+[jammer@aiopsc1 ~]$ sudo su -
 [root@aiopsc1 ~]# ssh root@aiopsc2
 The authenticity of host 'aiopsc2 aiopsc2.ibmdte.local (::1)' can't be established.
 ED25519 key fingerprint is SHA256:bOcJ27pUHfc/BVomiCixBsJK2ys0Z+LLBm3CdRMUy5o.
@@ -113,13 +114,15 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 Warning: Permanently added 'aiopsc2 aiopsc2.ibmdte.local' (ED25519) to the list of known hosts.
 [root@aiopsc2 ~]# 
 ```
-Subsequent connections will not require an answer (which is what you want):
+After doing this once, subsequent connections will not be prompted for an answer (which is what you want):
 ```
 [root@aiopsc1 ~]# ssh root@aiopsc2
 Last login: Tue Nov  5 09:36:40 2024 from ::1
 [root@aiopsc2 ~]# 
 ```
-You will need to repeat this test connection from `aiopsc1` to each of the other control plane nodes and worker nodes until you can connect seamlessly to all without needing to enter a password:
+You will need to repeat this test connection from `aiopsc1` to each of the other control plane nodes and worker nodes until you can connect seamlessly to all without needing to answer a prompt or enter a password.
+
+After you have copied the SSH key from `aiopsc1` to all the target hosts, test all of the following connections are seamless from `aiopsc1`:
 ```
 ssh root@aiopsc2
 ssh root@aiopsc3
@@ -130,17 +133,13 @@ ssh root@aiopsw4
 ssh root@aiopsw5
 ssh root@aiopsw6
 ```
-## 3.6: Set up an SSH key on your deployment machine
+## 3.5: Set up an SSH key on your deployment machine
 
-This step involves creating an SSH key on the machine from which you will run the deployment from. In this lab, this will be the bastion host. Open a command prompt on your bastion host and change to the root user:
+This step involves creating an SSH key on the machine from which you will run the deployment from. In this lab, this will be the bastion host. The default admin user should already have a `/home/admin/.ssh/id_rsa.pub` key.
 
-```
-sudo su -
-```
+Follow the same steps outlined above and append the local `id_rsa.pub` key contents to the `/root/.ssh/authorized_keys` file on the **primary control plane node** (`aiopsc1`).
 
-You should follow the same steps outlined above to create a public SSH key on your bastion host, then append the local `id_rsa.pub` key contents to the `/root/.ssh/authorized_keys` file on the *primary control plane node* (`aiopsc1`).
-
-You should then be able to SSH to the primary control plane node from your bastion host without the need to enter a password. This is important since the installation steps you'll run later to deploy AIOps use the following format:
+After the first connection (answer "yes" when prompted), you should then be able to SSH to the primary control plane node from your bastion host without any further prompts or the need to enter a password. This is important since the installation steps you'll run later to deploy AIOps use the following format:
 
 ```
 ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} ssh ${TARGET_USER}@${CP_NODE} \
@@ -151,15 +150,150 @@ Here, the command first connects from the bastion host to the primary control pl
 
 Hence you need to be able to seamlessly SSH from your deployment machine to the primary control plane node (`aiopsc1`), then from the primary control plane node to all the other AIOps cluster nodes.
 
-As before, test out your SSH connection to the primary control plane node and answer "yes" when prompted to ensure seamless connectivity thereafter.
+As before, test out your SSH connection to the primary control plane node and answer "yes" when prompted to ensure seamless connectivity thereafter. Repeatedly test your SSH connection from the bastion host to `aiopsc1` until you can do so without any prompts or the need to enter any passwords.
 
-## 3.7: Set up your load balancer
+When you have finished copying the SSH key from your bastion host to `aiopsc1`, you should see something like the following when you attempt to connect as the `root` user:
 
-For resiliency, AIOps is designed to run using a load-balancer that proxies connections to its control plane nodes. If you are setting up AIOps in an evaluation environment where there is no load-balancer available, you can simply provision an extra VM and run `haproxy` on it.
+```
+[admin@bastion-gym-lan ~]$ ssh root@aiopsc1
+Last login: Tue Nov  4 09:52:22 2025 from 192.168.252.99
+[root@aiopsc1 ~]# 
+```
 
-In this lab, we have a load-balancer host provisioned, with haproxy already installed. Next, we need to set up the configuration file, then start up the service.
+## 3.6: Install and update your hosts
 
-The following is a sample `haproxy.cfg` file you can use. The only thing you need to modify are the three IP addresses mentioned in the three places. The three IP addresses are simply those of the three control plane nodes. Hence use the following file as-is, except for the values of the three IP addresses. You do not need to change the hostnames or any other details in the file.
+The next step is to install software and update the operating systems on the set of VMs so that they are at the latest patch levels.
+
+Connect to each of your nodes and `su` to the `root` user:
+```
+[admin@bastion-gym-lan ~]$ ssh jammer@aiopsc1
+[jammer@aiopsc1 ~]$ sudo su -
+[root@aiopsc1 ~]# 
+```
+First, install the following package only on the **load balancer** host (`aiopslb`):
+```
+yum install -y haproxy
+```
+Next, install the following package on the **control plane and worker node** hosts:
+```
+yum install -y lvm2
+```
+Finally, run the following to update **all** hosts and reboot them:
+```
+yum update -y
+shutdown -r now
+```
+
+## 3.7: Configure your local volumes
+
+The control plane nodes are provisioned with two additional disks and the worker nodes with one additional disk. These must be prepared for use before attempting any installation.
+
+Connect to each of your cluster nodes and `su` to the `root` user:
+```
+[admin@bastion-gym-lan ~]$ ssh jammer@aiopsc1
+[jammer@aiopsc1 ~]$ sudo su -
+[root@aiopsc1 ~]# 
+```
+Run the following command to discover your what your additional disks are.
+```
+[root@aiopsc1 ~]# lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
+NAME                SIZE TYPE MOUNTPOINT
+sda                 150G disk 
+--sda1                1G part /boot/efi
+--sda2                1G part /boot
+--sda3               38G part 
+  --sysvg-lv_root    12G lvm  /
+  --sysvg-lv_swap     1G lvm  [SWAP]
+  --sysvg-lv_audit    4G lvm  /var/log/audit
+  --sysvg-lv_log      4G lvm  /var/log
+  --sysvg-lv_var    157G lvm  /var
+  --sysvg-lv_tmp      4G lvm  /tmp
+  --sysvg-lv_opt      2G lvm  /opt
+  --sysvg-lv_home     4G lvm  /home
+sdb                 150G disk 
+--sdb1              150G part 
+  --sysvg-lv_var    157G lvm  /var
+sdc                 200G disk 
+sdd                 200G disk 
+[root@aiopsc1 ~]# 
+```
+In this case, you can see the primary control plane node `aiopsc1` has two additional 200G disks: `sdc` and `sdd`. When you configure your local volumes, one will be allocated for the storage of AIOps application data (`APP_STORAGE_PATH`), and one will be allocated for the storage of the Kubernetes platform data (`PLATFORM_STORAGE_PATH`).
+
+:::note
+
+The control plane nodes will have two additional disks as described above. The worker nodes however will only have one additional disk for the storage of AIOps application data. They do not need the Kubernetes platform storage directory like the control plane nodes do. You will need to run the `lsblk` command on each node to check which volume(s) to use and map them accordingly.
+
+:::
+
+Once you have identified your additional disks, follow the steps on the link below to set these volumes up:
+
+[https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.1?topic=requirements-configuring-local-volumes](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.1?topic=requirements-configuring-local-volumes)
+
+After you have successfully configured your volumes, you should see something like the following for your control plane nodes:
+
+```
+[root@aiopsc1 ~]# lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
+NAME                SIZE TYPE MOUNTPOINT
+sda                 200G disk 
+--sda1                1G part /boot/efi
+--sda2                1G part /boot
+--sda3               38G part 
+  --sysvg-lv_root    12G lvm  /
+  --sysvg-lv_swap     1G lvm  [SWAP]
+  --sysvg-lv_audit    4G lvm  /var/log/audit
+  --sysvg-lv_log      4G lvm  /var/log
+  --sysvg-lv_var    207G lvm  /var
+  --sysvg-lv_tmp      4G lvm  /tmp
+  --sysvg-lv_opt      2G lvm  /opt
+  --sysvg-lv_home     4G lvm  /home
+sdb                 200G disk 
+--sdb1              200G part 
+  --sysvg-lv_var    207G lvm  /var
+sdc                 200G disk 
+--aiops-aiops       200G lvm  /var/lib/aiops/storage
+sdd                 200G disk 
+--aiopspl-aiopspl   200G lvm  /var/lib/aiops/platform
+[root@aiopsc1 ~]# 
+```
+
+After you have successfully configured your volumes, you should see something like the following for your worker nodes:
+
+```
+[root@aiopsw1 ~]# lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
+NAME                SIZE TYPE MOUNTPOINT
+sda                 200G disk 
+--sda1                1G part /boot/efi
+--sda2                1G part /boot
+--sda3               38G part 
+  --sysvg-lv_root    12G lvm  /
+  --sysvg-lv_swap     1G lvm  [SWAP]
+  --sysvg-lv_audit    4G lvm  /var/log/audit
+  --sysvg-lv_log      4G lvm  /var/log
+  --sysvg-lv_var    207G lvm  /var
+  --sysvg-lv_tmp      4G lvm  /tmp
+  --sysvg-lv_opt      2G lvm  /opt
+  --sysvg-lv_home     4G lvm  /home
+sdb                 200G disk 
+--sdb1              200G part 
+  --sysvg-lv_var    207G lvm  /var
+sdc                 200G disk 
+--aiops-aiops       200G lvm  /var/lib/aiops/storage
+[root@aiopsw1 ~]# 
+```
+
+:::caution
+
+Do not proceed past this point until all the additional volumes have been configured. After completing this step, you should have two additional volumes configured on each of the control plane nodes and one additional volume configured on each of the worker nodes.
+
+:::
+
+## 3.8: Set up your load balancer
+
+For resiliency, AIOps is designed to run using a load-balancer that proxies connections to its control plane nodes. This helps to load balance cluster interactions with external clients.
+
+In this lab, we have a load-balancer host provisioned (`aiopslb`), on which we installed `haproxy` in a previous section. In this section, we will install the `haproxy` configuration file and start up the service.
+
+Use the following sample `haproxy.cfg` file as-is (no changes are necessary).
 
 _Sample haproxy.cfg file:_
 ```
@@ -236,11 +370,18 @@ backend aiops-backend-plaintext
 	server server1 aiopsc2:80 check
 	server server2 aiopsc3:80 check
 ```
-Copy your `haproxy.cfg` file to the `/tmp` directory on your load balancer host. Then, after backing up the original configuration file, copy your replacement file into place. Finally, enable and start the service:
-
+First, create your `haproxy.cfg` file locally on the **bastion** host and copy it to the `/tmp` directory on your **load balancer** host:
 ```
-ssh jammer@aiopslb
-sudo su -
+[admin@bastion-gym-lan ~]$ scp haproxy.cfg jammer@aiopslb:/tmp/.
+```
+Next, connect to your **load balancer** host and `su` to the `root` user:
+```
+[admin@bastion-gym-lan ~]$ ssh jammer@aiopslb
+[jammer@aiopslb ~]$ sudo su -
+[root@aiopslb ~]# 
+```
+Finally, back up the original configuration file, copy your replacement file into place, then enable and start the `haproxy` service.
+```
 cd /etc/haproxy/
 mv haproxy.cfg haproxy.cfg.orig
 cp /tmp/haproxy.cfg .
@@ -254,46 +395,115 @@ Don't worry if you see some errors in the status output at this point, since the
 
 :::
 
-## 3.8: Follow the AIOps installation steps
+## 3.9: Follow the AIOps installation steps
 
-Your VM environment is now ready to start the AIOps deployment. The deployment itself should take around an hour to complete.
+Your VM environment is now ready to start the AIOps deployment.
 
-Documentation reference: [Online installation of IBM Cloud Pak for AIOps on Linux](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/latest?topic=linux-online-installation)
+Go to the following link and complete the installation. Note that you can skip steps 1 and 2 since you already have your entitlement key and we will not be using any custom certificates.
 
-## 3.9: Log in to the Cloud Pak for AIOps console
-
-The final step in the installation process reveals the Cluster Access Details.
-
-Edit the `/etc/hosts` file on your bastion host and add the details of your newly installed AIOps instance. Note that this will be based on the FQDN of your load balancer host and its IP address:
-```
-<load_balancer_ip> aiops-cpd.<your fully-qualified server domain name>
-<load_balancer_ip> cp-console-aiops.<your fully-qualified server domain name>
-```
-For this environment therefore, add the following to your local `/etc/hosts` file on your bastion host:
-```
-192.168.252.9 aiops-cpd.aiopslb.ibmdte.local
-192.168.252.9 cp-console-aiops.aiopslb.ibmdte.local
-```
+[https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.1?topic=linux-online-installation#env_vars](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.1?topic=linux-online-installation#env_vars)
 
 :::note
 
-Both of these need to be present in your bastion host `/etc/hosts` file for correct operation.
+Unless indicated otherwise, you will be running all the steps from the deployment machine. Your deployment machine in this case will be the **bastion** host.
 
 :::
 
-Documentation reference: [DNS requirements](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.0?topic=linux-planning#dns)
+:::note
+
+Take note of section 4.4 during installation. Running the `ethtool` command as the `root` user is needed on each of the control plane nodes and worker nodes since this infrastructure is running on VMware vSphere VMs.
+
+:::
+
+:::tip
+
+Copy the installation command blocks into a Text Editor on your **bastion** host first, make any needed changes, then copy from there into your command line terminal. This helps to avoid any copy-and-paste errors.
+
+:::
+
+The deployment itself should take around an hour to complete.
+
+After the installation has completed, run `aiopsctl status` from the primary control plane node (`aiopsc1`) to verify successful installation:
+```
+[admin@bastion-gym-lan ~]$ ssh root@aiopsc1
+[root@aiopsc1 ~]# aiopsctl status
+o- [03 Nov 25 13:48 UTC] Getting cluster status
+Control Plane Node(s):
+    aiopsc1 Ready
+    aiopsc2 Ready
+    aiopsc3 Ready
+
+Worker Node(s):
+    aiopsw1 Ready
+    aiopsw2 Ready
+    aiopsw3 Ready
+    aiopsw4 Ready
+    aiopsw5 Ready
+    aiopsw6 Ready
+
+o- [03 Nov 25 13:48 UTC] Checking AIOps installation status
+
+  16 Ready Components
+    kafka
+    aimanager
+    baseui
+    zenservice
+    lifecycletrigger
+    aiopsui
+    cluster.opensearch
+    aiopsanalyticsorchestrator
+    aiopsedge
+    asm
+    issueresolutioncore
+    rediscp
+    cluster.aiops-orchestrator-postgres
+    lifecycleservice
+    commonservice
+    cassandra
+
+  AIOps installation healthy
+[root@aiopsc1 ~]# 
+```
+
+## 3.10: Log in to the Cloud Pak for AIOps console
+
+The final step in the installation process reveals the Cluster Access Details.
+
+Edit the `/etc/hosts` file on your **bastion host** and add the the following entries:
+```
+[admin@bastion-gym-lan ~]$ sudo su -
+[root@bastion-gym-lan ~]# vi /etc/hosts
+...
+192.168.252.9 aiops-cpd.aiopslb
+192.168.252.9 cp-console-aiops.aiopslb
+```
+
+See the following documentation link for further information on DNS requirements:
+
+[https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.0?topic=linux-planning#dns](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.0?topic=linux-planning#dns)
 
 Finally, open a Firefox web browser session on your bastion host and go to the AIOps login page. 
 ```
-https://aiops-cpd.aiopslb.ibmdte.local
+https://aiops-cpd.aiopslb
 ```
-Log in to AIOps using the credentials provided at the end of installation.
+:::note
 
-If you have mislaid the login credentials, simply SSH to one of the control plane nodes and run the following command:
+You will likely have to accept and continue if you hit any certificate warnings several times before you eventually get to the AIOps login page.
+
+:::
+
+To get the login credentials, SSH to `aiopsc1` and run the following command:
 ```
-ssh root@aiopsc1
-aiopsctl server info --show-secrets
+[admin@bastion-gym-lan ~]$ ssh root@aiopsc1
+[root@aiopsc1 ~]# aiopsctl server info --show-secrets
+Cluster Access Details
+URL:      aiops-cpd.aiopslb
+Username: cpadmin
+Password: ZeIOTJzqblDMHjPrTWmLGLX5yqT1tvWS
+[root@aiopsc1 ~]# 
 ```
+
+Use `cpadmin` and the password given to you to log in to the console.
 
 Congratulations, this concludes the installation of AIOps on Linux VMs!
 
