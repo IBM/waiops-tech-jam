@@ -604,7 +604,7 @@ still operating as the **root** user.
    user using the newly created cluster key. Run the following:
 
    ```sh title="Host: instana-0"
-   ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-2 "echo Connection to instana-2 successful"
+   ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-2 "echo Connection to instana-2 successful"
    ```
 
    You should see the following output:
