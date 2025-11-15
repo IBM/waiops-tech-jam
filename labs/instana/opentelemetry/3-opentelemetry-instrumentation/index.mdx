@@ -8,34 +8,7 @@ sidebar_position: 5
 
 import WorkshopAdhocPlaybook from "@site/src/components/workshop/AdhocPlaybook"
 
-{/* Uncomment when ad_hoc_bluebox_instana_agent_deploy.yml has been updated with latest instana.yml format */}
-{/* <WorkshopAdhocPlaybook playbookFullPath="~/demo-scenarios-aiops/ws_instana_101/playbooks/ad_hoc_bluebox_instana_agent_deploy.yml" /> */}
-
-{/* Workaround start */}
-
-import WorkshopOnly from "@site/src/components/workshop/WorkshopOnly"
-
-<WorkshopOnly>
-
-:::warning
-
-You are in a workshop setting which uses a single base classroom environment for all the lab exercises. In order to ensure the required prerequisite setup and dependencies for this lab are in place, please execute the following automation before proceeding with the lab instructions below:
-
-```bash title="Host: bastion-gym-lan (admin user)"
-sed -i.bak \
-  -e "s/\['agent'\]\['endpoint-host'\]/\['backend'\]\['core'\]\['acceptors'\]\['agent'\]\['host'\]/g" \
-  -e "s/\['agent'\]\['endpoint-port'\]/\['backend'\]\['core'\]\['acceptors'\]\['agent'\]\['port'\]/g" \
-  ~/demo-scenarios-aiops/ws_instana_101/playbooks/ad_hoc_bluebox_instana_agent_deploy.yml
-
-ansible-playbook -i ~/ansible/hosts \
-    ~/demo-scenarios-aiops/ws_instana_101/playbooks/ad_hoc_bluebox_instana_agent_deploy.yml
-```
-
-:::
-
-</WorkshopOnly>
-
-{/* Workaround end */}
+<WorkshopAdhocPlaybook playbookFullPath="~/demo-scenarios-aiops/ws_instana_101/playbooks/ad_hoc_bluebox_instana_agent_deploy.yml" />
 
 OpenTelemetry is an open-source observability framework with a collection of
 software development kits (SDKs), vendor-neutral or vendor-agnostic APIs, and
