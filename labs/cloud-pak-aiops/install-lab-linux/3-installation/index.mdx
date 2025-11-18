@@ -19,21 +19,21 @@ In a POC environment without DNS, it is requirement to add all hostnames and IP 
 ```mermaid
 graph TD
 
-    BH[Bastion host]
+    BH[bastion-gym-lan<br/>Bastion host]
 
     subgraph AVMS[AIOps VM set]
 
         direction TB
-        LB[aiopslb<br/>Load Balancer]
+        LB[aiopslb<br/>Load balancer]
 
-        subgraph CP[Control plane]
+        subgraph CP[Control plane hosts]
             direction TB
             CP1[aiopsc1]
             CP2[aiopsc2]
             CP3[aiopsc3]
         end
 
-        subgraph WN[Worker nodes]
+        subgraph WN[Worker node hosts]
             direction TB
             W1[aiopsw1]
             W2[aiopsw2]
@@ -63,18 +63,12 @@ It is recommended to open the lab instructions inside Firefox inside the bastion
 
 ## 3.2: Permit root login on AIOps cluster nodes
 
-The AIOps installation process connects to the various hosts as the `root` user so we will need to enable *PermitRootLogin* on each of the AIOps cluster nodes. The first step to enabling this is to update each host's SSH configuration to allow logins as the `root` user. Run the following code block to enable this:
+The AIOps installation process connects to the various hosts as the `root` user so we will need to enable *PermitRootLogin* on each of the AIOps cluster nodes. The first step to enabling this is to update each host's SSH configuration to allow logins as the `root` user.
 
-:::note
-
-`StrictHostKeyChecking` is set to "no" to avoid the need to manually accept the SSH key for
-the machines that we have not connected to yet.
-
-:::
+Run the following code block on the **bastion host** to enable this:
 
 ```sh title="Host: bastion-gym-lan"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
-
 for host in aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
     ssh -t $SSH_OPTIONS jammer@$host 'sudo bash -s' << 'EOF'
         echo "Updating sshd_config on $(hostname)..."
@@ -87,6 +81,13 @@ for host in aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiop
 EOF
 done
 ```
+
+:::note
+
+`StrictHostKeyChecking` is set to "no" to avoid the need to manually accept the SSH key for
+the machines that we have not connected to yet.
+
+:::
 
 ## 3.3: Setup SSH key authentication
 
@@ -138,7 +139,7 @@ PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)
 ssh jammer@aiopsc1 "sudo -i bash -c 'echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys' && echo \"SSH key added to $i successfully\""
 ```
 
-Run the following command on `bastion-gym-lan` to create a completely new SSH key which will be used for the AIOps installation onto the AIOps cluster node hosts:
+Run the following command on the **bastion host** to create a completely new SSH key which will be used for the AIOps installation onto the AIOps cluster node hosts:
 
 ```bash title="Host: bastion-gym-lan"
 ssh-keygen -t rsa -f ~/.ssh/aiops-cluster -N "" -C "AIOps Cluster Key"
@@ -153,7 +154,7 @@ for i in aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
 done
 ```
 
-Next, set up the `root` user on `aiopsc1` to use the new SSH private key to connect to the other AIOps cluster nodes:
+Finally, run the following commands on the **bastion host** set up the `root` user on `aiopsc1` to use the new SSH private key to connect to the other AIOps cluster nodes:
 
 ```sh title="Host: bastion-gym-lan"
 scp ~/.ssh/aiops-cluster jammer@aiopsc1:/tmp/aiops_key && echo "Key copied successfully" && \
@@ -168,28 +169,26 @@ chmod 600 ~/.ssh/config && echo \"All operations completed successfully\"'"
 
 Now the host `aiopsc1` has access to the private SSH key that matches the public key that has been added to the other hosts.
 
-You will now be able to SSH from `bastion-gym-lan` to `aiopsc1`, and from `aiopsc1` to any other node in the cluster, as the `root` user, without a password - eg. `ssh root@aiopsw1`.
+You will now be able to SSH from the **bastion host** `bastion-gym-lan` to `aiopsc1`, and from `aiopsc1` to any other node in the cluster, as the `root` user, without a password - eg. `ssh root@aiopsw1`.
 
 ## 3.4: Install prerequisite software on nodes
 
 The next step is to install software and update the operating systems on the set of VMs so that they are at the latest patch levels.
 
-Run the following commands on `bastion-gym-lan` to install **lvm2** on each host of the cluster:
+Run the following commands on the **bastion host** to install **lvm2** on each host in the cluster:
 
 ```sh title="Host: bastion-gym-lan"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
-
 for host in aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
     ssh -t $SSH_OPTIONS jammer@$host 'sudo yum install -y lvm2'
     echo "Installation complete on $host"
 done
 ```
 
-Finally, run the following commands on `bastion-gym-lan` to update **all** hosts and reboot them one-by-one:
+Next, run the following commands on the **bastion host** to update **all** hosts and reboot them one-by-one:
 
 ```sh title="Host: bastion-gym-lan"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
-
 for host in aiopslb aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
     ssh -t $SSH_OPTIONS jammer@$host 'sudo yum update -y'
     ssh -t $SSH_OPTIONS jammer@$host 'sudo shutdown -r now'
@@ -197,17 +196,9 @@ for host in aiopslb aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiop
 done
 ```
 
-Alternatively, run the following commands in separate terminal windows in parallel on your bastion host to update **all** hosts and reboot them at the same time:
-
-```sh title="Host: aiopslb aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6"
-ssh root@aiopsc1
-yum update -y
-shutdown -r now
-```
-
 ## 3.5: Configure your local volumes
 
-The control plane nodes are provisioned with two additional disks and the worker nodes with one additional disk. These must be prepared for use before attempting any installation.
+The control plane nodes are provisioned with two additional disks and the worker nodes with one additional disk. These must be prepared for use before attempting the installation.
 
 :::note
 
@@ -215,17 +206,12 @@ It is not strictly mandatory to have additional disks provisioned when installin
 
 :::
 
-Connect to each of your AIOps cluster nodes as the `root` user:
+### 3.5.1 Preparing the control plane nodes
 
-```sh title="Host: aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6"
-[admin@bastion-gym-lan ~]$ ssh root@aiopsc1
-[root@aiopsc1 ~]#
-```
-
-Run the following command block on each of your **control plane** hosts to discover your what your additional disks are for each one:
+Run the following command block on each of your **control plane** hosts as the `root` user to discover your what your additional disks are for each one:
 
 ```sh title="Host: aiopsc1 aiopsc2 aiopsc3"
-DISK_ONE=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
+APP_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
   $2 == "200G" && $3 == "disk" {
     cmd = "lsblk -n /dev/" $1 " | wc -l";
     cmd | getline lines;
@@ -234,17 +220,17 @@ DISK_ONE=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
   }
 ' | head -1)
 
-DISK_TWO=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
+PLATFORM_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
   $2 == "200G" && $3 == "disk" {
     cmd = "lsblk -n /dev/" $1 " | wc -l";
     cmd | getline lines;
     close(cmd);
     if (lines == 1) print $1;
   }
-' | grep -v "$DISK_ONE" | head -1) # <- This is the difference between DISK_ONE and DISK_TWO
+' | grep -v "$APP_DISK" | head -1) # <- This is the difference between APP_DISK and PLATFORM_DISK
 echo "Your additional disks are:"
-echo /dev/$DISK_ONE
-echo /dev/$DISK_TWO
+echo APP_DISK: /dev/$APP_DISK
+echo PLATFORM_DISK: /dev/$PLATFORM_DISK
 ```
 
 Example output:
@@ -252,12 +238,12 @@ Example output:
 ```
 ...
 Your additional disks are:
-/dev/sdc
-/dev/sdd
+APP_DISK: /dev/sdc
+PLATFORM_DISK: /dev/sdd
 [root@aiopsc1 ~]#
 ```
 
-In this case, you can see the primary control plane node `aiopsc1` has two additional 200G disks: `/dev/sdc` and `/dev/sdd`. When you configure your local volumes, one will be allocated for the storage of AIOps application data (`APP_STORAGE_PATH`), and one will be allocated for the storage of the Kubernetes platform data (`PLATFORM_STORAGE_PATH`).
+In this case, you can see the primary control plane node `aiopsc1` has two additional 200G disks: `/dev/sdc` and `/dev/sdd`. After you have configured your local volumes, one will be allocated for the storage of AIOps application data and one will be allocated for the storage of the Kubernetes platform data.
 
 :::note
 
@@ -267,14 +253,14 @@ The control plane nodes will have two additional disks as described above. The w
 
 Now you have identified your additional disks for each host, log in to each host and complete the following steps to set them up.
 
-On each **control plane** node, set your environment variables according to the names of the additional drives - example below:
+Following on from the previous step, run the following command block on each of your **control plane** hosts as the `root` user to set your storage environment variables according to the names of the additional drives:
 
 ```sh title="Host: aiopsc1 aiopsc2 aiopsc3"
 export APP_DRIVE_NAMES=(
-  /dev/sdc
+  /dev/$APP_DISK
 )
 export PLATFORM_DRIVE_NAMES=(
-  /dev/sdd
+  /dev/$PLATFORM_DISK
 )
 export APP_STORAGE_PATH="/var/lib/aiops/storage"
 export PLATFORM_STORAGE_PATH="/var/lib/aiops/platform"
@@ -282,11 +268,11 @@ export PLATFORM_STORAGE_PATH="/var/lib/aiops/platform"
 
 :::note
 
-You can use either one of your additional drives for application storage and the other for platform storage. The above example uses `/dev/sdc` and `/dev/sdd`. Take care that you enter the correct drive names. They may be different on each control plane node host.
+You can use either one of your additional drives for application storage and the other for platform storage. The above example uses `/dev/sdc` and `/dev/sdd` which it is taking from the previous step via the environment variables. Take care that you enter the correct drive names. They may be different on each control plane node host.
 
 :::
 
-On each **control plane** host, run the following commands to create the partitions and verify that they have been created correctly:
+Finally, run the following commands on each **control plane** host to create the partitions and verify that they have been created correctly:
 
 ```sh title="Host: aiopsc1 aiopsc2 aiopsc3"
 # Create physical volumes
@@ -347,78 +333,84 @@ sdc                 200G disk
 sdd                 200G disk
 --aiopspl-aiopspl   200G lvm  /var/lib/aiops/platform
 ```
+### 3.5.2 Preparing the worker nodes
 
-Run the following command block on each of your **worker node** hosts to discover your what your additional disk is for each one:
+Whereas the control plane nodes have two additional disks for the platform and application storage, the worker nodes only have one additional disk for the application storage.
 
-```sh title="Host: aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6"
-DISK_ONE=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
-  $2 == "200G" && $3 == "disk" {
-    cmd = "lsblk -n /dev/" $1 " | wc -l";
-    cmd | getline lines;
-    close(cmd);
-    if (lines == 1) print $1;
-  }
-' | head -1)
+Run the following command block from the **bastion host** to set up your application storage disk on all your worker node hosts:
 
-echo "Your additional disk is:"
-echo /dev/$DISK_ONE
+```sh title="Host: bastion-gym-lan"
+for HOST in aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
+  ssh root@$HOST << 'EOF'
+    echo "$(hostname) - Finding the 200G disk"
+
+    # 1. Find the 200G disk that isn't partitioned
+    APP_STORAGE_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
+      $2 == "200G" && $3 == "disk" {
+        cmd = "lsblk -n /dev/" $1 " | wc -l";
+        cmd | getline lines;
+        close(cmd);
+        if (lines == 1) print $1;
+      }
+    ' | head -1)
+
+    # 2. Confirm the disk was found
+    if [ -z "$APP_STORAGE_DISK" ]; then
+      echo "$(hostname) - ERROR: No suitable 200G disk found. Aborting."
+      exit 1
+    fi
+
+    echo "$(hostname) - Found disk: /dev/$APP_STORAGE_DISK"
+
+    # 3. Set variables
+    export APP_DRIVE_NAMES=(
+      /dev/$APP_STORAGE_DISK
+    )
+    export APP_STORAGE_PATH="/var/lib/aiops/storage"
+
+    # 4. Create a Physical Volume
+    echo "$(hostname) - Creating PV on ${APP_DRIVE_NAMES[@]}"
+    pvcreate "${APP_DRIVE_NAMES[@]}"
+
+    # 5. Create the Volume Group
+    echo "$(hostname) - Creating VG 'aiops'"
+    vgcreate aiops "${APP_DRIVE_NAMES[@]}"
+
+    # 6. Create the Logical Volume
+    echo "$(hostname) - Creating LV 'aiops'"
+    lvcreate aiops -n aiops -l 100%FREE
+
+    # 7. Format the new LV
+    echo "$(hostname) - Formatting logical volume"
+    export APP_DMPATH=$(lvs --noheadings -o dmpath aiops | sed -e 's/^[[:space:]]*//')
+    mkfs.xfs -L aiops "${APP_DMPATH}"
+
+    # 8. Create mount point
+    echo "$(hostname) - Creating mount point ${APP_STORAGE_PATH}"
+    mkdir -p "${APP_STORAGE_PATH}"
+
+    # 9. Add to /etc/fstab
+    echo "$(hostname) - Updating /etc/fstab"
+    if ! grep -q "${APP_DMPATH}" /etc/fstab; then
+      echo "${APP_DMPATH}  ${APP_STORAGE_PATH}     xfs    defaults        0 0" >> /etc/fstab
+    else
+      echo "$(hostname) - fstab entry already exists. Skipping."
+    fi
+
+    # 10. Mount the filesystem
+    echo "$(hostname) - Reloading systemd and mounting"
+    systemctl daemon-reload
+    mount "${APP_STORAGE_PATH}"
+
+    echo "$(hostname) - Configuration complete. Final disk layout:"
+    lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
+EOF
+
+  echo "$HOST completed"
+done
 ```
 
-Example output:
-
-```
-...
-Your additional disk is:
-/dev/sdc
-[root@aiopsw1 ~]#
-```
-
-On each **worker node** host, set your environment variable according to the name of the additional drive - example below:
-
-```sh title="Host: aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6"
-export APP_DRIVE_NAMES=(
-  /dev/sdc
-)
-
-export APP_STORAGE_PATH="/var/lib/aiops/storage"
-```
-
-:::note
-
-You should have one additional drives for application storage on your worker node hosts. The above example uses `/dev/sdc`. Take care that you enter the correct drive name. It may be different on each worker node host.
-
-:::
-
-On each **worker node** host, run the following commands to create the partition and verify that it has been created correctly:
-
-```sh title="Host: aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6"
-# Create physical volumes
-pvcreate "${APP_DRIVE_NAMES[@]}"
-
-# Create volume groups
-vgcreate aiops "${APP_DRIVE_NAMES[@]}"
-
-# Create a logical volumes
-lvcreate aiops -n aiops -l 100%FREE
-
-# Format the new logical volume
-export APP_DMPATH=$(lvs --noheadings -o dmpath aiops | sed -e 's/^[[:space:]]*//')
-mkfs.xfs -L aiops "${APP_DMPATH}"
-
-# Create filesystem directory
-mkdir -p "${APP_STORAGE_PATH}"
-
-# Add the new filesystem directory to `/etc/fstab`
-echo "${APP_DMPATH}  ${APP_STORAGE_PATH}     xfs    defaults        0 0" >> /etc/fstab
-
-# Mount the filesystem into the directory
-systemctl daemon-reload
-mount "${APP_STORAGE_PATH}"
-
-lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
-```
-
-After you have successfully configured your volume, you should see something like the following on your **worker node** hosts output:
+After you have successfully configured your volumes, you should see something like the following in the output for each of your **worker node** hosts:
 
 ```
 NAME                SIZE TYPE MOUNTPOINT
@@ -451,23 +443,22 @@ Do not proceed past this point until all the additional volumes have been config
 
 For resiliency, AIOps is designed to run using a load-balancer that proxies connections to its control plane nodes. This helps to load balance cluster interactions with external clients.
 
-In this lab, we have a load-balancer host provisioned (`aiopslb`). In this section, we will install and configure **haproxy**.
+In this lab, we have a load balancer host provisioned (`aiopslb`). In this section, we will install and configure **haproxy** to provide this service.
 
-Connect to the **load balancer** host and change to the `root` user:
+Connect to the **load balancer** host:
 
 ```sh title="Host: bastion-gym-lan"
-[admin@bastion-gym-lan ~]$ ssh jammer@aiopslb
-[jammer@aiopslb ~]$ sudo -i
-[root@aiopslb ~]#
+ssh jammer@aiopslb
 ```
 
-Run the following command on the **load balancer** host `aiopslb` as the `root` user to install `HAProxy`:
+Next, run the following commands on the **load balancer** host to install **HAProxy**:
 
 ```sh title="Host: aiopslb"
-install -y haproxy
+sudo -i
+dnf install -y haproxy
 ```
 
-Apply the `haproxy.cfg` file as-is (no changes are necessary) by running the following command:
+Next, run the following commands on the **load balancer** host to update the HAProxy configuration file, enable HAProxy, and start the HAProxy service:
 
 ```sh title="Host: aiopslb"
 (cat > /etc/haproxy/haproxy.cfg << EOF
@@ -547,7 +538,7 @@ EOF
 ) && haproxy -c -f /etc/haproxy/haproxy.cfg && systemctl enable haproxy && systemctl start haproxy
 ```
 
-Validate your configuration by checking the status of the `haproxy` service:
+Finally, run the following command on the **load balancer** host to validate your configuration by checking the status of the HAProxy service:
 
 ```sh title="Host: aiopslb"
 systemctl status haproxy
@@ -565,8 +556,8 @@ haproxy.service - HAProxy Load Balancer
      Memory: 6.3M
         CPU: 125ms
      CGroup: /system.slice/haproxy.service
-             ??139219 /usr/sbin/haproxy -Ws -f /etc/haproxy/haproxy.cfg -f /etc/haproxy/conf.d -p /run/haproxy.>
-             ??139221 /usr/sbin/haproxy -Ws -f /etc/haproxy/haproxy.cfg -f /etc/haproxy/conf.d -p /run/haproxy.>
+             --139219 /usr/sbin/haproxy -Ws -f /etc/haproxy/haproxy.cfg -f /etc/haproxy/conf.d -p /run/haproxy.>
+             --139221 /usr/sbin/haproxy -Ws -f /etc/haproxy/haproxy.cfg -f /etc/haproxy/conf.d -p /run/haproxy.>
 
 Nov 07 12:21:36 aiopslb haproxy[139221]: [NOTICE]   (139221) : path to executable is /usr/sbin/haproxy
 Nov 07 12:21:36 aiopslb haproxy[139221]: [ALERT]    (139221) : backend 'aiops-backend' has no server available!
@@ -582,15 +573,15 @@ Nov 07 12:21:43 aiopslb haproxy[139221]: [ALERT]    (139221) : backend 'aiops-ba
 
 :::note
 
-Don't worry if you see errors in the status output at this point. This is because the AIOps end-points don't exist yet.
+Don't worry if you see ALERT and WARNING messages in the status output at this point. This is because the AIOps end-points don't exist yet.
 
 :::
 
 ## 3.7: Prepare AIOps environment file
 
-Your VM environment is now ready to begin the AIOps deployment.
+Your VM environment is now ready to begin the installation.
 
-Create an environment variable file on the bastion host called `aiops_var.sh` with the following content:
+First, create an environment variable file on the **bastion host** called `aiops_var.sh` with the following content:
 
 ```sh title="Host: bastion-gym-lan"
 # IBM Cloud Pak for AIOps installation variables (Linux)
@@ -631,19 +622,27 @@ export SERVICE_CIDR="" # Default: 10.43.0.0/16
 
 :::note
 
-Your IBM entitlement key needs to be copied and pasted into this file against the variable: `IBM_ENTITLEMENT_KEY`
+Your IBM entitlement key needs to be copied and pasted into this file against the variable: `IBM_ENTITLEMENT_KEY`.
 
 :::
 
 ## 3.8: Install AIOps
 
-Source the environment file you created:
+The installation of AIOps involves the following steps:
+- Install the K3S Kubernetes cluster to the control plane and worker node hosts
+- Patch the network settings
+- Check the cluster storage performance (optional)
+- Run the AIOps install command
+
+### 3.8.1 Install the K3S Kubernetes cluster
+
+First, run the following command on the **bastion host** to source the environment file you created:
 
 ```sh title="Host: bastion-gym-lan"
-[admin@bastion-gym-lan ~]$ . ./aiops_var.sh
+. ./aiops_var.sh
 ```
 
-Run the following commands from the **bastion host** to install `aiopsctl` and initialise the K3S Kubernetes cluster across the AIOps cluster nodes:
+Next, run the following commands from the **bastion host** to install `aiopsctl` and initialise the K3S Kubernetes cluster on the primary control plane host:
 
 ```sh title="Host: bastion-gym-lan"
 AIOPSCTL_TAR="aiopsctl-linux_amd64.tar.gz"
@@ -662,6 +661,19 @@ ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl cluster node up --accept-licen
 K3S_TOKEN=$(ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl cluster node info --token-only)
 K3S_HOST=$(ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl cluster node info --server-url-only)
 
+echo K3S_TOKEN: ${K3S_TOKEN}
+echo K3S_HOST: ${K3S_HOST}
+```
+
+:::note
+
+You may have to run the `ssh` commands above one at a time if it does not successfully execute them as a block. This can be a quirk of the virtual desktop lab environment being accessed via a browser.
+
+:::
+
+Next, run the following command block from the **bastion host** to install `aiopsctl` and initialise the K3S Kubernetes cluster on the other two control plane hosts:
+
+```sh title="Host: bastion-gym-lan"
 echo "Installing additional control plane nodes"
 for CP_NODE in "${ADDITIONAL_CONTROL_PLANE_NODES[@]}"; do
   ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} ssh ${TARGET_USER}@${CP_NODE} curl -LO "${AIOPSCTL_INSTALL_URL}"
@@ -669,7 +681,11 @@ for CP_NODE in "${ADDITIONAL_CONTROL_PLANE_NODES[@]}"; do
   ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} ssh ${TARGET_USER}@${CP_NODE} mv aiopsctl /usr/local/bin/aiopsctl
   ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} ssh ${TARGET_USER}@${CP_NODE} aiopsctl cluster node up --accept-license=${ACCEPT_LICENSE} --role=control-plane --server-url="${K3S_HOST}" --token="${K3S_TOKEN}" --registry-token="${IBM_ENTITLEMENT_KEY}" --app-storage="${APP_STORAGE_PATH}" --platform-storage="${PLATFORM_STORAGE_PATH}" --load-balancer-host="${LOAD_BALANCER_HOST}" ${CLUSTER_CIDR_FLAG}${SERVICE_CIDR_FLAG}${CLUSTER_DNS_FLAG}
 done
+```
 
+Finally, run the following command block from the **bastion host** to install `aiopsctl` and initialise the K3S Kubernetes cluster on the worker node hosts:
+
+```sh title="Host: bastion-gym-lan"
 echo "Installing worker nodes"
 K3S_LB_HOST="https://${LOAD_BALANCER_HOST}:6443"
 for WORKER_NODE in "${WORKER_NODES[@]}"; do
@@ -680,11 +696,10 @@ for WORKER_NODE in "${WORKER_NODES[@]}"; do
 done
 ```
 
-After the setup has completed, run the following command to check the status of the cluster:
+After the setup has completed, run the following commands on the **bastion host** to check the status of the cluster:
 
 ```sh title="Host: bastion-gym-lan"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
-
 ssh -t $SSH_OPTIONS root@aiopsc1 'aiopsctl cluster status'
 ```
 
@@ -706,11 +721,12 @@ Worker Node(s):
     aiopsw6 Ready
 ```
 
-Next, run the following command from `bastion-gym-lan` to update the network settings on **all** hosts:
+### 3.8.2 Patch the network settings
+
+Run the following command on the **bastion host** to patch the network settings on all cluster member hosts:
 
 ```sh title="Host: bastion-gym-lan"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
-
 for host in aiopslb aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
     ssh -t $SSH_OPTIONS jammer@$host 'sudo ethtool -K flannel.1 tx-checksum-ip-generic off'
     echo "Update complete on $host"
@@ -723,7 +739,21 @@ Per [section 4.4 of the documentation](https://www.ibm.com/docs/en/cloud-paks/cl
 
 :::
 
-Finally, run the following command from the **bastion host** to install AIOps:
+### 3.8.3 Check the cluster storage performance (optional)
+
+If you have time, you can optionally test the performance of your cluster storage. This step instructs the cluster to pull a storage performance testing image from IBM and then run a series of read and write actions against the cluster storage. At the end of the test, it will give you its results and let you know if there are any potential performance issues. The test can take **up to 10 minutes** to complete.
+
+Run the following commands on the **bastion host** to create the `aiops` namespace and then run the storage performance test job:
+
+```sh title="Host: bastion-gym-lan"
+ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} oc create namespace aiops
+ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl benchmark storage
+
+```
+
+### 3.8.4 Install AIOps to the cluster
+
+Run the following command on the **bastion host** to install AIOps:
 
 ```sh title="Host: bastion-gym-lan"
 ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl server up --load-balancer-host="${LOAD_BALANCER_HOST}" --mode "${DEPLOY_TYPE}"
@@ -731,7 +761,7 @@ ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl server up --load-balancer-host
 
 The deployment itself should take up to 60 minutes to complete.
 
-After the installation has completed, run the following command from the **bastion host** to verify the installation:
+After the installation has completed, run the following command on the **bastion host** to verify the installation:
 
 ```sh title="Host: bastion-gym-lan"
 ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl status
@@ -785,30 +815,9 @@ If you encounter an error during installation and the installation fails, follow
 
 ## 3.9: Log in to the Cloud Pak for AIOps console
 
-The final step in the installation process reveals the Cluster Access Details.
+The final section of the lab covers retrieval of the AIOps login details, updating the local hosts file for GUI access, and logging in to the AIOps console.
 
-Run the following command on the **bastion host** and add the the following entries to your local hosts file:
-
-```
-[admin@bastion-gym-lan ~]$ sudo vi /etc/hosts
-...
-192.168.252.9 aiops-cpd.aiopslb
-192.168.252.9 cp-console-aiops.aiopslb
-```
-
-Next, open a Firefox web browser session on your bastion host and go to the AIOps login page.
-
-```
-https://aiops-cpd.aiopslb
-```
-
-:::note
-
-Since we are using self-signed certificates, your browser window will give you certificate security warnings. Simply accept and continue several times to get to the AIOps login page. A bookmark to the AIOps login page is also available in the bookmarks toolbar.
-
-:::
-
-Run the following command on the **bastion host** to obtain the AIOps login credentials:
+First, run the following command on the **bastion host** to obtain the AIOps login credentials:
 
 ```sh title="Host: bastion-gym-lan"
 ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl server info --show-secrets
@@ -823,7 +832,28 @@ Username: cpadmin
 Password: ZeIOTJzqblDMHjPrTWmLGLX5yqT1tvWS
 ```
 
-Use the credentials given to log in to the console.
+Next, run the following command on the **bastion host** and add the the following entries to your local hosts file:
+
+```sh title="Host: bastion-gym-lan"
+sudo vi /etc/hosts
+...
+192.168.252.9 aiops-cpd.aiopslb
+192.168.252.9 cp-console-aiops.aiopslb
+```
+
+Finally, open a Firefox web browser session on your **bastion host** and go to the AIOps login page:
+
+```
+https://aiops-cpd.aiopslb
+```
+
+:::note
+
+Since we are using self-signed certificates, your browser window will give you certificate security warnings. Simply accept and continue several times to eventually get to the AIOps login page.
+
+:::
+
+Use the credentials obtained to log in to the console.
 
 Congratulations, this concludes the installation of AIOps on Linux VMs!
 
