@@ -191,255 +191,7 @@ Then, click again the **Order Engraving** button. If successful, you’ll see
 
 ---
 
-## 4.4: Configure ACE and MQ for Resource Monitoring
-
-:::warning Information Only
-
-This section 4.4 is here for informational purposes. There are no steps to
-execute.
-
-:::
-
-This section of the lab will help you understand how IBM MQ and IBM App Connect
-Enterprise (ACE) need to be configured for monitoring. There are certain
-configuration settings within MQ and ACE that are required in order to get the
-monitoring KPIs. For ACE, the key KPI's that need to be enabled are Resource
-Stats and Flow Stats. The requirements are documented in the
-[sensor configuration guide](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-sensor)
-that is online. You'll see links to those guides further down in this document.
-
-:::note
-
-Typically, these steps are performed by the MQ and ACE admins, so you don't need
-to know the step by step procedure. But, you do need to tell the MQ/ACE admins
-what the monitoring requirements are.
-
-:::
-
-### Verify the ACE configuration
-
-The "Resource Monitoring" (Resource Stats) KPIs are already enabled in most
-customer environments. But it is worth validating the configuration. It is less
-common to see **Flow Stats** enabled. For example, you can use the ACE
-`mqsireportresourcestats` and `mqsireportflowstats` commands to view the
-configuration for ACE.
-
-Open in a new Terminal tab and SSH to the **mqace** server
-
-```sh title="Host: bastion-gym-lan"
-ssh jammer@mqace
-```
-
-Become root user on mqace node:
-
-```sh title="Host: mqace"
-sudo -i
-```
-
-To run the following commands you have to source the `mqsiprofile`:
-
-:::note
-
-You might see _'mqsiprofile repetition disallowed'_, this can be safely ignored.
-
-:::
-
-```sh title="Host: mqace"
-. /opt/ace-11.0.0.11/server/bin/mqsiprofile
-```
-
-:::info
-
-In the commands listed, BK1 is the Integration Node name and would be different
-if the Integration Node had a different name. EG2 is the name of the Integration
-Server and will vary from environment to environment. There can also be multiple
-Integration Servers configured on a single Integration Node.
-
-:::
-
-Here are example commands that you can issue to see the ACE configuration for
-Integration Node BK1 and Integration Server EG2:
-
-```sh title="Host: mqace"
-mqsireportresourcestats BK1 -e EG2
-```
-
-You will see results similar to those shown below. Notice that the "state" is
-set to "true" indicating that **"Resource Stats"** are enabled and it is set to
-**"Active"**
-
-![](images/resourcestats.png)
-
-To see the configuration of the "flow" stats, issue the following command:
-
-```sh title="Host: mqace"
-mqsireportflowstats BK1 -s -e EG2
-```
-
-You will see results similar to those shown below. Notice that the "state" is
-"active", and the outputFormat is "json". This indicates that the **"Flow
-Stats"** are enabled. The product requires that the output format be set to json
-vs. XML.
-
-![](images/flowstats.png)
-
-### Verify the MQ configuration
-
-There are fewer requirements for MQ. The sensor will work with the default
-settings. However, you can have the sensor automatically use thresholds/Events
-that are setup within the MQ server. If you want to use the built in MQ Events,
-then you need to set **CHLEV** (Channel Events) and **PERFMEV** (Performance
-Events) to **ENABLED**. To check those settings, you can issue the following
-commands.
-
-To run the following commands you have to source the `setmqenv` and specify the
-queue manager name (QM1) like below:
-
-```sh title="Host: mqace"
-. /opt/mqm/bin/setmqenv -m QM1
-```
-
-You first need to run the **"runmqsc"** command.
-
-```sh title="Host: mqace"
-/opt/mqm/bin/runmqsc QM1
-```
-
-The **runmqsc** command won't prompt you with a cursor. That's okay. Just start
-typing the commands.
-
-Within the runmqsc command prompt you can issue other MQ commands. Type the
-following commands:
-
-```sh title="Host: mqace"
-display QMGR PUBSUB CHLEV
-```
-
-```sh title="Host: mqace"
-display QMGR CLUSTER PERFMEV
-```
-
-These commands will give outputs similar to what's shown below.
-
-![](images/2022-05-27-14-45-36.png)
-
-In the output, you can see that the CHLEV (Channel Events) and PERFMEV
-(Performance Events) is set to disabled.
-
-To enable run the following commands:
-
-```sh title="Host: mqace"
-ALTER QMGR CHLEV(ENABLED)
-ALTER QMGR PERFMEV(ENABLED)
-```
-
-Re-run the display command to verify that configuration was changed
-
-```sh title="Host: mqace"
-display QMGR PUBSUB CHLEV
-display QMGR CLUSTER PERFMEV
-```
-
-![](images/2022-05-27-14-59-27.png)
-
-Type **"quit"** to exit the runmqsc command prompt.
-
-```sh title="Host: mqace"
-quit
-```
-
----
-
-## 4.5: Configure ACE and MQ for Tracing
-
-:::warning Information Only
-
-This section 4.5 is here for informational purposes. There are no steps to
-execute.
-
-:::
-
-In addition to the "Resource Monitoring" KPIs, additional settings are required
-to enable Tracing within IBM MQ and ACE. It is important that you understand
-this process since Tracing is typically not enabled by default in most IBM MQ
-and ACE environments. In this section, we've documented the steps.
-
-:::note
-
-Typically, these steps are performed by the MQ and ACE admins, so you don't need
-to know the step by step procedure.
-
-There are multiple options for Tracing transactions through ACE and MQ. You
-options depend on the version of ACE and MQ as well as the platform. In older
-versions of ACE and MQ, it was necessary to install an Instana **User Exit** in
-order to monitor the traces. In recent versions of ACE and MQ, these products
-have added support for OpenTelemetry tracing.
-
-For ACE, we recommend using OpenTelemetry tracing because it has less overhead.
-For MQ, the Instana User Exit and OpenTelemetry have similar characteristics.
-For information on OpenTelemtry tracing within ACE and MQ, see the product
-documentation for ACE and MQ.
-
-In this lab, we will be using the Instana User Exit.
-
-:::
-
-This section is simply going to describe the process. The procedure is well
-documented within the Instana online documentation. You will find a **Tracing**
-section within the sensor documentation that can be found
-[here](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-tracing-in).
-
-For ACE, you perform the following steps
-
-- Download a small TAR file from IBM Fix Central. There is a link for
-  **artifactory** within the
-  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-tracing-in).
-- Extract the tar file into the **/var/mqsi/shared-classes** directory
-- Stop the ACE server
-- Run the following command to "Install" the **User Exit**:
-  **mqsichangeflowuserexits BK1 -o -x /var/mqsi/shared-classes**
-- Start the ACE server
-- Activate the **User Exit** by typing: **mqsichangeflowuserexits BK1 -o -a
-  ACEOpenTracingUserExit**
-
-The MQ procedure is similar.
-
-- Download a small TAR file from either **artifactory** or IBM Fix Central.
-  There are links within the
-  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=mq-tracing).
-- Extract the tar file to **/var/mqm/exits64**
-- Edit the **/var/mqm/mqs.ini** file
-- Add a small section within the **/var/mqm/mqs.ini** file. The content can be
-  copied and pasted from the Instana documentation.
-- Restart the Queue Manager
-
-The mqs.ini file should contain the following additional information:
-
-```sh
-ApiExitCommon:
-   Sequence=100
-   Function=EntryPoint
-   Module=/var/mqm/exits64/mqtracingexit
-   Name=TracingApiExit
-```
-
-In the lab environment, these steps have already been performed. If you want,
-you can examine the files and directories specified above.
-
-:::note
-
-Even though the TAR files for ACE and MQ look similar, they are unique for each
-middleware component.
-
-In addition, it is important that you select the tar file for the platform that
-you are running. There are unique packages for x64_64 Linux, Power Linux, AIX,
-etc.
-
-:::
-
----
-
-## 4.6: Configure the ACE and MQ Sensors
+## 4.4: Configure the ACE and MQ Sensors
 
 In this section, you will continue to perform these commands as root on the
 **mqace** server.
@@ -629,7 +381,259 @@ mode and write your changes and exit the file by typing:
 
 ---
 
-## 4.7: Further Configuration
+<details>
+<summary>Configure ACE and MQ for Resource Monitoring</summary>
+
+
+:::warning Information Only
+
+You do not need to perform any steps in this section, it is for information only.
+
+:::
+
+This section of the lab will help you understand how IBM MQ and IBM App Connect
+Enterprise (ACE) need to be configured for monitoring. There are certain
+configuration settings within MQ and ACE that are required in order to get the
+monitoring KPIs. For ACE, the key KPI's that need to be enabled are Resource
+Stats and Flow Stats. The requirements are documented in the
+[sensor configuration guide](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-sensor)
+that is online. You'll see links to those guides further down in this document.
+
+:::note
+
+Typically, these steps are performed by the MQ and ACE admins, so you don't need
+to know the step by step procedure. But, you do need to tell the MQ/ACE admins
+what the monitoring requirements are.
+
+:::
+
+#### Verify the ACE configuration
+
+The "Resource Monitoring" (Resource Stats) KPIs are already enabled in most
+customer environments. But it is worth validating the configuration. It is less
+common to see **Flow Stats** enabled. For example, you can use the ACE
+`mqsireportresourcestats` and `mqsireportflowstats` commands to view the
+configuration for ACE.
+
+Open in a new Terminal tab and SSH to the **mqace** server
+
+```sh title="Host: bastion-gym-lan"
+ssh jammer@mqace
+```
+
+Become root user on mqace node:
+
+```sh title="Host: mqace"
+sudo -i
+```
+
+To run the following commands you have to source the `mqsiprofile`:
+
+:::note
+
+You might see _'mqsiprofile repetition disallowed'_, this can be safely ignored.
+
+:::
+
+```sh title="Host: mqace"
+. /opt/ace-11.0.0.11/server/bin/mqsiprofile
+```
+
+:::info
+
+In the commands listed, BK1 is the Integration Node name and would be different
+if the Integration Node had a different name. EG2 is the name of the Integration
+Server and will vary from environment to environment. There can also be multiple
+Integration Servers configured on a single Integration Node.
+
+:::
+
+Here are example commands that you can issue to see the ACE configuration for
+Integration Node BK1 and Integration Server EG2:
+
+```sh title="Host: mqace"
+mqsireportresourcestats BK1 -e EG2
+```
+
+You will see results similar to those shown below. Notice that the "state" is
+set to "true" indicating that **"Resource Stats"** are enabled and it is set to
+**"Active"**
+
+![](images/resourcestats.png)
+
+To see the configuration of the "flow" stats, issue the following command:
+
+```sh title="Host: mqace"
+mqsireportflowstats BK1 -s -e EG2
+```
+
+You will see results similar to those shown below. Notice that the "state" is
+"active", and the outputFormat is "json". This indicates that the **"Flow
+Stats"** are enabled. The product requires that the output format be set to json
+vs. XML.
+
+![](images/flowstats.png)
+
+#### Verify the MQ configuration
+
+There are fewer requirements for MQ. The sensor will work with the default
+settings. However, you can have the sensor automatically use thresholds/Events
+that are setup within the MQ server. If you want to use the built in MQ Events,
+then you need to set **CHLEV** (Channel Events) and **PERFMEV** (Performance
+Events) to **ENABLED**. To check those settings, you can issue the following
+commands.
+
+To run the following commands you have to source the `setmqenv` and specify the
+queue manager name (QM1) like below:
+
+```sh title="Host: mqace"
+. /opt/mqm/bin/setmqenv -m QM1
+```
+
+You first need to run the **"runmqsc"** command.
+
+```sh title="Host: mqace"
+/opt/mqm/bin/runmqsc QM1
+```
+
+The **runmqsc** command won't prompt you with a cursor. That's okay. Just start
+typing the commands.
+
+Within the runmqsc command prompt you can issue other MQ commands. Type the
+following commands:
+
+```sh title="Host: mqace"
+display QMGR PUBSUB CHLEV
+```
+
+```sh title="Host: mqace"
+display QMGR CLUSTER PERFMEV
+```
+
+These commands will give outputs similar to what's shown below.
+
+![](images/2022-05-27-14-45-36.png)
+
+In the output, you can see that the CHLEV (Channel Events) and PERFMEV
+(Performance Events) is set to disabled.
+
+To enable run the following commands:
+
+```sh title="Host: mqace"
+ALTER QMGR CHLEV(ENABLED)
+ALTER QMGR PERFMEV(ENABLED)
+```
+
+Re-run the display command to verify that configuration was changed
+
+```sh title="Host: mqace"
+display QMGR PUBSUB CHLEV
+display QMGR CLUSTER PERFMEV
+```
+
+![](images/2022-05-27-14-59-27.png)
+
+Type **"quit"** to exit the runmqsc command prompt.
+
+```sh title="Host: mqace"
+quit
+```
+
+</details>
+
+<details>
+<summary>Configure ACE and MQ for Tracing</summary>
+
+
+:::warning Information Only
+
+You do not need to perform any steps in this section, it is for information only.
+
+:::
+
+In addition to the "Resource Monitoring" KPIs, additional settings are required
+to enable Tracing within IBM MQ and ACE. It is important that you understand
+this process since Tracing is typically not enabled by default in most IBM MQ
+and ACE environments. In this section, we've documented the steps.
+
+:::note
+
+Typically, these steps are performed by the MQ and ACE admins, so you don't need
+to know the step by step procedure.
+
+There are multiple options for Tracing transactions through ACE and MQ. You
+options depend on the version of ACE and MQ as well as the platform. In older
+versions of ACE and MQ, it was necessary to install an Instana **User Exit** in
+order to monitor the traces. In recent versions of ACE and MQ, these products
+have added support for OpenTelemetry tracing.
+
+For ACE, we recommend using OpenTelemetry tracing because it has less overhead.
+For MQ, the Instana User Exit and OpenTelemetry have similar characteristics.
+For information on OpenTelemtry tracing within ACE and MQ, see the product
+documentation for ACE and MQ.
+
+In this lab, we will be using the Instana User Exit.
+
+:::
+
+This section is simply going to describe the process. The procedure is well
+documented within the Instana online documentation. You will find a **Tracing**
+section within the sensor documentation that can be found
+[here](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-tracing-in).
+
+For ACE, you perform the following steps
+
+- Download a small TAR file from IBM Fix Central. There is a link for
+  **artifactory** within the
+  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=ace-configuring-tracing-in).
+- Extract the tar file into the **/var/mqsi/shared-classes** directory
+- Stop the ACE server
+- Run the following command to "Install" the **User Exit**:
+  **mqsichangeflowuserexits BK1 -o -x /var/mqsi/shared-classes**
+- Start the ACE server
+- Activate the **User Exit** by typing: **mqsichangeflowuserexits BK1 -o -a
+  ACEOpenTracingUserExit**
+
+The MQ procedure is similar.
+
+- Download a small TAR file from either **artifactory** or IBM Fix Central.
+  There are links within the
+  [Instana documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=mq-tracing).
+- Extract the tar file to **/var/mqm/exits64**
+- Edit the **/var/mqm/mqs.ini** file
+- Add a small section within the **/var/mqm/mqs.ini** file. The content can be
+  copied and pasted from the Instana documentation.
+- Restart the Queue Manager
+
+The mqs.ini file should contain the following additional information:
+
+```sh
+ApiExitCommon:
+   Sequence=100
+   Function=EntryPoint
+   Module=/var/mqm/exits64/mqtracingexit
+   Name=TracingApiExit
+```
+
+In the lab environment, these steps have already been performed. If you want,
+you can examine the files and directories specified above.
+
+:::note
+
+Even though the TAR files for ACE and MQ look similar, they are unique for each
+middleware component.
+
+In addition, it is important that you select the tar file for the platform that
+you are running. There are unique packages for x64_64 Linux, Power Linux, AIX,
+etc.
+
+:::
+
+</details>
+
+---
+
+## 4.5: Further Configuration
 
 After installing an Instana Agent, one of the first things you want to do is set
 a Zone name. This allows you to organize your Agents to make them easier to
@@ -768,7 +772,7 @@ adjusting your time range filter. Select a shorter range or enable **Live**.
 
 ---
 
-## 4.8: Summary
+## 4.6: Summary
 
 You learned how to configure the Instana sensor for IBM App Connect Enterprise
 (ACE) and IBM MQ. This includes customizations such as;
