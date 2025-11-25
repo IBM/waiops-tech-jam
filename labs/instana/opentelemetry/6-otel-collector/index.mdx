@@ -1,5 +1,5 @@
 ---
-title: 7. OpenTelemetry Collector
+title: 6. OpenTelemetry Collector
 description: OpenTelemetry Collector
 sidebar_position: 7
 ---
@@ -37,7 +37,7 @@ can be found
 
 :::
 
-## Instana backend - configuration
+## 6.1 Instana backend - configuration
 
 Depending on when you are executing this lab, Logging is setup as an optional
 feature and it's not enabled by default. The log collection via the runtimes is
@@ -95,7 +95,7 @@ Please read and follow these
 
 :::
 
-## Instana backend - verification
+## 6.2 Instana backend - verification
 
 After applying backend changes, please navigate to the Instana UI and refresh
 the page (use button F5). After refreshing, please open Instana UI / Analytics /
@@ -105,7 +105,7 @@ the below screenshot
 
 ![otel-003](images/otel-coll-003.png)
 
-## Instana agent - configuration
+## 6.3 Instana agent - configuration
 
 In this scenario, you will configure OpenTelemetry Collector to send
 OpenTelemetry data to Instana backend through the Instana agent. First, you need
@@ -145,12 +145,12 @@ screen
 ![otel-005](images/otel-coll-005.png)
 
 After few minutes, please check the Instana UI and confirm the new agent is
-reporting data to the Instana backend. You should see similar content to the
-screen below:
+reporting data to the Instana backend. Select **More** -> **Agents**. You should see similar content to the
+screen below with the agent **bluebox.ibmdte.local**:
 
 ![otel-004](images/otel-coll-004.png)
 
-## OpenTelemetry Collector - configuration
+## 6.4 OpenTelemetry Collector - configuration
 
 Once the Instana agent is up and running, you can configure the OpenTelemetry
 Collector.
@@ -191,8 +191,8 @@ There are two key elements of the configuration file:
 :::info
 
 Please note, that the Otel data can also be sent directly to the Instana
-backend. This is alternative approach. In this scenario, we will be using
-Instana Agent as a "gateway", which will deliver OpenTelemetry data to Instana
+backend. This is an alternative approach. In this scenario, we will be using
+the Instana Agent as a "gateway" which will deliver OpenTelemetry data to the Instana
 backend.
 
 :::
@@ -244,7 +244,7 @@ for the events like on below screen
 The service is now ready to accept the log changes. Please keep this terminal
 window open (do not stop the service) and move to the next section.
 
-## Log content creation
+## 6.5 Log content creation
 
 The above configuration will tail the desired log file content. Any new entries
 that are not filtered out by our configuration settings will be captured by the
@@ -280,19 +280,21 @@ echo "2024-03-02 ERROR second line message2" >> example-simple.log
 echo "2024-04-02 ERROR third line message3" >> example-simple.log
 ```
 
-## Instana verification
+## 6.6 Instana verification
 
-After a short moment, please navigate to the Instana UI / Analytics / Logs
+After a short moment, please navigate to the **Instana UI** -> **Analytics** -> **Logs**
 section and confirm, you can see three logs entries delivered by the Agent using
-the OpenTelemetry standard. You should be able to see similar content to the
-below screenshot:
+the OpenTelemetry standard. Try filtering by **Most recent first** if you cannot see them.
+You should be able to see similar content to the below screenshot:
 
 ![otel-008](images/otel-coll-008.png)
 
-It was shown, that Instana can accept custom log content, using external
+You have just used Instana to accept custom log content using the external
 OpenTelemetry Collector.
 
-## More complex example
+You can now exist out of the running **otelcol-contrib** process using `ctrl + c` to free up the ports used for the next example.
+
+## 6.7 More complex example
 
 In the previous example, we've been focusing on simple, one-line log files. Now,
 let's try to parse and send to Instana more advanced multi-line log file. In
@@ -553,17 +555,26 @@ sudo otelcol-contrib --config=config-advanced.yaml
 Similarly as before, let's now open a new terminal window, login to the
 "bluebox" host and switch to root user.
 
+:::tip
+
+If you see the error that starts with **Error: failed to create SDK: binding address localhost:8888**, you
+may not have ended the previous **otelcol-contrib** process. Run `sudo pkill otelcol-contrib` to close it.
+
+:::
+
 Once done, we should create a new FDC file, so that our Collector could pick it
-up and deliver to Instana backend. Let's copy the existing FDC file
+up and deliver to Instana backend. Open a new terminal tab and connect to **bluebox** again.
+
+Copy the existing FDC file
 
 ```bash title="Host: bluebox"
 cd /root/otelcol-contrib
 cp example.FDC example-new.FDC
 ```
 
-## Instana verification - advanced
+## 6.8 Instana verification - advanced
 
-After a short moment, please navigate to the Instana UI / Analytics / Logs
+After a short moment, please navigate to the **Instana UI** -> **Analytics** -> **Logs**
 section and confirm, you can see logs entries delivered by the Agent using the
 OpenTelemetry standard. You should be able to see similar content to the below
 screenshot:
@@ -585,7 +596,7 @@ Please note additional fields visible on the above screen:
 3. **Probe ID** - additional value we've extracted from a long log file - will
    help with faster identification of an impacted infrastructure resource.
 
-## Summary
+## 6.9 Summary
 
 This section concludes the Lab. In this section you have learned:
 

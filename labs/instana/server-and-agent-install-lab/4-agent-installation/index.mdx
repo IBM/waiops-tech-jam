@@ -368,7 +368,7 @@ Toggle on the live view:
 
 ![](./images/infra-live-view.png)
 
-You should see 5 nodes reporting. The **Multi-node Instana Cluster**, the
+After a short wait you should see 5 nodes reporting. The **Multi-node Instana Cluster**, the
 **MQACE VM** and the **Single Node Kubernetes VM**. If you don't see them yet,
 give the agents a few minutes to start reporting.
 
@@ -436,11 +436,12 @@ kubectl logs $(kubectl get pods -n instana-agent -o custom-columns=POD:.metadata
 
 ---
 
-## 4.8: Configuring Proxy
+<details>
+<summary>Configuring Proxy</summary>
 
-:::warning Information Only
+:::warning Do not perform these steps
 
-This section is here for informational purposes. There are no steps to execute.
+You should not perform any steps in this section, it is for information only.
 
 :::
 
@@ -460,13 +461,14 @@ For backend connectivity you have to define **INSTANA_AGENT_PROXY\_\***
 variables. For repository connectivity you have to define
 **INSTANA_REPOSITORY_PROXY\_\*** variables.
 
----
+</details>
 
-## 4.9: Configuring Instana Agent
+<details>
+<summary>Configuring the Instana Agent</summary>
 
-:::warning Information Only
+:::warning Do not perform these steps
 
-This section is here for informational purposes. There are no steps to execute.
+You should not perform any steps in this section, it is for information only.
 
 :::
 
@@ -526,13 +528,14 @@ applied, make sure that it's not a formatting error
 
 :::
 
----
+</details>
 
-## 4.10: Configuring GitOps for Agents
+<details>
+<summary>Configuring GitOps for Agents</summary>
 
-:::warning Information Only
+:::warning Do not perform these steps
 
-This section is here for informational purposes. There are no steps to execute.
+You should not perform any steps in this section, it is for information only.
 
 :::
 
@@ -549,6 +552,8 @@ The Instana agent fetches configuration updates from the remote repository:
 1. Through a configuration change over the Agent Management Dashboard.
 1. Through the Web API as described in the Host Agent section and the
    integrations that rely on it like the GitHub Update Agent action.
+
+</details>
 
 ---
 

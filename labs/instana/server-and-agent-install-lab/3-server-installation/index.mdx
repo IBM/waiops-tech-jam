@@ -119,6 +119,8 @@ Lets start by ensuring you can connect to the first Instana host.
 From the Bastion host, open a terminal window by selecting **Activities** at the
 top left of the screen and then the terminal icon.
 
+:::
+
 :::tip
 
 If you are unsure how to get access to the Bastion host (Guacamole) see
@@ -569,10 +571,10 @@ Setup the **root** user on **instana-0** to use the new ssh key to connect to
 ```sh title="Host: bastion-gym-lan"
 scp ~/.ssh/instana-cluster jammer@instana-0:/tmp/instana_key && echo "Key copied successfully" && \
 ssh jammer@instana-0 "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && \
-mv /tmp/instana_key ~/.ssh/instana-cluster && chmod 600 ~/.ssh/instana-cluster && chown root:root ~/.ssh/instana-cluster && \
+mv /tmp/instana_key ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && chown root:root ~/.ssh/id_rsa && \
 echo \"Host instana-1 instana-2 192.168.252.30 192.168.252.31 192.168.252.32\" > ~/.ssh/config && \
 echo \"    User root\" >> ~/.ssh/config && \
-echo \"    IdentityFile ~/.ssh/instana-cluster\" >> ~/.ssh/config && \
+echo \"    IdentityFile ~/.ssh/id_rsa\" >> ~/.ssh/config && \
 echo \"    StrictHostKeyChecking no\" >> ~/.ssh/config && \
 chmod 600 ~/.ssh/config && echo \"All operations completed successfully\"'"
 ```
@@ -602,7 +604,7 @@ still operating as the **root** user.
    user using the newly created cluster key. Run the following:
 
    ```sh title="Host: instana-0"
-   ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/instana-cluster root@instana-2 "echo Connection to instana-2 successful"
+   ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-2 "echo Connection to instana-2 successful"
    ```
 
    You should see the following output:
@@ -641,9 +643,9 @@ Update the package list and install the Instana **stanctl** utility. The
 **stanctl** tool is used to install Instana and perform other Instana
 administrative tasks.
 
-```sh title="Host: instana-0"
+```txt title="Host: instana-0"
 apt update -y && \
-apt install -y stanctl=1.8.2-1
+apt install -y stanctl=1.10.2-1
 ```
 
 Hold the stanctl package to prevent it from being upgraded unintentionally.
@@ -658,7 +660,7 @@ You can now verify your stanctl version by typing:
 stanctl -v
 ```
 
-You should see that the version is 1.8.2.
+You should see that the version is 1.10.2.
 
 Install Instana
 
@@ -699,7 +701,7 @@ Start the installation by running the following command:
 
 ```sh title="Host: instana-0"
 stanctl up \
-  --instana-version="3.291.396-0" \
+  --instana-version="3.297.463-0" \
   --multi-node-enable \
   --multi-node-ips="192.168.252.30,192.168.252.31,192.168.252.32" \
   --install-type="production" \
@@ -717,7 +719,7 @@ stanctl up \
   --core-smtp-from="server@instana.com" \
   --core-smtp-host="192.168.252.33" \
   --core-smtp-port="30025" \
-  --core-smtp-check-server-identity false \
+  --core-smtp-check-server-identity=false \
   --core-smtp-start-tls=false \
   --core-smtp-use-ssl=false
 ```
@@ -786,7 +788,8 @@ upcoming section of the lab.
 
 ---
 
-## 3.7: Setting up SMTP
+<details>
+<summary>Configuring SMTP after installation</summary>
 
 :::warning Do not perform these steps
 
@@ -821,7 +824,11 @@ If you are interested in all of the parameters that can get specified using the
 stanctl backend apply --help
 ```
 
-## 3.8: Turning on features
+</details>
+
+<details>
+<summary>Turning on optional features</summary>
+
 
 :::warning Do not perform these steps
 
@@ -846,9 +853,11 @@ stanctl backend apply --core-feature-flags feature.vsphere.enabled
 You can view a
 [full list of available feature flags here.](https://www.ibm.com/docs/en/instana-observability/current?topic=configuring-enabling-optional-features)
 
----
 
-## 3.9: Upgrading the Instana server
+</details>
+
+<details>
+<summary>Upgrading the Instana server</summary>
 
 :::warning Do not perform these steps
 
@@ -883,9 +892,11 @@ The command will list the available update options. Use the arrows on your
 keyboard to move up and download to select the version that you want to install
 from the list provided.
 
+</details>
+
 ---
 
-## 3.10: Summary
+## 3.7: Summary
 
 In this portion of the lab, you have learned how to prepare an environment for
 the installation of the **Self-Hosted Multi-node Standard Edition** Instana

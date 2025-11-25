@@ -90,10 +90,11 @@ with variable placeholders for the unique values into the application. When we
 deploy the application, we can pass parameters into the Helm Chart to populate
 the unique variables. There are two parameters within the javascript that we
 will need to copy and use when we do the install. You will need the **key** and
-the **reportingURL**. Either copy those parameters now or leave this dialog open
-so that you can retrieve it later.
+the **reportingURL**. Make a copy of these values now by copying the code block to a text document.
 
 ![](images/website-config-marked.png)
+
+Select **Go to website dashboard**
 
 ---
 
@@ -237,6 +238,31 @@ and proceed to the next steps.
 
 ![](images/robot-shop-success-pods.png)
 
+:::tip
+
+If you need to uninstall Robot Shop from your cluster to attempt a reinstall you can run the following:
+
+```sh
+helm uninstall robot-shop -n robot-shop --kubeconfig=/etc/rancher/k3s/k3s.yaml
+```
+
+:::
+
+:::warning Important Workaround
+
+There is currently a bug in the Robot Shop application where a trailing slash is stripped from the reporting URL. Until a fix is merged upstream we will modify the Robot Shop web pod to fix this issue by running the following code block:
+
+```sh title="Host: demo-apps" {/* backslash for correct indentation in file */}
+# 1. Find the robot-shop web pod name
+export POD_NAME=$(kubectl get pods -n robot-shop -l "service=web" -o jsonpath='{.items[0].metadata.name}')
+
+# 2. Fix the trailing slash bug
+kubectl exec $POD_NAME -n robot-shop -- \
+    sed -i "s|/eum')|/eum/')|g" /usr/share/nginx/html/eum.html
+```
+
+:::
+
 Finally, we want to expose the Robot Shop UI. K3s includes a Traefik Ingress
 Controller that we can use to create a new Ingress for the app. Run the
 following to create the ingress:
@@ -290,7 +316,7 @@ field, for this application you will be using http (80) instead of https (443).
 
 ![](images/stans-robot-shop.png)
 
-### Workaround Required for Robot Shop
+### Robot Shop Self Signed Certificate Warning
 
 You can now navigate and use the Robot Shop application, however if you navigate
 to **Websites & Mobile Apps** > **Robot Shop** you will not see any EUM data
