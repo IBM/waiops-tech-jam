@@ -821,7 +821,7 @@ ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl benchmark storage
 Run the following command as the default **admin** user on the **bastion host** to install AIOps:
 
 ```sh title="Host: bastion-gym-lan"
-ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl server up --load-balancer-host="${LOAD_BALANCER_HOST}" --mode "${DEPLOY_TYPE}"
+ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl server up --load-balancer-host="${LOAD_BALANCER_HOST}" --mode "${DEPLOY_TYPE}" --wait-timeout 1800
 ```
 
 **The deployment will take up to 60 minutes to complete.**
@@ -840,7 +840,7 @@ Control Plane Node(s):
     aiopsc1 Ready
     aiopsc2 Ready
     aiopsc3 Ready
-
+npm run start
 Worker Node(s):
     aiopsw1 Ready
     aiopsw2 Ready
@@ -872,11 +872,73 @@ o- [03 Nov 25 13:48 UTC] Checking AIOps installation status
   AIOps installation healthy
 ```
 
+If your installation completes successfully, skip to section [3.9: Log in to the Cloud Pak for AIOps console](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#39-log-in-to-the-cloud-pak-for-aiops-console).
+
 :::note
 
-If you encounter an error during installation and the installation fails, follow the [uninstallation steps here](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.1?topic=linux-uninstalling), then restart the installation from the beginning of [this section](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#38-install-aiops).
+If you encounter an error during installation and the installation fails, follow the [uninstallation steps below in section 3.8.5: Uninstall AIOps](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#385-uninstall-aiops-if-installation-fails-check-with-instructor), then restart the installation from the [beginning of section 3.8: Install AIOps](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#38-install-aiops) to re-run the installation steps. Please check with the instructor before running the uninstallation steps.
 
 :::
+
+### 3.8.5: Uninstall AIOps if installation fails (check with instructor)
+
+If the installation of AIOps fails, you will need to uninstall the cluster members and re-run the installation.
+
+:::important
+
+Check with the instructor before completing this section.
+
+:::
+
+To remove the AIOps installation, first run the following command block as the default **admin** user on the **bastion host** to create the AIOps environment variable file called `aiops_uninstall_var.sh`:
+
+```sh title="Host: bastion-gym-lan"
+cat > /home/admin/aiops_uninstall_var.sh << EOF
+export TARGET_USER="root"
+export CONTROL_PLANE_NODE="aiopsc1"
+export ADDITIONAL_CONTROL_PLANE_NODES=(
+  "aiopsc2"
+  "aiopsc3"
+)
+export WORKER_NODES=(
+  "aiopsw1"
+  "aiopsw2"
+  "aiopsw3"
+  "aiopsw4"
+  "aiopsw5"
+  "aiopsw6"
+)
+export APP_STORAGE_PATH="/var/lib/aiops/storage"
+EOF
+```
+
+Next, run the following command as the default **admin** user on the **bastion host** to source the uninstall environment file you created:
+
+```sh title="Host: bastion-gym-lan"
+. /home/admin/aiops_uninstall_var.sh
+```
+
+Finally, run the following commands as the default **admin** user on the **bastion host** to uninstall the failed installation attempt of AIOps:
+
+```sh title="Host: bastion-gym-lan"
+for WORKER_NODE in "${WORKER_NODES[@]}"
+do
+  ssh ${TARGET_USER}@${WORKER_NODE} aiopsctl cluster node down --role worker --app-storage=${APP_STORAGE_PATH}
+done
+```
+
+```sh title="Host: bastion-gym-lan"
+for CP_NODE in "${ADDITIONAL_CONTROL_PLANE_NODES[@]}"
+do
+  ssh ${TARGET_USER}@${CP_NODE} aiopsctl cluster node down --role control-plane
+done
+```
+
+```sh title="Host: bastion-gym-lan"
+ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl cluster node down --role control-plane
+```
+
+After you have finished uninstalling the cluster nodes, go back to the beginning of section [3.8: Install AIOps](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#38-install-aiops) and re-run the installation steps for AIOps.
 
 ## 3.9: Log in to the Cloud Pak for AIOps console
 
