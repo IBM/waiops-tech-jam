@@ -821,7 +821,7 @@ It is not necessary to carry out this test for the purposes of this lab.
 Run the following commands on the **bastion host** to create the `aiops` namespace and then run the storage performance test job:
 
 ```sh title="Host: bastion-gym-lan"
-ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} oc create namespace aiops
+ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} kubectl create namespace aiops
 ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl benchmark storage
 
 ```
