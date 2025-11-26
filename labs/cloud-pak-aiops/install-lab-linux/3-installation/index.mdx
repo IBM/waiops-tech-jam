@@ -187,17 +187,18 @@ for host in aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiop
 done
 ```
 
-### 3.4.2 Update the cluster hosts (check with instructor)
+<details>
+<summary>Update the host operating systems</summary>
 
-This step updates the operating system of all cluster hosts to ensure they are fully up-to-date with the latest patches. While it is very important to do this in a real-world deployment, it is not essential in order to complete this lab. Also, it will require significant downloads and take a considerable amount of time, therefore please check with the instructor before completing this step in a lab.
+:::warning Do not perform these steps
 
-:::important
-
-Do not run this step unless told to by the lab instructor.
+You should not perform the steps in this sub-section. It is for information only.
 
 :::
 
-To fully patch the cluster host operating systems, run the following commands as the default **admin** user on the **bastion host** to update **all** hosts and reboot them one-by-one:
+This step updates the operating system of all hosts to ensure they are fully up-to-date with the latest patches. While it is very important to do this in a real-world deployment, it is not essential in order to complete this lab. Also, it will require significant downloads and take a considerable amount of time, therefore do not complete this step for this lab.
+
+To fully patch the host operating systems, run the following commands as the default **admin** user on the **bastion host** to update **all** hosts and reboot them one-by-one:
 
 ```sh title="Host: bastion-gym-lan"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
@@ -207,6 +208,8 @@ for host in aiopslb aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiop
     echo "Update complete on $host"
 done
 ```
+
+</details>
 
 ## 3.5: Configure your local volumes
 
@@ -796,17 +799,24 @@ Per [section 4.4 of the documentation](https://www.ibm.com/docs/en/cloud-paks/cl
 
 :::
 
-### 3.8.3 Check the cluster storage performance (check with instructor)
+### 3.8.4 Install AIOps
 
-In a real deployment, it is prudent to test the performance of your storage to ensure it will perform adequately. Poorly performing storage is frequently the root cause of many issues experienced in production environments.
+Now that the K3S cluster is ready, you will now perform the installation of AIOps.
+
+<details>
+<summary>Check the cluster storage performance</summary>
+
+:::warning Do not perform these steps
+
+You should not perform the steps in this sub-section. It is for information only.
+
+:::
+
+In a real deployment, it is prudent to test the performance of your storage to ensure AIOps will perform adequately. Poorly performing storage is frequently the root cause of many issues experienced in production environments.
 
 This step instructs the cluster to pull a storage performance testing image from IBM and then run a series of demanding read and write actions against the cluster storage. At the end of the test, it will give you its results and let you know if there are any potential performance issues. The test can take **up to 10 minutes** to complete.
 
-:::important
-
-If completing this lab in an IBM organised session, please ask your instructor first whether or not to proceed with these performance checks. Given the demanding nature of the checks this step carries out, it may place too much pressure on the lab infrastructure if everyone runs this at the same time.
-
-:::
+It is not necessary to carry out this test for the purposes of this lab.
 
 Run the following commands on the **bastion host** to create the `aiops` namespace and then run the storage performance test job:
 
@@ -816,7 +826,7 @@ ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl benchmark storage
 
 ```
 
-### 3.8.4 Install AIOps
+</details>
 
 Run the following command as the default **admin** user on the **bastion host** to install AIOps:
 
@@ -872,23 +882,17 @@ o- [03 Nov 25 13:48 UTC] Checking AIOps installation status
   AIOps installation healthy
 ```
 
-If your installation completes successfully, skip to section [3.9: Log in to the Cloud Pak for AIOps console](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#39-log-in-to-the-cloud-pak-for-aiops-console).
 
-:::note
+<details>
+<summary>What if my installation fails?</summary>
 
-If you encounter an error during installation and the installation fails, follow the [uninstallation steps below in section 3.8.5: Uninstall AIOps](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#385-uninstall-aiops-if-installation-fails-check-with-instructor), then restart the installation from the [beginning of section 3.8: Install AIOps](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#38-install-aiops) to re-run the installation steps. Please check with the instructor before running the uninstallation steps.
+:::warning Only perform these steps if your installation fails
+
+You should not perform the steps in this sub-section unless your installation fails.
 
 :::
-
-### 3.8.5: Uninstall AIOps if installation fails (check with instructor)
 
 The virtualised lab environments can occasionally experience latency and other intermittent connectivity issues. This can sometimes interrupt connectivity between the cluster members, which can cause the installation to fail. If this happens, you will need to uninstall the cluster members and re-run the installation.
-
-:::important
-
-Check with the instructor before completing this section.
-
-:::
 
 To remove the AIOps installation, first run the following command block as the default **admin** user on the **bastion host** to create the AIOps environment variable file called `aiops_uninstall_var.sh`:
 
@@ -939,6 +943,8 @@ ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl cluster node down --role contr
 ```
 
 After you have finished uninstalling the cluster nodes, go back to the beginning of section [3.8: Install AIOps](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#38-install-aiops) and re-run the installation steps for AIOps.
+
+</details>
 
 ## 3.9: Log in to the Cloud Pak for AIOps console
 
