@@ -121,9 +121,8 @@ Deployment page.
 
 :::tip
 
-If you aren't on the **Agent deployment** screen you can get there by selecting
-the **Home** menu in the left navigation and then clicking the **"Deploy
-Agent"** button near the upper right corner.
+If you aren't on the **Instana agent installations** screen you can get there by selecting
+the **Agents & collectors** menu in the left navigation and then clicking the **Install an agent** button.
 
 ![](images/deploy-agent.png)
 
@@ -196,19 +195,11 @@ applications like _Robot Shop_, _Quote of the Day_ and others.
 
 ![architecture-agent-kubernetes](images/architecture-agent-kubernetes.png)
 
-:::tip
+Navigate back to the **Instana agent installations** page by using the **Instana agents** breadcrumb at the top of the **Linux - Automatic Installation** page:
 
-If you are still on the Linux agent deployment page from the last section, click
-the **Go to Instana** button first:
+![](images/go-to-instana-agents.png)
 
-![](images/go-to-instana.png)
-
-:::
-
-Navigate back to the **Agent deployment** screen by selecting **Home** and then
-clicking the **Deploy Agent** button near the upper left corner.
-
-![](images/deploy-agent.png)
+Alternatively you can again select **Agents & collectors** from the left navigation menu and then clicking the **Install an agent** button.
 
 There are a few different options for installing the Instana Agent on a
 Kubernetes cluster. A common method is to use the **Helm** chart, you will need
@@ -377,7 +368,7 @@ the _MQACE_ VM resides.
 
 :::note
 
-The demo-apps cluster being yellow can be ignored in this environment. It is an
+If the demo-apps cluster is showing as yellow it can be ignored in this environment. It is an
 Instana warning letting us know that the vm is operating at a consistently high
 load.
 
