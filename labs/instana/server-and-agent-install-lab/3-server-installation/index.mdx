@@ -583,36 +583,47 @@ Now the host **instana-0** has access to the private ssh key that has been added
 to the other hosts.
 
 Navigate back to your terminal tab connected to **instana-0**. Ensure you are
-still operating as the **root** user.
+still operating as the **root** user, you can check this by running the following:
 
-:::danger Ensure you are on the right host and your keys are working before continuing
 
-1. Ensure you are on the correct host. If you are unsure run
-   `hostname && whoami` to verify.
+```sh title="Host: instana-0"
+hostname && whoami
+```
 
-   You should see output similar to the following:
+You should see output similar to the following:
 
-   ```sh
-   instana-0
-   root
-   ```
+```sh title="Example output"
+instana-0
+root
+```
 
-   If you don't you should open a new tab, run `ssh jammer@instana-0` and
-   `sudo -i` to become the root user.
+:::info
 
-2. Ensure you are able to connect to **instana-1** and **instana-2** as the root
-   user using the newly created cluster key. Run the following:
+If you don't see the above output you should open a new tab, connect to instana-0 and become the root user.
 
-   ```sh title="Host: instana-0"
-   ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-2 "echo Connection to instana-2 successful"
-   ```
+```sh
+ssh jammer@instana-0
+sudo -i
+```
 
-   You should see the following output:
+:::
 
-   ```sh
-   Connection to instana-1 successful
-   Connection to instana-2 successful
-   ```
+Ensure you are able to connect to **instana-1** and **instana-2** as the root user using the newly created cluster key. Run the following:
+
+```sh title="Host: instana-0"
+ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-2 "echo Connection to instana-2 successful"
+```
+
+You should see the following output:
+
+```sh title="Expected Output"
+Connection to instana-1 successful
+Connection to instana-2 successful
+```
+
+:::danger
+
+If you do not see the above output you need to revisit the key exchange and confirm all steps have been successfully run.
 
 :::
 
