@@ -836,55 +836,8 @@ ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl server up --load-balancer-host
 
 **The deployment will take up to 60 minutes to complete.**
 
-After the installation has completed, run the following command as the default **admin** user on the **bastion host** to verify the installation:
-
-```sh title="Host: bastion-gym-lan"
-ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl status
-```
-
-You should see something like the following in the output:
-
-```
-o- [03 Nov 25 13:48 UTC] Getting cluster status
-Control Plane Node(s):
-    aiopsc1 Ready
-    aiopsc2 Ready
-    aiopsc3 Ready
-npm run start
-Worker Node(s):
-    aiopsw1 Ready
-    aiopsw2 Ready
-    aiopsw3 Ready
-    aiopsw4 Ready
-    aiopsw5 Ready
-    aiopsw6 Ready
-
-o- [03 Nov 25 13:48 UTC] Checking AIOps installation status
-
-  16 Ready Components
-    kafka
-    aimanager
-    baseui
-    zenservice
-    lifecycletrigger
-    aiopsui
-    cluster.opensearch
-    aiopsanalyticsorchestrator
-    aiopsedge
-    asm
-    issueresolutioncore
-    rediscp
-    cluster.aiops-orchestrator-postgres
-    lifecycleservice
-    commonservice
-    cassandra
-
-  AIOps installation healthy
-```
-
-
 <details>
-<summary>What if my installation fails?</summary>
+<summary>What if my installation attempt fails?</summary>
 
 :::warning Only perform these steps if your installation fails
 
@@ -892,7 +845,26 @@ You should not perform the steps in this sub-section unless your installation fa
 
 :::
 
-The virtualised lab environments can occasionally experience latency and other intermittent connectivity issues. This can sometimes interrupt connectivity between the cluster members, which can cause the installation to fail. If this happens, you will need to uninstall the cluster members and re-run the installation.
+The virtualised lab environments can occasionally experience latency and other intermittent connectivity issues. This can sometimes interrupt connectivity between the cluster members, which can cause the installation to fail. If this happens, you will need to re-run the install command with the addition of the `--force` switch. This tells the installer to attempt to continue the installation of any remaining uninstalled components, without having to start the installation from scratch.
+
+Run the following command as the default **admin** user on the **bastion host** to re-attempt the installation of AIOps:
+
+```sh title="Host: bastion-gym-lan"
+ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl server up --load-balancer-host="${LOAD_BALANCER_HOST}" --mode "${DEPLOY_TYPE}" --wait-timeout 1800 --force
+```
+
+</details>
+
+<details>
+<summary>What if my reinstallation attempt also fails?</summary>
+
+:::warning Only perform these steps if your installation fails
+
+You should not perform the steps in this sub-section unless your installation fails and the re-installation steps also fail.
+
+:::
+
+If the `--force` option has not succeeded, it may be necessary to remove the K3S cluster and re-start the installation. This involves uninstalling the cluster members and re-running the installation.
 
 To remove the AIOps installation, first run the following command block as the default **admin** user on the **bastion host** to create the AIOps environment variable file called `aiops_uninstall_var.sh`:
 
@@ -945,6 +917,52 @@ ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl cluster node down --role contr
 After you have finished uninstalling the cluster nodes, go back to the beginning of section [3.8: Install AIOps](/waiops-tech-jam/labs/cloud-pak-aiops/install-lab-linux/installation/#38-install-aiops) and re-run the installation steps for AIOps.
 
 </details>
+
+After the installation has completed, run the following command as the default **admin** user on the **bastion host** to verify the installation:
+
+```sh title="Host: bastion-gym-lan"
+ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl status
+```
+
+You should see something like the following in the output:
+
+```
+o- [03 Nov 25 13:48 UTC] Getting cluster status
+Control Plane Node(s):
+    aiopsc1 Ready
+    aiopsc2 Ready
+    aiopsc3 Ready
+npm run start
+Worker Node(s):
+    aiopsw1 Ready
+    aiopsw2 Ready
+    aiopsw3 Ready
+    aiopsw4 Ready
+    aiopsw5 Ready
+    aiopsw6 Ready
+
+o- [03 Nov 25 13:48 UTC] Checking AIOps installation status
+
+  16 Ready Components
+    kafka
+    aimanager
+    baseui
+    zenservice
+    lifecycletrigger
+    aiopsui
+    cluster.opensearch
+    aiopsanalyticsorchestrator
+    aiopsedge
+    asm
+    issueresolutioncore
+    rediscp
+    cluster.aiops-orchestrator-postgres
+    lifecycleservice
+    commonservice
+    cassandra
+
+  AIOps installation healthy
+```
 
 ## 3.9: Log in to the Cloud Pak for AIOps console
 
