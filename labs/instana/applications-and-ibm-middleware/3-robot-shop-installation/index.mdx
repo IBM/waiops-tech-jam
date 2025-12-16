@@ -256,10 +256,20 @@ There is currently a bug in the Robot Shop application where a trailing slash is
 # 1. Find the robot-shop web pod name
 export POD_NAME=$(kubectl get pods -n robot-shop -l "service=web" -o jsonpath='{.items[0].metadata.name}')
 
-# 2. Fix the trailing slash bug
+# 2. Wait for pod to be ready
+kubectl wait --for=condition=ready pod/$POD_NAME -n robot-shop --timeout=300s
+
+# 3. Wait until the file exists and is accessible
+until kubectl exec $POD_NAME -n robot-shop -- test -f /usr/share/nginx/html/eum.html 2>/dev/null; do
+    echo "Waiting for eum.html to be available..."
+    sleep 2
+done
+
+# 4. Fix the trailing slash bug
 kubectl exec $POD_NAME -n robot-shop -- \
     sed -i "s|/eum')|/eum/')|g" /usr/share/nginx/html/eum.html
 ```
+
 
 :::
 
