@@ -101,6 +101,12 @@ sequenceDiagram
 
     Bastion->>AIOPSC1: 1. Add existing public key to root's authorized_keys on aiopsc1
 
+    rect hotpink
+        note right of Bastion: Result: Passwordless SSH from bastion-gym-lan to aiopsc1
+        Bastion->>AIOPSC1: ssh root@aiopsc1 (authenticates using local private key)
+        AIOPSC1-->>Bastion: Success
+    end
+
     Bastion->>Bastion: 2. Generate new SSH key pair (private & public)
 
     Bastion->>AIOPSNodes: 3. Add new public key to root user's authorized_keys on all AIOps nodes except for aiopsc1
@@ -111,11 +117,6 @@ sequenceDiagram
     Bastion->>AIOPSC1: 5. Connect to aiopsc1 and configure the root user's SSH client to <br>use the new private key when connecting to AIOps nodes
 
     %% The hotpink color is used to target the rectangle with css, it is not the final colour
-    rect hotpink
-        note right of Bastion: Result: Passwordless SSH from bastion-gym-lan to aiopsc1
-        Bastion->>AIOPSC1: ssh root@aiopsc1 (authenticates using local private key)
-        AIOPSC1-->>Bastion: Success
-    end
     rect hotpink
         note right of AIOPSC1: Result: Passwordless SSH from aiopsc1 to all AIOPS nodes
         AIOPSC1->>AIOPSNodes: ssh root@[any_aiops_node] (authenticates using new private key)
