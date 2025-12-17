@@ -8,7 +8,7 @@ sidebar_position: 3
 
 This module focuses on the initial deployment of the Cloud Pak for AIOps using the Linux VM based installer. It will include the prerequisite steps of preparing the virtual machines prior to installation.
 
-The product documentation for this installation process is published [here](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.1?topic=linux-online-installation).
+The product documentation for this installation process is published [here](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.12.0?topic=linux-online-installation).
 
 :::tip
 
@@ -135,20 +135,20 @@ Ensure you are on the `bastion-gym-lan` host and logged in as the `admin` user. 
 
 Run the following command as the default **admin** user on the **bastion host** to store the local public SSH key on `bastion-gym-lan` in the environment variable `PUBLIC_KEY` and then add it to the `root` user's `authorized_keys` file on `aiopsc1`. This will allow connection between `bastion-gym-lan` and `aiopsc1` without having to enter a password.
 
-```php title="Host: bastion-gym-lan"
+```sh title="Host: bastion-gym-lan"
 PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)
-ssh jammer@aiopsc1 "sudo -i bash -c 'echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys' && echo \"SSH key added to $i successfully\""
+ssh jammer@aiopsc1 "sudo -i bash -c 'echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys' && echo \"SSH key added to aiopsc1 successfully\""
 ```
 
 Run the following command as the default **admin** user on the **bastion host** to create a new SSH key that will be used for the AIOps installation onto the AIOps cluster node hosts:
 
-```bash title="Host: bastion-gym-lan"
+```sh title="Host: bastion-gym-lan"
 ssh-keygen -t rsa -f ~/.ssh/aiops-cluster -N "" -C "AIOps Cluster Key"
 ```
 
 Run the following command as the default **admin** user on the **bastion host** to store the new public SSH key in the environment variable `PUBLIC_KEY` and then add it to the `root` user's `authorized_keys` file on all the AIOps cluster nodes *except* for `aiopsc1`.
 
-```php title="Host: bastion-gym-lan"
+```sh title="Host: bastion-gym-lan"
 PUBLIC_KEY=$(cat ~/.ssh/aiops-cluster.pub)
 for i in aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
   ssh jammer@$i "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys' && echo \"SSH key added to $i successfully\""
@@ -183,7 +183,7 @@ Run the following commands as the default **admin** user on the **bastion host**
 ```sh title="Host: bastion-gym-lan"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
 for host in aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
-    ssh -t $SSH_OPTIONS jammer@$host 'sudo yum install -y lvm2'
+    ssh -t $SSH_OPTIONS jammer@$host 'sudo dnf install -y lvm2'
     echo "Installation complete on $host"
 done
 ```
@@ -204,7 +204,7 @@ To fully patch the host operating systems, run the following commands as the def
 ```sh title="Host: bastion-gym-lan"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
 for host in aiopslb aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
-    ssh -t $SSH_OPTIONS jammer@$host 'sudo yum update -y'
+    ssh -t $SSH_OPTIONS jammer@$host 'sudo dnf update -y'
     ssh -t $SSH_OPTIONS jammer@$host 'sudo shutdown -r now'
     echo "Update complete on $host"
 done
@@ -225,7 +225,7 @@ It is not strictly mandatory to have additional disks provisioned when installin
 All steps in this section (3.5) need to be completed as the **root** user.  Ensure you change to the root user therefore after connecting to each of the boxes indicated in this section before completing the steps - for example:
 
 ```sh title="Host: bastion-gym-lan"
-ssh jammer@aiopsw1
+ssh jammer@aiopsc1
 ```
 
 ```sh title="Host: aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6"
@@ -368,12 +368,12 @@ Whereas section 3.5.1 steps through the additional disk identification and setup
 
 :::
 
-Run the following command block as the default **admin** user from the **bastion host** to set up your application storage disk on all your worker node hosts:
-
+Run the following command as the default **admin** user from the **bastion host** to set up your application storage disk on all your worker node hosts:
 
 ```sh title="Host: bastion-gym-lan"
+export SSH_OPTIONS="-o StrictHostKeyChecking=no"
 for HOST in aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
-  ssh root@$HOST << 'EOF'
+  ssh -t $SSH_OPTIONS jammer@$HOST 'sudo bash -s' << 'EOF'
     echo "$(hostname) - Finding the 200G disk"
 
     # 1. Find the 200G disk that isn't partitioned
@@ -477,10 +477,11 @@ For resiliency, AIOps is designed to run using a load-balancer that proxies conn
 
 In this lab, we have a load balancer host provisioned (`aiopslb`). In this section, we will install and configure **HAProxy** to provide this service.
 
-Connect as the **jammer** user to the **load balancer** host:
+Run the following command as the default **admin** user from the **bastion host** to connect as the **jammer** user to the **load balancer** host:
 
 ```sh title="Host: bastion-gym-lan"
-ssh jammer@aiopslb
+export SSH_OPTIONS="-o StrictHostKeyChecking=no"
+ssh -t $SSH_OPTIONS jammer@aiopslb
 ```
 
 Next, run the following command as the **jammer** user on the **load balancer** host to change to the **root** user:
@@ -697,7 +698,7 @@ It is important to run the following commands one at a time as listed, and not a
 
 ```sh title="Host: bastion-gym-lan"
 AIOPSCTL_TAR="aiopsctl-linux_amd64.tar.gz"
-AIOPSCTL_INSTALL_URL="https://github.com/IBM/aiopsctl/releases/download/v4.11.1/${AIOPSCTL_TAR}"
+AIOPSCTL_INSTALL_URL="https://github.com/IBM/aiopsctl/releases/download/v4.12.0/${AIOPSCTL_TAR}"
 ```
 
 ```sh title="Host: bastion-gym-lan"
@@ -796,11 +797,11 @@ done
 
 :::note
 
-Per [section 4.4 of the documentation](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.11.1?topic=linux-online-installation#install_tool), we need to apply this step to all the AIOps cluster nodes because the lab infrastructure is built on VSphere. Hence, this step is needed to rectify connectivity issues.
+Per [section 4.4 of the documentation](https://www.ibm.com/docs/en/cloud-paks/cloud-pak-aiops/4.12.0?topic=linux-online-installation#install_tool), we need to apply this step to all the AIOps cluster nodes because the lab infrastructure is built on VSphere. Hence, this step is needed to rectify connectivity issues.
 
 :::
 
-### 3.8.4 Install AIOps
+### 3.8.3 Install AIOps
 
 Now that the K3S cluster is ready, you will now perform the installation of AIOps.
 
@@ -1011,5 +1012,5 @@ Since we are using self-signed certificates, your browser window will give you c
 
 Use the credentials obtained to log in to the console.
 
-Congratulations, this concludes the installation of AIOps on Linux VMs!
+This concludes the installation of the IBM Cloud Pak for AIOps on Linux VMs.
 
