@@ -20,18 +20,17 @@ operations platform, AIOps enables IT operations teams to respond more quicklyâ€
 with end-to-end visibility and context. It bridges the gap between an increasingly diverse, dynamic, and difficult-to-monitor 
 IT landscape and siloed teams, on the one hand, and user expectations for little or no interruption in application performance and availability, on the other. 
 
-Welcome to the Cloud Pak for AIOps Install Lab. You will be going through several key exercises that will help 
-you learn key skills around how to plan and install this product.
+Welcome to the Cloud Pak for AIOps on Linux installation lab. You will be going through several key exercises that will help you learn key skills around how to plan and install this product on RHEL Linux VMs.
 
+The Linux VM based installation of AIOps does not use OpenShift. It instead uses a lightweight Kubernetes platform (K3S), which deploys very rapidly and therefore makes it ideal for demonstrations, proof-of-concepts, and sandbox environments. For a production deployment use-case however, OpenShift provides a lot more day-2-operations capabilities out of the box and so may be better suited. OpenShift deployments take more planning and time to deploy and set up however, which is why the Linux-based deployment is ideal for quick trials and demos where timescales are typically shorter.
+
+This entire lab can be completed within one day.
 
 ### Lab Content
 
 In this Lab, we will explore the following topics:
 
-* How to install a small size deployment of the Cloud Pak for AIOps on OpenShift
-* How to custom size deployments based on actual workloads and functionality needs using the "custom sizing tool"
-* An overview of Storage requirements, support for High Availability and FIPS (Federal Information Processing Standard) considerations
-* How to configure the integration with a Lightweight Directory Access Protocol (LDAP)
-
+* How to prepare a set of Linux virtual machines for installation of AIOps
+* How to install a small size deployment of the Cloud Pak for AIOps onto Linux VMs
 
 The lab should be executed in the numbered order that you see on the left side of the screen in the navigation pane as sections likely depend on work completed in prior sections.
