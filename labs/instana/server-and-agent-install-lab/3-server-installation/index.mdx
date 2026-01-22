@@ -656,7 +656,7 @@ administrative tasks.
 
 ```txt title="Host: instana-0"
 apt update -y && \
-apt install -y stanctl=1.10.2-1
+apt install -y stanctl=1.11.5-1
 ```
 
 Hold the stanctl package to prevent it from being upgraded unintentionally.
@@ -671,7 +671,7 @@ You can now verify your stanctl version by typing:
 stanctl -v
 ```
 
-You should see that the version is 1.10.2.
+You should see that the version is 1.11.5.
 
 Install Instana
 
@@ -712,7 +712,7 @@ Start the installation by running the following command:
 
 ```sh title="Host: instana-0"
 stanctl up \
-  --instana-version="3.297.463-0" \
+  --instana-version="3.305.486-0" \
   --multi-node-enable \
   --multi-node-ips="192.168.252.30,192.168.252.31,192.168.252.32" \
   --install-type="production" \
