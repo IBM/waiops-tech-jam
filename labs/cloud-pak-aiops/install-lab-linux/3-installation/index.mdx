@@ -222,118 +222,119 @@ It is not strictly mandatory to have additional disks provisioned when installin
 
 :::
 
-All steps in this section (3.5) need to be completed as the **root** user.  Ensure you change to the root user therefore after connecting to each of the boxes indicated in this section before completing the steps - for example:
-
-```sh title="Host: bastion-gym-lan"
-ssh jammer@aiopsc1
-```
-
-```sh title="Host: aiopsc1 aiopsc2 aiopsc3 aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6"
-sudo -i
-```
-
 ### 3.5.1 Preparing the control plane nodes
 
-Run the following command block as the **root** user on each of your **control plane** hosts to discover your what your additional disks are for each one:
-
-```sh title="Host: aiopsc1 aiopsc2 aiopsc3"
-APP_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
-  $2 == "200G" && $3 == "disk" {
-    cmd = "lsblk -n /dev/" $1 " | wc -l";
-    cmd | getline lines;
-    close(cmd);
-    if (lines == 1) print $1;
-  }
-' | head -1)
-
-PLATFORM_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
-  $2 == "200G" && $3 == "disk" {
-    cmd = "lsblk -n /dev/" $1 " | wc -l";
-    cmd | getline lines;
-    close(cmd);
-    if (lines == 1) print $1;
-  }
-' | grep -v "$APP_DISK" | head -1) # <- This is the difference between APP_DISK and PLATFORM_DISK
-echo "Your additional disks are:"
-echo APP_DISK: /dev/$APP_DISK
-echo PLATFORM_DISK: /dev/$PLATFORM_DISK
-```
-
-Example output:
-
-```
-...
-Your additional disks are:
-APP_DISK: /dev/sdc
-PLATFORM_DISK: /dev/sdd
-[root@aiopsc1 ~]#
-```
-
-In this case, you can see the primary control plane node `aiopsc1` has two additional 200G disks: `/dev/sdc` and `/dev/sdd`. After you have configured your local volumes, one will be allocated for the storage of AIOps application data and one will be allocated for the storage of the Kubernetes platform data.
+The script in this section will connect to each one of the control plane nodes, identify the spare disk volumes, then format and mount them, ready for the installation of AIOps. The control plane nodes use one partition as the storage for of K3S platform data and a second one for the storage of AIOps application data.
 
 :::note
 
-The control plane nodes will have two additional disks as described above. The worker nodes however will only have one additional disk for the storage of AIOps application data. They do not need the Kubernetes platform storage directory like the control plane nodes do.
+The control plane nodes will have two additional disks as described above. The worker nodes however will only have one additional disk for the storage of AIOps application data. They do not need the K3S platform storage directory like the control plane nodes do.
 
 :::
 
-Following on from the previous step, run the following command block as the **root** user on each of your **control plane** hosts to set your storage environment variables according to the names of the additional drives:
+The process to set up your disks is:
+- Identify the disks on the host
+- Create the physical volumes
+- Create the volume groups
+- Create the logical volumes in the volume groups
+- Format the logical volumes
+- Create the local directory mount points
+- Add the new file system to the file system table (`/etc/fstab`)
+- Mount the logical volumes onto the local directory mount points
 
-```sh title="Host: aiopsc1 aiopsc2 aiopsc3"
-export APP_DRIVE_NAMES=(
-  /dev/$APP_DISK
-)
-export PLATFORM_DRIVE_NAMES=(
-  /dev/$PLATFORM_DISK
-)
-export APP_STORAGE_PATH="/var/lib/aiops/storage"
-export PLATFORM_STORAGE_PATH="/var/lib/aiops/platform"
+Run the following command as the default **admin** user from the **bastion host** to set up your application storage disk and your platform storage disk on all your control plane node hosts:
+
+
+```sh title="Host: bastion-gym-lan"
+export SSH_OPTIONS="-o StrictHostKeyChecking=no"
+for HOST in aiopsc1 aiopsc2 aiopsc3; do
+  ssh -t $SSH_OPTIONS jammer@$HOST 'sudo bash -s' << 'EOF'
+    echo "$(hostname) - Finding the 200G disks..."
+
+    # 1. Find the 200G disks that are not partitioned
+    APP_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
+      $2 == "200G" && $3 == "disk" {
+        cmd = "lsblk -n /dev/" $1 " | wc -l";
+        cmd | getline lines;
+        close(cmd);
+        if (lines == 1) print $1;
+      }
+    ' | head -1)
+
+    PLATFORM_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
+      $2 == "200G" && $3 == "disk" {
+        cmd = "lsblk -n /dev/" $1 " | wc -l";
+        cmd | getline lines;
+        close(cmd);
+        if (lines == 1) print $1;
+      }
+    ' | grep -v "$APP_DISK" | head -1) # <- This is the difference between APP_DISK and PLATFORM_DISK
+
+    # 2. Exit if suitable disks are not found
+    if [ -z "$APP_DISK" ]; then
+      echo "$(hostname) - ERROR: No suitable 200G disk for APP_DISK found. Aborting..."
+      exit 1
+    fi
+
+    if [ -z "$PLATFORM_DISK" ]; then
+      echo "$(hostname) - ERROR: No suitable 200G disk for PLATFORM_DISK found. Aborting...."
+      exit 1
+    fi
+
+    echo "Your additional disks are:"
+    echo APP_DISK: /dev/$APP_DISK
+    echo PLATFORM_DISK: /dev/$PLATFORM_DISK
+
+    # 3. Set environment variables
+    export APP_DRIVE_NAMES=(
+      /dev/$APP_DISK
+    )
+    export PLATFORM_DRIVE_NAMES=(
+      /dev/$PLATFORM_DISK
+    )
+    export APP_STORAGE_PATH="/var/lib/aiops/storage"
+    export PLATFORM_STORAGE_PATH="/var/lib/aiops/platform"
+
+    # 4. Create physical volumes
+    pvcreate "${APP_DRIVE_NAMES[@]}"
+    pvcreate "${PLATFORM_DRIVE_NAMES[@]}"
+
+    # 5. Create volume groups
+    vgcreate aiops "${APP_DRIVE_NAMES[@]}"
+    vgcreate aiopspl "${PLATFORM_DRIVE_NAMES[@]}"
+
+    # 6. Create logical volumes on the volume groups
+    lvcreate aiops -n aiops -l 100%FREE
+    lvcreate aiopspl -n aiopspl -l 100%FREE
+
+    # 7. Format the new logical volumes
+    export APP_DMPATH=$(lvs --noheadings -o dmpath aiops | sed -e 's/^[[:space:]]*//')
+    export PLATFORM_DMPATH=$(lvs --noheading -o dmpath aiopspl | sed -e 's/^[[:space:]]*//')
+    mkfs.xfs -L aiops "${APP_DMPATH}"
+    mkfs.xfs -L aiopspl "${PLATFORM_DMPATH}"
+
+    # 8. Create the mount points
+    mkdir -p "${APP_STORAGE_PATH}"
+    mkdir -p "${PLATFORM_STORAGE_PATH}"
+
+    # 9. Add the new filesystem directories to /etc/fstab
+    echo "${APP_DMPATH}  ${APP_STORAGE_PATH}     xfs    defaults        0 0" >> /etc/fstab
+    echo "${PLATFORM_DMPATH}  ${PLATFORM_STORAGE_PATH}     xfs    defaults        0 0" >> /etc/fstab
+
+    # 10. Mount the filesystems onto the mount points
+    systemctl daemon-reload
+    mount "${APP_STORAGE_PATH}"
+    mount "${PLATFORM_STORAGE_PATH}"
+
+    echo "$(hostname) - Configuration complete. Final disk layout:"
+    lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
+EOF
+
+  echo "$HOST disk setup complete."
+done
 ```
 
-:::note
-
-You can use either one of your additional drives for application storage and the other for platform storage. The above example uses `/dev/sdc` and `/dev/sdd` which it is taking from the previous step via the environment variables. Take care that you enter the correct drive names. They may be different on each control plane node host.
-
-:::
-
-Finally, run the following commands as the **root** user on each **control plane** host to create the partitions and verify that they have been created correctly:
-
-```sh title="Host: aiopsc1 aiopsc2 aiopsc3"
-# Create physical volumes
-pvcreate "${APP_DRIVE_NAMES[@]}"
-pvcreate "${PLATFORM_DRIVE_NAMES[@]}"
-
-# Create volume groups
-vgcreate aiops "${APP_DRIVE_NAMES[@]}"
-vgcreate aiopspl "${PLATFORM_DRIVE_NAMES[@]}"
-
-# Create logical volumes on the volume groups
-lvcreate aiops -n aiops -l 100%FREE
-lvcreate aiopspl -n aiopspl -l 100%FREE
-
-# Format the new logical volumes
-export APP_DMPATH=$(lvs --noheadings -o dmpath aiops | sed -e 's/^[[:space:]]*//')
-export PLATFORM_DMPATH=$(lvs --noheading -o dmpath aiopspl | sed -e 's/^[[:space:]]*//')
-mkfs.xfs -L aiops "${APP_DMPATH}"
-mkfs.xfs -L aiopspl "${PLATFORM_DMPATH}"
-
-# Create filesystem directories
-mkdir -p "${APP_STORAGE_PATH}"
-mkdir -p "${PLATFORM_STORAGE_PATH}"
-
-# Add the new filesystem directories to `/etc/fstab`
-echo "${APP_DMPATH}  ${APP_STORAGE_PATH}     xfs    defaults        0 0" >> /etc/fstab
-echo "${PLATFORM_DMPATH}  ${PLATFORM_STORAGE_PATH}     xfs    defaults        0 0" >> /etc/fstab
-
-# Mount the filesystems into the directories
-systemctl daemon-reload
-mount "${APP_STORAGE_PATH}"
-mount "${PLATFORM_STORAGE_PATH}"
-
-lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
-```
-
-As you successfully configure your volumes, you should see something like the following on your **control plane** hosts output:
+As you successfully configure your volumes, you should see something like the following in the output for each of your **control plane node** hosts:
 
 ```
 NAME                SIZE TYPE MOUNTPOINT
@@ -362,12 +363,6 @@ sdd                 200G disk
 
 Whereas the control plane nodes have two additional disks for the platform and application storage, the worker nodes only have one additional disk for the application storage.
 
-:::note
-
-Whereas section 3.5.1 steps through the additional disk identification and setup tasks individually, the following command block performs the additional disk identification and setup across all the worker nodes in one go for convenience, now that you understand the steps required.
-
-:::
-
 Run the following command as the default **admin** user from the **bastion host** to set up your application storage disk on all your worker node hosts:
 
 ```sh title="Host: bastion-gym-lan"
@@ -376,7 +371,7 @@ for HOST in aiopsw1 aiopsw2 aiopsw3 aiopsw4 aiopsw5 aiopsw6; do
   ssh -t $SSH_OPTIONS jammer@$HOST 'sudo bash -s' << 'EOF'
     echo "$(hostname) - Finding the 200G disk"
 
-    # 1. Find the 200G disk that isn't partitioned
+    # 1. Find the 200G disk that is not partitioned
     APP_STORAGE_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
       $2 == "200G" && $3 == "disk" {
         cmd = "lsblk -n /dev/" $1 " | wc -l";
@@ -901,14 +896,14 @@ Finally, run the following commands as the default **admin** user on the **basti
 ```sh title="Host: bastion-gym-lan"
 for WORKER_NODE in "${WORKER_NODES[@]}"
 do
-  ssh ${TARGET_USER}@${WORKER_NODE} aiopsctl cluster node down --role worker --app-storage=${APP_STORAGE_PATH}
+  ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} ssh ${TARGET_USER}@${WORKER_NODE} aiopsctl cluster node down --role worker --app-storage=${APP_STORAGE_PATH}
 done
 ```
 
 ```sh title="Host: bastion-gym-lan"
 for CP_NODE in "${ADDITIONAL_CONTROL_PLANE_NODES[@]}"
 do
-  ssh ${TARGET_USER}@${CP_NODE} aiopsctl cluster node down --role control-plane
+  ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} ssh ${TARGET_USER}@${CP_NODE} aiopsctl cluster node down --role control-plane
 done
 ```
 
