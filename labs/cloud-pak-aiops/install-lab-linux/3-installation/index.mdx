@@ -901,14 +901,14 @@ Finally, run the following commands as the default **admin** user on the **basti
 ```sh title="Host: bastion-gym-lan"
 for WORKER_NODE in "${WORKER_NODES[@]}"
 do
-  ssh ${TARGET_USER}@${WORKER_NODE} aiopsctl cluster node down --role worker --app-storage=${APP_STORAGE_PATH}
+  ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} ssh ${TARGET_USER}@${WORKER_NODE} aiopsctl cluster node down --role worker --app-storage=${APP_STORAGE_PATH}
 done
 ```
 
 ```sh title="Host: bastion-gym-lan"
 for CP_NODE in "${ADDITIONAL_CONTROL_PLANE_NODES[@]}"
 do
-  ssh ${TARGET_USER}@${CP_NODE} aiopsctl cluster node down --role control-plane
+  ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} ssh ${TARGET_USER}@${CP_NODE} aiopsctl cluster node down --role control-plane
 done
 ```
 
