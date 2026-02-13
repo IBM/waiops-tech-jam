@@ -68,8 +68,8 @@ website name and click the **Add website** button.
 
 ![](images/add-website-name.png)
 
-A new dialog containing some options and javascript will open. Leave the options
-as is.
+A new dialog containing some options and javascript will open. Leave the default options
+as is and scroll down to **Add tracking script**.
 
 In a more typical application, you would follow the instructions and copy/paste
 the javascript into the website's `<head/>` tag.
@@ -307,7 +307,7 @@ url to the application
 kubectl get ingress -n robot-shop
 ```
 
-The result should look similar to: `web-robot-shop.CLUSTER_DOMAIN`. In our case
+The result should look similar to: `robot-shop.apps.CLUSTER_DOMAIN`. In our case
 it is **robot-shop.apps.demo-apps.ibmdte.local**
 
 ![](images/expose-robot-shop.png)
@@ -404,6 +404,8 @@ traffic in the Robot Shop dashboard.
 
 You can change the filter at the top right of the page to **Live** and **Last
 minute** to see the traffic in real time.
+
+![live-last-minute](images/live-last-minute.png)
 
 :::
 
