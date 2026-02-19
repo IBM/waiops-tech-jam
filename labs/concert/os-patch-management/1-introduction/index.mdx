@@ -1,0 +1,43 @@
+---
+title: 1. Introduction
+description:
+  Introductory material that includes concepts, major features and content overview.
+sidebar_position: 1
+---
+
+# Introduction
+
+IBM Concert helps streamline and automate Red Hat Enterprise Linux (RHEL) patch management by turning what is typically a manual, 
+ticket-driven process into an end-to-end, AI-orchestrated workflow that reduces risk and time to patch. Although this Lab will 
+solely focus on RHEL patching, note that the same Concert capabilities apply to other operating systems such as Amazon Linux, 
+Ubuntu, Windows, AIX/PowerLinux on Power systems, etc. 
+
+### Framing the RHEL patching challenge
+
+RHEL patching is critical for closing security vulnerabilities and staying compliant, 
+but at scale it often suffers from fragmented tooling, manual approvals, and inconsistent execution across environments. These gaps can lead to long median times to patch, higher exposure to critical CVEs, and significant operational overhead for operations and security teams.
+
+### How IBM Concert adds intelligence
+IBM Concert aggregates data from vulnerability scanners, infrastructure inventories, and CVE feeds to build a contextual view of your RHEL landscape and exposure. Using generative AI, it prioritizes which RHEL systems and packages to patch first based on risk, business criticality, dependencies, and maintenance windows, instead of using a blunt “patch everything” approach.
+Concert provides predefined workflows for RHEL that cover discovery, advisory ingestion, remediation planning, execution, and post‑patch reporting. These workflows can automatically connect to RHEL hosts, validate access, apply the appropriate package updates, and handle reboots, while capturing status and exceptions for operators.
+
+### Integration with existing Automation
+Rather than replacing existing tools, Concert orchestrates them: it can trigger Ansible Playbooks or similar automation to roll out RHEL patches within defined maintenance windows. This orchestration ensures standardized patch execution across hybrid and multi‑cloud environments, while feeding results back into ITSM systems such as ServiceNow for change tracking and compliance evidence.
+
+### Tangible outcomes for RHEL operations
+By combining risk‑aware planning with automated execution, organizations have used Concert to cut patch deployment times dramatically and reduce median time to patch by up to an order of magnitude. This improvement strengthens security posture for RHEL workloads, lowers operational cost, and frees operations teams to focus on higher‑value resilience and optimization work.
+
+### Lab Content
+
+Welcome to the IBM Concert RHEL OS Patch Management Lab. You will be going through several key exercises that will help you learn important skills around how IBM Concert helps streamline and automate RHEL OS patch management by turning what is typically a manual, ticket-driven process into an end-to-end, AI-orchestrated workflow that reduces risk and time to patch.
+
+In this Lab, you will explore the following topics:
+- Configure a Workflow to connect to a RHEL VM and run a VM scan
+- Review the results of the VM Scan as Concert Actions that can be accepted or rejected
+- Patch the vulnerabilities and verify the remediation in Concert
+
+The lab should be executed in the numbered order that you see on the left side of the screen, in the navigation pane, 
+as sections likely depend on work completed in prior sections.
+
+If you are running the Lab on your own and have questions or need assistance, please use 
+the Slack channel listed under the [**Support** section](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops).
