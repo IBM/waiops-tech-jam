@@ -68,9 +68,17 @@ Enable the logging feature by running the below command
 stanctl backend apply --core-feature-flags feature.logging.enabled=true
 ```
 
-after the changes, you should see the below message
+after applying the command, Instana will ask about the TLS certificate, please hit enter to accept the default certificate
 
-![otel-002](images/otel-coll-002.png)
+![otel-002](images/otel-coll-010.png)
+
+after applying the command, Instana will ask about update options. In this lab, we are NOT going to update Instana, so please select "Proceed without installing the update"
+
+![otel-002](images/otel-coll-011.png)
+
+finally, Instana should return confirmation the additional feature was updated correctly
+
+![otel-002](images/otel-coll-012.png)
 
 you can close this terminal window by running the below command:
 
@@ -145,10 +153,14 @@ screen
 ![otel-005](images/otel-coll-005.png)
 
 After few minutes, please check the Instana UI and confirm the new agent is
-reporting data to the Instana backend. Select **More** -> **Agents**. You should see similar content to the
+reporting data to the Instana backend. Hover over main menu on the left and select **Agents & collectors**. 
 screen below with the agent **bluebox.ibmdte.local**:
 
-![otel-004](images/otel-coll-004.png)
+![otel-004](images/otel-coll-013.png)
+
+You should see similar content to the below screen
+
+![otel-004](images/otel-coll-014.png)
 
 ## 6.4 OpenTelemetry Collector - configuration
 
