@@ -92,6 +92,8 @@ stanctl backend apply --core-feature-flags feature.synthetics.enabled=true
 
 If prompted, press ENTER to auto-generate TLS certificate.
 
+If asked, select "Proceed without installing the update". The goal of the lab is not spend time on Instana update, but to demonstrate Synthetic feature.
+
 Ensure synthetic pods have started successfully:
 
 ```bash title="Host: instana-0"
@@ -252,6 +254,29 @@ watch -n 2 "kubectl get pods -n instana-synthetic"
 
 Wait for all pods to be running and stop the `watch` command using "Ctrl+C".
 
+:::info
+
+It might happen that one of the pods is not starting due to insufficient number of CPU resource on the lab environment:
+For example:
+```text
+kubectl describe po synthetic-pop-browserscript-playback-engine-ff58c546-r7dlh -n instana-synthetic
+. . .
+Events:
+  Type     Reason            Age                 From               Message
+  ----     ------            ----                ----               -------
+  Warning  FailedScheduling  11m                 default-scheduler  0/3 nodes are available: 1 node(s) had untolerated taint {node-role.instana.io: datastore}, 2 Insufficient cpu. preemption: 0/3 nodes are available: 1 Preemption is not helpful for scheduling, 2 No preemption victims found for incoming pod.
+  Warning  FailedScheduling  67s (x2 over 6m7s)  default-scheduler  0/3 nodes are available: 1 node(s) had untolerated taint {node-role.instana.io: datastore}, 2 Insufficient cpu. preemption: 0/3 nodes are available: 1 Preemption is not helpful for scheduling, 2 No preemption victims found for incoming pod.
+```
+:::
+
+If th pod failing, execute the following command to reduce CPU requests to be able to schedule the pod:
+
+```bash
+kubectl patch deployment/synthetic-pop-browserscript-playback-engine  -n instana-synthetic \
+  -p '{"spec":{"template":{"spec":{"containers":[{"name":"synthetic-playback-browserscript","resources":{"requests":{"cpu":".5"}}}]}}}}'
+```
+
+
 After the _Synthetic Point Of Presence_ is installed verify its appearance in
 the interface (refresh the browser page):
 
@@ -266,13 +291,9 @@ is installed on the `demo-apps` cluster.
 ### SSL Certificate synthetic test
 
 From the left navigation menu select **Synthetic Monitoring**. Then select the
-**Tests** tab and click the **ADD** button:
+**Synthetic tests** tab and click the **Create synthetic test** button:
 
 ![](images/AddSynthetic.png)
-
-From the pop-up options, select **Add Synthetic Test**:
-
-![](images/add-synth-test.png)
 
 On the top right corner of the dialogue click the **"Switch to advanced mode"**
 button, then select **SSL Certificate** and click **Select**:
@@ -343,38 +364,36 @@ endpoints.
 Let's begin by executing a simple REST API test. This will be a single HTTP
 `GET` request.
 
-Begin by navigating to **Synthetic Monitoring** in the left navigation menu, and
-then click the **ADD** button:
+Begin by navigating to **Synthetic Monitoring** in the left navigation menu, select **Synthetic tests** and
+then click the **Create synthetic test** button:
 
 ![](images/AddSynthetic.png)
 
-From the pop-up menu options, Select **Add Synthetic Test**:
-
-![](images/add-synth-test.png)
-
-On the dialog that opens, you will see several options including **API Simple**
-test. Leave the default of **API Simple** and click the **Next** button:
+On the dialog that opens, you will see two options under **API**
+test. Choose **API Simple** and click the **Select** button:
 
 ![](images/addSynthetics3.png)
 
-A new dialog will open prompting for the REST API **GET** URL. Enter the following URL:
+Scroll down for a new dialog prompting for the REST API **GET** URL. Enter the following URL:
 
 ```sh
 https://qotd.apps.demo-apps.ibmdte.local/random
 ```
+![](images/AddSyntheticQOTD.png)
 
 This could be any REST request. In this case, we are testing the `/random` API
 call within the **Quote of the Day** application.
 
-Then, select your **Point of Presence** location. This allows you to choose the
+
+Then, scroll down to Locations and select your **on Instana Cluster** location. This allows you to choose the
 location(s) where you want your synthetic script to execute. In the lab, you
-only have 1 location that you can select, select `on Instana cluster` and click
-**Next**:
+only have 1 location that you can select, so we choose `on Instana cluster` and click
+**Add location**:
 
-![](images/addSynthetics4.png)
+![](images/SSL-certificate-location.png)
 
-The next screen allows you to specify the scheduling interval for your synthetic
-test. Drag the time slider to 1 minute. Then, select **Next**
+The next step allows you to specify the scheduling interval for your synthetic
+test. Drag the time slider to 1 minute. Then, scroll down:
 
 ![](images/scheduling.png)
 
@@ -384,9 +403,9 @@ using the values:
 - **Name of the test:** `Random Quote`
 - **Description:** `Quote of the Day, Random Quote REST test`
 
-Click the **Next** button:
-
 ![](images/testName.png)
+
+Scroll down.
 
 On the next step, you can associate the synthetic test with an application. In
 this lab we didn't create any Application Perspectives, we will skip the
@@ -426,21 +445,18 @@ will be testing two `GET` requests:
 - Next, the script will perform a functional test by checking for the
   correctness of a `GET` request response.
 
-To create a synthetic test navigate to "Synthetic Monitoring" in the left
-navigation menu, and click the **ADD** button in the bottom-right corner:
+To create a synthetic test navigate to **Synthetic Monitoring** in the left
+navigation menu, choose **Synthetic tests** and click the **Create synthetic test** button:
 
 ![](images/AddSynthetic.png)
 
-From the pop-up options, select **Add Synthetic Test**:
+In the **Create Synthetic Test** dialog, select **API** and **API Script test** click the
+**Select** button:
 
-![](images/add-synth-test.png)
+![](images/SyntheticScript.png)
 
-In the **Create Synthetic Test** dialog, select **API Script** and click the
-**Next** button:
-
-![alt text](images/SyntheticScript.png)
-
-Paste the following JavaScript code into the text field as shown below:
+Scroll down to Script section and click **Add Script**.
+Paste the following JavaScript code into the **script** text field as shown below:
 
 ```javascript
 var assert = require("assert")
@@ -455,8 +471,8 @@ var options = {
   uri: SERVER_ADDR + "/usecase",
   strictSSL: false,
   headers: {
-    "Content-type": "application/json",
-  },
+    "Content-type": "application/json"
+  }
 }
 
 // Send request and check if the response code is 200
@@ -464,7 +480,7 @@ $http.get(options, function (error, response, body) {
   var bodyObj = JSON.parse(body)
   assert.ok(
     response.statusCode == 200,
-    "GET status should be 200. Instead it's " + response.statusCode,
+    "GET status should be 200. Instead it's " + response.statusCode
   )
 })
 
@@ -475,8 +491,8 @@ var options = {
   uri: SERVER_ADDR + "/usecase",
   strictSSL: false,
   headers: {
-    "Content-type": "application/json",
-  },
+    "Content-type": "application/json"
+  }
 }
 
 // Send request and check if the status is empty
@@ -484,12 +500,14 @@ $http.get(options, function (error, response, body) {
   var bodyObj = JSON.parse(body)
   assert.ok(
     bodyObj[0].status == "",
-    "First anomaly status: " + bodyObj[0].status,
+    "First anomaly status: " + bodyObj[0].status
   )
 })
 ```
 
-Also, ensure to select the `on Instana cluster` checkbox. Instana will run the
+Click **Save**
+
+Scroll down, ensure to select the `on Instana cluster` location. Instana will run the
 script from the previously installed _Synthetic Point of Presence_, which can be
 placed at multiple locations across available infrastructure. The one we will
 use is deployed on the same cluster with Instana. Note, it may have a different
@@ -497,23 +515,23 @@ name in different releases of Instana:
 
 ![](images/Create_Synthetic_Test.png)
 
-Click **Next**.
+Scroll down.
 
 In the **Scheduling** section, adjust the time slider to run the test every `1`
 minute:
 
-![](images/TimeSlider.png)
+![](images/scheduling.png)
 
-Then, click **Next** button.
+Then, scroll down.
 
-Give the test a meaningful name and description, then click **Next**. We will
+Give the test a meaningful name and description, then scroll down. We will
 use values:
 
 - **Name of the test:** `Quote of the Day: REST API Check`
 - **Description:**
   `Performs anomaly check of Quote of the Day application via REST interface`
 
-![alt text](images/CreateSynthTest.png)
+![](images/CreateSynthTest.png)
 
 At the **Associate** step you may specify the list of existing application
 perspectives for which the test is relevant. The result of the test will appear
@@ -630,14 +648,10 @@ Smart Alerts allow you to identify a threshold violation. Then, if desired,
 alert people via external systems like AIOps, Email, Slack, Service Now, etc. In
 Instana, the notification mechanism is called an **Alert Channel**.
 
-To create an Alert Channel, navigate to **Synthetic Monitoring**, then click the
-**Add** button:
+To create an Alert Channel, navigate to **Synthetic Monitoring**, select **Smart Alerts** tab, then click
+**Create Smart Alert** button:
 
-![](images/AddSynthetic.png)
-
-Then, select **Add Synthetic Smart Alert**:
-
-![](images/addSynthetics2-1.png)
+![](images/CreateSmartAlert.png)
 
 Next, in the **Create smart alert** dialog, click the **Add Synthetic Test**
 link:
@@ -687,6 +701,8 @@ Now, select the newly created channel and click the **Add 1 Channel** button:
 
 ![](images/SA_Step4_AddChannel.png)
 
+You may miss the selected Item in the table, just ensure that in the top of the table you see "Selected 1 channel".
+
 Next, click the **Next** button to proceed to the **Step 5: Alert properties**
 section.
 
@@ -722,7 +738,8 @@ When new events trigger on the synthetic test, an email will be sent out via the
 **Alert Channel** notifying the recipients of the failure. Click on the event to
 investigate the details.
 
-You can view the email Alert by navigating to the **Mail** bookmark in Firefox.
+You can view the email Alert by navigating to the **Mail** bookmark in Firefox or by entering address in a browser:
+ http://mail.apps.demo-apps.ibmdte.local/
 
 ![](images/synthetic-email-alert.png)
 
