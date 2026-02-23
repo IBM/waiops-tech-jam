@@ -1,0 +1,290 @@
+---
+title: 5. Vulnerability Patch Workflow
+description: Lab prep guidance steps.
+sidebar_position: 5
+---
+
+## 5.1: Overview
+
+In the previous section, you reviewed the remediation actions that Concert has identified for the vulnerabilities discovered.
+Now you will set up the necessary authentications and workflows to automatically apply patches to our target VM called **demo-apps**.
+For each Action, Concert can create **change requests** in various ITSM (Information Technology Service Management) systems such as ServiceNow. 
+Application or Infrastructure owners can approve or reject these change requests based on environmental needs. 
+If the change request is approved, Concert will proceed to apply the vulnerability patching.
+
+This end-to-end remediation process is orchestrated through these three Workflows:
+
+- **Create_Change_Request_For_Remediation_Action** – Generates approval requests.  
+- **Monitor_Remediation_Action_Status** – Tracks approvals and schedules execution.  
+- **Remediation_Master** – Applies patches across supported platforms (Linux, Windows, Tomcat, Docker).
+
+## 5.2 Setting up Authentications for the Patch Workflows
+
+In this section we will create the authentication definitions required by the patching workflows.
+We will do this from **Concert Workflows** → **Authentications** tab.
+
+
+### 5.2.1 Create Concert configuration authentication (`concertConfig`)
+
+1. From the **Authentications** tab, click **Create Authentication**.  
+2. Configure the following:
+
+   - **Name**: `concertConfig`
+   - **Service**: **Config Data**
+   - **Data** (in JSON format):
+
+```json
+{
+  "host": "concert.ibmdte.local",
+  "port": "12443",
+  "instance_id": "0000-0000-0000-0000",
+  "username": "ibmconcert",
+  "content-type": "application/json"
+}
+```
+3. Click **Create** to save the authentication.
+
+
+### 5.2.2 Pliant Authentication (`pliant_auth`)
+
+1. From the **Authentications** tab, click **Create Authentication**.  
+2. Configure the following:
+   - **Name**: `pliant_auth`
+   - **Service**: **IBM Hub - Self (Workflows)**  (pick the one with the triangle icon)
+3. Click **Create** to save the authentication.
+
+
+### 5.2.3 Create ServiceNow Authentication (`snowAuth`)
+1. From the **Authentications** tab, click **Create Authentication**.  
+2. Configure the following fields:
+   - **Name**: `snowAuth`.
+   - **Service**: **ServiceNow**
+   - **Host**: Enter the ServiceNow hostname.
+   - **Username**: ServiceNow username.
+   - **Password**: ServiceNow password.
+3. Test the authentication.
+4. Click **Create** to save the authentication.
+
+### 5.2.4 Create Ansible authentication (`linux_patch_auth1`)
+1. From the **Authentications** tab, click **Create Authentication**.
+
+2. Configure the following fields:
+
+   - **Name**: `linux_patch_auth1`
+   - **Service**: `Ansible`
+   - **Private Key**: Copy and paste the full RSA private key, beginning with  
+     `-----BEGIN OPENSSH PRIVATE KEY-----`  
+     and ending with  
+     `-----END OPENSSH PRIVATE KEY-----`
+
+     :::note
+       Ensure a **newline** is added **after** `-----END OPENSSH PRIVATE KEY-----`
+     :::
+
+   - **Inventory**: Enter the following content in **Ansible hosts** format:
+
+     ```ini
+     [canary]
+     192.168.252.33 ansible_user=jammer ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+     ```
+
+3. Click **Create** to save the authentication.
+
+
+
+![Ansible Auth Example](./images/Ansible_auth.png)
+
+### 5.2.5 Create a ConfigData Auth for Linux patching (`config_patch_data`)
+
+1. From the **Authentications** tab, click **Create Authentication**.
+2. Configure the following fields:
+
+   - **Name**: `config_patch_data`
+   - **Service**: **Config Data**
+   - **Data (required)**: Enter the following JSON:
+
+      ```json
+      {
+        "config": [
+          {
+            "auth": "ibmconcert/linux_patch_auth1",
+            "host": ["192.168.252.33"]
+          }
+        ]
+      }
+      ```
+
+3. Click **Create** to save the authentication.
+
+
+### 5.2.6 Concert API Authentication (`concert_API`)
+
+This authentication is required by the workflow to interact with the Concert API. It uses the Concert API Key from the credentials file.
+
+1. From the **Authentications** tab, click **Create Authentication**. 
+2. On the **Create Authentication** screen:
+   - **Name**: `concert_API`
+   - **Service**: **API Key**
+   - **Header Name**: `Authorization` (first part of **Concert Request Header** from credentials file)
+   - **API Key value**: Second part of **Concert Request Header** (starts with `C_API_KEY` + one_space + your Concert API Key)
+
+3. Click **Create**.
+
+
+Example of Concert API Authentication:
+
+![](images/concert-auth.png)
+
+---
+
+
+## 5.3 Import Workflows
+
+1. From **credentials.txt**, open the **Concert Workflows** link in a new browser tab. 
+2. From the top-right corner, click on the 3-dot icon and select **Create folder**. Name the folder `PATCH_WORKFLOWS` and click **Create**. 
+Click on the newly created `PATCH_WORKFLOWS` folder to open it.
+3. Search for **Create_Change_Request_For_Remediation_Action** and download the `.zip` file.  
+4. In **Concert Workflows → Workflows**, click **Import**, then select `Create_Change_Request_For_Remediation_Action.zip`.  
+5. Verify that the workflow appears in the **Workflows** list.  
+
+Next, repeat the same steps for **Monitor_Remediation_Action_Status** and **Remediation_Master** and ensure that all workflows have been succesfully added into Concert Workflows.
+
+### 5.3.1 Review Remediation Actions
+
+Concert automatically analyzes the scan results and gernerates remediation actions, such as installing patches or updating vulnerable components.
+
+To review and approve actions:
+* Go to the **Dimension** > **Vulnerabilities** > **Auto-remediate** tab
+* Review the list of recommended remediation actions - in this case there will only be one Remediation option called **Patch**
+* Click **Action** -> **View Details** to view the security advisories. Concert automatically ingests the security advisories and correlates them with the VM scan to understand which security adviories need to be applied to mitigate vulnerable products and versions.
+
+Please notice, the current status of this particular OS Patch is **+ Created**, Concert has correlated the VM scan with security advisories to understand that an automatic remediation option is available.
+
+
+### 5.3.2 Workflow 1: Create_Change_Request_For_Remediation_Action
+
+Concert uses the Create_Change_Request_For_Remediation_Action workflow to generate approval requests (for example, GitHub pull requests or ServiceNow incidents).
+This Concert Workflows identifies new action for vulnerabilities that can be auto-remediated. 
+
+Based on the action type, the workflow:
+- Raises a pull request for code changes
+- Raises a ServiceNow incident for OS patching or web server upgrades
+
+1. Navigate to **Concert Workflows → Workflows** and open **Create_Change_Request_For_Remediation_Action**.  
+2. In the **Start** block of the workflow, update the following field mappings:
+   - **concert_config** → `ibmconcert/concertConfig` — created in Section 5.2.1
+   - **sm_auth** → `ibmconcert/snowAuth` — created in Section 5.2.3
+   - **sm_host** → `devXXXX.service-now.com`  (do not include https:// or trailing slashes)
+   - **ConcertAPIKey** → `ibmconcert/concert_API` — created in Section 4.2.1
+   - **group_by** → `application_name`
+3. Click on **Save** on the top-right and press **Run**
+
+**Example**
+![Create Change Request Workflow Example](./images/Create_change.png)
+
+
+After the pull request or incident is created, the workflow:
+- Updates the action status to **approval  pending**
+- Sets the maintenance window based on input values
+- Adds pull request or change request links to the action details
+
+### 5.3.3 Edit ServiceNow Change Request
+
+From **Concert** → **Vulnerability** → **Auto-Remediate** → **Patch**.
+
+Validate that the status has updated to **Approval pending**.  
+A blue popup labeled **View** should appear in the top-right corner — click it to open the ServiceNow portal.
+
+The user must update the PR or incident to:
+- **In Progress** to proceed with patching through Workflow 3.
+- **Canceled** to reject the remediation
+
+To continue with the patch process:
+
+1. In the ServiceNow incident, note that the **Description** field shows the list of CVEs that will be patched.
+2. Based on our review, we will approve this change request by clicking on **State** and change it from **New** to **In Progress**.  
+3. Click on **Caller**, select any available email (for example, *Abel Tuter*), and add it to the ticket.  
+4. Click **Update** in the top-right to save the changes.
+
+**Example**
+
+![Edit Change Request](./images/snow1.png)
+
+### 5.3.4 Workflow 2: Monitor_Remediation_Action_Status
+
+This Concert Workflow monitors the status of actions that are in **Approval pending** state. Once it detects that the 
+change request has been approved, it updates the action status to **Scheduled** and sets the date for when the Remediation_Master workflow will run to apply the patch.
+
+1. Navigate to **Concert Workflows → Workflows** and open **Monitor_Remediation_Action_Status**.  
+2. In the **Start** block of the workflow, update the following field mappings:
+   - **concert_config** → `ibmconcert/concertConfig` — created in Section 5.2.1
+   - **sm_auth** → `ibmconcert/snowAuth` — created in Section 5.2.3
+   - **pliant_auth** → `ibmconcert/pliant_auth` — created in Section 5.2.2
+   - **wf_to_schedule** → `ibmconcert/User/PATCH_WORKFLOWS/Remediation_Master_Folder/Remediation_Master`
+   - **ConcertAPIKey** → `ibmconcert/concert_API` — created in Section 4.2.1
+
+3. **Save** the workflow and click **Run** to execute it.
+
+After running the workflow, the Concert Action called **Patch** change it status to **Scheduled** and displays the date that the **Remediation_Master** workflow is set to run.
+
+**Concert** can integrate with customer-defined maintenance windows to ensure patches are applied only during approved maintenance periods.
+
+We will bypass the scheduled date and manually trigger the **Remediation_Master** workflow to run.
+
+
+### 5.3.5 Workflow 3: Remediation_Master
+
+This Concert Workflows applies patches to VMs or performs web server upgrades based on the operating system type. 
+It supports patching for Linux, Apache Tomcat, and Windows servers. As we are patching a RHEL server in this lab, we will focus on the Linux 
+patching section of the workflow, which uses Ansible to apply the necessary patches.
+
+
+1. Navigate to **Concert Workflows → Workflows** and open **Remediation_Master**.  
+
+2. In the **Start** block of the workflow, update the following field mappings:
+   - **concert_config** → `ibmconcert/concertConfig` — created in Section 5.2.1
+   - **ConcertAPIKey** → `ibmconcert/concert_API` — created in Section 4.2.1   
+   - **sm_auth** → `ibmconcert/snowAuth` — created in Section 5.2.3
+   - **linux_auth** → `ibmconcert/config_patch_data` - created in Section 5.2.5
+
+3. **Save** the workflow and click **Run** to execute it.
+
+:::note
+This workflow will take approximately **5 minutes** to run.  
+
+Once the workflow has completed, go back to **Concert** → **Vulnerability** → **Auto-remediate** and confirm that the status has updated to **Success**.
+:::
+
+
+## 5.4 Verify that security advisories have been applied
+
+To verify that the security advisories have been applied, follow these steps:
+
+1. Navigate to **Concert Workflows → Workflows → Logs** and open the **Remediation_Master** workflow that you just ran.  
+2. Review the following logs to see which security advisories were applied to the specific server:  
+   **patch_result → redhat → serverIP → applied_advisories**
+
+**Example**
+
+![Security Advisory Applied Verification](./images/securityAdvisory.png)
+
+Additionally, you can verify this on the Linux server.
+
+Run the following command on the Bastion host to connect to the RHEL VM:
+
+```bash
+ssh jammer@demo-apps
+```
+
+After connecting, run the following command, substituing one of the RHSA values that was reported as applied in the previous step:
+```bash
+sudo dnf updateinfo list installed RHSA-XXXX:XXXX
+```
+
+If the output shows multiple packages associated with that specific advisory, then the RHSA has been successfully installed on the system.
+
+**Example**
+
+![RHSA Veritifcation](./images/rhsaVerification.png)
+
+---
