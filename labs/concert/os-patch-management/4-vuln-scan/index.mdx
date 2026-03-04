@@ -28,7 +28,8 @@ This authentication allows Concert Workflows to connect to the RHEL VM via SSH t
    - **Port**: `22`
    - **Username**: `jammer`
    - **Password**: Leave blank
-   - **Private Key**: Copy full private key from `rhel_vm_private_key` in credentials file
+   - **Private Key**: Copy full private key from `rhel_vm_private_key` in credentials file. DO NOT copy any extra spaces at the beginning or end.
+   DO NOT add a new line after -----END OPENSSH PRIVATE KEY-----
 
 3. Click **Create**.
 
@@ -112,7 +113,7 @@ It should look like this:
 
   The configured parameters should look like this:
 
-![](images/configuration_data2.png)
+![](images/configuration_data3.png)
 
 3. Click **Save**.
 
@@ -138,7 +139,7 @@ From the Concert UI, navigate to **Inventory → Environment Inventory** (click 
 Click on the **Runtimes** tab (click on the **Refresh** icon) and note that there is a new runtime called **demo-apps** with an 
 IP 192.168.252.33. Click on **demo-apps** to view the vulnerabilities found by the workflow you just ran.
 
-Navigate to **Inventory → Application Inventory** (click on the **Refresh** icon) and note that there is a new application called **demo-apps**.
+Navigate to **Inventory → Application Inventory** (click on the **Refresh** icon) and note that there is a new application called **demobank**.
 
 Navigate to **Dimensions → Vulnerability** and note that there are vulnerabilities discovered from the scan.
 

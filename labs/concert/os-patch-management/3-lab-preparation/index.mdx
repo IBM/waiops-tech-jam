@@ -22,15 +22,13 @@ using the browser, please disregard it. Select **Advanced** → **Accept the Ris
 
 ## 3.2: Using the Bastion Host Terminal and UI 
 
-This section provides background information about the Bastion environment.  
-You will execute actual commands in later sections.
-
-This lab environment includes both **Concert** and **Workflows** installations.
+This section provides background information about the Bastion environment. You will execute actual 
+commands in later sections. This lab environment includes both **Concert** and **Workflows** installations.
 
 ### Accessing the UIs
 
 From the **Bastion Host Terminal**, click on **Activities** and open **Firefox**.  
-Then click on the bookmark **`Concert`** to launch the Concert UI.
+Then click on the bookmark **Concert** to launch the Concert UI.
 
 - To open the **Concert UI**, click the **burger menu (☰)** at the top-left corner and select **Concert → Home**.  
 - To open the **Workflows UI**, click the **burger menu (☰)** and select **Workflows → Home**.
@@ -150,8 +148,8 @@ Keep your private key confidential. Do not share it publicly or commit it to any
 
 ## 3.6 ServiceNow Developer Instance
 
-Paste the ServiceNow Developer Instance credentials into the `credentials.txt` file.
-
+Paste the ServiceNow Developer Instance credentials into the `credentials.txt` file. This is a prerequisite
+for the Lab as explained in the **Lab Environment** section of this Lab Guide. 
 
 ## 3.7 Obtaining the IBM Concert API Key and Request Header
 
@@ -187,6 +185,9 @@ Store your API key securely in the `credentials.txt` file.
 
 ## 3.8: Establishing a connection between Concert and watsonx.ai
 
+:::note
+Skip this section if you already have the watsonx.ai credentials set up from a previous lab that used the same Concert instance. 
+:::
 
 Concert leverages the capabilities of watsonx.ai to provide advanced AI features. To enable this integration, 
 you need to configure the connection between Concert and an existing instance of watsonx.ai that is used to support Concert Labs.
@@ -250,8 +251,10 @@ $INSTALL_DIR/ibm-concert-std/bin/start_service ibm-roja-py-utils
 As this Lab runs on TechZone infrastructure, there is a chance that the RHEL VMs may not have any vulnerabilities (e.g. everything has been already patched). 
 To ensure that we have a vulnerable version of RHEL libraries on the demo-apps VM, we will force a downgrade of the **ghostscript** package to a 
 version that has known exploits (ghostscript is an open-source interpreter for PostScript and PDF files). This will allow us to demonstrate the 
-patch management capabilities of Concert in later sections of the lab. This downgrade will trigger [RHSA-2025:7586](https://access.redhat.com/errata/RHSA-2025:7586). 
+patch management capabilities of Concert in later sections of the lab. This open source package downgrade will 
+trigger [RHSA-2025:7586](https://access.redhat.com/errata/RHSA-2025:7586). 
 
+Run these commands: 
 ```bash
 # connect to the demo-apps VM from the Bastion host using SSH 
 ssh jammer@demo-apps
@@ -265,7 +268,12 @@ exit
 ```
 
 
-## 3.10 Reminder  
+## 3.10 Enable Firefox Menu Bar
+
+To enable the menu bar in Firefox, Right-click any empty space in the tab bar (or top toolbar) and check Menu Bar.
+
+![](images/menu-bar.png)
+
 
 :::warning
 Make sure to fill and **save** the credentials file as described in this section. Do not skip any of the steps, as the credentials will 
