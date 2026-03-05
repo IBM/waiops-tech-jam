@@ -59,10 +59,10 @@ We will do this from **Concert Workflows** → **Authentications** tab.
 2. Configure the following fields:
    - **Name**: `snowAuth`.
    - **Service**: **ServiceNow**
-   - **Host**: Enter the ServiceNow hostname.
+   - **Host**: Enter the ServiceNow hostname (for example, `devXXXX.service-now.com` - DO NOT include https:// or trailing slashes).
    - **Username**: ServiceNow username.
    - **Password**: ServiceNow password.
-3. Test the authentication.
+3. Test the authentication. There is a known issue where the test may fail even if the credentials are correct. If this happens, ignore the failed test and proceed to next step.
 4. Click **Create** to save the authentication.
 
 ### 5.2.4 Create Ansible authentication (`linux_patch_auth1`)
@@ -183,20 +183,21 @@ Based on the action type, the workflow:
 ![Create Change Request Workflow Example](./images/Create_change.png)
 
 
-After the pull request or incident is created, the workflow:
+After the Incident in ServiceNow is created, the workflow:
 - Updates the action status to **approval  pending**
 - Sets the maintenance window based on input values
-- Adds pull request or change request links to the action details
+- Adds the Incident links to the action details
 
 ### 5.3.3 Edit ServiceNow Change Request
 
 From **Concert** → **Vulnerability** → **Auto-Remediate** → **Patch**.
 
-Validate that the status has updated to **Approval pending**.  
-A blue popup labeled **View** should appear in the top-right corner — click it to open the ServiceNow portal.
+Validate that the **Remediation status** has changed to **Approval pending** and click on **Review and approve**.
 
-The user must update the PR or incident to:
-- **In Progress** to proceed with patching through Workflow 3.
+On the Patch overview page, a blue button labeled **View** should appear in the top-right corner. Click it to open the ServiceNow portal.
+
+The user must update the Incident **State** to:
+- **In Progress** to proceed with the remediation (the OS patching)
 - **Canceled** to reject the remediation
 
 To continue with the patch process:
@@ -239,7 +240,7 @@ It supports patching for Linux, Apache Tomcat, and Windows servers. As we are pa
 patching section of the workflow, which uses Ansible to apply the necessary patches.
 
 
-1. Navigate to **Concert Workflows → Workflows** and open **Remediation_Master**.  
+1. Navigate to **Workflows -> User -> PATCH_WORKFLOWS -> Remediation_Master_Folder** and open the **Remediation_Master** workflow.
 
 2. In the **Start** block of the workflow, update the following field mappings:
    - **concert_config** → `ibmconcert/concertConfig` — created in Section 5.2.1
