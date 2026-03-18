@@ -1,0 +1,84 @@
+---
+title: 1. Introduction
+description:
+  Introductory material that includes concepts, major features and content overview.
+sidebar_position: 1
+---
+
+# Introduction
+
+IBM Concert Operation Dimension for Certificate Management is a powerful solution designed to help organizations efficiently
+manage their digital certificates, ensuring the security and reliability of their applications. By leveraging this solution, 
+businesses can proactively identify and address expiring certificates, thereby avoiding potential outages and 
+maintaining the trust of their customers. 
+
+IBM Concert Workflows plays an important role in a Certificate Management solution. Its low code/no code approach lets 
+users visually design and automate processes with minimal scripting, making Certificates Discovery and Renewal easy to manage 
+without deep programming expertise.
+
+This Labs simulates an expired certificate scenario: 
+a Concert Workflows performs Linux Keystore Discovery against a Certificate 
+Environment running on Apache Tomcat. The discovered Certificates are ingested into IBM Concert. In IBM Concert, an Automation Rule detects 
+expiring and expired Certificates, and automatically creates a Change Management Request in GitHub. 
+GitHub is used as the Change Management tool in this lab for simplicity. In real client environment, other Change Management tools 
+such as ServiceNow could be used. Next, with IBM Concert Automation Rule in place, a GitHub issue will be created for an expiring Certificate
+or an expired Certificate. GitHub issue(s) created by IBM Concert Automation Rule will need to be *approved* or *rejected* using a GitHub label. 
+After the GitHub issue has been approved, IBM Concert Workflows for Linux Keystore Renewal kicks in to perform Certificate Renewal 
+for Java Keystore on Apache Tomcat. If the GitHub issue is set with a *rejected* label, the certificate remains unchanged.
+
+There are two key Concert Workflows used in this scenario :
+* Linux Keystore Discovery 
+* Linux Keystore Renewal
+
+In a production environment, both workflows would run on a scheduled interval. However, for this lab setup, only the Linux Keystore Renewal 
+workflow will run automatically on a schedule, while the Linux Keystore Discovery workflow will be executed manually as part of the step-by-step lab 
+instructions.
+
+### Certificate Expiration Outages
+
+In 2014, Dropbox's Certificate Expiration Issue was a significant event that affected the company's web services. 
+The issue was caused by a failure to renew a certificate, which resulted in a chain reaction of errors that brought 
+down several of Dropbox's services. The certificate expiration issue was triggered when the SSL certificate for 
+Dropbox's web services was not renewed on time, causing the services to become unavailable for several hours. 
+The issue was eventually resolved by renewing the certificate and redeploying it to the affected services.
+
+An Operation Management tool like IBM Concert could have prevented the outage by:
+
+* Automatically discovering and inventorying all certificates across IT infrastructure
+* Continuously scanning all certificates across IT infrastructure
+* Automatically rotating expiring certificates using Concert Workflows
+* Verifying all certificates across IT infrastructure are healthy
+
+The outage was significant, affecting both the public and Dropbox. The issue caused several of Dropbox's web services 
+to become unavailable for several hours, resulting in a loss of productivity and convenience for users. 
+The incident also highlighted the importance of proper certificate management and renewal to prevent such outages.
+
+
+
+### Lab Content
+
+Welcome to the IBM Concert Operation Dimension - Certificate Management Lab. You will be going through several key exercises that will help 
+you learn essential skills for managing and renewing Server Certificate(s) in a Java KeyStore within an environment.
+
+In this Lab, you will play these two different roles:
+  - As an **SRE** (Site Reliability Engineer), you will integrate Concert Workflows with Apache Tomcat and use GitHub issue to review 
+  and track changes in a Certificate Environment. 
+  - As an **App Owner**, you will see an Inventory of Apache Tomcat Certificates and their Expiration Dates in Concert UI, and use GitHub
+  issue to approve and reject Certificate Renewal in a Certificate Environment.
+
+The Lab topics include:
+
+  - Set up Certificate Discovery using Concert Workflows
+  - Set up Certificate Renewal using Concert Workflows
+  - Set up Concert Automation Rules to create GitHub Issues 
+  - Review Certificates for an Apache Tomcat Web Service Environment using Concert Operations Dimension UI
+  - Review GitHub issue(s) by approving or rejecting an Issue for Certificate Renewal after assessing its change risks 
+  - Rotate expired Certificate and verify the results in Concert
+
+
+
+The lab should be executed in the numbered order that you see on the left side of the screen, in the navigation pane, 
+as sections likely depend on work completed in prior sections.
+
+If you are running the Lab on your own and have questions or need assistance, please use 
+the Slack channel listed under the [**Support** section](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops).
