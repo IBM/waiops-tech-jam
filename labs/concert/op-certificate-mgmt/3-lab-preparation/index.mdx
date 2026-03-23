@@ -192,7 +192,7 @@ https://github.com/<github-username>
 
 ![](images/new-repo.png)
 
-* Copy the URL of your new repository and save it into the credentials file after **Git_URL**. You will need it later to configure GitHub connection from Concert.
+* Copy the URL of your new repository and save it into the credentials file after **GitHub Repository URL**. You will need it later to configure GitHub connection from Concert.
 The URL should look similar to:
 ```
 https://github.com/<github-username>/concert-operations-lab
@@ -252,7 +252,7 @@ You will create a Personal Access Token (PAT) in GitHub to allow Concert to conn
   * **delete:packages** (to delete images)
   * **user** (Update ALL user data)  
 * Click **Generate token** on the bottom.
-* Copy the generated token into the credentials file after **GHCR_PAT**. You will need it later to configure GitHub Authentication in Concert Workflows.
+* Copy the generated token into the credentials file after **GitHub Personal Access Token (PAT)**. You will need it later to configure GitHub Authentication in Concert Workflows.
 
 :::warning
 Make sure to **save** the credentials file!. Keep the window open for easy access during the Lab.
@@ -289,7 +289,7 @@ From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab
 * Skip the **Description** field.
 * Under **Parameters**, provide the following details:
   * **Host**: `https://api.github.com/`
-  * **Personal Access Token**: the PAT you created during the previous step.
+  * **Personal Access Token**: the GitHub Personal Access Token (PAT) you created during the previous step.
 * Click on **Validate connection** to verify the connection is successful.
 * Click **Create**.
 
@@ -347,7 +347,7 @@ expand the section and see more details. Review the conditions that will trigger
 
 
 You will download custom Workflows from a public Box folder and save them on the Bastion local disk. Later you will upload them to 
-Concert Workflows. The Concert Workflows Library can be found [here](https://automation-library.ibm.com/workflows).
+Concert Workflows.
 
 From the Bastion Remote Desktop, open a new tab in the Firefox browser.
 
