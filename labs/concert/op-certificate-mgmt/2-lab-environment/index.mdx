@@ -7,6 +7,7 @@ sidebar_position: 2
 import CreateIbmId from "@site/src/components/createIbmId/CreateIbmId"
 import ObtainingEntitlementKey from "@site/src/components/obtainingEntitlementKey/ObtainingEntitlementKey"
 import RequestingLabEnvironment from "@site/src/components/requestingLabEnvironment/RequestingLabEnvironment"
+import LicenseInfo from "@site/src/components/Instana/LicenseInfo"
 
 # Lab Environment
 
@@ -46,10 +47,17 @@ The following diagram describes the infrastructure for the Lab:
 
 ## Prerequisites
 
+:::warning
+The Lab uses a Root, Intermediate CA and Tomcat certificates all from the private CA included in the lab. The Intermediate CA certificate would last 120 hours (5 days) before expiration. Please make sure to complete the lab 
+within 5 days after requesting the lab environment. After 5 days, you can still run the lab but note that the Intermediate CA 
+certificate will be shown in Concert as expired.
+:::
+
 <CreateIbmId />
 
 <ObtainingEntitlementKey />
 
+<LicenseInfo />
 
 ### A public GitHub account
 
@@ -60,7 +68,7 @@ if you do not have one already from [GitHub](https://github.com).
 ## Requesting a Lab Environment
 
 <RequestingLabEnvironment
-   environmentName="Jam-in-a-Box: Concert - Vulnerability"
+   environmentName="Jam-in-a-Box: Concert"
    environmentUrl="https://techzone.ibm.com/my/reservations/create/6866cf81f89d5795f68e379f"
 />
 

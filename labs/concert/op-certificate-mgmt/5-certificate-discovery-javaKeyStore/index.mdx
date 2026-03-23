@@ -113,6 +113,7 @@ To recap, you created an Automation Rule in section **3.6: Creating Automation R
 Let's verify all Certificates in Apache Tomcat Java Keystore (JKS) are discovered and present in Concert UI.    
 The trust chain hierarchy for the certificates stored in the keystore file is as follows:
 
+<div align="center">
 ```mermaid
   graph TD
        A[Root CA]
@@ -122,6 +123,8 @@ The trust chain hierarchy for the certificates stored in the keystore file is as
        A --> B
        B --> C
 ```
+</div>
+
 
 From the Bastion SSH, connect to **demo-apps**:
 
