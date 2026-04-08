@@ -92,20 +92,25 @@ Concert API Key example:
 
 ## 4.3 Import, Configure and Run Workflow
 
+Now that you have the necessary workflows authentications set up, you can import the vulnerability scan workflow, 
+configure it to use the authentications you created, and run it to perform a vulnerability scan on the RHEL VM.
+
 ### 4.3.1 Import Workflow
 
 1. From **credentials.txt**, open the link for **Concert Workflows** link in new browser tab on your VM.
 2. Download the `.zip` file to the VM called **vulnerability_scan.zip**
-3. In **Concert Workflows** → **Workflows**, click **Import** → select `vulnerability_scan.zip`.
-4. Verify workflow appears in **Workflows** list as `RHEL_SCAN_OSCAP_GRYPE`.
+3. In **Concert Workflows** → **Workflows**, from the top-right corner, click on the 3-dot icon and select 
+**Create folder**. Name the folder `SCAN_WORKFLOWS` and click **Create**. 
+Click on the newly created SCAN_WORKFLOWS folder to open it and click **Import** → select `vulnerability_scan.zip`.
+4. Verify the new workflow appears as `RHEL_SCAN_OSCAP_GRYPE`.
 
 It should look like this:
 
-![](images/Workflow.png)
+![](images/workflow-1.png)
 
 ### 4.3.2 Configure Workflow
 
-1. Click the RHEL_SCAN_OSCAP_GRYPE folder and click again on the workflow to open it.
+1. Click on the `RHEL_SCAN_OSCAP_GRYPE` workflow to open it.
 2. In the **Start** block:
   - set **vmConfig** parameter to `ibmconcert/configuration_data` (as defined in section 4.2.2)
   - set **concert_api_auth** parameter to `ibmconcert/hub-self` (as defined in section 4.2.3)
@@ -127,25 +132,26 @@ It should look like this:
 
 
 :::tip Success Indicators
-- Application SBOMs visible
-- VM scan results in Event Log
 - No authentication errors
+- VM scan results in Event Log with CVEs discovered from the scan
+- Deploy and Application SBOMs visible in the log (you need to expand the log details to see these)
 :::
 
 
 ## 4.4 Review Scan Findings in Concert
 
 From the Concert UI, navigate to **Inventory → Environment Inventory** (click on the **Refresh** icon) and note that there is a new environment called **staging**. 
-Click on the **Runtimes** tab (click on the **Refresh** icon) and note that there is a new runtime called **demo-apps** with an 
-IP 192.168.252.33. Click on **demo-apps** to view the vulnerabilities found by the workflow you just ran.
+
+Click on the **Runtimes** tab (click on the **Refresh** icon) and note that there is a new runtime called **demo-apps** of Type **host** with an 
+IP 192.168.252.33. Click on **demo-apps** and scroll down to view the vulnerabilities found by the workflow you just ran.
 
 Navigate to **Inventory → Application Inventory** (click on the **Refresh** icon) and note that there is a new application called **demobank**.
 
-Navigate to **Dimensions → Vulnerability** and note that there are vulnerabilities discovered from the scan.
+Navigate to **Dimensions → Vulnerability** (click on the **Refresh** icon) and note that there are vulnerabilities discovered from the scan.
 
 Concert provides a unified dashboard where you can monitor vulnerabilities, review remediation actions, and track progress across different environments.
 
-The last tab highlights **auto-remediation** options. Concert’s auto-remediation feature automatically detects and fixes security vulnerabilities
+Select the **Auto-remediate** tab and click on the **Refresh** icon. Note that there is a new remediation action called **Patch**. Concert’s auto-remediation feature automatically detects and fixes security vulnerabilities
  across operating systems, web servers, and container images. It identifies applicable fixes, creates remediation actions, and triggers patching
   workflows after receiving the required approvals.
 
@@ -156,7 +162,7 @@ Concert also supports mitigation planning for new vulnerabilities using generati
 
 After you upload a scan report (for example, from a Red Hat Enterprise Linux (RHEL) virtual machine), Concert 
 analyzes the scan results and generates recommended remediation actions—such as installing specific OS patches. 
-These actions are automatically submitted for approval through a GitHub pull request or a ServiceNow incident, depending on the action type.
+These actions are automatically submitted for approval through a ServiceNow incident.
 
 Once approved, Concert triggers the corresponding workflows to apply patches and updates the action status in the UI.
 

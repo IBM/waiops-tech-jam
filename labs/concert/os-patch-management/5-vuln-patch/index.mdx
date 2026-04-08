@@ -72,16 +72,16 @@ We will do this from **Concert Workflows** → **Authentications** tab.
 
    - **Name**: `linux_patch_auth1`
    - **Service**: `Ansible`
-   - **Private Key**: Copy and paste the full RSA private key, beginning with  
+   - **Private Key**: Copy and paste the full private key from the credentials file, beginning with  
      `-----BEGIN OPENSSH PRIVATE KEY-----`  
      and ending with  
      `-----END OPENSSH PRIVATE KEY-----`
 
      :::note
-       Ensure a **newline** is added **after** `-----END OPENSSH PRIVATE KEY-----`
+       This time, ensure a **newline** is added **after** `-----END OPENSSH PRIVATE KEY-----`
      :::
 
-   - **Inventory**: Enter the following content in **Ansible hosts** format:
+   - **Inventory**: Enter the following content. This follows the Ansible hosts format:
 
      ```ini
      [canary]
@@ -125,7 +125,7 @@ This authentication is required by the workflow to interact with the Concert API
 2. On the **Create Authentication** screen:
    - **Name**: `concert_API`
    - **Service**: **API Key**
-   - **Header Name**: `Authorization` (first part of **Concert Request Header** from credentials file)
+   - **Header Name**: `Authorization` (first part of **Concert Request Header** from credentials file. Do not include the semicolon or the space after it, only the word `Authorization`)
    - **API Key value**: Second part of **Concert Request Header** (starts with `C_API_KEY` + one_space + your Concert API Key)
 
 3. Click **Create**.
@@ -143,34 +143,40 @@ Example of Concert API Authentication:
 1. From **credentials.txt**, open the **Concert Workflows** link in a new browser tab. 
 2. From the top-right corner, click on the 3-dot icon and select **Create folder**. Name the folder `PATCH_WORKFLOWS` and click **Create**. 
 Click on the newly created `PATCH_WORKFLOWS` folder to open it.
-3. Search for **Create_Change_Request_For_Remediation_Action** and download the `.zip` file.  
-4. In **Concert Workflows → Workflows**, click **Import**, then select `Create_Change_Request_For_Remediation_Action.zip`.  
-5. Verify that the workflow appears in the **Workflows** list.  
+3. In the following steps, do not select more than one workflow at a time when downloading.
+4. Search for **Create_Change_Request_For_Remediation_Action** and download the `.zip` file.  
+5. In **Concert Workflows → Workflows**, click **Import**, then select `Create_Change_Request_For_Remediation_Action.zip`.
+6. Verify that the workflow appears in the **Workflows** list.
 
-Next, repeat the same steps for **Monitor_Remediation_Action_Status** and **Remediation_Master** and ensure that all workflows have been succesfully added into Concert Workflows.
+Next, repeat the same steps for **Monitor_Remediation_Action_Status** and **Remediation_Master** and ensure that all workflows 
+have been successfully added.
 
 ### 5.3.1 Review Remediation Actions
 
-Concert automatically analyzes the scan results and gernerates remediation actions, such as installing patches or updating vulnerable components.
+Concert automatically analyzes the scan results and generates remediation actions, such as installing patches or updating vulnerable components.
 
 To review and approve actions:
 * Go to the **Dimension** > **Vulnerabilities** > **Auto-remediate** tab
 * Review the list of recommended remediation actions - in this case there will only be one Remediation option called **Patch**
-* Click **Action** -> **View Details** to view the security advisories. Concert automatically ingests the security advisories and correlates them with the VM scan to understand which security adviories need to be applied to mitigate vulnerable products and versions.
+* Click on **View details** to view the security advisories. Concert automatically ingests the security advisories and 
+correlates them with the VM scan to understand which security advisories need to be applied.
 
-Please notice, the current status of this particular OS Patch is **+ Created**, Concert has correlated the VM scan with security advisories to understand that an automatic remediation option is available.
+Please notice, the current status of this particular OS Patch is **Created**, Concert has correlated the VM 
+scan with security advisories to understand that an automatic remediation option is available.
 
 
 ### 5.3.2 Workflow 1: Create_Change_Request_For_Remediation_Action
 
-Concert uses the Create_Change_Request_For_Remediation_Action workflow to generate approval requests (for example, GitHub pull requests or ServiceNow incidents).
+Concert uses the **Create_Change_Request_For_Remediation_Action** workflow to generate approval requests (for example, GitHub pull requests or ServiceNow incidents).
 This Concert Workflows identifies new action for vulnerabilities that can be auto-remediated. 
 
 Based on the action type, the workflow:
-- Raises a pull request for code changes
-- Raises a ServiceNow incident for OS patching or web server upgrades
+  - Raises a pull request for code changes
+  - Raises a ServiceNow incident for OS patching or web server upgrades
 
-1. Navigate to **Concert Workflows → Workflows** and open **Create_Change_Request_For_Remediation_Action**.  
+
+Add the required authentications to the workflow:
+1. Navigate to **Concert Workflows → Workflows** and open **Create_Change_Request_For_Remediation_Action**.
 2. In the **Start** block of the workflow, update the following field mappings:
    - **concert_config** → `ibmconcert/concertConfig` — created in Section 5.2.1
    - **sm_auth** → `ibmconcert/snowAuth` — created in Section 5.2.3
@@ -190,14 +196,14 @@ After the Incident in ServiceNow is created, the workflow:
 
 ### 5.3.3 Edit ServiceNow Change Request
 
-From **Concert** → **Vulnerability** → **Auto-Remediate** → **Patch**.
+Select **Concert** → **Vulnerability** → **Auto-Remediate** and click on the **Refresh** icon. 
 
 Validate that the **Remediation status** has changed to **Approval pending** and click on **Review and approve**.
 
 On the Patch overview page, a blue button labeled **View** should appear in the top-right corner. Click it to open the ServiceNow portal.
 
 The user must update the Incident **State** to:
-- **In Progress** to proceed with the remediation (the OS patching)
+- **In Progress** to proceed with the OS patching remediation
 - **Canceled** to reject the remediation
 
 To continue with the patch process:
@@ -205,7 +211,7 @@ To continue with the patch process:
 1. In the ServiceNow incident, note that the **Description** field shows the list of CVEs that will be patched.
 2. Based on our review, we will approve this change request by clicking on **State** and change it from **New** to **In Progress**.  
 3. Click on **Caller**, select any available email (for example, *Abel Tuter*), and add it to the ticket.  
-4. Click **Update** in the top-right to save the changes.
+4. Click the **Update** button in the top-right to save the changes.
 
 **Example**
 
@@ -219,18 +225,18 @@ change request has been approved, it updates the action status to **Scheduled** 
 1. Navigate to **Concert Workflows → Workflows** and open **Monitor_Remediation_Action_Status**.  
 2. In the **Start** block of the workflow, update the following field mappings:
    - **concert_config** → `ibmconcert/concertConfig` — created in Section 5.2.1
-   - **sm_auth** → `ibmconcert/snowAuth` — created in Section 5.2.3
+   - **snow_auth** → `ibmconcert/snowAuth` — created in Section 5.2.3
    - **pliant_auth** → `ibmconcert/pliant_auth` — created in Section 5.2.2
    - **wf_to_schedule** → `ibmconcert/User/PATCH_WORKFLOWS/Remediation_Master_Folder/Remediation_Master`
    - **ConcertAPIKey** → `ibmconcert/concert_API` — created in Section 4.2.1
 
 3. **Save** the workflow and click **Run** to execute it.
 
-After running the workflow, the Concert Action called **Patch** change it status to **Scheduled** and displays the date that the **Remediation_Master** workflow is set to run.
+After running the workflow, you should see the *scheduled* message in the logs. The Concert Action called **Patch** changed it 
+status to **Scheduled** and displays the date that the **Remediation_Master** workflow is set to run.
 
-**Concert** can integrate with customer-defined maintenance windows to ensure patches are applied only during approved maintenance periods.
-
-We will bypass the scheduled date and manually trigger the **Remediation_Master** workflow to run.
+**Concert** can integrate with customer-defined maintenance windows to ensure patches are applied only during approved maintenance 
+periods. We will bypass the scheduled date and manually trigger the **Remediation_Master** workflow to run.
 
 
 ### 5.3.5 Workflow 3: Remediation_Master
