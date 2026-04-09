@@ -183,7 +183,7 @@ Store your API key securely in the `credentials.txt` file.
 **Do not share this file publicly** or commit it to any version control repositories.
 :::
 
-## 3.8: Establishing a connection between Concert and watsonx.ai
+## 3.8: Establishing a Connection between Concert and watsonx.ai
 
 :::note
 Skip this section if you already have the watsonx.ai credentials set up from a previous lab that used the same Concert instance. 
@@ -213,6 +213,7 @@ copy the three lines and run them in the Concert host Terminal to set the enviro
 
 ```bash
 # use the exports from the Box Note, they should look similar to this:
+export WATSONX_API_MODEL_ID=
 export WATSONX_API_KEY=... 
 export WATSONX_API_PROJECT_ID=...
 export WATSONX_API_URL=...
@@ -222,6 +223,7 @@ Just to confirm the four env. variables are set, run this command and make sure 
 
 ```bash
 echo "INSTALL_DIR=$INSTALL_DIR"
+echo "WATSONX_API_MODEL_ID=$WATSONX_API_MODEL_ID"
 echo "WATSONX_API_KEY=$WATSONX_API_KEY"
 echo "WATSONX_API_PROJECT_ID=$WATSONX_API_PROJECT_ID"
 echo "WATSONX_API_URL=$WATSONX_API_URL"
@@ -230,6 +232,7 @@ echo "WATSONX_API_URL=$WATSONX_API_URL"
 Run the commands below to apply the watsonx.ai configuration into the file **local_config.env**:
 
 ```bash
+echo "WATSONX_API_MODEL_ID=$WATSONX_API_MODEL_ID" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
 echo "WATSONX_API_KEY=$WATSONX_API_KEY" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
 echo "WATSONX_API_PROJECT_ID=$WATSONX_API_PROJECT_ID" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
 echo "WATSONX_API_URL=$WATSONX_API_URL" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
@@ -254,7 +257,7 @@ version that has known exploits (ghostscript is an open-source interpreter for P
 patch management capabilities of Concert in later sections of the lab. This open source package downgrade will 
 trigger [RHSA-2025:7586](https://access.redhat.com/errata/RHSA-2025:7586). 
 
-Run these commands: 
+Run these commands one by one: 
 ```bash
 # connect to the demo-apps VM from the Bastion host using SSH 
 ssh jammer@demo-apps
@@ -270,7 +273,8 @@ exit
 
 ## 3.10 Enable Firefox Menu Bar
 
-To enable the menu bar in Firefox, Right-click any empty space in the tab bar (or top toolbar) and check Menu Bar.
+Enable the menu bar in Firefox to facilitate copy and paste operations with workflows. Right-click any empty space in the tab 
+bar (or top toolbar) and check Menu Bar.
 
 ![](images/menu-bar.png)
 
@@ -283,5 +287,37 @@ Tip: keep the **credentials file** window open for easy access during the Lab.
 ::: 
 
 
+## 3.11 Update the ServiceNow Integration
+
+We need to ensure that Concert Workflows uses the latest ServiceNow integration:
+
+1. From **credentials.txt**, open the **Concert Workflows** link in a new browser tab. 
+2. Select **ServiceNow_1.0.69.ssi.zip** and download it by clicking the download icon.
+3. From **Concert Workflows → Integration packages** tab, click **Import**.
+4. In the **Import Integrations** page, click the **Select integration package** button and select the 
+downloaded **ServiceNow_1.0.69.ssi.zip** file.
+5. Finally click **Upload integration** and wait for the process to complete.
+
+## 3.12 Remove Data from Previous Labs
+
+If you have previously run other labs using the same Concert environment, there may be existing data such as applications or automation rules 
+that could interfere with the exercises in this lab.
+
+From the Bastion Remote Desktop, on the Firefox browser click on **Concert** > **Home**.
+
+* Select **Administration** > **Integrations**
+    * Click the **Automation rules** tab
+    * Remove each listed rule by selecting **Delete** from the 3-dot menu on the right side of each entry.
 
 
+    * Click the **Ingestion Jobs** tab
+    * Remove each listed job by selecting **Delete** from the 3-dot menu on the right side of each entry.
+
+* Select **Inventory** > **Application inventory**
+    * Remove each listed application by selecting **Delete** from the 3-dot menu on the right side of each entry. 
+Make sure to check the box to also *delete all related exposures and CVE findings* when prompted.
+
+       ![](images/confirm-delete.png)
+
+* Select **Inventory** > **Environment inventory**
+   * Remove each listed environment by selecting **Delete** from the 3-dot menu on the right side of each entry. 
