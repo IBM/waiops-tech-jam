@@ -36,11 +36,11 @@ to run Workflows.
 
 From the Terminal window, use the **ping** command to capture demo-apps VM IP Address. Save the value after **demo-apps IP address** in the credentials file.
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ping demo-apps.ibmdte.local
 ```
 
-```sh
+```sh title="Example Output"
 PING demo-apps.ibmdte.local (192.168.252.33) 56(84) bytes of data.
 64 bytes from demo-apps.ibmdte.local (192.168.252.33): icmp_seq=1 ttl=64 time=0.063 ms
 64 bytes from demo-apps.ibmdte.local (192.168.252.33): icmp_seq=2 ttl=64 time=0.101 ms
@@ -52,7 +52,7 @@ Now let's capture Private Key value for **jammer** user on **demo-apps** VM whic
 
 Use the terminal to login to the **demo-apps** host:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@demo-apps
 ```
 
@@ -61,11 +61,11 @@ When prompted if you want to continue connecting, type: `yes`
 Use **cat** command to print Private Key file content. Copy the file content into the credentials file under **Private Key value for "jammer" user on demo-apps VM**.
 Make sure to save the credentials file. 
 
-```sh
+```sh title="Host: demo-apps"
 cat $HOME/.ssh/id_rsa
 ```
 
-```sh
+```sh title="Example Output"
 -----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAACFwAAAAdzc2gtcn
 ...intentionally truncated...
@@ -90,7 +90,7 @@ Now that you have the Private Key value for **jammer** user and **demo-apps VM i
   only one server which is the demo-apps VM
 
 
-```sh
+```sh title="Example Input"
 [canary]
 192.168.252.33 ansible_host=demo-apps.ibmdte.local ansible_user=jammer ansible_password=Passw0rd
 ```
@@ -138,11 +138,11 @@ Before you create the new Authentication, let's capture the bluebox VM IP addres
 
 Use the **ping** command to capture bluebox VM ip address. Save the ip address from **ping** output into the credentials file.
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ping bluebox.ibmdte.local
 ```
 
-```sh
+```sh title="Example Output"
 PING bluebox.ibmdte.local (192.168.252.35) 56(84) bytes of data.
 64 bytes from bluebox.ibmdte.local (192.168.252.35): icmp_seq=1 ttl=64 time=0.044 ms
 64 bytes from bluebox.ibmdte.local (192.168.252.35): icmp_seq=2 ttl=64 time=0.105 ms
@@ -153,7 +153,7 @@ PING bluebox.ibmdte.local (192.168.252.35) 56(84) bytes of data.
 
 Now we wil capture the Private Key. Use the terminal to login to **bluebox** host:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@bluebox
 ```
 
@@ -162,11 +162,11 @@ When prompted if you want to continue connecting, type: `yes`
 Use the **cat** command to print the Private Key file content. Copy the file content into the credentials file under **Private Key value for "jammer" user on bluebox VM**.
 Make sure to save the credentials file. 
 
-```sh
+```sh title="Host: bluebox"
 cat $HOME/.ssh/id_rsa
 ```
 
-```sh
+```sh title="Example Output"
 -----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAACFwAAAAdzc2gtcn
 ...intentionally truncated...
@@ -188,7 +188,7 @@ Now that you have the Private Key value for **jammer** user on **bluebox**, you 
   should include `-----BEGIN OPENSSH PRIVATE KEY -----` and `-----END OPENSSH PRIVATE KEY-----` as part of the value.
   * **Inventory**: enter Ansible Inventory as shown below
 
-```sh
+```sh title="Example Input"
 [canary]
 192.168.252.35 ansible_host=bluebox.ibmdte.local ansible_user=jammer ansible_password=Passw0rd
 ```
@@ -265,7 +265,7 @@ the location of the server.jks file. Later, we will use this authentication to r
 * Under **Property** section, provide the following details:
   * **Data**: enter JSON payload below
 
-```sh
+```sh title="Example Input"
 {
   "/opt/tomcat/ssl/server.jks" : "tomcat"
 }

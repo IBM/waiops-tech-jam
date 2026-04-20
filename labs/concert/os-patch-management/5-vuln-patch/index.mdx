@@ -33,7 +33,7 @@ We will do this from **Concert Workflows** → **Authentications** tab.
    - **Service**: **Config Data**
    - **Data** (in JSON format):
 
-```json
+```json title="Example Input"
 {
   "host": "concert.ibmdte.local",
   "port": "12443",
@@ -83,7 +83,7 @@ We will do this from **Concert Workflows** → **Authentications** tab.
 
    - **Inventory**: Enter the following content. This follows the Ansible hosts format:
 
-     ```ini
+     ```ini title="Example Input"
      [canary]
      192.168.252.33 ansible_user=jammer ansible_ssh_common_args='-o StrictHostKeyChecking=no'
      ```
@@ -103,7 +103,7 @@ We will do this from **Concert Workflows** → **Authentications** tab.
    - **Service**: **Config Data**
    - **Data (required)**: Enter the following JSON:
 
-      ```json
+      ```json title="Example Input"
       {
         "config": [
           {
@@ -279,12 +279,12 @@ Additionally, you can verify this on the Linux server.
 
 Run the following command on the Bastion host to connect to the RHEL VM:
 
-```bash
+```bash title="Host: bastion-gym-lan"
 ssh jammer@demo-apps
 ```
 
-After connecting, run the following command, substituing one of the RHSA values that was reported as applied in the previous step:
-```bash
+After connecting, run the following command, substituting one of the RHSA values that was reported as applied in the previous step:
+```bash title="Host: demo-apps"
 sudo dnf updateinfo list installed RHSA-XXXX:XXXX
 ```
 
