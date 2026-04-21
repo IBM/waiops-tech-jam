@@ -33,7 +33,7 @@ We will do this from **Concert Workflows** → **Authentications** tab.
    - **Service**: **Config Data**
    - **Data** (in JSON format):
 
-```json title="Example Input"
+```json title="As Is"
 {
   "host": "concert.ibmdte.local",
   "port": "12443",
@@ -83,7 +83,7 @@ We will do this from **Concert Workflows** → **Authentications** tab.
 
    - **Inventory**: Enter the following content. This follows the Ansible hosts format:
 
-     ```ini title="Example Input"
+     ```ini title="As Is"
      [canary]
      192.168.252.33 ansible_user=jammer ansible_ssh_common_args='-o StrictHostKeyChecking=no'
      ```
@@ -103,7 +103,7 @@ We will do this from **Concert Workflows** → **Authentications** tab.
    - **Service**: **Config Data**
    - **Data (required)**: Enter the following JSON:
 
-      ```json title="Example Input"
+      ```json title="As Is"
       {
         "config": [
           {
