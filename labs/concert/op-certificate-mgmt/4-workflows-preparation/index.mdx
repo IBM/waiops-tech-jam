@@ -188,7 +188,7 @@ Now that you have the Private Key value for **jammer** user on **bluebox**, you 
   should include `-----BEGIN OPENSSH PRIVATE KEY -----` and `-----END OPENSSH PRIVATE KEY-----` as part of the value.
   * **Inventory**: enter Ansible Inventory as shown below
 
-```sh title="Example Input"
+```sh title="As Is"
 [canary]
 192.168.252.35 ansible_host=bluebox.ibmdte.local ansible_user=jammer ansible_password=Passw0rd
 ```
@@ -265,7 +265,7 @@ the location of the server.jks file. Later, we will use this authentication to r
 * Under **Property** section, provide the following details:
   * **Data**: enter JSON payload below
 
-```sh title="Example Input"
+```sh title="As Is"
 {
   "/opt/tomcat/ssl/server.jks" : "tomcat"
 }
