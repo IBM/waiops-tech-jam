@@ -28,7 +28,7 @@ This is for information only. Later in this page you will be instructed to run t
 
 Note that from the Bastion SSH, you can ssh into each other VM with the commands below: 
 
-```bash
+```bash title="Host: bastion-gym-lan"
 # Access the Concert VM
 ssh jammer@concert
 # Access the CFSSL VM
@@ -81,7 +81,7 @@ Private Key value for "jammer" user on bluebox VM (copy the value BELOW this lin
 
 From the Bastion SSH, run the command below:
 
-```bash
+```sh title="Host: bastion-gym-lan"
 cat demo-details.yml | grep -E 'concert'
 ``` 
 
@@ -124,19 +124,19 @@ DO NOT use these watsonx.ai credentials for any other purpose outside this lab.
 From the Bastion SSH, run the following command to login to the Concert host with the user 'jammer'. If this is your first time connecting, 
 you may need to accept the host key fingerprint.
 
-```bash
+```sh title="Host: bastion-gym-lan"
 ssh jammer@concert
 ```
 Once logged in, run the following command:
 
-```bash
+```sh title="Host: concert"
 export INSTALL_DIR=/opt/ibm/concert/ibm-concert
 ```
 
 Obtain the required credentials for connecting to watsonx.ai. Open [**this Box Note**](https://ibm.box.com/v/concert-vuln-lab), 
-copy the three lines and run them in the Concert host Terminal to set the environment variables. 
+copy the four lines and run them in the Concert host Terminal to set the environment variables. 
 
-```bash
+```bash title="Host: concert"
 # use the exports from the Box Note, they should look similar to this:
 export WATSONX_API_MODEL_ID=
 export WATSONX_API_KEY=... 
@@ -146,7 +146,7 @@ export WATSONX_API_URL=...
 
 Just to confirm the four env. variables are set, run this command and make sure each line shows a value:
 
-```bash
+```bash title="Host: concert"
 echo "INSTALL_DIR=$INSTALL_DIR"
 echo "WATSONX_API_MODEL_ID=$WATSONX_API_MODEL_ID"
 echo "WATSONX_API_KEY=$WATSONX_API_KEY"
@@ -156,7 +156,7 @@ echo "WATSONX_API_URL=$WATSONX_API_URL"
 
 Run the commands below to apply the watsonx.ai configuration into the file **local_config.env**:
 
-```bash
+```bash title="Host: concert"
 echo "WATSONX_API_MODEL_ID=$WATSONX_API_MODEL_ID" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
 echo "WATSONX_API_KEY=$WATSONX_API_KEY" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
 echo "WATSONX_API_PROJECT_ID=$WATSONX_API_PROJECT_ID" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
@@ -169,7 +169,7 @@ Finally, run the two commands below **one by one** to restart the py-utils servi
 In the last **start_service** command, you can ignore one or more warnings **WARN[0000] Failed to mount subscriptions ...**
 :::
 
-```bash
+```bash title="Host: concert"
 $INSTALL_DIR/ibm-concert-std/bin/stop_service ibm-roja-py-utils
 $INSTALL_DIR/ibm-concert-std/bin/start_service ibm-roja-py-utils
 ```

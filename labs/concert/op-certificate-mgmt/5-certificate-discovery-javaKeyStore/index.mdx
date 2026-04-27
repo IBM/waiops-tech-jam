@@ -128,13 +128,13 @@ The trust chain hierarchy for the certificates stored in the keystore file is as
 
 From the Bastion SSH, connect to **demo-apps**:
 
-```sh
+```sh title="Host: bastion-gym-lan"
 ssh jammer@demo-apps
 ```
 
 Run the following to list all Certificates in Apache Tomcat Java Keystore:
 
-```sh  title="Host: demo-apps"
+```sh title="Host: demo-apps"
 sudo keytool -list -v -keystore /opt/tomcat/ssl/server.jks -storepass tomcat
 ```
 
@@ -322,7 +322,7 @@ From the Bastion SSH, run the **curl** command, after replacing the following **
   - Replace the value after **search=** with the actual Certificate Serial Number obtained from your Concert Certificate UI
   - Replace the value after **C_API_KEY:** with your Concert API Key.
 
-```sh
+```sh title="Host: bastion-gym-lan"
 curl -sk \
   --request GET https://concert.ibmdte.local:12443/core/api/v1/certificates?search=<CERTIFICATE_SERIAL_NUMBER> \
   --header 'Authorization: C_API_KEY: <YOUR_CONCERT_API_KEY>' \
@@ -333,7 +333,7 @@ curl -sk \
 
 This is an example of the expected output:
 
-```sh
+```sh title="Example Output"
 {
   "pagination": {
     "total_count": 1,
