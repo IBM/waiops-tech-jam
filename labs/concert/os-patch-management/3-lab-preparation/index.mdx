@@ -164,6 +164,8 @@ Login to the Concert UI using the credentials from your credentials file:
 
 :::danger
 If prompted with the **Welcome to IBM Concert** dialog, choose **Skip** to bypass the setup wizard.
+
+![](images/skip.png)
 :::
 
 ---
@@ -183,73 +185,7 @@ Store your API key securely in the `credentials.txt` file.
 **Do not share this file publicly** or commit it to any version control repositories.
 :::
 
-## 3.8: Establishing a Connection between Concert and watsonx.ai
-
-:::note
-Skip this section if you already have the watsonx.ai credentials set up from a previous lab that used the same Concert instance. 
-:::
-
-Concert leverages the capabilities of watsonx.ai to provide advanced AI features. To enable this integration, 
-you need to configure the connection between Concert and an existing instance of watsonx.ai that is used to support Concert Labs.
-
-:::warning
-DO NOT use these watsonx.ai credentials for any other purpose outside this lab. 
-:::
-
-From the Bastion SSH, run the following command to login to the Concert host with the user 'jammer'. If this is your first time connecting, 
-you may need to accept the host key fingerprint.
-
-```bash title="Host: bastion-gym-lan"
-ssh jammer@concert
-```
-Once logged in, run the following command:
-
-```bash title="Host: concert"
-export INSTALL_DIR=/opt/ibm/concert/ibm-concert
-```
-
-Obtain the required credentials for connecting to watsonx.ai. Open [**this Box Note**](https://ibm.box.com/v/concert-vuln-lab), 
-copy the four lines and run them in the Concert host Terminal to set the environment variables. 
-
-```bash title="Host: concert"
-# use the exports from the Box Note, they should look similar to this:
-export WATSONX_API_MODEL_ID=
-export WATSONX_API_KEY=... 
-export WATSONX_API_PROJECT_ID=...
-export WATSONX_API_URL=...
-```
-
-Just to confirm the four env. variables are set, run this command and make sure each line shows a value:
-
-```bash title="Host: concert"
-echo "INSTALL_DIR=$INSTALL_DIR"
-echo "WATSONX_API_MODEL_ID=$WATSONX_API_MODEL_ID"
-echo "WATSONX_API_KEY=$WATSONX_API_KEY"
-echo "WATSONX_API_PROJECT_ID=$WATSONX_API_PROJECT_ID"
-echo "WATSONX_API_URL=$WATSONX_API_URL"
-``` 
-
-Run the commands below to apply the watsonx.ai configuration into the file **local_config.env**:
-
-```bash title="Host: concert"
-echo "WATSONX_API_MODEL_ID=$WATSONX_API_MODEL_ID" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
-echo "WATSONX_API_KEY=$WATSONX_API_KEY" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
-echo "WATSONX_API_PROJECT_ID=$WATSONX_API_PROJECT_ID" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
-echo "WATSONX_API_URL=$WATSONX_API_URL" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
-```
-
-Finally, run the two commands below **one by one** to restart the py-utils service to apply the changes:
-
-:::note
-In the last **start_service** command, you can ignore one or more warnings **WARN[0000] Failed to mount subscriptions ...**
-:::
-
-```bash title="Host: concert"
-$INSTALL_DIR/ibm-concert-std/bin/stop_service ibm-roja-py-utils
-$INSTALL_DIR/ibm-concert-std/bin/start_service ibm-roja-py-utils
-```
-
-## 3.9 Forcing Red Hat Security Advisories (RHSA)
+## 3.8 Forcing Red Hat Security Advisories (RHSA)
 
 As this Lab runs on TechZone infrastructure, there is a chance that the RHEL VMs may not have any vulnerabilities (e.g. everything has been already patched). 
 To ensure that we have a vulnerable version of RHEL libraries on the demo-apps VM, we will force a downgrade of the **ghostscript** package to a 
@@ -274,7 +210,7 @@ exit
 ```
 
 
-## 3.10 Enable Firefox Menu Bar
+## 3.9 Enable Firefox Menu Bar
 
 Enable the menu bar in Firefox to facilitate copy and paste operations with workflows. Right-click any empty space in the tab 
 bar (or top toolbar) and check Menu Bar.
@@ -290,7 +226,7 @@ Tip: keep the **credentials file** window open for easy access during the Lab.
 ::: 
 
 
-## 3.11 Update the ServiceNow Integration
+## 3.10 Update the ServiceNow Integration
 
 We need to ensure that Concert Workflows uses the latest ServiceNow integration:
 
@@ -301,7 +237,7 @@ We need to ensure that Concert Workflows uses the latest ServiceNow integration:
 downloaded **ServiceNow_1.0.69.ssi.zip** file.
 5. Finally click **Upload integration** and wait for the process to complete.
 
-## 3.12 Remove Data from Previous Labs
+## 3.11 Remove Data from Previous Labs
 
 If you have previously run other labs using the same Concert environment, there may be existing data such as applications or automation rules 
 that could interfere with the exercises in this lab.

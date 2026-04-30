@@ -100,85 +100,24 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Conce
 Login to the Concert UI with the credentials recorded in the credentials file (**concert_username:** and **concert_password:**).
 
 :::danger
-If prompted, make sure to select **Skip** in the **Welcome to IBM Concert** dialog.
+In the **Welcome to IBM Concert!** dialog, make sure to select **Skip**
+
+![](images/skip.png)
 :::
 
 
-* In the Concert UI, on the top right corner, click on the API Key icon.
+* In the Concert UI, on the top right corner, click on the **API Key** icon.
 * Click **Generate API key**.
 * After the API key is generated, save the value under **API key** into the credentials file.
 * Click on the **X** to close the window.
 
 
 
-## 3.3: Establishing a connection between Concert and watsonx.ai
-
-
-Concert leverages the capabilities of watsonx.ai to provide advanced AI features. To enable this integration, 
-you need to configure the connection between Concert and an existing instance of watsonx.ai that is used to support Concert Labs.
-
-:::warning
-DO NOT use these watsonx.ai credentials for any other purpose outside this lab. 
-:::
-
-From the Bastion SSH, run the following command to login to the Concert host with the user 'jammer'. If this is your first time connecting, 
-you may need to accept the host key fingerprint.
-
-```sh title="Host: bastion-gym-lan"
-ssh jammer@concert
-```
-Once logged in, run the following command:
-
-```sh title="Host: concert"
-export INSTALL_DIR=/opt/ibm/concert/ibm-concert
-```
-
-Obtain the required credentials for connecting to watsonx.ai. Open [**this Box Note**](https://ibm.box.com/v/concert-vuln-lab), 
-copy the four lines and run them in the Concert host Terminal to set the environment variables. 
-
-```bash title="Host: concert"
-# use the exports from the Box Note, they should look similar to this:
-export WATSONX_API_MODEL_ID=
-export WATSONX_API_KEY=... 
-export WATSONX_API_PROJECT_ID=...
-export WATSONX_API_URL=...
-```
-
-Just to confirm the four env. variables are set, run this command and make sure each line shows a value:
-
-```bash title="Host: concert"
-echo "INSTALL_DIR=$INSTALL_DIR"
-echo "WATSONX_API_MODEL_ID=$WATSONX_API_MODEL_ID"
-echo "WATSONX_API_KEY=$WATSONX_API_KEY"
-echo "WATSONX_API_PROJECT_ID=$WATSONX_API_PROJECT_ID"
-echo "WATSONX_API_URL=$WATSONX_API_URL"
-``` 
-
-Run the commands below to apply the watsonx.ai configuration into the file **local_config.env**:
-
-```bash title="Host: concert"
-echo "WATSONX_API_MODEL_ID=$WATSONX_API_MODEL_ID" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
-echo "WATSONX_API_KEY=$WATSONX_API_KEY" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
-echo "WATSONX_API_PROJECT_ID=$WATSONX_API_PROJECT_ID" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
-echo "WATSONX_API_URL=$WATSONX_API_URL" >> $INSTALL_DIR/ibm-concert-std/etc/local_config.env
-```
-
-Finally, run the two commands below **one by one** to restart the py-utils service to apply the changes:
-
-:::note
-In the last **start_service** command, you can ignore one or more warnings **WARN[0000] Failed to mount subscriptions ...**
-:::
-
-```bash title="Host: concert"
-$INSTALL_DIR/ibm-concert-std/bin/stop_service ibm-roja-py-utils
-$INSTALL_DIR/ibm-concert-std/bin/start_service ibm-roja-py-utils
-```
-
-## 3.4: Configuring GitHub
+## 3.3: Configuring GitHub
 
 You will need a GitHub account to complete the lab. If you do not have one, please create one at [GitHub](https://github.com/).
 
-### 3.4.1: Creating new GitHub repository
+### 3.3.1: Creating new GitHub repository
 
 You will need to create a new repository for your GitHub account. We will use this repository to demonstrate Change Management process
 created by Concert Automation Rules.
@@ -202,7 +141,7 @@ https://github.com/<github-username>/concert-operations-lab
 ```
 
 
-### 3.4.2: Enabling GitHub issues
+### 3.3.2: Enabling GitHub issues
 
 You will enable GitHub issues in your new repository to allow Concert to create issues for the expiring and expired Certificates.
 
@@ -213,7 +152,7 @@ as shown below:
 ![](images/issues.png)
 
 
-### 3.4.2: Creating GitHub labels
+### 3.3.2: Creating GitHub labels
 
 You will create 2 new labels for GitHub issues in your new repository to allow Concert Workflows to handle renewal for the expiring and expired Certificates.
 
@@ -239,7 +178,7 @@ Second, create **rejected** label with the following values :
 ![](images/gitHub-issue-label-rejected.png)
 
 
-### 3.4.3: Creating a Personal Access Token (PAT)
+### 3.3.3: Creating a Personal Access Token (PAT)
 
 You will create a Personal Access Token (PAT) in GitHub to allow Concert to connect to your new repository and create issues for the expiring and expired Certificates
 
@@ -261,7 +200,7 @@ You will create a Personal Access Token (PAT) in GitHub to allow Concert to conn
 Make sure to **save** the credentials file!. Keep the window open for easy access during the Lab.
 ::: 
 
-## 3.5: Creating a target environment in Concert
+## 3.4: Creating a target environment in Concert
 
 An environment in Concert groups related applications and inventory data.
 We will define a new environment to capture certificates coming from Apache Tomcat.
@@ -276,7 +215,7 @@ We will define a new environment to capture certificates coming from Apache Tomc
 * Click **Next**.
 * Review the summary of your entries, then click **Create**.
 
-## 3.6: Creating GitHub connection from Concert
+## 3.5: Creating GitHub connection from Concert
 
 You will use the personal access token that you created previously to configure a GitHub Connection. 
 Concert will leverage this connection to create GitHub issues for the expiring and expired Certificates in the Concert defined environment.
@@ -297,7 +236,7 @@ From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab
 * Click **Create**.
 
 
-## 3.7: Creating Automation Rules in Concert
+## 3.6: Creating Automation Rules in Concert
 
 
 Concert reports all Certificates present in an Environment and classifies them into four categories such as Valid Certificates,
@@ -346,7 +285,7 @@ expand the section and see more details. Review the conditions that will trigger
 ![](images/automation-rule-details.png)
 
 
-## 3.8: Installing the Workflows
+## 3.7: Installing the Workflows
 
 
 You will download custom Workflows from a public Box folder and save them on the Bastion local disk. Later you will upload them to 
@@ -435,7 +374,7 @@ navigate to Bastion's **Downloads** folder, choose **updateGitHubIssueWithALabel
 Now, you have all 3 Workflows uploaded to specific folders in Concert Workflows. In the next section, you will configure the Workflows and execute them.
 
 
-## 3.9: Summary
+## 3.8: Summary
 
 So far you have been able to accomplish the following:
 
