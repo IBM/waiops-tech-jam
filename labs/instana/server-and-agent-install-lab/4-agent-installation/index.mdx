@@ -131,7 +131,7 @@ the **Agents & collectors** menu in the left navigation and then clicking the **
 A list of different environments where you can install the Instana Agent is
 shown. For example, on Linux, you can choose a automatic **one-liner**
 installation, RPM, or TAR file installation. For OpenShift/kubernetes, you have
-multiple options including operator, helm, and yaml installs. The _MQACE_ VM is
+multiple options including operator and helm installs. The _MQACE_ VM is
 a Linux server, the easiest method for Linux is the automatic one-liner, so
 select **Linux Automatic Installation (One-liner)**.
 
@@ -202,13 +202,11 @@ Navigate back to the **Instana agent installations** page by using the **Instana
 Alternatively you can again select **Agents & collectors** from the left navigation menu and then clicking the **Install an agent** button.
 
 There are a few different options for installing the Instana Agent on a
-Kubernetes cluster. A common method is to use the **Helm** chart, you will need
-to ensure that Helm has been installed first though. A 'dependency free' option
-is the _YAML_ method.
+Kubernetes cluster. A common method is to use the **Helm chart**.
 
-Select the tile **Kubernetes YAML**.
+Select the tile **Kubernetes Helm chart**.
 
-![](images/agent-deploy-k8s-yaml.png)
+![](images/agent-deploy-k8s-helmchart.png)
 
 Provide a meaningful name for the Cluster and specify and Agent Zone. These
 namespace will show up within the Instana UI:
@@ -220,7 +218,7 @@ namespace will show up within the Instana UI:
 
     ![](./images/add-agent-zone.png)
 
-![yaml-deployment](images/yaml-deployment.png)
+![agent-helm-deployment](images/agent-helm-deployment.png)
 
 Setting these values will allow you to find your Agent and Kubernetes Cluster
 within the user interface and not get confused by data coming in from other
@@ -234,14 +232,7 @@ etc
 
 :::
 
-Select the **Copy** button to copy the yaml content.
-
-:::note
-
-If you try to highlight the text block containing the yaml, you must first click
-on the **show more** link in the lower right corner.
-
-:::
+Select the **Copy** button to copy the shell command content.
 
 Open a new tab in your terminal. SSH to the _demo-apps_ kubernetes cluster:
 
@@ -270,51 +261,37 @@ NAME        STATUS   ROLES                  AGE   VERSION
 demo-apps   Ready    control-plane,master   19h   v1.32.2+k3s1
 ```
 
-We not need to paste the yaml content into a text document. Start by creating
-and opening a new file called **instana-agent.yaml** using the vi editor.
-
-```sh title="Host: demo-apps"
-vi instana-agent.yaml
-```
-
-Enter insert mode by pressing `i` and then **paste the yaml content you copied
-earlier**.
-
-:::tip
-
-If at any times you have any issues you can press the `Esc` key to exit insert
-mode and then type `:q!` to quit the editor without saving. You can then try
-again.
-
-:::
-
-Save the file and exit the editor by pressing `Esc` and then typing `:wq` and
-then `Enter`.
-
-You can now apply the yaml file to the cluster by running the following command:
-
-```sh title="Host: demo-apps"
-kubectl apply -f instana-agent.yaml
-```
-
-If done correctly you should see the following output:
+Now paste the helm command text into the shell.  Below is an example output:
 
 ```sh title="Example output"
-root@demo-apps:~# kubectl apply -f instana-agent.yml
-namespace/instana-agent created
-serviceaccount/instana-agent created
-service/instana-agent created
-service/instana-agent-headless created
-secret/instana-agent created
-configmap/instana-agent created
-daemonset.apps/instana-agent created
-clusterrole.rbac.authorization.k8s.io/instana-agent created
-clusterrolebinding.rbac.authorization.k8s.io/instana-agent created
-configmap/k8sensor created
-deployment.apps/k8sensor created
-clusterrole.rbac.authorization.k8s.io/k8sensor created
-clusterrolebinding.rbac.authorization.k8s.io/k8sensor created
-serviceaccount/k8sensor created
+[root@demo-apps ~]# helm install instana-agent \
+   --repo https://agents.instana.io/helm \
+   --namespace instana-agent \
+   --create-namespace \
+   --set agent.key=<redacted> \
+   --set agent.downloadKey=<redacted> \
+   --set agent.endpointHost=agent-acceptor.instana-0.ibmdte.local \
+   --set agent.endpointPort=443 \
+   --set cluster.name='demo-apps' \
+   --set zone.name='Demo Apps' \
+   instana-agent
+NAME: instana-agent
+LAST DEPLOYED: Wed May 20 05:33:57 2026
+NAMESPACE: instana-agent
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+Ensure to run `oc adm policy add-scc-to-user privileged -z instana-agent -n instana-agent` if running on OCP, otherwise agent pods will not be scheduled correctly.
+
+It may take a few moments for the agents to fully deploy. You can see what agents are running by listing resources in the instana-agent namespace:
+
+    kubectl get all -n instana-agent
+
+You can get the logs for all of the agents with `kubectl logs`:
+
+    kubectl logs -l app.kubernetes.io/name=instana-agent -n instana-agent -c instana-agent
+
 ```
 
 Next, wait for the agent pods to be running in the agent namespace:
@@ -327,12 +304,13 @@ There will be one pod for each worker node in your target cluster. This
 Kubernetes cluster only has one node so you will only see one agent pod running.
 
 ```sh title="Example output"
-root@demo-apps:~# kubectl get pods -n instana-agent
-NAME                        READY   STATUS    RESTARTS   AGE
-instana-agent-vw7lz         1/1     Running   0          63s
-k8sensor-85995748f9-4qtz9   1/1     Running   0          63s
-k8sensor-85995748f9-mc6x5   1/1     Running   0          63s
-k8sensor-85995748f9-sfldk   1/1     Running   0          63s
+[root@demo-apps ~]# kubectl get pods -n instana-agent -w
+NAME                                                READY   STATUS    RESTARTS   AGE
+instana-agent-controller-manager-854bcffcf5-lgpsn   1/1     Running   0          41m
+instana-agent-k8sensor-775fb686c6-rpcs6             1/1     Running   0          41m
+instana-agent-k8sensor-775fb686c6-rslw9             1/1     Running   0          41m
+instana-agent-k8sensor-775fb686c6-stv49             1/1     Running   0          41m
+instana-agent-n8rrs                                 1/1     Running   0          41m
 ```
 
 Wait for all pods to be in a `Running` state before continuing:
@@ -416,7 +394,7 @@ kubectl get pods -n instana-agent
 You can check the Instana Agent pod logs by running:
 
 ```sh title="Host: demo-apps"
-kubectl logs $(kubectl get pods -n instana-agent -o custom-columns=POD:.metadata.name --no-headers | grep instana-agent) -n instana-agent -c instana-agent
+kubectl logs -l app.kubernetes.io/name=instana-agent -n instana-agent -c instana-agent
 ```
 
 ---
