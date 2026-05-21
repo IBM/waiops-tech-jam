@@ -261,6 +261,12 @@ NAME        STATUS   ROLES                  AGE   VERSION
 demo-apps   Ready    control-plane,master   19h   v1.32.2+k3s1
 ```
 
+Before using Helm, KUBECONFIG environmental variable must be defined and exported.  For `demo-apps` cluster, it is set to `/etc/rancher/k3s/k3s.yaml`.  Run the following command:
+
+```sh title="Host: demo-apps"
+export KUBECONFIG="/etc/rancher/k3s/k3s.yaml"
+```
+
 Now paste the helm command text into the shell.  Below is an example output:
 
 ```sh title="Example output"
