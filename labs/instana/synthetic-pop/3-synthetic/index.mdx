@@ -269,7 +269,7 @@ Events:
 ```
 :::
 
-If th pod failing, execute the following command to reduce CPU requests to be able to schedule the pod:
+If the pod fails, execute the following command to reduce CPU requests to be able to schedule the pod:
 
 ```bash
 kubectl patch deployment/synthetic-pop-browserscript-playback-engine  -n instana-synthetic \
@@ -295,35 +295,38 @@ From the left navigation menu select **Synthetic Monitoring**. Then select the
 
 ![](images/AddSynthetic.png)
 
-On the top right corner of the dialogue click the **"Switch to advanced mode"**
-button, then select **SSL Certificate** and click **Select**:
+Select **SSL Certificate** tile and click **Next**:
 
-![alt text](images/SSL-certificate-select.png)
+![](images/SSL-certificate-select.png)
 
-Specify the address of the test website as `qotd.apps.demo-apps.ibmdte.local`
-and the number of days before certificate expiration that will trigger the test
-to fail as `15`:
+On the "Configure test" step specify the address of the test website as `qotd.apps.demo-apps.ibmdte.local`:
 
 ![](images/SSL-certificate-hostname.png)
 
-Scroll down to the **Locations** section and click **Select Location**, then
-enable the `Local` location and click **Add Location**:
+scroll down to **Failure configuration** section:
+- set the number of days before certificate expiration that will trigger the test to fail as `15`;
+- set the frequency of the SSL checks to run every `1` minute;
+- set checkmark **Accept self-signed certificate** as we use it for our website;
+
+![](images/SSL-certificate-expiration.png)
+
+Click **Next**
+ 
+On the "Add locations" step:
+- Click **Add Locations** button;
+- Select **Private** tab;
+- Ensure to select the `on Instana cluster` location. Instana will run the
+script from the previously installed _Synthetic Point of Presence_, which can be
+placed at multiple locations across available infrastructure. The one we will
+use is deployed on the same cluster with Instana;
+- Then click **Add Location**;
 
 ![](images/SSL-certificate-location.png)
 
-Scroll a little further to the **Schedule: When will this test run?** section
-and set the frequency of the SSL checks to run every `1` hour:
+Click **Next**
 
-![](images/SSL-certificate-frequency.png)
-
-Scroll to the **Identify: What is the test going to do?** section and give the
-test a name and description. We will use values:
-
-- **Name:** `Quote of the Day: Certificate check`
-- **Description:** `The test checks TLS certificate expiration date every hour.`
-
-![](images/SSL-certificate-name.png)
-
+Step "Add associations" is optional and is for associating the test with existing 
+application or website.
 :::info Additional optional configuration
 
 When the website is part of an **Application** or **Website/Mobile App**, we can
@@ -331,12 +334,39 @@ choose certain defined Application perspectives or Website / Mobile Apps to
 associate the test with. In that case filtering events by the selected
 perspective will provide relevant context including TLS certificate checks.
 
+We will not do it in this lab.
+:::
+
+Click **Next**
+
+Step "Add teams" is also optional and fot assigning permissions for a certain team.
+:::info Additional optional configuration
+
+We can associate **Teams** with the test. Members of the team will gain access 
+to the test.
+
+We will not use it in this lab.
+:::
+
+Click **Next**
+
+Step "Add custom properties" is optional and allows to add additional parameters 
+visible in notifications.
+:::info Additional optional configuration
+
 You can also set **Custom Properties** in order to differentiate projects or
 particular certificates for notifications.
 
-We will not do these in this lab.
-
+We will not use it in this lab.
 :::
+
+Click **Next**
+
+On "Enter details" step ive the test:
+- **Name:** `Quote of the Day: Certificate check`;
+- **Description:** `The test checks TLS certificate expiration date every hour.`;
+
+![](images/SSL-certificate-name.png)
 
 Click **Create** to create the test.
 
@@ -347,12 +377,12 @@ update, toggle on the **Live** button to get the latest updates.
 
 :::
 
-![alt text](images/SSL-certificate-health.png)
+![](images/SSL-certificate-health.png)
 
 Click on the name of the test to investigate the summary of the certificate
 check. If you see a message like `No results for this time frame`, then wait
-a few minutes, change time the frame to a longer period, for example
-`last 30 minutes` and refresh the browser page.
+for few minutes, change time the frame to a longer period, for example
+`last 30 minutes` or refresh the browser page.
 
 ## 3.5 REST API Synthetic Tests
 
@@ -369,35 +399,81 @@ then click the **Create synthetic test** button:
 
 ![](images/AddSynthetic.png)
 
-On the dialog that opens, you will see two options under **API**
-test. Choose **API Simple** and click the **Select** button:
+On the dialog that opens, select tile **API Simple** and click **Next** button:
 
 ![](images/addSynthetics3.png)
 
-Scroll down for a new dialog prompting for the REST API **GET** URL. Enter the following URL:
+On "Config test" step use the following **URL**:
 
 ```sh
 https://qotd.apps.demo-apps.ibmdte.local/random
 ```
+
 ![](images/AddSyntheticQOTD.png)
 
 This could be any REST request. In this case, we are testing the `/random` API
 call within the **Quote of the Day** application.
 
 
-Then, scroll down to Locations and select your **on Instana Cluster** location. This allows you to choose the
-location(s) where you want your synthetic script to execute. In the lab, you
-only have 1 location that you can select, so we choose `on Instana cluster` and click
-**Add location**:
-
-![](images/SSL-certificate-location.png)
-
-The next step allows you to specify the scheduling interval for your synthetic
-test. Drag the time slider to 1 minute. Then, scroll down:
+Scroll down the dialog to specify the scheduling interval for the synthetic
+test. Set interval to 1 minute. Then, click **Next**:
 
 ![](images/scheduling.png)
 
-On the next screen you will give your synthetic test a name and description
+ 
+On the "Add locations" step:
+- Click **Add Locations** button;
+- Select **Private** tab;
+- Ensure to select the `on Instana cluster` location. Instana will run the
+script from the previously installed _Synthetic Point of Presence_, which can be
+placed at multiple locations across available infrastructure. The one we will
+use is deployed on the same cluster with Instana;
+- Then click **Add Location**;
+
+![](images/SSL-certificate-location.png)
+
+
+Click **Next**
+
+Step "Add associations" is optional and is for associating the test with existing 
+application or website.
+:::info Additional optional configuration
+
+When the website is part of an **Application** or **Website/Mobile App**, we can
+choose certain defined Application perspectives or Website / Mobile Apps to
+associate the test with. In that case filtering events by the selected
+perspective will provide relevant context including TLS certificate checks.
+
+We will not do it in this lab.
+:::
+
+Click **Next**
+
+Step "Add teams" is also optional and fot assigning permissions for a certain team.
+:::info Additional optional configuration
+
+We can associate **Teams** with the test. Members of the team will gain access 
+to the test.
+
+We will not use it in this lab.
+:::
+
+Click **Next**
+
+Step "Add custom properties" is optional and allows to add additional parameters 
+visible in notifications.
+:::info Additional optional configuration
+
+You can also set **Custom Properties** in order to differentiate projects or
+particular certificates for notifications.
+
+We will not use it in this lab.
+:::
+
+Click **Next**
+
+
+On the step "Enter details" you will give your synthetic test a name and description
 using the values:
 
 - **Name of the test:** `Random Quote`
@@ -405,17 +481,11 @@ using the values:
 
 ![](images/testName.png)
 
-Scroll down.
-
-On the next step, you can associate the synthetic test with an application. In
-this lab we didn't create any Application Perspectives, we will skip the
-optional step.
-
 Finally, click the **Create** button to finish creating your synthetic test.
 
 At this point, you should see a synthetic test named **Random Quote**:
 
-![alt text](images/randomQuote.png)
+![](images/randomQuote.png)
 
 It will take up to a minute for the synthetic tests to begin executing, so wait
 for the **Health** to update and show a green check mark.
@@ -424,7 +494,7 @@ Click on the **Random Quote** link to drill down into the details of the
 synthetic test.
 
 On the screen, you can see a summary of the synthetic results. Make sure to
-adjust the time window to `Last 5 minutes`:
+adjust the time window to `Last 5 minutes` to see near term perspective:
 
 ![](images/syntheticResults.png)
 
@@ -450,13 +520,12 @@ navigation menu, choose **Synthetic tests** and click the **Create synthetic tes
 
 ![](images/AddSynthetic.png)
 
-In the **Create Synthetic Test** dialog, select **API** and **API Script test** click the
-**Select** button:
+On "Select tesy type" step of the **Create Synthetic Test** dialog, select **API Script** 
+tile and click the **Next** button:
 
 ![](images/SyntheticScript.png)
 
-Scroll down to Script section and click **Add Script**.
-Paste the following JavaScript code into the **script** text field as shown below:
+On step "Configure test" use the following JavaScript code:
 
 ```javascript
 var assert = require("assert")
@@ -505,26 +574,63 @@ $http.get(options, function (error, response, body) {
 })
 ```
 
-Click **Save**
+Paste the JavaScript code into the **text field** and set test **frequency** to `1` minute:
 
-Scroll down, ensure to select the `on Instana cluster` location. Instana will run the
+![](images/testJavascript.png)
+
+Click **Next**
+ 
+On the "Add locations" step:
+- Click **Add Locations** button;
+- Select **Private** tab;
+- Ensure to select the `on Instana cluster` location. Instana will run the
 script from the previously installed _Synthetic Point of Presence_, which can be
 placed at multiple locations across available infrastructure. The one we will
-use is deployed on the same cluster with Instana. Note, it may have a different
-name in different releases of Instana:
+use is deployed on the same cluster with Instana;
+- Then click **Add Location**;
 
-![](images/Create_Synthetic_Test.png)
+![](images/SSL-certificate-location.png)
 
-Scroll down.
+Click **Next**
 
-In the **Scheduling** section, adjust the time slider to run the test every `1`
-minute:
+Step "Add associations" is optional and is for associating the test with existing 
+application or website.
+:::info Additional optional configuration
 
-![](images/scheduling.png)
+When the website is part of an **Application** or **Website/Mobile App**, we can
+choose certain defined Application perspectives or Website / Mobile Apps to
+associate the test with. In that case filtering events by the selected
+perspective will provide relevant context including TLS certificate checks.
 
-Then, scroll down.
+We will not do it in this lab.
+:::
 
-Give the test a meaningful name and description, then scroll down. We will
+Click **Next**
+
+Step "Add teams" is also optional and fot assigning permissions for a certain team.
+:::info Additional optional configuration
+
+We can associate **Teams** with the test. Members of the team will gain access 
+to the test.
+
+We will not use it in this lab.
+:::
+
+Click **Next**
+
+Step "Add custom properties" is optional and allows to add additional parameters 
+visible in notifications.
+:::info Additional optional configuration
+
+You can also set **Custom Properties** in order to differentiate projects or
+particular certificates for notifications.
+
+We will not use it in this lab.
+:::
+
+Click **Next**
+
+On "Enter details" step give the test a meaningful name and description, then scroll down. We will
 use values:
 
 - **Name of the test:** `Quote of the Day: REST API Check`
@@ -533,12 +639,6 @@ use values:
 
 ![](images/CreateSynthTest.png)
 
-At the **Associate** step you may specify the list of existing application
-perspectives for which the test is relevant. The result of the test will appear
-on the **Synthetic Monitoring** tab of the _Application_ dashboard and you will
-be able to filter tests by application on the **Synthetic Monitoring**
-dashboard. We didn't create any Application Perspectives in this lab, so will
-skip this step.
 
 Click the **Create** button.
 
@@ -555,7 +655,7 @@ By now you should see a list of tests:
 Click on the test name to access the dashboard of the synthetic test, open
 **Results** tab and select one of the test records:
 
-![alt text](images/SyntheticTestDashboard.png)
+![](images/SyntheticTestDashboard.png)
 
 :::note What is the test script doing?
 
