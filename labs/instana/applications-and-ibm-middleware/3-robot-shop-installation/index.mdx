@@ -139,15 +139,6 @@ sudo -i
 
 :::
 
-We will use **Helm**, a package manager for Kubernetes to install Robot Shop.
-First install Helm by running the following commands:
-
-```sh title="Host: demo-apps"
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
-```
-
 Clone the Robot Shop GitHub repository by running the following command:
 
 ```sh title="Host: demo-apps"
@@ -164,6 +155,8 @@ metadata:
   name: robot-shop
 EOF
 ```
+
+We will use **Helm**, a package manager for Kubernetes to install Robot Shop.
 
 Install the **Robot Shop** application using Helm:
 
@@ -242,7 +235,7 @@ and proceed to the next steps.
 
 If you need to uninstall Robot Shop from your cluster to attempt a reinstall you can run the following:
 
-```sh
+```sh title="Host: demo-apps"
 helm uninstall robot-shop -n robot-shop --kubeconfig=/etc/rancher/k3s/k3s.yaml
 ```
 
@@ -383,8 +376,7 @@ spec:
         env:
           - name: HOST
             value: "http://web:8080/"
-        image: brightzheng100/rs-website-load:latest
-EOF
+        image: quay.io/llixinn/rs-website-load:latest@sha256:77958b7d86f430656db0a2cb389c49ca35a982ed6ae9c156f3b647ee05e042f6
 ```
 
 Run the **kubectl get pods** command.
