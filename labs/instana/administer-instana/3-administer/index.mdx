@@ -18,6 +18,12 @@ If you are unsure how to get access to the Bastion host (Guacamole) see
 
 ![open firefox](images/open-firefox.png)
 
+{/* ![click instana](images/click-instana-bookmark.png) */}
+<img src={require('./images/click-instana-bookmark.png').default} alt="click-instana-bookmark" width="60%" />
+&nbsp;
+&nbsp;
+
+
 :::info
 
 You can safely ignore the warning about the certificate being untrusted.
@@ -53,12 +59,15 @@ an Event triggers.
 
 :::info
 
-In this lab Instana has already been installed with SMTP configured. If you
-would like to review when that was configured you can
-[view the Instana installation in the Server & Agent Installation lab](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/server-installation/#35-installing-instana).
+About SMTP Configuration Information:
 
-There is also an information section giving details on
-[how to configure SMTP post installation](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/server-installation/#smtp-post-installation).
+- Pre-configuration:​ In this lab, the SMTP server was set up during the initial 
+Instana backend installation. You can view the specific steps in the 
+[Server and Agent Installation Lab guide](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/server-installation/#35-installing-instana).
+
+- Modification/Setup:​ If you need to configure or update SMTP settings after 
+installation, there is also an information section giving details 
+on [how to configure SMTP post installation](https://ibm.github.io/waiops-tech-jam/labs/instana/server-and-agent-install-lab/server-installation/#smtp-post-installation).
 
 :::
 
@@ -187,6 +196,17 @@ Leave the default settings.
 {/* ![](images/scope-options.png) */}
 <img src={require('./images/scope-options.png').default} alt="scope-options" width="75%" />
 
+:::tip
+
+We could select **Per Service** instead of the default application-level scope.
+This provides a much more realistic monitoring scenario. Application-level thresholds can be misleading
+because they aggregate metrics across all services. For example, if "login" represents only 2% of
+transactions but has really slow response times, it might not trigger an alert if other services are
+performing well. By monitoring at the service level, you can detect performance issues in individual
+services that might otherwise be hidden in application-wide averages.
+
+:::
+
 Scroll down further to the **Thresholds** section.
 
 You'll notice that there are a variety of options including:
@@ -225,11 +245,13 @@ and the mission criticality of the application.
 :::
 
 In our case we will leave the default as **Static Threshold** for this section
-as we do not have enough historical data, and update the warning threshold value
-to `335ms` by clicking on `Use suggested value...` as in the screenshot below:
+as we do not have enough historical data. 
+Usually, you can set the threshold by clicking on `Use suggested value...` which provides 
+the suggested value that is based on the discovered pattern. But for our demo case, to proactively
+trigger alerts, let's update the warning threshold value to `290ms` as in the screenshot below:
 
 {/* ![](images/thresholds-options.png) */}
-<img src={require('./images/thresholds-options.png').default} alt="thresholds-options" width="75%" />
+<img src={require('./images/thresholds-options-290ms.png').default} alt="thresholds-options-290ms" width="75%" />
 
 Scroll down further to the **Time Threshold** options.
 
@@ -240,8 +262,23 @@ raised.
 {/* ![](images/time-threshold-options.png) */}
 <img src={require('./images/time-threshold-options.png').default} alt="time-threshold-options" width="75%" />
 
-We can leave this section as default too, let's set the Grace Period to 10 
-minutes, which means the issue will be automatically closed after the violation 
+:::info
+
+**Understanding Grace Period:**
+
+The Grace Period is particularly important for dynamic metrics like response time, CPU utilization,
+and network performance. It prevents alert fatigue by ensuring that transient spikes don't trigger
+unnecessary alerts.
+
+For example, if response time briefly spikes above the threshold but quickly returns to normal,
+the Grace Period prevents the issue from being closed and immediately reopened if another spike
+occurs within the grace period window. This is especially valuable in dynamic environments where
+metrics can fluctuate frequently.
+
+:::
+
+We can leave this section as default too, let's set the Grace Period to 10
+minutes, which means the issue will be automatically closed after the violation
 threshold is no longer met.
 
 Scroll down further to the **Alert Channel**. Here we can select the Email Alert
@@ -279,6 +316,47 @@ of what the Event will look like when it triggers. There are other options such
 as setting the **Alert Level** and whether or not the Event should be aggregated
 into an **Incident**.
 
+:::info
+
+**Triggering Incidents:**
+
+When you enable "Trigger Incident", Instana automatically correlates related Events and Issues
+into a single Incident. This correlation is based on:
+- **Host proximity**: Events occurring on the same or nearby hosts
+- **Application relationships**: Dependencies that Instana discovers between services and components
+
+This intelligent correlation helps reduce alert noise by grouping related problems together,
+making it easier to understand the root cause and scope of issues.
+
+:::
+
+
+Scroll further down on the page and you'll see a section titled **Custom Payloads**.
+
+Let's add 2 rows of custom payload for this alert:
+- A Static type of custom payload with a key of `alert_environment` and a value of
+`demo`
+- A Dynamic type of custom payload with a key of `alert_service` and a value of **Service > Name** 
+
+{/* ![](images/custom-payload-options.png) */}
+<img src={require('./images/custom-payload-options.png').default} alt="custom-payload-options" width="75%" />
+
+:::tip
+
+**Custom Payloads:**
+
+Instana now supports Alert-specific custom payloads that can be configured to enrich the content of
+your alerts. Custom payloads allow you to include additional context-specific information in
+alert notifications, such as environment details, team contacts, or runbook links. This makes
+alerts more actionable by providing responders with the information they need immediately.
+
+The custom payloads information can be displayed in the alert notification, like you can receive the
+following information in the email alert:
+{/* ![](images/alert-mail-custom-payload.png) */}
+<img src={require('./images/alert-mail-custom-payload.png').default} alt="alert-mail-custom-payload" width="50%" />
+
+:::
+
 Fill in the fields as you desire. Then, click the **Create** button to create
 the **Smart Alert**
 
@@ -310,7 +388,7 @@ Users, Groups, Log Management Integration, and more.
 
 Ensure **Events** is selected
 
-You will see a list of 300+ Events that are defined as out of the box thresholds
+You will see a list of nearly 500 Events that are defined as out of the box thresholds
 within Instana. If you want to filter the list, you can do that in a number of
 ways via the drop down lists at the top of the page.
 
@@ -376,9 +454,11 @@ will be written against these **Built-in Metrics**.
 
 :::info
 
-The choice of _Custom metrics_ would only apply to custom metrics that are being
-fed into Instana. The _System Rules_ are a specialized set of rules for doing
-thing like detecting that an entity is _offline_.
+The choice of **Custom metrics** usually applies to custom metrics that are being
+fed into Instana via OpenTelemetry, Prometheus, or StatsD etc. These are common
+methods for ingesting application-specific or business metrics that aren't automatically
+collected by Instana's sensors. The _System Rules_ are a specialized set of rules for doing
+things like detecting that an entity is _offline_.
 
 :::
 
@@ -397,10 +477,12 @@ Depth Percentage**.
 After selecting the _Metric_ some new dropdowns appear on the screen looking for
 the following information:
 
-- Aggregation: Since Instana is capture data at a high interval, you can use
+- **Aggregation**: Since Instana captures data at a high interval, you can use
   Min, Max, Avg, Sum as part of your evaluation.
-- Operator: What type of evaluation do you want to do (>, < =, etc.)
-- Percentage - This field is actually different depending on the metric you are
+  - **Relative Difference**: Compares the current value to a baseline (e.g., 20% higher than normal)
+  - **Absolute Difference**: Compares the absolute change in value (e.g., increased by 100ms)
+- **Operator**: What type of evaluation do you want to do (greater than, less than, equals, etc.)
+- **Percentage**: This field is actually different depending on the metric you are
   evaluating. In this case, you are evaluating a metric that is a percentage.
 
 Set the following:
@@ -482,22 +564,29 @@ Click the **Create** button to save your new Event.
 
 :::tip
 
+**Dynamic Focus Queries (DFQ):**
+
+A Dynamic Focus Query allows you to filter the distribution down to a subset of target resources.
+For example, you could specify:
+- Specific queues or queue managers
+- Specific hosts or clusters
+- Resources with custom tags
+- Any combination using AND, OR, NOT operators
+
 If you wanted to apply your Event to a subset of the MQ Queues, you would
-specify a Dynamic Focus Query. The query would look something like this.
+specify a Dynamic Focus Query. The query would look something like this:
 
 ```sh
 entity.ibmmq.queue.name:abc* OR entity.ibmmq.queue.name:*xyz
 ```
 
-The easiest way to formulate a **Dynamic Focus Query** is to go to the
-**Infrastructure** page and build a filter. It will guide you through the
-options. Then, copy and paste the string into the **Event** editor.
-![](images/infrastructure2.png)
+The Event UI now provides guided assistance in building DFQs, making it easier to construct
+complex queries without needing to manually type Lucene syntax.
 
 A **Dynamic Focus Query** can be a complex expression using AND, OR, NOT, etc.
-to filter to a subset of the entities. These queries are build using the
+to filter to a subset of the entities. These queries are built using the
 **Lucene** query language. For more information on the **Lucene** query
-language, see the project documentation.
+language, see the project documentation:
 [Lucene's Query Language](https://www.ibm.com/docs/en/instana-observability/current?topic=instana-filtering-dynamic-focus)
 
 :::
@@ -507,14 +596,14 @@ language, see the project documentation.
 ## 3.4: Setting up an Offline Event
 
 A common monitoring scenario is to setup an **Offline** Event to detect an
-Entity going offline. We're going to create an **Event** that will detect any
-**Host** that goes offline.
+Entity going offline. We're going to create an **Event** that will detect when an
+**IBM MQ Queue Manager** goes offline.
 
 To do this, select **New Event** again.
 
-Enter the name `Host Offline`.
+Enter the name `Queue Manager Offline`.
 
-Enter the description `A host has gone offline`.
+Enter the description `An IBM MQ Queue Manager has gone offline`.
 
 Select a **Grace Period** of **10s**.
 
@@ -523,35 +612,36 @@ Select **System Rules** as the **Source** under _2. Condition_. Then, select
 
 Next, select the scope. Choose **Selected Entities Only (Dynamic Focus Query)**.
 
-In the **Dynamic Focus Query**, you are going to specify something a little
-different. Instead of entering **entity.type:host**, we are going to use
-**entity.selfType:host**. The reason for this is that the former will filter on
-all of the hosts, but will also include the child entities that are running on
-the host. We only want to detect that the **Host** is offline. Therefore, we are
-going to specify `entity.selfType:host`.
-
-Copy and post the string into the Event definition.
+In the **Dynamic Focus Query**, you are going to specify a filter for IBM MQ Queue Managers.
+We want to detect when any Queue Manager goes offline. Enter the following query:
 
 ```sh
-entity.selfType:host
+entity.selfType:ibmmq.qm
 ```
+
+:::info
+
+We use **entity.selfType** instead of **entity.type** because the former filters only the
+specific entity type without including child entities. This ensures we're monitoring only
+the Queue Manager itself, not all the queues, channels, and other entities associated with it.
+
+:::
 
 Your Offline Event should look like this:
 
-![](images/offline-event.png)
+![](images/offline-event-qm.png)
 
 Click the **Create** button to save your Event.
 
 :::tip
 
-If you want to see how **entity.type:host** vs. **entity.selfType:host**
-behaves, you can open the Infrastructure view and add the queries into the
-search bar and see the results. You'll see the same list of hosts returned
-within the UI. But, when you use **selfType**, you'll notice that the server
-towers **do not contain the pizza boxes** representing each of the **Entities**.
+If you want to see how **entity.type** vs. **entity.selfType** behaves, you can open the
+Infrastructure view and add the queries into the search bar and see the results. When you
+use **selfType**, you'll notice that the entity towers **do not contain the child entities**
+(represented as pizza boxes) that are associated with the parent entity.
 
 {/* ![](images/show-self-type.png) */}
-<img src={require('./images/show-self-type.png').default} alt="show-self-type" width="70%" />
+<img src={require('./images/show-self-type-qm.png').default} alt="show-self-type-qm" width="70%" />
 
 :::
 
@@ -583,8 +673,21 @@ Under **Events** you will see that there are multiple options. You can setup an
 Alert for a particular Entity Type. For example, you might setup an Alert for
 all Oracle Database Events.
 
+
 Select **Alert on Event(s)** from the dropdown. This option allows you to select
 a specific list of Events to forward to an Alert Channel(s).
+
+:::tip
+
+**Alternative Alert Configuration:**
+
+Another way to define Alerts is to select **Alert on Event Types** and then use a Dynamic
+Focus Query (DFQ) to filter it down to certain entity types. For example, MQ administrators
+could receive all Events for MQ entity types by filtering on `entity.type:ibmmq*`. This
+approach is useful when you want to capture all events for a specific technology or team
+responsibility area without having to select individual events.
+
+:::
 
 Select the **Add Events** button.
 
@@ -653,7 +756,24 @@ Then, click the **Add 1 Channel** button.
 ![](images/add-alert-channel.png)
 
 Scroll down to the bottom. You will see an optional section where you can add
-custom payloads by adding Key/Value pairs. We're going to skip that section.
+custom payloads by adding Key/Value pairs.
+
+:::info
+
+**Custom Payloads:**
+
+Custom payloads allow you to add additional context to your alerts by including key/value
+pairs that will be sent with the alert notification. This is useful for including information
+like:
+- Team contact information
+- Runbook URLs
+- Environment identifiers
+- Escalation procedures
+
+For this lab, we'll skip adding custom payloads, but in production environments, these are
+commonly used to make alerts more actionable.
+
+:::
 
 Finally, click the **Create** button to save your Alert.
 
@@ -670,14 +790,69 @@ alerts you have setup.
 
 ---
 
-## 3.6: Summary
+## 3.6: Global Custom Payloads (Optional)
+
+Global Custom Payloads are a powerful feature that many Instana customers use in production
+environments. Unlike the alert-specific custom payloads we saw earlier, Global Custom Payloads
+apply to all alerts, making them ideal for organization-wide standards.
+
+:::info
+
+**What are Global Custom Payloads?**
+
+Global Custom Payloads allow you to define key/value pairs at the Alert level that will
+be automatically included in alert notifications. This is particularly useful for:
+
+- **Consistent metadata**: Ensure all alerts include standard fields like environment, region, or business unit
+- **Integration requirements**: Add fields required by downstream systems (e.g., ServiceNow, PagerDuty)
+- **Organizational standards**: Include company-specific information like cost center or support team
+- **Dynamic values**: Use Instana's placeholder variables to include context-specific information
+
+:::
+
+### Configuring Global Custom Payloads
+
+To configure Global Custom Payloads:
+
+1. Navigate to **Settings** → **Global settings** → **Events & alerts** → **Custom payload**
+2. Specify the Key/Value pairs that should be included in an alert. You can use static values or dynamic 
+placeholders that Instana will replace with actual values when the alert is sent. 
+3. Click **Save** to apply the Global Custom Payloads.
+
+![](images/global-custom-payload-config.png)
+
+**Example Custom Payload Keys:**
+- `environment`: production, staging, development
+- `team`: database-team, mq-team, application-team
+- `severity_mapping`: Map Instana severity to your organization's levels
+- `runbook_url`: Link to troubleshooting documentation
+- `escalation_policy`: Define escalation procedures
+
+
+4. When you create an alert, you will be able to view the Global Custom Payloads that you have defined.
+
+![](images/global-custom-payload-defined.png)
+
+
+For this lab, we won't configure Global Custom Payloads, but understanding this feature is
+important for production deployments where consistent alert formatting is critical.
+
+---
+
+## 3.7: Summary
 
 At this point, you have created an Event and an Alert for that Event. The next
 time the custom **Event** that you created triggers, an **Alert** will be sent
 to the **Alert Channel**. In this case, a Email will be sent.
 
-In this section of the lab, you learned how to create a Smart Alert, a
-traditional Alert (Event), and learned how these Alerts are routed to the
-correct people/teams via Alert Channels.
+In this exercise lab, you learned how to:
+- Create an Alert Channel for notifications
+- Create application Smart Alerts based on application metrics and analytics.
+- Configure Incident correlation and Custom Payloads
+- Create traditional threshold-based Events and explore nearly 500 out-of-the-box build-in events.
+- Use Dynamic Focus Queries to filter monitoring scope
+- Configure Transient Events for noise reduction
+- Set up Offline detection for critical entities
+- Understand Global Custom Payloads for organization-wide standards
 
 ---
