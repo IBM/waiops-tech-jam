@@ -28,7 +28,8 @@ If you are unsure how to get access to the Bastion host (Guacamole) see
 
 You can safely ignore the warning about the certificate being untrusted.
 
-![untrusted-cert-advance](images/untrusted-cert-advance.png)
+{/* ![untrusted-cert-advance](images/untrusted-cert-advance.png) */}
+<img src={require('./images/untrusted-cert-advance.png').default} alt="untrusted-cert-advance" width="75%" />
 
 :::
 
@@ -37,13 +38,16 @@ When prompted, enter the username and password that you updated earlier.
 - Email: **admin@instana.local**
 - Password: **Passw0rd**
 
-![](images/login-updated.png)
+{/* ![](images/login-updated.png) */}
+<img src={require('./images/login-updated.png').default} alt="login-updated" width="500" />
+
 
 ## 3.1: Explore Kubernetes
 
 Use the left navigation to select **Platforms** and then **Kubernetes**
 
-![](images/kubernetes.png)
+{/* ![](images/kubernetes.png) */}
+<img src={require('./images/kubernetes.png').default} alt="kubernetes" width="60%" />
 
 When you select **Platforms** in the classroom environment, you will only see
 **kubernetes** and **SAP**. But, there are additional **feature flags** that can
@@ -124,7 +128,8 @@ the hostname of one of the servers. For example _mqace_
 Once you have specified the filter, you'll see that the infrastructure view is
 filtered to just a single server that matches your search.
 
-![](images/host-query.png)
+{/* ![](images/host-query.png) */}
+<img src={require('./images/host-query.png').default} alt="host-query" width="40%" />
 
 There are many other types of queries that can be executed using the
 filter/search bar. For example, you can specify AND, OR, and NOT conditions. You
@@ -138,14 +143,16 @@ Next, flyover one of the three towers that represents the Instana server. These
 towers are taller than the others because there are more discovered entities
 running on it.
 
-![](images/instana-flyover.png)
+{/* ![](images/instana-flyover.png) */}
+<img src={require('./images/instana-flyover.png').default} alt="instana-flyover" width="70%" />
 
 You'll notice that a number of components were automatically discovered and are
 instrumented for monitoring.
 
 Next, flyover the MQ & ACE tower.
 
-![](images/mqace-flyover.png)
+{/* ![](images/mqace-flyover.png) */}
+<img src={require('./images/mqace-flyover.png').default} alt="mqace-flyover" width="70%" />
 
 This is the MQ and ACE server. You can see the MQ and ACE components along with
 a discovered JVM, and more.
@@ -161,7 +168,8 @@ poor health.
 In addition, if you select where is says **Hosts**, there is a dropdown list
 that allows you to see lists of JVMs, containers, etc.
 
-![](images/table-content.png)
+{/* ![](images/table-content.png) */}
+<img src={require('./images/table-content.png').default} alt="table-content" width="50%" />
 
 Change from **Hosts** to **Containerd Containers** in the dropdown list and
 you'll see a complete list of containers and their utilization and health.
@@ -171,13 +179,15 @@ Table.
 
 Zoom in with the plus sign in the bottom right corner.
 
-![](images/plus.png)
+{/* ![](images/plus.png) */}
+<img src={require('./images/plus.png').default} alt="plus" width="60%" />
 
 You'll notice that each tower is actually comprised of multiple pizza boxes.
 Each one represents an **Entity** such as an MQ Queue Manager or an ACE
 Integration Node.
 
-![](images/pizza-box.png)
+{/* ![](images/pizza-box.png) */}
+<img src={require('./images/pizza-box.png').default} alt="pizza-box" width="60%" />
 
 Flyover the MQ & ACE server again until you see a list of all discovered
 Entities. If you only see 1 entity, move your mouse to one of the corners of the
@@ -262,7 +272,8 @@ Perspective** for the **Robot Shop** application.
 
 On the left hand navigation, select **Applications**.
 
-![](images/applications-menu.png)
+{/* ![](images/applications-menu.png) */}
+<img src={require('./images/applications-menu.png').default} alt="applications-menu" width="60%" />
 
 You will see a list of all applications that are defined in the environment.
 Initially, this list only has one entry called **All Services**.
@@ -390,14 +401,16 @@ dependency graph will show you a summary of the traces going through that
 service. You'll see the percentage of calls that are erroneous and the latency
 of the calls.
 
-![](images/flyover-qm.png)
+{/* ![](images/flyover-qm.png) */}
+<img src={require('./images/flyover-qm.png').default} alt="flyover-qm" width="50%" />
 
 Click on the **QM1@mqace** node. Notice that there are 3 options that would
 allow you to navigate to the MQ dashboard, the transaction Flow within MQ, or
 analyze the transaction calls through MQ. For now, we'll skip this navigation,
 but we suggest you explore those options later.
 
-![](images/click-qm.png)
+{/* ![](images/click-qm.png) */}
+<img src={require('./images/click-qm.png').default} alt="click-qm" width="50%" />
 
 Click on **"Upstream/Downsteam"** near the top of the page. This will allow you
 to see a list of Upstream and Downstream services for the application.
@@ -475,7 +488,8 @@ the right side of the screen, you'll see the details and stack trace.
 
 Scroll to the bottom of the screen and you will see the service endpoint list
 
-![](images/qotd-engraving-service-endpoint-list.png)
+{/* ![](images/qotd-engraving-service-endpoint-list.png) */}
+<img src={require('./images/qotd-engraving-service-endpoint-list.png').default} alt="qotd-engraving-service-endpoint-list" width="70%" />
 
 Scroll back up and you will see a detailed call stack **Calls**. The call stack
 gives you the timing and sequence of the call going through the application.
@@ -490,7 +504,8 @@ screen, below the call stack.
 If you select the text on the left or the timeline bar, the **Details & Stack
 Trace** context to the right of the page will change.
 
-![](images/qotd-analyze-engraving-calls.png)
+{/* ![](images/qotd-analyze-engraving-calls.png) */}
+<img src={require('./images/qotd-analyze-engraving-calls.png').default} alt="qotd-analyze-engraving-calls" width="70%" />
 
 Explore the different types of calls going through this transaction by selecting
 the individual call. When you select an entry, examine the detailed information
@@ -522,7 +537,7 @@ Manager, Queue Name, and the message ID that was posted on the queue.
 
 Scroll down to the very bottom on the right side of the screen and you will see
 a link named **CP4I.DEMO.API.Q**. Click on the **CP4I.DEMO.API.Q** link and you
-will navigate to the Queue page of the MQ sensor for the CP4I.DEMO.API.Q queue.
+will navigate to the IBM MQ Queue dashboard for this queue.
 Instana places these links in context to make it easier to diagnose problems.
 
 ![](images/mq-link.png)
@@ -553,7 +568,8 @@ from Mobile Applications too. For now, we'll investigate the website monitoring.
 
 Using the left side navigation, select **Websites & Mobile Apps**
 
-![](images/websites-and-mobile-apps.png)
+{/* ![](images/websites-and-mobile-apps.png) */}
+<img src={require('./images/websites-and-mobile-apps.png').default} alt="websites-and-mobile-apps" width="60%" />
 
 You will see a list of websites that are being monitored. In this environment,
 you'll see the **Robot Shop** application website. Click on the blue link for
@@ -623,7 +639,8 @@ in the lab.
 Next, we're going to investigate Instana's unbounded analytics. Navigate to the
 **Analytics** using the left side navigation.
 
-![](images/analytics.png)
+{/* ![](images/analytics.png) */}
+<img src={require('./images/analytics.png').default} alt="analytics" width="50%" />
 
 Initially, you will see a screen showing 100% of the **Application Calls** that
 are happening in the environment.
@@ -633,7 +650,8 @@ view other options. For example, you could analyze the traces, websites, mobile
 applications, or profiles. For now, close the dialog and we'll analyze the
 **Application Calls**
 
-![](images/type-of-calls.png)
+{/* ![](images/type-of-calls.png) */}
+<img src={require('./images/type-of-calls.png').default} alt="type-of-calls" width="50%" />
 
 One of the key Instana capabilities is **Unbounded Analytics**. This allows you
 to apply ad-hoc queries to easily find the data you are looking for. On the
@@ -657,7 +675,8 @@ to accomplish that.
 Select the **Add Filter** button at the top of the page. Then, select **Call
 Type** and select **Database**
 
-![](images/upper-filter.png)
+{/* ![](images/upper-filter.png) */}
+<img src={require('./images/upper-filter.png').default} alt="upper-filter" width="50%" />
 
 This will filter the calls to just the database calls. But, the calls are not
 organized in a meaningful way. So, let's use the **group** option to group the
@@ -666,7 +685,8 @@ statements.
 Click on the **Add Group** button. Then, type **database** in the filter box and
 select **Statement**
 
-![](images/group-statements.png)
+{/* ![](images/group-statements.png) */}
+<img src={require('./images/group-statements.png').default} alt="group-statements" width="65%" />
 
 This will group all of the Database statements by unique SQL statements. You can
 then take these statements and sort them by latency, erroneous calls, etc.
@@ -689,7 +709,9 @@ Let's explore one more key capability within Instana.
 
 In the upper right corner of the screen, there is a **Share** button.
 
-![](images/share-button.png)
+
+{/* ![](images/share-button.png) */}
+<img src={require('./images/share-button.png').default} alt="share-button" width="40%" />
 
 Click **Share** and a dialog will open.
 
@@ -703,7 +725,8 @@ locking the current time range, when the link it opened, it will take the person
 to a view with the exact same time range that you are looking at. Otherwise,
 they are taken to the most recent time range.
 
-![](images/share-dialog.png)
+{/* ![](images/share-dialog.png) */}
+<img src={require('./images/share-dialog.png').default} alt="share-dialog" width="70%" />
 
 ---
 
