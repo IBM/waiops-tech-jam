@@ -147,6 +147,10 @@ Each command will output a hash like: `{SSHA}xxxxxxxxxxxxxxxxxxxxxxxxxxx`
 ### 4.3.3: Create Users LDIF File
 
 ```bash title="Host: bluebox"
+cd /opt/openldap/ldap-config
+```
+
+```bash title="Host: bluebox"
 cat > create-users.ldif << 'EOF'
 # Alice - Concert Admin
 dn: uid=alice,ou=users,dc=example,dc=com
