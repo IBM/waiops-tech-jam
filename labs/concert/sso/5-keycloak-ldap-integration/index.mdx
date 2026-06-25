@@ -145,8 +145,7 @@ Now, we will add OpenLDAP as a user federation provider in the `concert-realm` r
 ### 5.5.1: Navigate to User Federation
 
 1. In the left navigation menu, click **User Federation**
-2. Click **Add provider** dropdown
-3. Select **ldap**
+2. Click **Add Ldap providers** tile
 
 ![Add LDAP Provider](images/keycloak-userfed-add-provider.png)
 
@@ -256,7 +255,7 @@ If the connection test fails:
 - Verify OpenLDAP service is running on the openldap host
 - Check the Connection URL is correct
 - Verify the Bind DN and Bind Credential are correct
-- Ensure firewall allows connections on port 389
+- Ensure that RHEL iptables allows connections on port 389
 :::
 
 ### 5.5.4: Test Authentication
@@ -275,7 +274,7 @@ After testing the connection, test authentication:
 
 You should see a success message indicating the LDAP provider was created.
 
-Finally, after saving the configuration, you will be able. to see `openldap` in a tile under User federation UI.
+Finally, after saving the configuration, you will be able to see `openldap` in a tile under User federation UI.
 
 ![Keycloak User Federation openldap tile](images/keycloak-userfed-openldap-new-tile.png)
 
