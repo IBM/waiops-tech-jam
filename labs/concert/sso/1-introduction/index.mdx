@@ -1,0 +1,110 @@
+---
+title: 1. Introduction
+description:
+  Introductory material that includes concepts, major features and content overview.
+sidebar_position: 1
+---
+
+# Introduction
+
+IBM Concert provides enterprise-grade Single Sign-On (SSO) capabilities that enable organizations to centralize user authentication and authorization across their IT operations platform. By integrating with industry-standard identity providers like Keycloak and user directories like OpenLDAP, Concert ensures secure, seamless access for users while maintaining robust role-based access control (RBAC).
+
+## Understanding Single Sign-On
+
+Single Sign-On (SSO) is an authentication method that allows users to access multiple applications with a single set of credentials. Instead of managing separate usernames and passwords for each system, users authenticate once and gain access to all authorized applications. This approach offers several key benefits:
+
+- **Enhanced Security**: Centralized authentication reduces password fatigue and the risk of weak or reused passwords
+- **Improved User Experience**: Users log in once and access all their tools without repeated authentication prompts
+- **Simplified Administration**: IT teams manage user access from a single location, streamlining onboarding and offboarding
+- **Audit and Compliance**: Centralized authentication provides better visibility into who accesses what and when
+
+## Concert's SSO Architecture
+
+Concert's SSO implementation leverages three key components working together:
+
+### 1. OpenLDAP - User Directory
+[OpenLDAP](https://www.openldap.org/doc/admin24/) serves as the centralized user directory, storing user accounts, credentials, and organizational structure. It provides:
+- Hierarchical organization of users and groups
+- Secure password storage and authentication
+- Scalable directory services for enterprise environments
+- Standard LDAP protocol support for broad compatibility
+
+### 2. Keycloak - Identity Provider
+[Keycloak](https://www.keycloak.org/documentation) acts as the identity provider (IdP) and authentication broker. Embedded within Concert, it provides:
+- OpenID Connect (OIDC) and SAML 2.0 protocol support
+- User federation from external directories like OpenLDAP
+- Token-based authentication and session management
+- Fine-grained authorization and role mapping
+- Single Sign-On and Single Logout capabilities
+
+### 3. Concert - Application Platform
+Concert consumes authentication services from Keycloak, enabling:
+- Seamless SSO login experience
+- Role-based access control aligned with Concert personas
+- Integration with existing enterprise identity infrastructure
+- Secure API access with OAuth 2.0 tokens
+
+## Authentication Flow
+
+When a user accesses Concert with SSO enabled, the following flow occurs:
+
+1. **User Access**: User navigates to Concert UI and clicks "Log in with SSO"
+2. **Redirect to Keycloak**: Concert redirects the user to Keycloak's login page
+3. **LDAP Authentication**: Keycloak authenticates the user against OpenLDAP
+4. **Token Generation**: Upon successful authentication, Keycloak generates an OIDC token
+5. **Return to Concert**: User is redirected back to Concert with the authentication token
+6. **Role Assignment**: Concert validates the token and assigns roles based on group membership
+7. **Access Granted**: User gains access to Concert with appropriate permissions
+
+## Lab Scenario
+
+In this lab, you will implement a complete SSO solution for Concert using OpenLDAP and Keycloak. You'll configure the entire authentication chain from user directory to application access, creating a production-ready SSO environment.
+
+### What You'll Build
+
+By the end of this lab, you will have:
+- A configured OpenLDAP directory with Concert users and groups
+- Keycloak integrated with OpenLDAP for user federation
+- Concert configured to use Keycloak for OIDC authentication
+- Three test users representing different Concert personas
+- A fully functional SSO login experience
+
+### Real-World Application
+
+This lab mirrors real-world enterprise deployments where:
+- Organizations maintain centralized user directories (Active Directory, OpenLDAP)
+- Identity providers (Keycloak, Okta, Azure AD) broker authentication
+- Applications like Concert consume authentication services via standard protocols
+- Role-based access control ensures users have appropriate permissions
+
+## Lab Content
+
+In this lab, you will explore the following topics:
+
+1. **Lab Environment Setup**: Understand the lab architecture and access the environment
+2. **Lab Preparation**: Gather credentials and verify component accessibility
+3. **OpenLDAP Configuration**: Create users and groups in the LDAP directory
+4. **Keycloak LDAP Integration**: Configure user federation from OpenLDAP to Keycloak
+5. **Concert OIDC Setup**: Configure Concert to authenticate via Keycloak
+6. **Testing Authentication**: Verify SSO login with different user roles
+7. **Lab Summary**: Review key concepts and best practices
+
+### Prerequisites
+
+Before starting this lab, you should have:
+- Basic understanding of authentication concepts (usernames, passwords, tokens)
+- Familiarity with Linux command line operations
+- Access to a Firefox web browser
+- IBM ID for TechZone environment access
+
+### Lab Execution Order
+
+The lab should be executed in the numbered order shown in the navigation pane on the left. Each section builds upon the previous one, so completing them in sequence is essential for success.
+
+## Support
+
+If you are running the lab on your own and have questions or need assistance, please use the Slack channel listed under the [**Support** section](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops).
+
+---
+
+Let's begin by understanding the lab environment in the next section.

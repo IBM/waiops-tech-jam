@@ -1,0 +1,96 @@
+---
+title: 8. Lab Summary
+description: Lab summary, key takeaways, and next steps.
+sidebar_position: 8
+---
+
+# 8. Lab Summary
+
+Congratulations! You have successfully completed the Concert Single Sign-On lab. You've built a complete enterprise SSO solution integrating IBM Concert with Keycloak and OpenLDAP, implementing industry-standard authentication protocols and role-based access control.
+
+## 8.1: What You Accomplished
+
+Throughout this lab, you have:
+
+### Infrastructure Setup
+- ✅ Accessed and configured a multi-VM lab environment
+- ✅ Verified connectivity between Concert, Keycloak, and OpenLDAP hosts
+- ✅ Gathered and organized all necessary credentials
+
+### OpenLDAP Configuration
+- ✅ Created organizational units for users and groups
+- ✅ Created three user accounts representing Concert personas
+- ✅ Configured groups for role-based access control
+- ✅ Verified LDAP directory structure and user authentication
+
+### Keycloak Integration
+- ✅ Created a dedicated realm for Concert SSO
+- ✅ Configured LDAP user federation
+- ✅ Set up user attribute mappers
+- ✅ Configured group membership synchronization
+- ✅ Tested LDAP authentication through Keycloak
+
+### Concert OIDC Setup
+- ✅ Created an OIDC client in Keycloak
+- ✅ Configured client scopes and mappers
+- ✅ Integrated Concert with Keycloak as identity provider
+- ✅ Configured role mappings for Concert personas
+
+### Testing and Validation
+- ✅ Tested SSO login with Admin and User roles at Instance level
+- ✅ Verified role-based access control
+- ✅ Validated security controls and session management
+- ✅ Confirmed complete authentication chain functionality
+
+---
+
+## 8.2: Key Concepts Learned
+
+### Single Sign-On (SSO)
+You learned how SSO enables users to authenticate once and access multiple applications, improving both security and user experience. The lab demonstrated:
+- Centralized authentication reduces password fatigue
+- Token-based authentication enables seamless access
+- Single logout can terminate all sessions simultaneously
+
+### OpenID Connect (OIDC)
+You implemented OIDC, the modern authentication protocol that:
+- Builds on OAuth 2.0 for authorization
+- Provides identity information through ID tokens
+- Enables secure delegation of authentication
+- Supports standard claims for user information
+
+### LDAP User Federation
+You configured Keycloak to federate users from OpenLDAP, demonstrating:
+- Real-time authentication against external directories
+- Attribute mapping from LDAP to application
+- Group-based role assignment
+- Centralized user management
+
+### Role-Based Access Control (RBAC)
+You implemented RBAC by:
+- Mapping LDAP groups to application roles
+- Enforcing permissions based on roles
+- Demonstrating principle of least privilege
+- Validating access controls for different personas
+
+
+<br> </br>
+<br> </br>
+<br> </br>
+
+================================
+===================================
+
+# 🎉 Congratulations! You have completed the Lab
+We encourage you to provide feedback on this lab to help us improve future versions.
+Tell us what you liked, what you didn't like, and any suggestions for improvement.
+You can provide feedback on the Slack channel listed under the [**Support** section](https://techzone.ibm.com/collection/jam-in-a-box-for-aiops).
+
+================================
+===================================
+
+:::tip
+**Keep Learning**: Explore other labs in the AIOps Jam-in-a-Box series to expand your Concert and AIOps expertise.
+:::
+
+---
