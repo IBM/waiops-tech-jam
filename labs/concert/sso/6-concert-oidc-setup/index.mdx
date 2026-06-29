@@ -26,7 +26,7 @@ OpenID Connect (OIDC) is an authentication protocol built on top of OAuth 2.0. I
 
 ## 6.2: Retrieve Client Secret
 
-After creating the client, you need to retrieve the client secret for Concert configuration.
+After creating the **concert-client** in **Section 5.4**, you need to retrieve the client secret for Concert configuration.
 
 ### 6.2.1: Get Client Secret
 
@@ -363,9 +363,10 @@ We will validate this role assignment for Concert Instance level in **Section 7*
 
 Now, we will configure Concert to use Keycloak as its OIDC identity provider. This configuration is done via Concert's configuration files on the Concert host.
 
+### 6.11.1: Connect to Concert Host
+
 1. Connect to Concert host using SSH from the Bastion host. 
 The Concert host is where the Concert application is running and where we'll apply the OIDC configuration.
-### 6.11.1: Connect to Concert Host
 
 ```bash title="Host: bastion-gym-lan"
 ssh jammer@concert
