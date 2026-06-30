@@ -449,14 +449,87 @@ You should see all three groups with their members.
 # Check which groups Alice belongs to
 ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "ou=groups,dc=example,dc=com" \
                  "(member=uid=alice,ou=users,dc=example,dc=com)" cn
+```
 
+You should see `Alice` belongs to `corporate_it_staff` group.
+
+```bash title="Actual output"
+# extended LDIF
+#
+# LDAPv3
+# base <ou=groups,dc=example,dc=com> with scope subtree
+# filter: (member=uid=alice,ou=users,dc=example,dc=com)
+# requesting: cn 
+#
+
+# corporate_it_staff, groups, example.com
+dn: cn=corporate_it_staff,ou=groups,dc=example,dc=com
+cn: corporate_it_staff
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+```
+
+```bash title="Host: bluebox"
 # Check which groups Bob belongs to
 ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "ou=groups,dc=example,dc=com" \
                  "(member=uid=bob,ou=users,dc=example,dc=com)" cn
+```
 
+You should see `Bob` belongs to `hr_staff` group.
+
+```bash title="Actual output"
+# extended LDIF
+#
+# LDAPv3
+# base <ou=groups,dc=example,dc=com> with scope subtree
+# filter: (member=uid=bob,ou=users,dc=example,dc=com)
+# requesting: cn 
+#
+
+# hr_staff, groups, example.com
+dn: cn=hr_staff,ou=groups,dc=example,dc=com
+cn: hr_staff
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+```
+
+```bash title="Host: bluebox"
 # Check which groups Charlie belongs to
 ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "ou=groups,dc=example,dc=com" \
                  "(member=uid=charlie,ou=users,dc=example,dc=com)" cn
+```
+
+You should see `Charlie` belongs to `sales_staff` group.
+
+```bash title="Actual output"
+# extended LDIF
+#
+# LDAPv3
+# base <ou=groups,dc=example,dc=com> with scope subtree
+# filter: (member=uid=charlie,ou=users,dc=example,dc=com)
+# requesting: cn 
+#
+
+# sales_staff, groups, example.com
+dn: cn=sales_staff,ou=groups,dc=example,dc=com
+cn: sales_staff
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
 ```
 
 ---
@@ -473,8 +546,8 @@ ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "dc=example,dc=com" -
 This will display all entries in the directory. You should see:
 - Base DN: `dc=example,dc=com`
 - Two OUs: `ou=users` and `ou=groups`
-- Three users: alice, bob, charlie
-- Three groups: corporate_it_staff, hr_staff, sales_staff
+- Three users: `alice`, `bob`, `charlie`
+- Three groups: `corporate_it_staff`, `hr_staff`, `sales_staff`
 
 ### 4.5.1: Visual Verification
 
@@ -520,8 +593,8 @@ exit
 You have successfully configured OpenLDAP with:
 
 ### 4.7.1: Organizational Units
-- ✅ `ou=users,dc=example,dc=com` - Container for user accounts
-- ✅ `ou=groups,dc=example,dc=com` - Container for groups
+- ✅ `ou=users,dc=example,dc=com` - User accounts directory
+- ✅ `ou=groups,dc=example,dc=com` - Groups directory
 
 ### 4.7.2: User Accounts
 - ✅ **alice** (Admin) - `uid=alice,ou=users,dc=example,dc=com`
