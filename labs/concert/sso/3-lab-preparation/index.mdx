@@ -253,6 +253,8 @@ Now, you have successfully created the admin user and password. Keep the admin u
 
 11. Sign out from Keycloak UI. Re-login to Keycloak UI using the new admin username and password.
 
+![Keycloak Admin Logout](images/keycloak-admin-logout.png)
+
 We will use the new admin username and password from this point onward.
 
 ---
@@ -261,6 +263,10 @@ We will use the new admin username and password from this point onward.
 
 Before proceeding with user configuration, verify that OpenLDAP is installed on `bluebox.ibmdte.local` virtual machine. By default, the OpenLDAP service is stopped. 
 Let's bring up OpenLDAP service for this lab activity and check its connection from `bastion-gym-lan.ibmdte.local`.
+
+:::info
+By default, OpenLDAP slapd service is stopped to minimize compute resources on `bluebox.ibmdte.local` virtual machine. 
+:::
 
 ### 3.7.1: Check OpenLDAP Service Status
 
