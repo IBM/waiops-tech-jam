@@ -1,0 +1,693 @@
+---
+title: 5. Keycloak LDAP Integration
+description: Integrate Keycloak with OpenLDAP for user federation.
+sidebar_position: 5
+---
+
+# 5. Keycloak LDAP Integration
+
+In this section, you will configure Keycloak to federate users from the OpenLDAP directory you created in the previous section. This integration allows Keycloak to authenticate users against LDAP while managing sessions and tokens centrally.
+
+## 5.1: Understanding User Federation
+
+User Federation in Keycloak allows you to connect to external user directories (like LDAP or Active Directory) without importing users into Keycloak's database. Instead, Keycloak queries the external directory in real-time for authentication and user information.
+
+### 5.1.1: Benefits of User Federation
+
+- **Single Source of Truth**: User data remains in LDAP
+- **Real-time Synchronization**: Changes in LDAP are immediately reflected
+- **Reduced Maintenance**: No need to duplicate user management
+- **Scalability**: Supports large user directories efficiently
+
+---
+
+## 5.2: Access Keycloak Admin Console
+
+From the Bastion Host, open Firefox.
+
+1. Click on the Keycloak bookmark to open the Keycloak UI. Or navigate to: `https://concert.ibmdte.local:13443/sys/internal/kc/`
+2. Accept the certificate warning if prompted
+3. Log in with Keycloak admin credentials from your credentials file:
+   - **Username**: `admin`
+   - **Password**: (created in **Section 3.6**)
+
+:::tip
+If you're already logged into Keycloak from the Lab Preparation section, you can continue using that session.
+:::
+
+---
+
+## 5.3: Create a New Realm for Concert SSO
+
+Keycloak uses realms to isolate different sets of users, applications, and configurations. We'll create a dedicated realm for Concert SSO.
+
+### 5.3.1: Why Create a New Realm?
+
+- **Isolation**: Separates Concert SSO from other applications
+- **Clean Configuration**: Starts with a fresh configuration
+- **Best Practice**: Production deployments typically use dedicated realms
+
+### 5.3.2: Steps to Create Realm
+
+1. In the Keycloak Admin Console, hover over the realm dropdown in the top-left corner (currently showing "Master")
+2. Click **Create Realm**
+3. Enter the following details:
+   - **Realm name**: `concert-realm`
+   - **Enabled**: Toggle to **ON** (should be on by default)
+4. Click **Create**
+
+![Create Realm](images/keycloak-create-concert-realm.png)
+
+:::note
+After creating the realm, Keycloak automatically switches to the new realm. You should see "concert-realm" in the realm dropdown.
+:::
+
+---
+
+## 5.4: Create a New Client for Concert SSO
+
+Now that the `concert-realm` is active, create the OIDC client that Concert will use to authenticate users via Keycloak.
+
+### 5.4.1: Why Create a New Client?
+
+- **OIDC integration**: Enables Concert to use Keycloak for authentication
+- **Client identity**: Provides the client ID that Concert will reference
+- **Token exchange**: Allows secure issuance of ID and access tokens
+
+### 5.4.2: Steps to Create the Concert OIDC Client
+
+1. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm (check the realm dropdown)
+2. In the left navigation menu, click **Clients** in the main navigation.
+3. Click **Create client**.
+
+![Create Client](images/keycloak-create-client.png)
+
+4. Enter the following values:
+   - **Client Protocol** / **Client Type**: `OpenID Connect`
+   - **Client ID**: `concert-client`
+   - **Name**: `Concert SSO Client` (optional internal reference)
+   - **Description**: `OIDC client for Concert SSO` (optional)
+
+![Create Client](images/keycloak-create-client-values.png)
+
+5. Click **Next**.
+
+This action creates the client and redirects you to the Settings tab for basic configuration.
+
+### 5.4.3: Configure Client Capability
+
+1. In the **Capability config** section, enable **Client authentication**.
+2. Select the check boxes for:
+   - **Standard flow**
+   - **Direct access grants**
+   - **Implicit flow**
+   - **Service accounts roles**
+3. Leave the following check boxes unselected :
+   - **Standard Token Exchange**
+   - **OAuth 2.0 Device Authorization Grant**
+   - **OIDC CIBA Grant**
+4. Click **Next**.
+
+![Create Client Capability](images/keycloak-create-client-capability.png)
+
+### 5.4.4: Configure Login Settings
+
+1. In the **Login settings** section, enter the following values:
+   - **Root URL**: `https://concert.ibmdte.local:12443`
+   - **Home URL**: `**Leave empty**`
+   - **Valid redirect URIs**: `/solis_hub/core/api/v1/exchange*`
+   - **Valid post logout redirect URIs**: `**Leave empty**`
+   - **Web origins**: `**Leave empty**`
+2. Click **Save**.
+
+![Create Client Login](images/keycloak-create-client-login.png)
+
+:::note
+The `*` wildcard in redirect URIs allows Concert to redirect to any path under its domain. In production, you should specify exact redirect URIs for better security.
+:::
+
+3. Click **Save** on the summary screen.
+
+![Create Client Summary](images/keycloak-create-client-summary.png)
+
+### 5.4.5: What This Does
+
+- The client is registered as an OIDC client in the `concert-realm`.
+- `concert-client` becomes the identifier used by Concert for authentication requests.
+- The Root URL and redirect URI ensure the client can complete the OIDC login flow.
+
+---
+
+## 5.5: Configure LDAP User Federation
+
+Now, we will add OpenLDAP as a user federation provider in the `concert-realm` realm.
+
+### 5.5.1: Navigate to User Federation
+
+1. In the left navigation menu, click **User Federation**
+2. Click **Add Ldap providers** tile
+
+![Add LDAP Provider](images/keycloak-userfed-add-provider.png)
+
+### 5.5.2: Configure LDAP Connection Settings
+
+On the LDAP configuration page, enter the following settings:
+
+#### 5.5.2.1: General Settings
+
+1. Enter the following values:
+   - **UI Display Name**: `openldap`
+   - **Vendor**: `Other`
+
+![Keycloak Userfed General Settings](images/keycloak-userfed-general-settings.png)
+
+#### 5.5.2.2: Connection and Authentication Settings
+
+1. Enter the following values:
+   - **Connection URL**: `ldap://bluebox.ibmdte.local:389`
+   - **Enable StartTLS**: `OFF`
+   - **Use Truststore SPI**: `Never`
+   - **Connection Pooling**: `ON`
+   - **Connection Timeout**: `**Leave default**`
+
+![Keycloak Userfed Conn and Auth Settings](images/keycloak-userfed-general-settings-block2.png)
+
+:::important
+In real-life production system, Secure LDAP (LDAPS) is the recommended approach to secure the communication channel between Keycloak and OpenLDAP.
+:::
+
+#### 5.5.2.3: LDAP Bind Settings
+
+1. Enter the following values:
+   - **Bind Type**: `simple`
+   - **Bind DN**: `cn=admin,dc=example,dc=com`
+   - **Bind Credential**: `secret` **(created in **Section 3.6**)**
+
+:::important
+Use the OpenLDAP admin password you created in **Section 3.6**.
+:::
+
+![Keycloak User Federation LDAP Bind Settings](images/keycloak-userfed-ldap-bind-settings.png)
+
+#### 5.5.2.4: LDAP Searching and Updating
+
+1. Enter the following values:
+   - **Edit Mode**: `READ_ONLY`
+   - **Users DN**: `ou=users,dc=example,dc=com`
+   - **Relative user creation DN**: `**Leave undefined**`
+   - **Username LDAP attribute**: `uid`
+   - **RDN LDAP attribute**: `uid`
+   - **UUID LDAP attribute**: `entryUUID`
+   - **User Object Classes**: `inetOrgPerson, organizationalPerson`
+   - **User LDAP filter**: `**Leave undefined**`
+   - **Search scope**: `One Level`
+   - **Read timeout**: `**Leave default**`
+   - **Pagination**: `ON`
+   - **Referral**: `**Leave undefined**`
+
+![Keycloak User Federation LDAP Search Part 1](images/keycloak-userfed-ldap-search-and-updating.png)
+   
+![Keycloak User Federation LDAP Search Part 2](images/keycloak-userfed-ldap-part2-search-and-updating.png)
+
+#### 5.5.2.5: Synchronization settings
+
+1. Enter the following values:
+   - **Import Users**: `ON`
+   - **Sync Registrations**: `OFF`
+   - **Batch size**: `1000`
+   - **Periodic full sync**: `ON`
+   - **Full sync period**: `604800`
+   - **Periodic changed users sync**: `ON`
+   - **Changed users sync period**: `86400`
+   - **Remove invalid users during searches**: `ON`
+   
+![Keycloak User Federation LDAP Sync Settings](images/keycloak-userfed-ldap-sync-kerberos.png)
+
+#### 5.5.2.6: Kerberos integration
+
+1. Enter the following values:
+   - **Allow Kerberos authentication**: `OFF`
+   - **Use Kerberos for password authentication**: `OFF`
+
+![Keycloak User Federation LDAP Sync Kerberos](images/keycloak-userfed-ldap-sync-kerberos-part2.png)
+
+#### 5.5.2.7: Cache settings
+
+1. Enter the following values:
+   - **Cache policy**: `DEFAULT`
+
+![Keycloak adv](images/keycloak-userfed-ldap-sync-part1-cache-adv.png)
+
+#### 5.5.2.8: Advanced settings
+
+1. Enter the following values:
+   - **Enable the LDAPv3 password modify extended operation**: `OFF`
+   - **Validate password policy**: `OFF`
+   - **Trust Email**: `OFF`
+   - **Connection trace**: `OFF`
+
+![Keycloak adv](images/keycloak-userfed-ldap-sync-cache-adv.png)
+
+### 5.5.3: Test LDAP Connection
+
+Before saving, test the connection:
+
+1. Scroll down to find the **Test connection** button
+2. Click **Test connection**
+3. You should see a success message: "Successfully connected to LDAP"
+
+![Test Connection Success](images/keycloak-test-connection.png)
+
+:::warning
+If the connection test fails:
+- Verify OpenLDAP service is running on the openldap host
+- Check the Connection URL is correct
+- Verify the Bind DN and Bind Credential are correct
+- Ensure that RHEL iptables allows connections on port 389
+:::
+
+### 5.5.4: Test Authentication
+
+After testing the connection, test authentication:
+
+1. Click **Test authentication**
+2. You should see a success message: "Successfully connected to LDAP"
+
+![Test Authentication Success](images/keycloak-test-authentication.png)
+
+### 5.5.5: Save Configuration
+
+1. Scroll to the top or bottom of the page
+2. Click **Save**
+
+You should see a success message indicating the LDAP provider was created.
+
+Finally, after saving the configuration, you will be able to see `openldap` in a tile under User federation UI.
+
+![Keycloak User Federation openldap tile](images/keycloak-userfed-openldap-new-tile.png)
+
+---
+
+## 5.6: Synchronize Users from LDAP
+
+Now that **openldap** User Federation has been configured, synchronize users from OpenLDAP to Keycloak.
+
+### 5.6.1: Perform Initial Sync
+
+1. On the **User federation** page, click **openldap** tile
+2. On **openldap** settings, click **Action** drop down
+3. Click **Sync all users**
+
+![Sync Users](images/keycloak-sync-all-users.png)
+
+4. Wait for the synchronization to complete
+
+![Sync all Users message](images/keycloak-sync-all-users-message.png)
+
+5. You should see a message indicating how many users were synchronized (should be 3: alice, bob, charlie)
+
+
+### 5.6.2: Verify Users in Keycloak
+
+1. In the left navigation menu, click **Users**
+2. Enter `*` in the search box, next to magnifying glass, and click `Return` key 
+3. You should see three users: `alice`, `bob`, and `charlie`
+
+![Users List](images/keycloak-view-all-users.png)
+
+### 5.6.3: Inspect User Details
+
+Click on one of the users (e.g., alice) to view details:
+
+1. **Details** tab shows:
+   - Username: alice
+   - Email: alice@example.com
+   - First Name: Alice
+   - Last Name: Administrator
+   - Federation Link: openldap
+
+2. **Credentials** tab shows:
+   - Password is managed by LDAP (cannot be changed in Keycloak)
+
+3. **Attributes** tab shows:
+   - LDAP attributes imported from OpenLDAP
+
+![User Details](images/keycloak-alice-ldap-user.png)
+
+---
+
+## 5.7: Configure LDAP Mappers
+
+Mappers define how LDAP attributes are mapped to Keycloak user attributes. We will configure mappers for user attributes and group membership.
+
+### 5.7.1: Navigate to Mappers
+
+1. Go back to **User Federation** → **openldap** 
+
+![UserFed OpenLDAP](images/keycloak-userfed-openldap.png)
+
+2. Click the **Mappers** tab
+3. You'll see several default mappers already created
+
+![Mapper](images/keycloak-userfed-mapper-add.png)
+
+### 5.7.2: Review Default Mappers
+
+Keycloak creates several default mappers automatically such as:
+
+| Mapper Name | Type | Description |
+|-------------|------|-------------|
+| **username** | user-attribute-ldap-mapper | Maps uid to username |
+| **email** | user-attribute-ldap-mapper | Maps mail to email |
+| **first name** | user-attribute-ldap-mapper | Maps cn to first name |
+| **last name** | user-attribute-ldap-mapper | Maps sn to last name |
+| **creation date** | user-attribute-ldap-mapper | Maps createTimestamp |
+| **modify date** | user-attribute-ldap-mapper | Maps modifyTimestamp |
+
+These default mappers are sufficient for basic user attributes.
+
+### 5.7.3: Create Group Mapper
+
+Now, we will create a mapper to import LDAP groups as Keycloak groups:
+
+1. Click **Add mapper**
+
+![Mapper Add](images/keycloak-userfed-new-mapper-add.png)
+
+2. Select **group-ldap-mapper** from the mapper type dropdown
+
+![Mapper Select Group Ldap](images/keycloak-userfed-mapper-group-ldap.png)
+
+3. Enter the following values for the new mapper:
+   - **Name**: `concert-groups`
+   - **LDAP Groups DN**: `ou=groups,dc=example,dc=com`
+   - **Relative creation DN**: `**Leave empty**`
+   - **Group Name LDAP Attribute**: `cn`
+   - **Group Object Classes**: `groupOfNames`
+   - **Preserve Group Inheritance**: `ON`
+   - **Ignoring Missing Groups**: `OFF`
+   - **Membership LDAP Attribute**: `member`
+   - **Membership Attribute Type**: `DN`
+   - **Membership User LDAP Attribute**: `uid`
+   - **LDAP Filter**: `**Leave empty**`
+   - **Mode**: `READ_ONLY`
+   - **User Groups Retrieve Strategy**: `LOAD_GROUPS_BY_MEMBER_ATTRIBUTE`
+   - **Member-Of LDAP Attribute**: `memberOf`
+   - **Mapped Group Attributes**: `**Leave empty**`
+   - **Drop non-existing groups during sync**: `OFF`
+   - **Groups Path**: `/`
+
+4. Click **Save** to save the new group mapper.
+
+![Group Mapper Configuration Part 1](images/keycloak-userfed-concert-group-part1.png)
+![Group Mapper Configuration Part 2](images/keycloak-userfed-concert-group-part2.png)
+
+### 5.7.4: Synchronize Groups
+
+After creating the group mapper:
+
+1. Find the **concert-groups** mapper in the list
+2. Click on it to open the configuration
+3. Scroll down and click **Sync LDAP Groups To Keycloak**
+
+![Sync Groups](images/keycloak-userfed-sync-groups.png)
+
+4. You should see a message, `Data successfully synced ...`  on top right corner indicating groups were synchronized
+ 
+![Sync Groups Result](images/keycloak-userfed-sync-groups-message.png)
+ 
+![Sync Groups Result](images/keycloak-group-sync-result.png)
+
+---
+
+## 5.8: Verify Group Synchronization
+
+Let's verify that groups and group memberships were synchronized correctly.
+
+### 5.8.1: View Groups in Keycloak
+
+1. In the left navigation menu, click **Groups**
+2. You should see three groups:
+   - corporate_it_staff
+   - hr_staff
+   - sales_staff
+
+![Groups List](images/keycloak-ldap-groups.png)
+
+### 5.8.2: Verify Group Membership
+
+1. Click on **corporate_it_staff** group
+2. Click the **Members** tab
+3. You should see **alice** as a member
+
+Repeat for other groups:
+- **hr_staff** should have **bob** as a member
+- **sales_staff** should have **charlie** as a member
+
+![Group Members Corporate IT](images/keycloak-groups-corporate_it_staff.png)
+
+![Group Members HR](images/keycloak-groups-hr_staff.png)
+
+![Group Members Sales](images/keycloak-groups-sales_staff.png)
+
+### 5.8.3: Verify User Group Membership
+
+Alternatively, check from the user perspective:
+
+1. Go to **Users** → Enter `*` in the search box, next to magnifying glass, and click `Return` key 
+2. Click on **alice**
+3. Click the **Groups** tab
+4. You should see **corporate_it_staff** in the group membership list
+
+![User Groups Membership](images/keycloak-alice-user-groups-membership.png)
+
+---
+
+## 5.9: Test LDAP Authentication
+
+Before proceeding to Concert configuration, let's test that users can authenticate via Keycloak using their LDAP credentials.
+To achieve that, let's create a **temporary test client**.
+
+:::info 
+Why Create a Test Client? <br/>
+Before integrating Keycloak with Concert, we need to verify that the LDAP integration is working correctly. A test client allows us to:
+- Confirm users can authenticate through Keycloak
+- Verify LDAP user data is being retrieved properly
+- Test that group mappings are working
+- Ensure token claims are configured correctly
+
+This test client can be deleted after verification, and the actual `concert-client` which you have configured in Section 5.4 will be used for all subsequent steps.
+:::
+
+### 5.9.1: Create a Test Client
+
+To test authentication, we will create a **temporary test client**:
+
+1. In the **Keycloak** left navigation menu, click **Clients**
+2. Click **Create client**
+3. Enter the following:
+   - **Client type**: `OpenID Connect`
+   - **Client ID**: `test-client`
+   - **Name**: `test-client`
+   - **Description**: `test-client`
+4. Click **Next**
+
+![Keycloak Test Client Gen Settings](images/keycloak-test-client-general-settings.png)
+
+5. Under **Configure capability**, configure the following:
+   - **Client authentication**: `OFF` (public client)
+   - **Authorization**: `OFF`
+   - **Standard flow**: `ON`
+   - **Direct access grants**: `ON`
+6. Click **Next**
+
+![Keycloak Test Client Cap Configs](images/keycloak-test-client-cap-configs.png)
+
+7. Under **login settings**, configure the following:
+   - **Valid redirect URIs**: `*`
+   - **Web origins**: `*`
+8. Click **Save**
+
+![Keycloak Test Client Login Settings](images/keycloak-test-client-login-settings.png)
+
+### 5.9.2: Test Authentication with Direct Access Grant
+
+From the Bastion Host terminal, test authentication using curl commands below:
+
+```bash title="Host: bastion-gym-lan"
+# Test Keycloak endpoint for OIDC configuration
+curl -k https://concert.ibmdte.local:13443/sys/internal/kc/realms/concert-realm/.well-known/openid-configuration
+
+# Test Alice's authentication
+curl -X POST "https://concert.ibmdte.local:13443/sys/internal/kc/realms/concert-realm/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "client_id=test-client" \
+  -d "username=alice" \
+  -d "password=Alice@123" \
+  -d "grant_type=password" \
+  --insecure | jq .
+
+# Test Bob's authentication
+curl -X POST "https://concert.ibmdte.local:13443/sys/internal/kc/realms/concert-realm/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "client_id=test-client" \
+  -d "username=bob" \
+  -d "password=Bob@123" \
+  -d "grant_type=password" \
+  --insecure | jq .
+
+# Test Charlie's authentication
+curl -X POST "https://concert.ibmdte.local:13443/sys/internal/kc/realms/concert-realm/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "client_id=test-client" \
+  -d "username=charlie" \
+  -d "password=Charlie@123" \
+  -d "grant_type=password" \
+  --insecure | jq .
+```
+
+:::note
+If `jq` is not installed, you can omit `| jq .` to see the raw JSON response.
+:::
+
+:::info
+Endpoint `https://concert.ibmdte.local:13443/sys/internal/kc/realms/<realm-name>` <br/>
+is specific to this embedded Keycloak instance. <br/> For standard Keycloak deployments, 
+the endpoint would be <br/> `https://<keycloak-host>:<port>/auth/realms/<realm-name>`
+:::
+
+Expected output should include:
+- `access_token`: JWT token for the authenticated user
+- `refresh_token`: Token for refreshing the access token
+- `token_type`: "Bearer"
+- `expires_in`: Token expiration time
+
+![Curl OIDC Test Client Output](images/curl-oidc-test-client-output.png)
+
+If authentication fails, you'll see an error message like:
+```json
+{
+  "error": "invalid_grant",
+  "error_description": "Invalid user credentials"
+}
+```
+
+### 5.9.3: Delete Test Client
+
+After testing, delete the test client:
+
+1. In the **Keycloak** left navigation menu, click **Clients**
+2. Find **test-client**
+3. Click on it
+4. Click **Delete** (in the Action dropdown or at the bottom)
+5. Confirm deletion
+
+---
+
+## 5.10: Configuration Summary
+
+You have successfully configured Keycloak LDAP integration with:
+
+### 5.10.1: LDAP User Federation
+- ✅ Connected Keycloak to OpenLDAP server
+- ✅ Configured LDAP connection and bind settings
+- ✅ Tested LDAP connection and authentication
+- ✅ Synchronized 3 users from LDAP to Keycloak
+
+### 5.10.2: User Attribute Mappers
+- ✅ Username mapper (uid → username)
+- ✅ Email mapper (mail → email)
+- ✅ First name mapper (cn → firstName)
+- ✅ Last name mapper (sn → lastName)
+
+### 5.10.3: Group Mapper
+- ✅ Created group mapper for LDAP groups
+- ✅ Synchronized 3 groups from LDAP to Keycloak
+- ✅ Verified group memberships
+
+### Verification
+- ✅ Users visible in Keycloak Users list
+- ✅ Groups visible in Keycloak Groups list
+- ✅ Group memberships correctly mapped
+- ✅ LDAP authentication working via Keycloak
+
+---
+
+## Troubleshooting
+
+:::info
+This section provides basic troubleshooting steps in case you encounter any issues while performing the steps above.
+These steps are optional and only need to be followed if you run into problems.
+:::
+
+### Users Not Appearing After Sync
+
+**Problem**: Synchronize all users completes but no users appear
+
+**Solutions**:
+- Verify Users DN is correct: `ou=users,dc=example,dc=com`
+- Check User Object Classes match LDAP: `inetOrgPerson, organizationalPerson`
+- Verify users exist in LDAP: `ldapsearch -x -b "ou=users,dc=example,dc=com" "(uid=*)"`
+
+### Groups Not Synchronizing
+
+**Problem**: Group sync completes but no groups appear
+
+**Solutions**:
+- Verify LDAP Groups DN is correct: `ou=groups,dc=example,dc=com`
+- Check Group Object Classes: `groupOfNames`
+- Verify groups exist in LDAP: `ldapsearch -x -b "ou=groups,dc=example,dc=com" "(cn=*)"`
+- Ensure Membership LDAP Attribute is `member`
+- Check that group members use full DN format
+
+### Group Membership Not Showing
+
+**Problem**: Groups exist but members are not associated
+
+**Solutions**:
+- Verify member attribute in LDAP contains full user DN
+- Check Membership Attribute Type is set to `DN`
+- Re-sync groups: Click **Sync LDAP Groups To Keycloak**
+- Verify in LDAP: `ldapsearch -x -b "ou=groups,dc=example,dc=com" "(cn=concert-admins)" member`
+
+### Authentication Test Fails
+
+**Problem**: Test authentication button shows failure
+
+**Solutions**:
+- Verify Bind DN and Bind Credential are correct
+- Test LDAP bind manually: `ldapwhoami -x -D "cn=admin,dc=example,dc=com" -w secret`
+- Check OpenLDAP service is running
+- Verify network connectivity to OpenLDAP host
+
+### Cannot Connect to LDAP
+
+**Problem**: Test connection fails
+
+**Solutions**:
+- Verify Connection URL format: `ldap://bluebox.ibmdte.local:389`
+- Check OpenLDAP service: `ssh jammer@bluebox 'sudo systemctl status slapd'`
+- Test network connectivity: `ping bluebox.ibmdte.local`
+- Verify firewall allows port 389
+- Try using IP address instead of hostname
+
+### Users Can't Authenticate
+
+**Problem**: Direct access grant test fails with invalid credentials
+
+**Solutions**:
+- Verify user password in LDAP: `ldapwhoami -x -D "uid=alice,ou=users,dc=example,dc=com" -w secret`
+- Check user exists in Keycloak: Go to Users → View all users
+- Verify user is enabled in Keycloak
+- Check Edit Mode is set to READ_ONLY (not UNSYNCED)
+- Re-sync users from LDAP
+
+---
+
+## Next Steps
+
+Now that Keycloak is successfully integrated with OpenLDAP and can authenticate users, you're ready to proceed to the next section where you'll configure Concert to use Keycloak as its OIDC identity provider. This will enable SSO login for Concert using the LDAP users you've configured.
+
+:::success
+Keycloak LDAP integration is complete! Users from OpenLDAP can now authenticate via Keycloak with proper group memberships.
+:::

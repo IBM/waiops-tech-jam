@@ -1,0 +1,681 @@
+---
+title: 4. OpenLDAP Configuration
+description: Configure OpenLDAP user directory with Concert users and groups.
+sidebar_position: 4
+---
+
+# 4. OpenLDAP Configuration
+
+This lab uses standard **LDAP (port 389)** without encryption to simplify the setup and focus on the SSO integration concepts.
+
+:::important
+In a real-life production system, you should always use Secure LDAP (LDAPS) to encrypt authentication traffic and protect user credentials. 
+:::
+
+In this section, you will configure OpenLDAP as the user directory for Concert SSO. You will create 
+ 1. user accounts representing different Concert personas, and 
+ 2. groups for role-based access control.
+
+## 4.1: Understanding LDAP Directory Structure
+
+LDAP (Lightweight Directory Access Protocol) organizes data in a hierarchical tree structure, similar to a file system. Each entry in the directory has a Distinguished Name (DN) that uniquely identifies it.
+
+### 4.1.1: Directory Information Tree (DIT)
+
+For this lab, we will create the following structure:
+
+```
+dc=example,dc=com (Base DN)
+├── ou=users (Organizational Unit for users)
+│   ├── uid=alice 
+│   ├── uid=bob 
+│   └── uid=charlie 
+└── ou=groups (Organizational Unit for groups)
+    ├── cn=corporate_it_staff 
+    ├── cn=hr_staff 
+    └── cn=sales_staff 
+```
+For the above LDAP structure, let's imagine that: <br/>
+• **Alice** belongs to Corporate **IT** organization. <br/>
+• **Bob** is a techie user in **HR** organization. <br/>
+• **Charlie** is a techie user in **Sales** organization. <br/>
+
+### 4.1.2: LDAP Terminology
+
+- **DN (Distinguished Name)**: Unique identifier for an entry (e.g., `uid=alice,ou=users,dc=example,dc=com`)
+- **RDN (Relative Distinguished Name)**: The leftmost component of a DN (e.g., `uid=alice`)
+- **dc (Domain Component)**: Part of the base DN representing domain structure
+- **ou (Organizational Unit)**: Container for organizing entries
+- **uid (User ID)**: Unique identifier for a user
+- **cn (Common Name)**: Name attribute, often used for groups
+
+### 4.1.3: OpenLDAP in this lab
+
+OpenLDAP is automatically installed by the Lab Automation in `bluebox.ibmdte.local` virtual machine when 
+a lab reservation is made. By default, the OpenLDAP service is stopped. 
+
+---
+
+## 4.2: Verify Organizational Units
+
+First, we will verify two organizational units were already created: one for users and one for groups.
+
+### 4.2.1: Create OUs LDIF File
+
+1. Connect to the OpenLDAP host:
+
+```bash title="Host: bastion-gym-lan"
+ssh jammer@bluebox
+```
+
+2. Start OpenLDAP service (if the service is not running):
+
+```bash title="Host: bluebox"
+sudo systemctl start slapd
+```
+
+3. Verify OUs Creation:
+
+```bash title="Host: bluebox"
+# Search for the organizational units
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "dc=example,dc=com" "(ou=*)" dn
+```
+
+You should see both `ou=users,dc=example,dc=com` and `ou=groups,dc=example,dc=com` in the output.
+
+```bash title="Actual output"
+# extended LDIF
+#
+# LDAPv3
+# base <dc=example,dc=com> with scope subtree
+# filter: (ou=*)
+# requesting: dn 
+#
+
+# users, example.com
+dn: ou=users,dc=example,dc=com
+
+# groups, example.com
+dn: ou=groups,dc=example,dc=com
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 3
+# numEntries: 2
+```
+
+---
+
+## 4.3: Create Concert User Accounts
+
+Now, we will create three user accounts representing different Concert personas: 
+1. **Alice** as **Admin**, 
+2. **Bob** as **Editor**, and 
+3. **Charlie** as **Viewer**.
+
+At Concert Instance level, Alice is the Admin while Bob and Charlie are the Users.
+
+### 4.3.1: Understanding User Attributes
+
+Each user entry will include:
+- **uid**: Username (alice, bob, charlie)
+- **cn**: Common name (full name)
+- **sn**: Surname (last name)
+- **mail**: Email address
+- **userPassword**: Hashed password
+- **objectClass**: inetOrgPerson (standard LDAP person object)
+
+### 4.3.2: Generate Password Hashes
+
+Before adding users, we need to generate SSHA password hashes for each user:
+
+```bash title="Host: bluebox"
+# Generate hash for Alice's password (Alice@123)
+slappasswd -s "Alice@123"
+
+# Generate hash for Bob's password (Bob@123)
+slappasswd -s "Bob@123"
+
+# Generate hash for Charlie's password (Charlie@123)
+slappasswd -s "Charlie@123"
+```
+
+Each command will output a hash like: `{SSHA}xxxxxxxxxxxxxxxxxxxxxxxxxxx`
+
+### 4.3.3: Create Users LDIF File
+
+```bash title="Host: bluebox"
+cd /opt/openldap/ldap-config
+```
+
+```bash title="Host: bluebox"
+cat > create-users.ldif << 'EOF'
+# Alice - Concert Admin
+dn: uid=alice,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: alice
+cn: Alice Administrator
+sn: Administrator
+mail: alice@example.com
+userPassword: {SSHA}YourHashedPasswordHereForAlice
+description: Alice Admin
+
+# Bob - Concert User
+dn: uid=bob,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: bob
+cn: Bob User
+sn: Bob User
+mail: bob@example.com
+userPassword: {SSHA}YourHashedPasswordHereForBob
+description: Bob Concert User
+
+# Charlie - Concert User
+dn: uid=charlie,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: charlie
+cn: Charlie User
+sn: Charlie User
+mail: charlie@example.com
+userPassword: {SSHA}YourHashedPasswordHereForCharlie
+description: Charlie Concert User
+EOF
+```
+
+### 4.3.4: Update LDIF with Password Hashes
+
+Edit the `create-users.ldif` file and replace 3 items below with its respective actual hashes :
+1. `{SSHA}YourHashedPasswordHereForAlice` with the actual hashes from `slappasswd -s "Alice@123"` 
+2. `{SSHA}YourHashedPasswordHereForBob` with the actual hashes from `slappasswd -s "Bob@123"` 
+3. `{SSHA}YourHashedPasswordHereForCharlie` with the actual hashes from `slappasswd -s "Charlie@123"` 
+
+```bash title="Host: bluebox"
+# Use your preferred editor (vi, nano, etc.)
+vi create-users.ldif
+```
+
+Replace each `userPassword: {SSHA}YourHashedPasswordHere*` line with the corresponding hash generated above.
+
+For example, after replacing Alice's password, the block for Alice similar to the below:
+```
+dn: uid=alice,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: alice
+cn: Alice Admin
+sn: Admin
+mail: alice@example.con
+userPassword: {SSHA}TMbUZGBl2h2jgFpAKVui2QbaXk4jePWd
+description: Alice Concert Admin
+```
+
+:::tip
+Alternatively, you can create the LDIF file with a script that generates hashes automatically:
+
+```bash title="Host: bluebox"
+cat > create-users.ldif << EOF
+# Alice - Concert Admin
+dn: uid=alice,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: alice
+cn: Alice Admin
+sn: Admin
+mail: alice@example.com
+userPassword: $(slappasswd -s "Alice@123")
+description: Alice Concert Admin
+
+# Bob - Concert User
+dn: uid=bob,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: bob
+cn: Bob User
+sn: User
+mail: bob@example.com
+userPassword: $(slappasswd -s "Bob@123")
+description: Bob Concert User
+
+# Charlie - Concert User
+dn: uid=charlie,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: charlie
+cn: Charlie User
+sn: User
+mail: charlie@example.com
+userPassword: $(slappasswd -s "Charlie@123")
+description: Charlie Concert User
+EOF
+```
+:::
+
+### 4.3.5: Add Users to LDAP
+
+```bash title="Host: bluebox"
+# Add the user accounts
+ldapadd -x -D "cn=admin,dc=example,dc=com" -w secret -f create-users.ldif
+```
+
+Expected output:
+```bash title="Host: bluebox"
+adding new entry "uid=alice,ou=users,dc=example,dc=com"
+adding new entry "uid=bob,ou=users,dc=example,dc=com"
+adding new entry "uid=charlie,ou=users,dc=example,dc=com"
+```
+
+### 4.3.6: Verify Users Creation
+
+```bash title="Host: bluebox"
+# List all users
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret \
+           -b "ou=users,dc=example,dc=com" "(uid=*)" uid cn mail
+```
+
+You should see all three users with their attributes.
+
+```bash title="Actual output"
+# extended LDIF
+#
+# LDAPv3
+# base <ou=users,dc=example,dc=com> with scope subtree
+# filter: (uid=*)
+# requesting: uid cn mail 
+#
+
+# bob, users, example.com
+dn: uid=bob,ou=users,dc=example,dc=com
+uid: bob
+cn: Bob
+mail: bob@example.com
+
+# alice, users, example.com
+dn: uid=alice,ou=users,dc=example,dc=com
+uid: alice
+cn: Alice Admin
+mail: alice@example.com
+
+# charlie, users, example.com
+dn: uid=charlie,ou=users,dc=example,dc=com
+uid: charlie
+cn: Charlie
+mail: charlie@example.com
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 4
+# numEntries: 3
+```
+### 4.3.7: Test User Authentication
+
+Verify that users can authenticate with their passwords:
+
+```bash title="Host: bluebox"
+# Test Alice's authentication
+ldapwhoami -x -D "uid=alice,ou=users,dc=example,dc=com" -w Alice@123
+
+# Test Bob's authentication
+ldapwhoami -x -D "uid=bob,ou=users,dc=example,dc=com" -w Bob@123
+
+# Test Charlie's authentication
+ldapwhoami -x -D "uid=charlie,ou=users,dc=example,dc=com" -w Charlie@123
+```
+
+Each command should return the user's DN, confirming successful authentication.
+
+```bash title="Actual output"
+[jammer@bluebox ldap-config]$ ldapwhoami -x -D "uid=alice,ou=users,dc=example,dc=com" -w Alice@123
+dn:uid=alice,ou=users,dc=example,dc=com
+```
+
+---
+
+## 4.4: Create Concert Groups
+
+Now, we will create groups that correspond to Concert roles and add users to these groups.
+
+### 4.4.1: Understanding Group Structure
+
+We will use the `groupOfNames` object class, which requires:
+- **cn**: Group name
+- **member**: DN of at least one member (required attribute)
+
+### 4.4.2: Create Groups LDIF File
+
+```bash title="Host: bluebox"
+cat > create-groups.ldif << 'EOF'
+# Corporate IT staff Group
+dn: cn=corporate_it_staff,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: corporate_it_staff
+description: Corporate IT staff role group
+member: uid=alice,ou=users,dc=example,dc=com
+
+# HR staff Group
+dn: cn=hr_staff,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: hr_staff
+description: HR staff role group
+member: uid=bob,ou=users,dc=example,dc=com
+
+# Sales staff Group
+dn: cn=sales_staff,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: sales_staff
+description: Sales staff role group
+member: uid=charlie,ou=users,dc=example,dc=com
+EOF
+```
+
+### 4.4.3: Add Groups to LDAP
+
+```bash title="Host: bluebox"
+# Add the groups
+ldapadd -x -D "cn=admin,dc=example,dc=com" -w secret -f create-groups.ldif
+```
+
+Expected output:
+```
+adding new entry "cn=corporate_it_staff,ou=groups,dc=example,dc=com"
+adding new entry "cn=hr_staff,ou=groups,dc=example,dc=com"
+adding new entry "cn=sales_staff,ou=groups,dc=example,dc=com"
+```
+
+### 4.4.4: Verify Groups Creation
+
+```bash title="Host: bluebox"
+# List all groups
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret \
+           -b "ou=groups,dc=example,dc=com" "(cn=*)" cn member
+```
+
+```bash title="Actual output"
+# extended LDIF
+#
+# LDAPv3
+# base <ou=groups,dc=example,dc=com> with scope subtree
+# filter: (cn=*)
+# requesting: cn member 
+#
+
+# hr_staff, groups, example.com
+dn: cn=hr_staff,ou=groups,dc=example,dc=com
+cn: hr_staff
+member: uid=bob,ou=users,dc=example,dc=com
+
+# sales_staff, groups, example.com
+dn: cn=sales_staff,ou=groups,dc=example,dc=com
+cn: sales_staff
+member: uid=charlie,ou=users,dc=example,dc=com
+
+# corporate_it_staff, groups, example.com
+dn: cn=corporate_it_staff,ou=groups,dc=example,dc=com
+cn: corporate_it_staff
+member: uid=alice,ou=users,dc=example,dc=com
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 4
+# numEntries: 3
+```
+You should see all three groups with their members.
+
+### 4.4.5: Verify Group Membership
+
+```bash title="Host: bluebox"
+# Check which groups Alice belongs to
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "ou=groups,dc=example,dc=com" \
+                 "(member=uid=alice,ou=users,dc=example,dc=com)" cn
+```
+
+You should see `Alice` belongs to `corporate_it_staff` group.
+
+```bash title="Actual output"
+# extended LDIF
+#
+# LDAPv3
+# base <ou=groups,dc=example,dc=com> with scope subtree
+# filter: (member=uid=alice,ou=users,dc=example,dc=com)
+# requesting: cn 
+#
+
+# corporate_it_staff, groups, example.com
+dn: cn=corporate_it_staff,ou=groups,dc=example,dc=com
+cn: corporate_it_staff
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+```
+
+```bash title="Host: bluebox"
+# Check which groups Bob belongs to
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "ou=groups,dc=example,dc=com" \
+                 "(member=uid=bob,ou=users,dc=example,dc=com)" cn
+```
+
+You should see `Bob` belongs to `hr_staff` group.
+
+```bash title="Actual output"
+# extended LDIF
+#
+# LDAPv3
+# base <ou=groups,dc=example,dc=com> with scope subtree
+# filter: (member=uid=bob,ou=users,dc=example,dc=com)
+# requesting: cn 
+#
+
+# hr_staff, groups, example.com
+dn: cn=hr_staff,ou=groups,dc=example,dc=com
+cn: hr_staff
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+```
+
+```bash title="Host: bluebox"
+# Check which groups Charlie belongs to
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "ou=groups,dc=example,dc=com" \
+                 "(member=uid=charlie,ou=users,dc=example,dc=com)" cn
+```
+
+You should see `Charlie` belongs to `sales_staff` group.
+
+```bash title="Actual output"
+# extended LDIF
+#
+# LDAPv3
+# base <ou=groups,dc=example,dc=com> with scope subtree
+# filter: (member=uid=charlie,ou=users,dc=example,dc=com)
+# requesting: cn 
+#
+
+# sales_staff, groups, example.com
+dn: cn=sales_staff,ou=groups,dc=example,dc=com
+cn: sales_staff
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+```
+
+---
+
+## 4.5: Verify Complete Directory Structure
+
+Let's verify the entire directory structure we've created:
+
+```bash title="Host: bluebox"
+# Display the complete directory tree
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "dc=example,dc=com" -LLL
+```
+
+This will display all entries in the directory. You should see:
+- Base DN: `dc=example,dc=com`
+- Two OUs: `ou=users` and `ou=groups`
+- Three users: `alice`, `bob`, `charlie`
+- Three groups: `corporate_it_staff`, `hr_staff`, `sales_staff`
+
+### 4.5.1: Visual Verification
+
+Create a simple script to display the directory structure:
+
+```bash title="Host: bluebox"
+cat > verify-structure.sh << 'EOF'
+#!/bin/bash
+echo "=== LDAP Directory Structure ==="
+echo ""
+echo "Base DN: dc=example,dc=com"
+echo ""
+echo "Organizational Units:"
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "dc=example,dc=com" "(ou=*)" dn 2>/dev/null | grep "^dn:" | sed 's/dn: /  - /'
+echo ""
+echo "Users:"
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "ou=users,dc=example,dc=com" "(uid=*)" dn cn 2>/dev/null | grep -E "^dn:|^cn:" | sed 's/dn: /  - /' | sed 's/cn: /    Name: /'
+echo ""
+echo "Groups:"
+ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "ou=groups,dc=example,dc=com" "(cn=*)" dn member 2>/dev/null | grep -E "^dn:|^member:" | sed 's/dn: /  - /' | sed 's/member: /    Member: /'
+EOF
+```
+
+```bash title="Host: bluebox"
+chmod +x verify-structure.sh
+./verify-structure.sh
+```
+
+---
+
+## 4.6: Exit OpenLDAP Host
+
+Now that OpenLDAP configuration is complete, exit back to the Bastion Host:
+
+```bash title="Host: bluebox"
+exit
+```
+
+---
+
+## 4.7: Configuration Summary
+
+You have successfully configured OpenLDAP with:
+
+### 4.7.1: Organizational Units
+- ✅ `ou=users,dc=example,dc=com` - User accounts directory
+- ✅ `ou=groups,dc=example,dc=com` - Groups directory
+
+### 4.7.2: User Accounts
+- ✅ **alice** (Admin) - `uid=alice,ou=users,dc=example,dc=com`
+- ✅ **bob** (User) - `uid=bob,ou=users,dc=example,dc=com`
+- ✅ **charlie** (User) - `uid=charlie,ou=users,dc=example,dc=com`
+
+### 4.7.3: Groups
+- ✅ **corporate_it_staff** - Contains alice
+- ✅ **hr_staff** - Contains bob
+- ✅ **sales_staff** - Contains charlie
+
+### 4.7.4: User Credentials
+| Username | Password | Role | Group |
+|----------|----------|------|-------|
+| alice | Alice@123 | Admin | corporate_it_staff |
+| bob | Bob@123 | User | hr_staff |
+| charlie | Charlie@123 | User | sales_staff |
+
+---
+
+## Troubleshooting
+
+:::info
+This section provides basic troubleshooting steps in case you encounter any issues while performing the steps above.
+These steps are optional and only need to be followed if you run into problems.
+:::
+
+### Error: "ldap_bind: Invalid credentials"
+
+**Problem**: Cannot authenticate with admin password
+
+**Solutions**:
+- Verify you're using the correct admin password from credentials file
+- Check the admin DN is correct: `cn=admin,dc=example,dc=com`
+- Verify OpenLDAP service is running: `sudo systemctl status slapd`
+
+### Error: "Already exists"
+
+**Problem**: Entry already exists when trying to add
+
+**Solutions**:
+- Delete the existing entry first:
+  ```bash
+  ldapdelete -x -D "cn=admin,dc=example,dc=com" -W "uid=alice,ou=users,dc=example,dc=com"
+  ```
+- Or modify the existing entry instead of adding a new one
+
+### Error: "No such object"
+
+**Problem**: Parent entry doesn't exist
+
+**Solutions**:
+- Verify the base DN exists: `ldapsearch -x -b "dc=example,dc=com" -s base`
+- Create parent OUs before adding users or groups
+- Check for typos in DN components
+
+### Users Cannot Authenticate
+
+**Problem**: `ldapwhoami` fails for test users
+
+**Solutions**:
+- Verify password hash was generated correctly
+- Check user entry exists: `ldapsearch -x -b "ou=users,dc=example,dc=com" "(uid=alice)"`
+- Ensure userPassword attribute is set
+- Try resetting the password with `ldappasswd`
+
+### Cannot See Group Memberships
+
+**Problem**: Group searches don't show members
+
+**Solutions**:
+- Verify group entries exist: `ldapsearch -x -b "ou=groups,dc=example,dc=com" "(cn=*)"`
+- Check member attribute uses full DN of user
+- Ensure groupOfNames object class is used
+
+---
+
+## Next Steps
+
+Now that OpenLDAP is configured with users and groups, you're ready to proceed to the next section where you'll integrate Keycloak with OpenLDAP for user federation. This will allow Keycloak to authenticate users against the LDAP directory you just created.
+
+:::success
+OpenLDAP configuration is complete! You now have a functional user directory with Concert personas ready for SSO integration.
+:::
