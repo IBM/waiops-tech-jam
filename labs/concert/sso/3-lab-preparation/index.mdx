@@ -420,6 +420,8 @@ After logging in, you should see:
 - **Master realm** selected by default
 - Left navigation menu with options like Users, Groups, Clients, etc.
 
+![Keycloak Admin Landing](images/keycloak-admin-landing-page.png)
+
 :::tip
 Keep both Concert and Keycloak tabs open in Firefox. You'll switch between them frequently during the lab exercises.
 :::
@@ -492,7 +494,7 @@ These steps are optional and only need to be followed if you run into problems.
 **Solutions**:
 - Verify you're on the Concert host: `hostname` should return `concert`
 - Check if you have proper permissions as jammer user: `whoami`
-- Verify the secret exists: `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOT`
+- Verify that KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD exist from : `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOT` command output, refer to **Section 3.5**
 
 ### Cannot Connect to OpenLDAP
 
