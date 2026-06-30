@@ -458,6 +458,18 @@ Alternatively, check from the user perspective:
 ## 5.9: Test LDAP Authentication
 
 Before proceeding to Concert configuration, let's test that users can authenticate via Keycloak using their LDAP credentials.
+To achieve that, let's create a **temporary test client**.
+
+:::info 
+Why Create a Test Client? <br/>
+Before integrating Keycloak with Concert, we need to verify that the LDAP integration is working correctly. A test client allows us to:
+- Confirm users can authenticate through Keycloak
+- Verify LDAP user data is being retrieved properly
+- Test that group mappings are working
+- Ensure token claims are configured correctly
+
+This test client can be deleted after verification, and the actual `concert-client` which you have configured in Section 5.4 will be used for all subsequent steps.
+:::
 
 ### 5.9.1: Create a Test Client
 
