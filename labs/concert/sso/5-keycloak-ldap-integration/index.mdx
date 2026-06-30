@@ -159,6 +159,8 @@ On the LDAP configuration page, enter the following settings:
    - **UI Display Name**: `openldap`
    - **Vendor**: `Other`
 
+![Keycloak Userfed General Settings](images/keycloak-userfed-general-settings.png)
+
 #### 5.5.2.2: Connection and Authentication Settings
 
 1. Enter the following values:
@@ -168,7 +170,7 @@ On the LDAP configuration page, enter the following settings:
    - **Connection Pooling**: `ON`
    - **Connection Timeout**: `**Leave default**`
 
-![Keycloak Userfed General Settings](images/keycloak-userfed-general-settings.png)
+![Keycloak Userfed Conn and Auth Settings](images/keycloak-userfed-general-settings-block2.png)
 
 :::important
 In real-life production system, Secure LDAP (LDAPS) is the recommended approach to secure the communication channel between Keycloak and OpenLDAP.
@@ -184,6 +186,8 @@ In real-life production system, Secure LDAP (LDAPS) is the recommended approach 
 :::important
 Use the OpenLDAP admin password you created in **Section 3.6**.
 :::
+
+![Keycloak User Federation LDAP Bind Settings](images/keycloak-userfed-ldap-bind-settings.png)
 
 #### 5.5.2.4: LDAP Searching and Updating
 
@@ -202,6 +206,8 @@ Use the OpenLDAP admin password you created in **Section 3.6**.
    - **Referral**: `**Leave undefined**`
 
 ![Keycloak User Federation LDAP Search Part 1](images/keycloak-userfed-ldap-search-and-updating.png)
+   
+![Keycloak User Federation LDAP Search Part 2](images/keycloak-userfed-ldap-part2-search-and-updating.png)
 
 #### 5.5.2.5: Synchronization settings
 
@@ -215,7 +221,7 @@ Use the OpenLDAP admin password you created in **Section 3.6**.
    - **Changed users sync period**: `86400`
    - **Remove invalid users during searches**: `ON`
    
-![Keycloak User Federation LDAP Sync Settings](images/keycloak-userfed-ldap-sync-settings.png)
+![Keycloak User Federation LDAP Sync Settings](images/keycloak-userfed-ldap-sync-kerberos.png)
 
 #### 5.5.2.6: Kerberos integration
 
@@ -223,12 +229,14 @@ Use the OpenLDAP admin password you created in **Section 3.6**.
    - **Allow Kerberos authentication**: `OFF`
    - **Use Kerberos for password authentication**: `OFF`
 
-![Keycloak User Federation LDAP Sync Kerberos](images/keycloak-userfed-ldap-sync-kerberos.png)
+![Keycloak User Federation LDAP Sync Kerberos](images/keycloak-userfed-ldap-sync-kerberos-part2.png)
 
 #### 5.5.2.7: Cache settings
 
 1. Enter the following values:
    - **Cache policy**: `DEFAULT`
+
+![Keycloak adv](images/keycloak-userfed-ldap-sync-part1-cache-adv.png)
 
 #### 5.5.2.8: Advanced settings
 
