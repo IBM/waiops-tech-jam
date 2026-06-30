@@ -143,12 +143,13 @@ Client scopes define what information is included in the tokens issued by Keyclo
 
 ### 6.6.1: Add a new Client Scope
 
-1. Click **Client scopes** from the left navigation menu.
-2. Click **Create client scope** button
+1. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm, go to **Clients** → **concert-client**
+2. On the **concert-client** details page, click **Client scopes** from the left navigation menu.
+3. Click **Create client scope** button
 
 ![Create Client Scope](images/keycloak-create-new-client-scope.png)
 
-3. Configure the **new Client Scope** using the following values:
+4. Configure the **new Client Scope** using the following values:
    - **Name**: `groups`
    - **Description**: `Include user groups in the token`
    - **Type**: `Default`
@@ -161,8 +162,8 @@ Client scopes define what information is included in the tokens issued by Keyclo
 
 ![Client Scope Data](images/keycloak-new-client-scope-data.png)
 
-4. Click **Save**.
-5. You should see the newly created client scope in the list of **client scopes**.
+5. Click **Save**.
+6. You should see the newly created client scope in the list of **client scopes**.
 
 ![Client Scope with Groups](images/keycloak-client-scope-with-groups.png)
 
@@ -174,22 +175,23 @@ Now, we will setup **concert-client** with Group Membership Mapper for Client Sc
 
 ### 6.7.1: Add Groups to Token
 
-1. Still on the **concert-client** details page, click the **Client scopes** tab
-2. You'll see **Assigned client scopes** column name
+1. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm, go to **Clients** → **concert-client**
+2. On the **concert-client** details page, click the **Client scopes** tab
+3. You'll see **Assigned client scopes** column name
 
 ![Client Scopes](images/keycloak-concert-client-client-scopes.png)
 
-3. In the **Assigned client scope** column, find and click on **concert-client-dedicated**
-4. Click the **Mappers** tab
-5. Click **Configure a new mapper**
+4. In the **Assigned client scope** column, find and click on **concert-client-dedicated**
+5. Click the **Mappers** tab
+6. Click **Configure a new mapper**
 
 ![Add Mapper](images/keycloak-add-mapper.png)
 
-6. Select **Group Membership** from the list of built-in mapper types
+7. Select **Group Membership** from the list of built-in mapper types
 
 ![Group Membership Mapper](images/keycloak-group-membership-mapper.png)
 
-7. Configure the Group Membership mapper using the following values:
+8. Configure the Group Membership mapper using the following values:
    - **Name**: `groups`
    - **Token Claim Name**: `groups`
    - **Full group path**: `OFF`
@@ -201,8 +203,8 @@ Now, we will setup **concert-client** with Group Membership Mapper for Client Sc
 
 ![Group Membership Mapper Data](images/keycloak-group-membership-mapper-data.png)
 
-8. Click **Save**
-9. You will see the newly created Group Membership mapper in the list of mappers for the `concert-client-dedicated` client scope.
+9. Click **Save**
+10. You will see the newly created Group Membership mapper in the list of mappers for the `concert-client-dedicated` client scope.
 
 ![Group Membership Mapper](images/keycloak-group-membership-in-list.png)
 
@@ -214,8 +216,8 @@ Now, we will assign **groups** which we created in Section 6.6 to **concert-clie
 
 ### 6.8.1: Assign groups to client
 
-1. Still on the **concert-client** details page, click the **Client scopes** tab
-2. Click **Client Scopes**.
+1. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm, go to **Clients** → **concert-client**
+2. On the **concert-client** details page, click **Client scopes**.
 3. Click **Add Client Scope**.
 
 ![Concert Client Add Client Scope](images/keycloak-concert-client-add-client-scope.png)
@@ -365,7 +367,7 @@ Now, we will configure Concert to use Keycloak as its OIDC identity provider. Th
 
 ### 6.11.1: Connect to Concert Host
 
-1. Connect to Concert host using SSH from the Bastion host. 
+1. Connect to **concert** host using SSH from the **bastion-gym-lan**. 
 The Concert host is where the Concert application is running and where we'll apply the OIDC configuration.
 
 ```bash title="Host: bastion-gym-lan"
