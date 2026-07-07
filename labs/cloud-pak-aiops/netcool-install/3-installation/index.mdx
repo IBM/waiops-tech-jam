@@ -537,6 +537,7 @@ EOF
 Run the following command block as the **root** user on the **netcoolvm host** to start Netcool Process Agent service on the Netcool VM:
 
 ```sh title="Host: netcoolvm"
+systemctl enable nco.service
 service nco.service start
 ```
 
@@ -751,6 +752,7 @@ EOF
 Run the following command block as the **root** user on the **netcoolvm host** to start Netcool/Impact server service on the Netcool VM:
 
 ```sh title="Host: netcoolvm"
+systemctl enable nci.service
 service nci.service start
 ```
 
@@ -803,6 +805,7 @@ EOF
 Run the following command block as the **root** user on the **netcoolvm host** to start Netcool/Impact GUI server service on the Netcool VM:
 
 ```sh title="Host: netcoolvm"
+systemctl enable ncigui.service
 service ncigui.service start
 ```
 
