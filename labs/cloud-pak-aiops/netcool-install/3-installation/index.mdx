@@ -1,0 +1,865 @@
+---
+title: 3. Install steps
+description: Installation guidance
+sidebar_position: 3
+---
+
+## 3.1: Overview
+
+This module guides you through the process of installing the Netcool/OMNIbus and Netcool/Impact products to provide the necessary background knowledge and experience to complete the tasks in a real environment. Both products are installed on the same VM. In a true production scenario, it is more likely that each would have its own VM, as well as being in a failover pair.
+
+:::note
+
+This [link](https://www.ibm.com/docs/en/netcoolomnibus/8.1.0?topic=begin-standard-multitiered-architecture) has references to the Standard Multitier Architecture extension that comes with Netcool/OMNIbus, which is recommended for use in any real-world Netcool/OMNIbus deployment.
+
+:::
+
+## 3.2: Update the Netcool VM
+
+The first step is to update the Netcool VM host and install an array of needed packages.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh jammer@netcoolvm
+```
+
+Run the following command block as the default **jammer** user on the **netcoolvm host** to change to the **root** user:
+
+```sh title="Host: netcoolvm"
+sudo -i
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to update the VM and to install the `unzip` utility:
+
+```sh title="Host: netcoolvm"
+yum update -y
+yum install -y unzip
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to install the packages needed by Netcool/OMNIbus components:
+
+```sh title="Host: netcoolvm"
+yum install -y audit-libs
+yum install -y expat
+yum install -y libidn
+yum install -y libuuid
+yum install -y zlib
+yum install -y glibc
+yum install -y libgcc
+yum install -y libstdc++
+yum install -y libxcrypt-compat
+yum install -y libstdc++.i686
+yum install -y glibc.i686
+yum install -y libgcc.i686
+yum install -y libstdc++.i686
+yum install -y fontconfig
+yum install -y freetype
+yum install -y libICE
+yum install -y libSM
+yum install -y libjpeg-turbo
+yum install -y libpng
+yum install -y libxcb
+yum install -y motif
+yum install -y libX11
+yum install -y libXau
+yum install -y libXext
+yum install -y libXft
+yum install -y libXmu
+yum install -y libXp
+yum install -y libXpm
+yum install -y libXrender
+yum install -y libXt
+yum install -y libXcursor
+yum install -y libXfixes
+yum install -y libXi
+yum install -y libXtst
+yum install -y glibc
+yum install -y libgcc
+yum install -y libstdc++
+yum install -y gtk2
+yum install -y pam
+yum install -y nss-softokn-freebl
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to reboot the box:
+
+```sh title="Host: netcoolvm"
+shutdown -r now
+```
+
+## 3.3: Create the netcool user and configure other system settings
+
+Netcool software is typically installed as a non-root user. This next step creates a dedicated user for this purpose: `netcool` as well as the default `ncoadmin` group. It also sets up the `netcool` user's needed environment variables, sets up the file limits on the VM for Netcool/Impact, and sets up a system log which the Netcool/Probe for Syslog will read from.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh jammer@netcoolvm
+```
+
+Run the following command block as the default **jammer** user on the **netcoolvm host** to change to the **root** user:
+
+```sh title="Host: netcoolvm"
+sudo -i
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to create the `netcool` user and `ncoadmin` group, toset up the Netcool environment variables in the `netcool` user's profile, to configure needed `ulimit` settings on the host (for Netcool/Impact), and to set up a system messages file for the use of the Netcool Syslog Probe:
+
+```sh title="Host: netcoolvm"
+echo "Creating ncodamin group..."
+groupadd ncoadmin
+
+echo "Creating netcool user..."
+useradd netcool -u 1005
+passwd netcool
+usermod -g ncoadmin netcool
+
+echo "Changing ownership for /opt..."
+chown -R netcool:ncoadmin /opt
+
+echo "Setting up environment variables..."
+echo "export NCHOME=/opt/IBM/tivoli/netcool" >> ~netcool/.bashrc
+echo "export OMNIHOME=/opt/IBM/tivoli/netcool/omnibus" >> ~netcool/.bashrc
+echo "export IMPACT_HOME=/opt/IBM/tivoli/impact" >> ~netcool/.bashrc
+
+echo "Setting ulimits for Netcool/Impact..."
+echo "*               soft    nofile            4096" >> /etc/security/limits.conf
+echo "*               hard    nofile            4096" >> /etc/security/limits.conf
+
+echo "Configuring messages file for syslog..."
+echo "*.info;mail.none;authpriv.none;cron.none                /var/log/ncolog" >> /etc/rsyslog.conf
+touch /var/log/ncolog
+chmod 644 /var/log/ncolog
+
+echo "Restarting rsyslog..."
+systemctl restart rsyslog.service
+
+echo "Allowing X11Forwarding..."
+sed -i 's/^X11Forwarding no/X11Forwarding yes/' /etc/ssh/sshd_config
+
+echo "Restarting sshd..."
+systemctl restart sshd
+```
+
+:::tip
+
+Set the `netcool` password to: `netcool`
+
+:::
+
+:::note
+
+The Netcool software is provided for you in the `/opt/software` directory. This step assigns the software to the `netcool` user prior to installation.
+
+:::
+
+## 3.4: Unpack and prepare the Netcool software
+
+The Netcool software is provided for you on the Netcool VM. This step unpacks the archives and prepares it for installation.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to unpack the software bundle:
+
+```sh title="Host: netcoolvm"
+mkdir /opt/software/im
+mkdir /opt/software/omnibus
+mkdir /opt/software/syslog
+mkdir /opt/software/impact
+cd /opt/software
+
+gunzip IM_omnibus_impact.tar.gz
+tar xvf IM_omnibus_impact.tar
+
+mv bits/agent.installer.linux.gtk.x86_64_1.8.6001.20170428_1156.zip im/.
+cd im
+unzip agent.installer.linux.gtk.x86_64_1.8.6001.20170428_1156.zip
+cd ..
+
+mv bits/TVL_NTCL_OMN_V8.1.0.28_CORE_LNX.zip omnibus/.
+cd omnibus
+unzip TVL_NTCL_OMN_V8.1.0.28_CORE_LNX.zip
+unzip com.ibm.tivoli.omnibus.core.linux.x86_64.zip
+cd ..
+
+mv NCOMNI_PROBE_FOR_SYSLOG.zip syslog/.
+cd syslog/
+unzip NCOMNI_PROBE_FOR_SYSLOG.zip 
+cd ..
+
+mv bits/TNIV7.1.0.26__LNX_ML.zip impact/.
+cd impact
+unzip TNIV7.1.0.26__LNX_ML.zip
+unzip M06HVML.zip
+cd ..
+```
+
+## 3.5: Install IBM Installation Manager
+
+The next step is to install the IBM Installation Manager which will be used to install both Netcool/OMNIbus and Netcool/Impact.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to install the IBM Installation Manager:
+
+```sh title="Host: netcoolvm"
+cd /opt/software/im
+./groupinstc -dataLocation /opt/IBM/IM/var -installationDirectory /home/netcool/IBM/IM/InstallationManager -configuration /home/netcool/IBM/IM/etc -acceptLicense
+```
+
+## 3.6: Configure IBM Installation Manager
+
+The next step is to configure the IBM Installation Manager by adding the software repositories for both Netcool/OMNIbus and Netcool/Impact.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to start the IBM Installation Manager:
+
+```sh title="Host: netcoolvm"
+cd ~/IBM/IM/InstallationManager/eclipse/tools
+./imcl -c
+```
+
+Navigate through the menu options to add the following software repositories (option **P** for Preferences, then option **1** to Install software, then option **D** to add a new software repository):
+
+```
+/opt/software/omnibus/OMNIbusRepository/repository.xml
+/opt/software/syslog/repository.xml
+/opt/software/impact/ImpactRepository/disk1/diskTag.inf
+```
+
+:::note
+
+You will need to choose option **D** three times to add each repository, one at a time.
+
+:::
+
+Save and exit to the main menu once both of these have been added.
+
+## 3.7: Install Netcool/OMNIbus
+
+Navigate through the IBM Installation Manager menus to install Netcool/OMNIbus first (option 1: "Install software packages").
+
+Install the item labelled: **IBM Tivoli Netcool/OMNIbus 8.1.0.28**
+
+Accept all the default settings for each step.
+
+After successful installation, type **F** to Finish, and then **X** to exit IBM Installation Manager.
+
+:::note
+
+You will need to configure a Netcool/OMNIbus ObjectServer before performing the Netcool/Impact installation.
+
+:::
+
+## 3.8: Configure and start an ObjectServer
+
+Next, define and start an ObjectServer.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to back up the default Netcool interfaces file, and then configure it for use:
+
+```sh title="Host: netcoolvm"
+cp $NCHOME/etc/omni.dat $NCHOME/etc/omni.dat.orig
+cat > $NCHOME/etc/omni.dat << EOF
+#
+# omni.dat file as prototype for interfaces file
+#
+# Ident: $Id: omni.dat 1.5 1999/07/13 09:34:20 chris Development $
+#
+[AGG_P]
+{
+	Primary: netcoolvm 4100
+}
+[NCO_PA]
+{
+	Primary: netcoolvm 4200
+}
+
+EOF
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to generate the platform interfaces file, build an ObjectServer instance, and start the ObjectServer:
+
+```sh title="Host: netcoolvm"
+$NCHOME/bin/nco_igen
+$OMNIHOME/bin/nco_dbinit -server AGG_P -customconfigfile $OMNIHOME/extensions/multitier/objectserver/aggregation.sql
+$OMNIHOME/bin/nco_objserv -name AGG_P &
+```
+
+:::note
+
+The `nco_dbinit` command leverages the multitier architecture configuration to build the ObjectServer as a primary Aggregation server via the `-customconfigfile` parameter. This should be the default for any standalone ObjectServer.
+
+:::
+
+## 3.9: Log in to the ObjectServer and configure the users
+
+The next step is to set the ObjectServer super user password, create the user that Netcool/Impact needs, and set that user's group membership.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to log into the ObjectServer:
+
+```sh title="Host: netcoolvm"
+$OMNIHOME/bin/nco_sql -server AGG_P -user root -password ZZ
+```
+
+Once logged in, execute the following SQL statements to set the ObjectServer `root` user password, create the `impactadmin` user, and set its group membership:
+
+```
+ALTER user 'root' set password 'netcool';
+go
+CREATE USER 'impactadmin' FULL NAME 'Impact Administrator' PASSWORD 'netcool';
+go
+ALTER GROUP 'System' ASSIGN MEMBERS 'impactadmin';
+go
+quit
+```
+
+## 3.10: Start a Netcool Simnet Probe
+
+The next step is to start a Simnet Probe instance, so we can inject some sample alerts into the system. The Simnet Probe generates simulated network events (hence the name "SimNet") and is used for testing and demonstrations.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to start a Simnet Probe instance:
+
+```sh title="Host: netcoolvm"
+$OMNIHOME/probes/nco_p_simnet -server AGG_P &
+```
+
+## 3.11: Install and run the Netcool Syslog Probe
+
+The next step is to install the Netcool/Probe for Syslog and configure it to read from a local system log file. For this, you will need to go back to the IBM Installation Manager.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to start the IBM Installation Manager:
+
+```sh title="Host: netcoolvm"
+cd ~/IBM/IM/InstallationManager/eclipse/tools
+./imcl -c
+```
+
+Navigate through the IBM Installation Manager menus to install the Netcool/Probe for Syslog (option 1: "Install software packages").
+
+Install the item labelled: **Netcool/OMNIbus Probe nco-p-syslog 1.8.0.0**
+
+Accept all the default settings for each installation step. Once installation is complete, exit IBM Installation Manager.
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to start a Simnet Probe instance:
+
+```sh title="Host: netcoolvm"
+$OMNIHOME/probes/nco_p_syslog -server AGG_P &
+```
+
+:::note
+
+The Netcool Syslog Probe is configured by default to read from `/var/log/ncolog`. Since we set up this file at the beginning of the lab, it will simply start and read from that file by default.
+
+:::
+
+## 3.12: Configure the Netcool Process Agent (optional)
+
+The Netcool Process Agent is a daemon process that starts and manages Netcool processes on a server. It is a standard component for any production Netcool deployment and is typically set up for POC and demo environments, too. In this lab, you have the option to configure and start the Netcool Process Agent, configure it to manage the Netcool processes, and configure the Netcool Process Agent to automatically start on machine boot. If you are limited on time, then you can skip this section.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to back up the default Netcool Process Agent configuration file, and then configure it for this lab's usage:
+
+```sh title="Host: netcoolvm"
+cp $OMNIHOME/etc/nco_pa.conf $OMNIHOME/etc/nco_pa.conf.orig
+cat > $OMNIHOME/etc/nco_pa.conf << EOF
+#NCO_PA3
+#
+# Process Agent Daemon Configuration File 1.1
+#
+#
+
+#
+# List of processes
+#
+
+nco_process 'AGG_P'
+{
+	Command '$OMNIHOME/bin/nco_objserv -name AGG_P -pa NCO_PA' run as 1005
+	Host		=	'netcoolvm'
+	Managed		=	True
+	RestartMsg	=	'${NAME} running as ${EUID} has been restored on ${HOST}.'
+	AlertMsg	=	'${NAME} running as ${EUID} has died on ${HOST}.'
+	RetryCount	=	0
+	ProcessType	=	PaPA_AWARE
+}
+
+nco_process 'Simnet_Probe'
+{
+	Command '$OMNIHOME/probes/nco_p_simnet -server AGG_P' run as 1005
+	Host		=	'netcoolvm'
+	Managed		=	True
+	RestartMsg	=	'${NAME} running as ${EUID} has been restored on ${HOST}.'
+	AlertMsg	=	'${NAME} running as ${EUID} has died on ${HOST}.'
+	RetryCount	=	0
+	ProcessType	=	PaPA_AWARE
+}
+
+nco_process 'Syslog_Probe'
+{
+	Command '$OMNIHOME/probes/nco_p_syslog -server AGG_P' run as 1005
+	Host		=	'netcoolvm'
+	Managed		=	True
+	RestartMsg	=	'${NAME} running as ${EUID} has been restored on ${HOST}.'
+	AlertMsg	=	'${NAME} running as ${EUID} has died on ${HOST}.'
+	RetryCount	=	0
+	ProcessType	=	PaPA_AWARE
+}
+
+#
+# List of Services
+#
+# NOTE:	To ensure that the service is started automatically, change the
+# 	"ServiceStart" attribute to "Auto".
+#
+nco_service 'Core'
+{
+	ServiceType	=	Master
+	ServiceStart	=	Auto
+	process 'AGG_P' NONE
+	process 'Simnet_Probe' 10
+	process 'Syslog_Probe' 10
+}
+
+#
+# ROUTING TABLE
+#
+# 'user'       -   (optional) only required for secure mode PAD on target host
+#                  'user' must be member of UNIX group 'ncoadmin'
+# 'password'   -   (optional) only required for secure mode PAD on target host
+#                  use nco_pa_crypt to encrypt.
+nco_routing
+{
+	host 'netcoolvm' 'NCO_PA' 'netcool' 'ECEDBJAGBJFHGD'
+}
+
+EOF
+```
+
+Note here that the Netcool/OMNIBus ObjectServer, Simnet Probe, and Syslog Probe are all managed by the Netcool Process Agent. They are configured to automatically start at system startup, with the Probes having a 10 second delayed start. The routing table definition is used for communicating with other Netcool Process Agents running on other hosts. This function won't be used in this lab however.
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to stop all the Netcool processes and log out:
+
+```sh title="Host: netcoolvm"
+pkill nco_
+exit
+```
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh jammer@netcoolvm
+```
+
+Run the following command block as the default **jammer** user on the **netcoolvm host** to change to the **root** user:
+
+```sh title="Host: netcoolvm"
+sudo -i
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to configure the Netcool Process Agent service on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+cat > /etc/systemd/system/nco.service << EOF
+#
+# Licensed Materials - Property of IBM
+#
+# 5724O4800
+#
+# (C) Copyright IBM Corp. 1994, 2015. All Rights Reserved
+#
+# US Government Users Restricted Rights - Use, duplication
+# or disclosure restricted by GSA ADP Schedule Contract
+# with IBM Corp.
+#
+#
+# systemd unit file for Netcool/OMNIbus service
+#
+[Unit]
+Description=Netcool/OMNIbus
+After=network.target
+
+[Service]
+Environment="NCHOME=/opt/IBM/tivoli/netcool" "OMNIHOME=$NCHOME/omnibus"
+ExecStart=/opt/IBM/tivoli/netcool/omnibus/bin/nco_pad -name NCO_PA -authenticate none  -nodaemon
+KillMode=control-group
+Type=simple
+PIDFile=/opt/IBM/tivoli/netcool/omnibus/var/NCO_PA.pid
+
+[Install]
+WantedBy=default.target
+
+EOF
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to start Netcool Process Agent service on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+service nco.service start
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to see the status of the Netcool Process Agent service on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+service nco.service status
+```
+
+You should see something like the following in the output:
+
+```
+[root@netcoolvm]# service nco.service status
+Redirecting to /bin/systemctl status nco.service
+● nco.service - Netcool/OMNIbus
+     Loaded: loaded (/etc/systemd/system/nco.service; enabled; preset: disabled)
+     Active: active (running) since Fri 2026-07-03 01:49:35 PDT; 3 days ago
+   Main PID: 935 (nco_pad)
+      Tasks: 122 (limit: 100400)
+     Memory: 249.6M (peak: 251.6M)
+        CPU: 51min 10.261s
+     CGroup: /system.slice/nco.service
+             ├─ 935 /opt/IBM/tivoli/netcool/omnibus/platform/linux2x86/bin64/nco_pad -name NCO_PA -authenticate none -nodaemon
+             ├─1243 /opt/IBM/tivoli/netcool/omnibus/platform/linux2x86/bin64/nco_objserv -name AGG_P -pa NCO_PA
+             ├─1243 /opt/IBM/tivoli/netcool/omnibus/platform/linux2x86/probes64/nco_p_simnet -server AGG_P
+             └─1743 /opt/IBM/tivoli/netcool/omnibus/platform/linux2x86/probes64/nco_p_syslog -server AGG_P
+
+Jul 03 01:49:36 netcoolvm nco_pad[935]:         Administration Group Name     :        ncoadmin
+Jul 03 01:49:36 netcoolvm nco_pad[935]:         Properties file               :        /opt/IBM/tivoli/netcool/omnibus/etc/NCO_PA.props
+Jul 03 01:49:36 netcoolvm nco_pad[935]:         Message level                 :        Warning
+Jul 03 01:49:36 netcoolvm nco_pad[935]:         Host Alias Lookups            :        True
+Jul 03 01:49:36 netcoolvm NCO_PA[935]: [RESTORE_MSG]: Service 'Core' has been Started.
+Jul 03 01:49:36 netcoolvm NCO_PA[935]: [RESTORE_MSG]: AGG_P running as 1005 has been restored on netcoolvm.
+Jul 03 01:49:46 netcoolvm NCO_PA[935]: [RESTORE_MSG]: Simnet_Probe running as 1005 has been restored on netcoolvm.
+Jul 03 01:49:46 netcoolvm NCO_PA[935]: [RESTORE_MSG]: Syslog_Probe running as 1005 has been restored on netcoolvm.
+[root@netcoolvm]# 
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to change to the **netcool** user:
+
+```sh title="Host: netcoolvm"
+su - netcool
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to see the status of the Netcool Process Agent:
+
+```sh title="Host: netcoolvm"
+$OMNIHOME/bin/nco_pa_status
+```
+
+You should see something like the following in the output:
+
+```
+----------------------------------------------------------------------------------------------
+Service Name         Process Name         Hostname           User        Status           PID
+----------------------------------------------------------------------------------------------
+Core                 AGG_P                netcoolvm         netcool     RUNNING         1243
+                     Simnet_Probe         netcoolvm         netcool     RUNNING         1742
+                     Syslog_Probe         netcoolvm         netcool     RUNNING         1743
+----------------------------------------------------------------------------------------------
+```
+
+You have now successfully configured your Netcool processes to start on machine boot and be managed by the Netcool Process Agent.
+
+## 3.13: Connect the Netcool/OMNIbus Native Event List
+
+In this step, you will launch the Netcool/OMNIbus Native Event List and view events in the ObjectServer.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM as the **netcool** user:
+
+```sh title="Host: bastion-gym-lan"
+ssh -X netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to launch the Netcool/OMNIbus Native Event List:
+
+```sh title="Host: netcoolvm"
+$OMNIHOME/bin/nco_event -server AGG_P -user root -password netcool &
+```
+
+Under the `All Events` filter box, click on the `View` button to bring up the Event List:
+
+![](images/event_list.png)
+
+If you scroll down within the Event List, you should see both Simnet and Syslog events present.
+
+## 3.14: Install Netcool/Impact
+
+The next step is to install Netcool/Impact. For this, you will need to go back to the IBM Installation Manager. For the most part, you will accept the defaults.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to start the IBM Installation Manager:
+
+```sh title="Host: netcoolvm"
+cd ~/IBM/IM/InstallationManager/eclipse/tools
+./imcl -c
+```
+
+Choose option **1** to install software. Then select **both** of the following two items:
+
+**IBM Tivoli Netcool/Impact Server 7.1.0.26**<br />
+**IBM Tivoli Netcool/Impact GUI Server 7.1.0.26**
+
+Accept the license agreement and choose **N** for Next. You will be presented with the following configuration options:
+
+```
+Common configuration:
+     1. [Complete] User Registry
+     2. [Complete] User ID and Password
+     3. [Complete] Profile Ports
+     4. [Complete] Nameserver
+
+Configuration for IBM Tivoli Netcool/Impact Server 7.1.0.26
+     5. [Complete] Impact Server 
+     6. [Complete] Derby Database
+```
+
+Of these, you will only need to modify **1** (User Registry) and **2** (User ID and Password). The rest of the configuration items are preset with the default options and are suitable for this lab.
+
+Choose item 1: **User Registry**
+
+Within the sub-menu, choose each of the following two items, one at a time:
+
+```
+    12. Enter ObjectServer Super or Administrator User Password
+    13. Confirm Password
+```
+
+Set the password to `netcool` in both.
+
+Type **R** to "Return to Configurations Menu".
+
+Choose item 2: **User ID and Password**
+
+Within the sub-menu, choose each of the following two items, one at a time:
+
+```
+     2. Enter Impact Password (Minimum 6 characters)
+     3. Confirm Impact Password
+```
+
+Set the password to `netcool` in both.
+
+Type **R** to "Return to Configurations Menu".
+
+Type **N** to move on to the Next step.
+
+Type **I** to begin the installation.
+
+After successful installation, type **F** to Finish, and then **X** to exit IBM Installation Manager.
+
+## 3.15: Configure Netcool/Impact to auto-start on machine boot (optional)
+
+It is a standard practice to configure Netcool/Impact to automatically start when the server starts. This optional section gets you to configure this. This is achieved by creating two new services: one for the Netcool/Impact serve and one for the Netcool/Impact GUI server.
+
+You will first need to manually shut down both the Netcool/Impact server and the Netcool/Impact GUI server before bringing them back up as a service.
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh netcool@netcoolvm
+```
+
+Run the following command block as the **netcool** user on the **netcoolvm host** to shut down the Netcool/Impact server and the Netcool/Impact GUI server, then log out:
+
+```sh title="Host: netcoolvm"
+$IMPACT_HOME/bin/stopGUIServer.sh
+$IMPACT_HOME/bin/stopImpactServer.sh
+exit
+```
+
+Run the following command block as the default **admin** user on the **bastion host** to connect to the Netcool VM:
+
+```sh title="Host: bastion-gym-lan"
+ssh jammer@netcoolvm
+```
+
+Run the following command block as the default **jammer** user on the **netcoolvm host** to change to the **root** user:
+
+```sh title="Host: netcoolvm"
+sudo -i
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to configure the Netcool/Impact server service on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+cat > /etc/systemd/system/nci.service << EOF
+[Unit]
+Description=Netcool/Impact
+After=network.target
+
+[Service]
+Type=forking
+User=netcool
+Group=ncoadmin
+WorkingDirectory=/opt/IBM/tivoli/impact/bin
+Environment="IMPACT_HOME=/opt/IBM/tivoli/impact"
+ExecStart=/bin/bash -c '/opt/IBM/tivoli/impact/bin/startImpactServer.sh'
+ExecStop=/bin/bash -c '/opt/IBM/tivoli/impact/bin/stopImpactServer.sh'
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to start Netcool/Impact server service on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+service nci.service start
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to see the status of the Netcool/Impact server service on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+service nci.service status
+```
+
+You should see something like the following in the output:
+
+```
+[root@netcoolvm]# service nci.service status
+Redirecting to /bin/systemctl status nci.service
+● nci.service - Netcool/Impact
+     Loaded: loaded (/etc/systemd/system/nci.service; enabled; preset: disabled)
+     Active: active (running) since Fri 2026-07-03 01:49:50 PDT; 3 days ago
+   Main PID: 1155 (java)
+      Tasks: 122 (limit: 100400)
+     Memory: 875.5M (peak: 962.5M)
+        CPU: 6h 13min 52.878s
+     CGroup: /system.slice/nci.service
+             └─1155 /opt/IBM/tivoli/impact/sdk/jre/bin/java -javaagent:/opt/IBM/tivoli/impact/wlp/bin/tools/ws-javaagent.jar -Djava.awt.headless=true -Djdk.attach.all>
+[root@netcoolvm]# 
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to configure the Netcool/Impact GUI server service on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+cat > /etc/systemd/system/ncigui.service << EOF
+[Unit]
+Description=Netcool/ImpactGUI
+After=network.target
+
+[Service]
+Type=forking
+User=netcool
+Group=ncoadmin
+WorkingDirectory=/opt/IBM/tivoli/impact/bin
+Environment="IMPACT_HOME=/opt/IBM/tivoli/impact"
+ExecStart=/bin/bash -c '/opt/IBM/tivoli/impact/bin/startGUIServer.sh'
+ExecStop=/bin/bash -c '/opt/IBM/tivoli/impact/bin/stopGUIServer.sh'
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to start Netcool/Impact GUI server service on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+service ncigui.service start
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to see the status of the Netcool/Impact GUI server service on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+service ncigui.service status
+```
+
+You should see something like the following in the output:
+
+```
+[root@netcoolvm]# service nci.service status
+Redirecting to /bin/systemctl status nco.service
+Redirecting to /bin/systemctl status ncigui.service
+● ncigui.service - Netcool/ImpactGUI
+     Loaded: loaded (/etc/systemd/system/ncigui.service; enabled; preset: disabled)
+     Active: active (running) since Fri 2026-07-03 01:49:46 PDT; 3 days ago
+   Main PID: 1152 (java)
+      Tasks: 80 (limit: 100400)
+     Memory: 748.3M (peak: 840.3M)
+        CPU: 2h 33min 33.716s
+     CGroup: /system.slice/ncigui.service
+             └─1152 /opt/IBM/tivoli/impact/sdk/jre/bin/java -javaagent:/opt/IBM/tivoli/impact/wlp/bin/tools/ws-javaagent.jar -Djava.awt.headless=true -Djdk.attach.all>
+[root@netcoolvm]# 
+```
+
+Run the following command block as the **root** user on the **netcoolvm host** to check the Netcool/Impact server and GUI server processes are now running on the Netcool VM:
+
+```sh title="Host: netcoolvm"
+ps -ef | grep -i impact
+```
+
+You should see something like the following in the output:
+
+```
+netcool    16350       1 44 09:05 ?        00:00:33 /opt/IBM/tivoli/impact/sdk/jre/bin/java -javaagent:/opt/IBM/tivoli/impact/wlp/bin/tools/ws-javaagent.jar -Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -Xms512M -Xmx2400M -Dclient.encoding.override=UTF-8 -Dhttps.protocols=SSL_TLSv2 -Dcom.ibm.jsse2.renegotiate=DISABLED -Djava.rmi.server.hostname=netcoolvm.ibmdte.local -Dcom.ibm.jsse2.overrideDefaultTLS=true -jar /opt/IBM/tivoli/impact/wlp/bin/tools/ws-server.jar NCI
+netcool    16631       1 99 09:06 ?        00:00:26 /opt/IBM/tivoli/impact/sdk/jre/bin/java -javaagent:/opt/IBM/tivoli/impact/wlp/bin/tools/ws-javaagent.jar -Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -Xms512M -Xmx2400M -Dclient.encoding.override=UTF-8 -Dhttps.protocols=SSL_TLSv2 -Dcom.ibm.jsse2.renegotiate=DISABLED -Djava.rmi.server.hostname=netcoolvm.ibmdte.local -jar /opt/IBM/tivoli/impact/wlp/bin/tools/ws-server.jar ImpactUI
+```
+
+You have now configured both the Netcool/Impact server and the Netcool/Impact GUI server to run as services. They will also automatically start when the machine boots.
+
+:::note
+
+You will need to wait a few minutes after starting the Netcool/Impact services before the GUI is ready to be logged into, for the next section.
+
+:::
+
+## 3.16: Log in to Netcool/Impact
+
+Open Firefox on your bastion host machine and go to the following address:
+
+```
+https://netcoolvm.ibmdte.local:16311/ibm/console
+```
+
+Log in to the Impact UI using: `impactadmin` / `netcool`
+
+Congratulations! You have now installed both Netcool/OMNIbus and Netcool/Impact and are ready for productive use.
+
