@@ -75,6 +75,10 @@ Now, we will assign Service Accounts Roles to **concert-client**.
 
 ## 6.4: Create client roles
 
+When users are imported from OpenLDAP into Keycloak via User Federation, they arrive in Keycloak with no Concert client role assigned by default.<br/> 
+They are just plain users with no permissions in Concert. <br/>
+Concert requires every authenticated user to have at least one role either User or Admin in the JWT token to allow access. <br/>
+Without a role in the token, Concert does not know what to do with the user and denies access. <br/>
 Now, we will create 2 new Roles for **concert-client**.
 
 ### 6.4.1: Create Client Roles
@@ -111,7 +115,10 @@ Now, we will create 2 new Roles for **concert-client**.
 
 ## 6.5: Setup the default role for all imported users
 
-Now, we will setup the default role for all OpenLDAP imported users.
+Now, we will setup the default role for all OpenLDAP imported users. <br/>
+The default role ensures that every LDAP-imported user gets a minimum baseline 
+access level in Concert i.e. **User** role so that no authenticated user is ever left 
+with an empty role claim in their token — which would cause Concert to deny them access entirely.
 
 ### 6.5.1: Navigate to Clients
 
@@ -171,7 +178,8 @@ Client scopes define what information is included in the tokens issued by Keyclo
 
 ## 6.7: Configure Group Membership Mapper for Client Scope
 
-Now, we will setup **concert-client** with Group Membership Mapper for Client Scope.
+The Group Membership Mapper is the instruction that tells Keycloak to stamp the user's LDAP group memberships into the JWT token under the groups claim — because without it, that information is never sent to Concert and group-based role assignment cannot work.
+<br/>Now, we will setup **concert-client** with Group Membership Mapper for Client Scope.
 
 ### 6.7.1: Add Groups to Token
 
@@ -301,18 +309,14 @@ Before testing the actual login, let's verify that Keycloak will include the cor
 
 Concert has 2 levels of role-based access: **Instance level** access and **Object level** access.
 
-With **Instance level** access, user with **Admin** role can perform the following actions:
+With **Instance level Role** access, user with **Admin** or **User** role can perform the following actions:
 
-| Role | Details | 
+| Instance level Role | Details | 
 |---------|-------|
 | **Admin** | Grant or revoke access to other users or user groups (except for the Owner role) |
 | | Create, edit, delete, and run ingestion jobs |
 | | View, use, create, update, and delete shared third-party credentials (connections) |
 | | Define applications and environments | 
-
-Whereas user with **User** role can perform the following actions:
-| Role | Details | 
-|---------|-------|
 | **User** | View ingestion jobs |
 | |View and use shared third-party credentials (connections) |
 | | Define applications and environments |
@@ -387,7 +391,7 @@ ls /opt/ibm/concert/ibm-concert/concert-hub/etc/local_config.env
 3. For safety, create a backup of the current `local_config.env` file before making any changes. This allows you to restore the original configuration if needed.
 
 ```bash title="Host: concert"
-cp /opt/ibm/concert/ibm-concert/concert-hub/etc/local_config.env \ 
+cp /opt/ibm/concert/ibm-concert/concert-hub/etc/local_config.env \
    /opt/ibm/concert/ibm-concert/concert-hub/etc/local_config.env.no-oidc
 ```
 
@@ -408,10 +412,10 @@ SOLIS_AUTH=OIDC
 KEYCLOAK_URL=https://concert.ibmdte.local:13443/sys/internal/kc
 REALM_NAME=concert-realm
 CLIENT_ID=concert-client
-CLIENT_SECRET=<your-client-secret-from-credentials-file>
+CLIENT_SECRET=<oidc_client_secret>
 ```
 
-Replace `<your-client-secret-from-credentials-file>` with the actual client secret you copied earlier in **Section 6.2.1**.
+Replace `<oidc_client_secret>` with the actual client secret you copied earlier in **Section 6.2.1**.
 
 5. Save the file and exit the editor.
 6. Your saved file should now contain the OIDC configuration parameters needed for Concert to integrate with Keycloak like below:
