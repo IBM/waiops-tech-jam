@@ -22,8 +22,9 @@ Single Sign-On (SSO) is an authentication method that allows users to access mul
 
 Concert's SSO implementation leverages three key components working together:
 
-### 1. OpenLDAP - User Directory
-[OpenLDAP](https://www.openldap.org/doc/admin24/) serves as the centralized user directory, storing user accounts, credentials, and organizational structure. It provides:
+### 1. An LDAP compliant Directory Server - Users & Groups Directory
+This lab uses OpenLDAP. [OpenLDAP](https://www.openldap.org/doc/admin24/) serves as the centralized user directory, 
+storing user accounts, credentials, and organizational structure. It provides:
 - Hierarchical organization of users and groups
 - Secure password storage and authentication
 - Scalable directory services for enterprise environments
