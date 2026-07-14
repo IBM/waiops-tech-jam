@@ -15,26 +15,21 @@ Let's recap, Concert has 2 levels of role-based access:
 
 1. **Instance level** access
 
-A user with **Admin** role can perform the following actions:
+With **Instance level Role** access, user with **Admin** or **User** role can perform the following actions:
 
-| Role | Details | 
+| Instance level Role | Details | 
 |---------|-------|
 | **Admin** | Grant or revoke access to other users or user groups (except for the Owner role) |
 | | Create, edit, delete, and run ingestion jobs |
 | | View, use, create, update, and delete shared third-party credentials (connections) |
 | | Define applications and environments | 
-
-Whereas a user with **User** role can perform the following actions:
-
-| Role | Details | 
-|---------|-------|
 | **User** | View ingestion jobs |
 | |View and use shared third-party credentials (connections) |
 | | Define applications and environments |
 
 2. **Object level** access
 
-| Role | Access to applications or environments | Access to automation rules | Access to managing other users or user groups |
+| Object level Role | Access to applications or environments | Access to automation rules | Access to managing other users or user groups |
 |---------|-------|-------|-------|
 | **Admin** | View, edit, and delete an application or environment | View, create, edit, or delete an automation rule for applications/environments to which you have access | Grant or revoke access to other users |
 | **Editor** | View and update an application or environment | View, create, edit, or delete an automation rule for applications/environments to which you have access | No access |
@@ -251,12 +246,6 @@ For instance level access with User role, the user will see message below when t
 
 ### 7.3.5: Keycloak signout Bob session
 
-:::info
-Why do I need to sign out? <br/>
-In a typical workplace, each person uses their own computer, so signing out of Keycloak isn't usually necessary. 
-If you don't sign out, the browser will remember the previous user's session, preventing you from properly testing the next user's login.
-:::
-
 From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
 1. Accept the certificate warning if prompted
 2. Log in with Keycloak admin credentials from your credentials file:
@@ -269,11 +258,6 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Keycl
 Bob's session is signed out from Keycloak and now, we can use other user account to login to Concert SSO. 
 Otherwise, Concert SSO uses Bob to login automatically without prompting username and password.
 
-:::info
-In a real-life production environment, you typically don't need to sign out of Keycloak because each user works on <br/>
-their own computer. For this lab, you must perform Keycloak sign out between users to avoid confusion and ensure proper testing.
-:::
-
 ![Keycloak Bob signout](images/keycloak-session-bob-signout.png)
 
 :::success
@@ -282,7 +266,7 @@ their own computer. For this lab, you must perform Keycloak sign out between use
 
 ---
 
-## 7.4: Test Charlie Login
+## 7.4: Test instance level access for Charlie
 
 In this section, you will test **instance-level** access for **Charlie**, who is assigned the User role at the instance level.
 You will log in to Concert SSO as `Charlie`.
@@ -343,12 +327,6 @@ For instance level access with User role, the user will see message below when t
 
 ### 7.4.5: Keycloak signout Charlie session
 
-:::info
-Why do I need to sign out? <br/>
-In a typical workplace, each person uses their own computer, so signing out of Keycloak isn't usually necessary. 
-If you don't sign out, the browser will remember the previous user's session, preventing you from properly testing the next user's login.
-:::
-
 From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
 1. Accept the certificate warning if prompted
 2. Log in with Keycloak admin credentials from your credentials file:
@@ -360,11 +338,6 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Keycl
 
 Charlie's session is signed out from Keycloak and now, we can use other user account to login to Concert SSO. 
 Otherwise, Concert SSO uses Charlie to login automatically without prompting username and password.
-
-:::info
-In a real-life production environment, you typically don't need to sign out of Keycloak because each user works on <br/>
-their own computer. For this lab, you must perform Keycloak sign out between users to avoid confusion and ensure proper testing.
-:::
 
 ![Keycloak Bob signout](images/keycloak-session-charlie-signout.png)
 
@@ -395,10 +368,6 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Conce
 ### 7.5.2: Verify Successful Login
 
 After successful authentication:
-- You should be redirected back to Concert. Click **Skip**
-
-![Concert Skip](images/concert-landingpage.png)
-
 - Concert dashboard should load
 - You should see Bob's name in the top-right corner
 
@@ -500,10 +469,6 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Conce
 ### 7.6.2: Verify Successful Login
 
 After successful authentication:
-- You should be redirected back to Concert. Click **Skip**
-
-![Concert Skip](images/concert-landingpage.png)
-
 - Concert dashboard should load
 - You should see Charlie's name in the top-right corner
 
@@ -591,6 +556,18 @@ Next, you will perform **object level** access testing as Alice, Bob and Charlie
 
 For a quick recap, Alice belongs to Corporate IT organization. She gets Admin role and everybody else assigns her as **Editor** for Concert objects such as applications and environments including **HR-application** and **Sales-application**.
 
+First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
+1. Accept the certificate warning if prompted
+2. Log in with Keycloak admin credentials from your credentials file:
+   - **Username**: `admin`
+   - **Password**: (created in **Section 3.6**)
+3. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm (check the realm dropdown)
+4. In the left navigation menu, click **Sessions**
+5. Click **Sign out**
+
+Next, let's sign in to Concert as Alice to validate her object level access. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
 1. Log in to Concert as Alice.
 On the Concert login page, click **Log in with SSO**.
 
@@ -637,6 +614,18 @@ For a quick recap, Bob is a techie user in HR organization.
 He only supports HR applications within the company. 
 He has **Admin** role for **HR-application** and **Viewer** role for **Sales-application**.
 
+First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
+1. Accept the certificate warning if prompted
+2. Log in with Keycloak admin credentials from your credentials file:
+   - **Username**: `admin`
+   - **Password**: (created in **Section 3.6**)
+3. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm (check the realm dropdown)
+4. In the left navigation menu, click **Sessions**
+5. Click **Sign out**
+
+Next, let's sign in to Concert as Bob to validate his object level access. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
 1. Log in to Concert as Bob.
 On the Concert login page, click **Log in with SSO**.
 
@@ -673,6 +662,18 @@ For a quick recap, Charlie is a techie user in Sales organization.
 He only supports Sales applications within the company. 
 He has **Admin** role for **Sales-application** and **Viewer** role for **HR-application**.
 
+First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
+1. Accept the certificate warning if prompted
+2. Log in with Keycloak admin credentials from your credentials file:
+   - **Username**: `admin`
+   - **Password**: (created in **Section 3.6**)
+3. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm (check the realm dropdown)
+4. In the left navigation menu, click **Sessions**
+5. Click **Sign out**
+
+Next, let's sign in to Concert as Charlie to validate his object level access. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
 1. Log in to Concert as Charlie.
 On the Concert login page, click **Log in with SSO**.
 
@@ -705,18 +706,25 @@ Charlie has the permission to perform all actions because Charlie is the Admin f
 
 ---
 
-## 7.8: Verification Checklist
+## Troubleshooting
+
+:::info
+This section provides basic troubleshooting steps in case you encounter any issues while performing the steps above.
+These steps are optional and only need to be followed if you run into problems.
+:::
+
+### Verification Checklist
 
 Use this checklist to verify all SSO functionality:
 
-### Authentication Tests
+#### Authentication Tests
 - [ ] Alice can login via SSO
 - [ ] Bob can login via SSO
 - [ ] Charlie can login via SSO
 - [ ] Invalid credentials are rejected
 - [ ] Non-existent users cannot login
 
-### Role-Based Access Control
+#### Role-Based Access Control
 - [ ] Alice has Admin role at Instance level
 - [ ] Bob has User role at Instance level
 - [ ] Charlie has User role at Instance level
@@ -724,32 +732,23 @@ Use this checklist to verify all SSO functionality:
 - [ ] Editor role has permission to 4 actions for Concert objects
 - [ ] Viewer role cannot modify any data
 
-### Session Management
+#### Session Management
 - [ ] Users can logout successfully
 - [ ] Sessions expire after timeout period
 - [ ] Expired sessions require re-authentication
 - [ ] Single Logout works (if configured)
 
-### Group Synchronization
+#### Group Synchronization
 - [ ] LDAP group changes sync to Keycloak
 - [ ] Group membership changes affect Concert roles
 - [ ] Role changes take effect after re-login
 
-### User Experience
+#### User Experience
 - [ ] SSO login button is visible and functional
 - [ ] Redirect to Keycloak works smoothly
 - [ ] Return to Concert after authentication works
 - [ ] User information displays correctly
 - [ ] No error messages during normal flow
-
----
-
-## Troubleshooting
-
-:::info
-This section provides basic troubleshooting steps in case you encounter any issues while performing the steps above.
-These steps are optional and only need to be followed if you run into problems.
-:::
 
 ### Login Redirects to Keycloak but Fails
 
