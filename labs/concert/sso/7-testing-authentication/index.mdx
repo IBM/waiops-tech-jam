@@ -447,114 +447,13 @@ Let's create an Application in Concert as Bob.
 
 ---
 
-## 7.6: Create an Application in Concert as Charlie and grant role
-
-Next, you will login to Concert as Charlie, create an Application and grant role to Alice and Bob.
-
-### 7.6.1: Concert SSO Login as Charlie
-
-From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
-1. On the Concert login page, click **Log in with SSO**
-
-![Keycloak Login Page](images/concert-login-sso.png)
-
-2. You should be redirected to the Keycloak login page
-3. Enter Charlie's credentials:
-   - **Username**: `charlie`
-   - **Password**: `Charlie@123`
-4. Click **Sign In**
-
-![Keycloak Login Page Charlie](images/concert-keycloak-charlie-sso-login.png)
-
-### 7.6.2: Verify Successful Login
-
-After successful authentication:
-- Concert dashboard should load
-- You should see Charlie's name in the top-right corner
-
-![Concert Dashboard - Charlie](images/concert-dashboard-charlie.png)
-
-### 7.6.3: Create an Application in Concert
-
-Let's create an Application in Concert as Charlie.
-
-1. Click **Inventory** on left panel and click **Application inventory**.
-
-![Concert Charlie Application Inventory](images/concert-charlie-application-inventory.png)
-
-2. On **Application inventory** page, click **Define application** dropdown and select **From components**.
-
-![Concert Charlie From Components](images/concert-charlie-from-components.png)
-
-3. On **Define an application** page, under **Details** section, enter the following values:
-   - **Name**: `Sales-application`
-   - **Description (optional)**: `Sales application`
-   - **Version**: `2.2.0`
-   - **Criticality (optional)**: `Very low`
-   - **Data sensitivity (optional)**: `Very low`
-   - **Revenue per hour in $ (optional)**: `0`
-   - **Tags (optional)**: `**Leave empty**`
-   - **Add business details**: `NO`
-
-![Concert Charlie define an App details](images/concert-charlie-define-an-app-details.png)
-
-4. On the **Repositories (optional)** section, select **Select from inventory list** radio button.
-
-![Concert Charlie define an App repo](images/concert-charlie-define-an-app-repo.png)
-
-5. On the **Build artifacts (optional)** section, select **Select from inventory list** radio button.
-
-![Concert Charlie define an App artifacts](images/concert-charlie-define-an-app-artifacts.png)
-
-6. On the **Environments (optional)** section, leave as is.
-
-![Concert Charlie define an App envs](images/concert-charlie-define-an-app-environments.png)
-
-7. On the **Summary** section, click **Create** button.
-
-![Concert Charlie click create](images/concert-charlie-define-an-app-summary.png)
-
-8. The newly created application called **Sales-application** is now listed in Application Inventory page.
-
-![Concert Charlie new application](images/concert-charlie-application-inventory-Sales-application.png)
-
-9. Click the `⋮` (three vertical dots) menu icon on same row to perform **Manage collaborators** action
-
-![Concert Charlie manage collabs](images/concert-charlie-manage-collabs.png)
-
-10. You will make **Alice** as an **Editor** and **Bob** as a **Viewer** for **Sales-application**. Click **Grant access** button.
-
-![Concert Charlie grant access](images/concert-charlie-grant-access.png)
-
-11. On **Grant access to Sales-application** page, do the following:
-   - select **alice** by ticking the checkbox 
-   - assign **Editor** on right section
-   - click **Grant** button
-
-![Concert Charlie grant Alice Editor](images/concert-charlie-grant-alice-editor.png)
-
-12. On **Grant access to Sales-application** page, do the following:
-   - select **bob** by ticking the checkbox
-   - assign **Viewer** on right section
-   - click **Grant** button
-
-![Concert Charlie grant Bob Viewer](images/concert-charlie-grant-bob-viewer.png)
-
-13. Finally, as Charlie, you have granted **Sales-application** to Alice as an Editor and Bob as a Viewer. 
-
-![concert-charlie-after-grant-2-users](images/concert-charlie-after-grant-2-users.png)
-
-14. Log out from Concert as Charlie.
-
----
-
-## 7.7: Object level access testing
+## 7.6: Object level access testing
 
 Next, you will perform **object level** access testing as Alice, Bob and Charlie.
 
-### 7.7.1: Validate object level access as Alice
+### 7.6.1: Validate object level access as Alice
 
-For a quick recap, Alice belongs to Corporate IT organization. She gets Admin role and everybody else assigns her as **Editor** for Concert objects such as applications and environments including **HR-application** and **Sales-application**.
+For a quick recap, Alice belongs to Corporate IT organization. She gets Admin role and everybody else assigns her as **Editor** for Concert objects such as applications and environments including **HR-application**.
 
 First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
 From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
@@ -580,7 +479,7 @@ On the Concert login page, click **Log in with SSO**.
 
 ![Concert Alice application inventory](images/concert-alice-application-inventory.png)
 
-5. Alice will get to see all applications such as **HR-application** and **Sales-application** which have been granted to her with **Editor** role.
+5. Alice will be able to view all applications, such as **HR-application**, that have been granted to her.
 
 ![Concert Alice list of apps](images/concert-alice-list-of-apps.png)
 
@@ -597,22 +496,13 @@ Click **Edit application** for **HR-application**, you will be able to make chan
 
 ![concert-alice-edit-hr-application](images/concert-alice-edit-hr-application.png)
 
-7. For **Sales-application**, click the **⋮** (three vertical dots) menu icon on same row.
-Alice with **Editor** role, has the permission to perform the following actions :
-   - **Open in arena view**
-   - **Apply tags**
-   - **Edit details**
-   - **Edit application**
+7. Logout Concert as Alice.
 
-![Concert Alice Sales application](images/concert-alice-sales-application.png)
-
-8. Logout Concert as Alice.
-
-### 7.7.2: Validate object level access as Bob
+### 7.6.2: Validate object level access as Bob
 
 For a quick recap, Bob is a techie user in HR organization.
 He only supports HR applications within the company. 
-He has **Admin** role for **HR-application** and **Viewer** role for **Sales-application**.
+He has **Admin** role for **HR-application**.
 
 First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
 From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
@@ -638,7 +528,7 @@ On the Concert login page, click **Log in with SSO**.
 
 ![Concert Bob application inventory](images/concert-bob-application-inventory.png)
 
-5. Bob will get to see all applications such as **HR-application** and **Sales-application** which have been granted to him.
+5. Bob will be able to view all applications, such as **HR-application**, that have been granted to him.
 
 ![Concert Bob list of apps](images/concert-bob-list-of-apps.png)
 
@@ -647,20 +537,13 @@ Bob has the permission to perform all actions because Bob is the Admin for **HR-
 
 ![Concert Bob HR application](images/concert-bob-hr-application.png)
 
-7. For **Sales-application**, click the **⋮** (three vertical dots) menu icon on same row. <br/>
-Bob has the permission for the following action :
-   - **Open in arena view** <br/> 
-Bob has only one available action, as he is granted the **Viewer** role for the **Sales-application**.
+7. Logout Concert as Bob.
 
-![Concert Bob Sales application](images/concert-bob-sales-application.png)
-
-8. Logout Concert as Bob.
-
-### 7.7.3: Validate object level access as Charlie
+### 7.6.3: Validate object level access as Charlie
 
 For a quick recap, Charlie is a techie user in Sales organization.
 He only supports Sales applications within the company. 
-He has **Admin** role for **Sales-application** and **Viewer** role for **HR-application**.
+He has **Viewer** role for **HR-application**.
 
 First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
 From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
@@ -686,7 +569,7 @@ On the Concert login page, click **Log in with SSO**.
 
 ![Concert Charlie application inventory](images/concert-charlie-application-inventory.png)
 
-5. Charlie will get to see all applications such as **HR-application** and **Sales-application** which have been granted to him.
+5. Charlie will be able to view all applications, such as **HR-application**, which have been granted to him.
 
 ![Concert Charlie list of apps](images/concert-charlie-list-of-apps.png)
 
@@ -697,12 +580,7 @@ Charlie has only one available action, as he is granted the **Viewer** role for 
 
 ![Concert Charlie HR application](images/concert-charlie-hr-application.png)
 
-7. For **Sales-application**, click the **⋮** (three vertical dots) menu icon on same row. <br/>
-Charlie has the permission to perform all actions because Charlie is the Admin for **Sales-application**.
-
-![Concert Charlie Sales application](images/concert-charlie-sales-application.png)
-
-8. Logout Concert as Charlie.
+7. Logout Concert as Charlie.
 
 ---
 
