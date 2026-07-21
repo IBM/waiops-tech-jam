@@ -20,19 +20,17 @@ This Labs simulates an expired certificate scenario:
 a Concert Workflows performs Linux Keystore Discovery against a Certificate 
 Environment running on Apache Tomcat. The discovered Certificates are ingested into IBM Concert. In IBM Concert, an Automation Rule detects 
 expiring and expired Certificates, and automatically creates a Change Management Request in GitHub. 
-GitHub is used as the Change Management tool in this lab for simplicity. In real client environment, other Change Management tools 
+GitHub is used as the Change Management tool in this lab for simplicity. In a real client environment, other Change Management tools 
 such as ServiceNow could be used. Next, with IBM Concert Automation Rule in place, a GitHub issue will be created for an expiring Certificate
-or an expired Certificate. GitHub issue(s) created by IBM Concert Automation Rule will need to be *approved* or *rejected* using a GitHub label. 
-After the GitHub issue has been approved, IBM Concert Workflows for Linux Keystore Renewal kicks in to perform Certificate Renewal 
-for Java Keystore on Apache Tomcat. If the GitHub issue is set with a *rejected* label, the certificate remains unchanged.
+or an expired Certificate. GitHub issue(s) created by IBM Concert Automation Rule will need to be *approved* using a GitHub label. 
+After the GitHub issue has been approved, IBM Concert Workflows for Linux Keystore Renewal will perform Certificate Renewal 
+for Java Keystore on Apache Tomcat.
 
 There are two key Concert Workflows used in this scenario :
 * Linux Keystore Discovery 
 * Linux Keystore Renewal
 
-In a production environment, both workflows would run on a scheduled interval. However, for this lab setup, only the Linux Keystore Renewal 
-workflow will run automatically on a schedule, while the Linux Keystore Discovery workflow will be executed manually as part of the step-by-step lab 
-instructions.
+In a production environment, both workflows would run on a scheduled interval. However, for this lab setup, we will run them manually. 
 
 ### Certificate Expiration Outages
 

@@ -18,15 +18,11 @@ do NOT install any updates to avoid disrupting the lab environment.
 If you get a security warning (**Warning: Potential Security Risk Ahead**) when accessing the Concert, Apache Tomcat UIs, please 
 ignore it and proceed to the UI (click on **Advanced** and then **Accept the Risk and Continue**). 
 
-### 3.1.1: Using the Bastion Host Terminal and UI 
+### 3.1.1: Using SSH from the Bastion Host
 
-This is for information only. Later in this page you will be instructed to run the actual commands. This Lab has both Concert and Workflows installed:
-* To access the Concert UI, click on the burger menu on the top left corner and select **Concert -> Home**. 
-* To access the Workflows UI, click on the burger menu on the top left corner and select **Workflows -> Home**.
+You can connect from the Bastion host to other VMs using the **jammer** user with the SSH commands as shown below. This is for 
+information only. You don't need to run these commands now.
 
-![](images/burger-concert.png)
-
-Note that from the Bastion SSH, you can ssh into each other VM with the commands below: 
 
 ```bash title="Host: bastion-gym-lan"
 # Access the Concert VM
@@ -48,13 +44,14 @@ file named `credentials.txt` and **save** it. Keep this window open for easy acc
 ```
 Bookmarks:
   Lab guide:        https://ibm.github.io/waiops-tech-jam/labs/concert/introduction/
-  Concert:          https://concert.ibmdte.local/
+  Concert:          https://concert.ibmdte.local:12443
   Apache Tomcat:    https://demo-apps.ibmdte.local:8443/
 
-Concert URL:        https://concert.ibmdte.local
+
+Concert URL:        https://concert.ibmdte.local:12443
 Concert API Key:    
-concert_username:   
-concert_password:   
+concert_username:   ibmconcert
+concert_password:   Passw0rd 
 
 Apache Tomcat URL:                   https://demo-apps.ibmdte.local:8443
 Java Keystore Password:              tomcat
@@ -77,33 +74,36 @@ Private Key value for "jammer" user on demo-apps VM (copy the value BELOW this l
 bluebox IP address:
 Private Key value for "jammer" user on bluebox VM (copy the value BELOW this line)
 
+
+
+
 ``` 
 
-From the Bastion SSH, run the command below:
 
-```sh title="Host: bastion-gym-lan"
-cat demo-details.yml | grep -E 'concert'
-``` 
+## 3.2 Login into IBM Concert for the First Time
 
-Just to have the users and passwords handy together, copy these values below to the credentials file:
-* concert_username: 
-* concert_password:
+From the **Bastion Remote Desktop**, open the **Firefox** browser and click on the **Concert** bookmark to launch the Concert UI.
 
+Login to the Concert UI using the credentials from your credentials file:
 
+- **concert_username**
+- **concert_password**
 
+![](images/login-page.png)
 
-## 3.2: Obtaining the IBM Concert API Key
+On the Concert welcome page, select the **Resilience** option on the right and select **Skip** in the next page:
 
-From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark to open the Concert UI.
-* To access the Concert UI, click on the burger menu on the top left corner and select Concert -> Home.
-
-Login to the Concert UI with the credentials recorded in the credentials file (**concert_username:** and **concert_password:**).
+![](images/welcome.png)
 
 :::danger
-In the **Welcome to IBM Concert!** dialog, make sure to select **Skip**
+Again, make sure to choose **Skip** in the next page to bypass the setup wizard.
 
-![](images/skip.png)
+![](images/skip2.png)
 :::
+
+
+
+## 3.3: Obtaining the IBM Concert API Key
 
 
 * In the Concert UI, on the top right corner, click on the **API Key** icon.
@@ -113,14 +113,14 @@ In the **Welcome to IBM Concert!** dialog, make sure to select **Skip**
 
 
 
-## 3.3: Configuring GitHub
+## 3.4: Configuring GitHub
 
 You will need a GitHub account to complete the lab. If you do not have one, please create one at [GitHub](https://github.com/).
 
-### 3.3.1: Creating new GitHub repository
+### 3.4.1: Creating new GitHub repository
 
-You will need to create a new repository for your GitHub account. We will use this repository to demonstrate Change Management process
-created by Concert Automation Rules.
+You will need to create a new repository for your GitHub account. We will use this repository to demonstrate a Change Management process
+created by the Concert Automation Rules.
 
 * Login to your GitHub account and open the following repository URL on the browser
 ```
@@ -141,24 +141,24 @@ https://github.com/<github-username>/concert-operations-lab
 ```
 
 
-### 3.3.2: Enabling GitHub issues
+### 3.4.2: Enabling GitHub issues
 
 You will enable GitHub issues in your new repository to allow Concert to create issues for the expiring and expired Certificates.
 
 * In your new repository, click on the **Settings** tab.
-* Under the **General** section, scroll down to the **Features** section and select the checkbox for **Issues**
+* Under the **General** section, scroll down to the **Features** section and select the checkbox for **Issues** (if not already enabled)
 as shown below:
 
 ![](images/issues.png)
 
 
-### 3.3.2: Creating GitHub labels
+### 3.4.3: Creating GitHub labels
 
 You will create 2 new labels for GitHub issues in your new repository to allow Concert Workflows to handle renewal for the expiring and expired Certificates.
 
 * In your new repository, click on the **Issues** tab.
-* From the **Issues** tab, click the **Labels** button on the right.
-* Click **New label** button in Green color on right side.
+* From the **Issues** page, click the **Labels** tab down the left side.
+* Click **New label** green button on the top right.
 
 First, create **approved** label with the following values : 
 * Assign **Name** : approved
@@ -169,16 +169,8 @@ First, create **approved** label with the following values :
 ![](images/gitHub-issue-label-approved.png)
 
 
-Second, create **rejected** label with the following values :
-* Assign **Name** : rejected
-* Assign **Description** : rejected
-* Assign **Color** : `#e99695`
-* Click **Create label** button
 
-![](images/gitHub-issue-label-rejected.png)
-
-
-### 3.3.3: Creating a Personal Access Token (PAT)
+### 3.4.4: Creating a Personal Access Token (PAT)
 
 You will create a Personal Access Token (PAT) in GitHub to allow Concert to connect to your new repository and create issues for the expiring and expired Certificates
 
@@ -200,30 +192,26 @@ You will create a Personal Access Token (PAT) in GitHub to allow Concert to conn
 Make sure to **save** the credentials file!. Keep the window open for easy access during the Lab.
 ::: 
 
-## 3.4: Creating a target environment in Concert
+## 3.5: Creating a target environment in Concert
 
 An environment in Concert groups related applications and inventory data.
 We will define a new environment to capture certificates coming from Apache Tomcat.
 
-* In the Concert UI, select **Inventory > Environment inventory**.
+* In the Concert UI, click on the top **Resilience** tab.
+* On the left side menu, select **Inventory > Environment inventory**.
 * Click **Define environment > From resources**.
 * Enter `development` as the **Name** for the environment.
-* From the **Type** drop down menu, select **Other**.
 * Select the **Purpose** of this environment as **Development**.
-* Click **Next**.
-* As there are no **Build Artifacts** to include in your environment definition, we will skip this step.
-* Click **Next**.
-* Review the summary of your entries, then click **Create**.
+* Click the **Create** button.
 
-## 3.5: Creating GitHub connection from Concert
+
+## 3.6: Creating GitHub connection from Concert
 
 You will use the personal access token that you created previously to configure a GitHub Connection. 
 Concert will leverage this connection to create GitHub issues for the expiring and expired Certificates in the Concert defined environment.
 
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
-
-
-* Go to **Administration** > **Integrations**.
+* In the Concert UI, click on the top **Resilience** tab.
+* On the left side menu, select **Administration** > **Integrations**.
 * Select the **Connections** tab.
 * Click on **Create connection**.
 * Search for **GitHub** and click on the GitHub tile.
@@ -233,10 +221,10 @@ From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab
   * **Host**: `https://api.github.com/`
   * **Personal Access Token**: the GitHub Personal Access Token (PAT) you created during the previous step.
 * Click on **Validate connection** to verify the connection is successful.
-* Click **Create**.
+* Click the **Create** button.
 
 
-## 3.6: Creating Automation Rules in Concert
+## 3.7: Creating Automation Rules in Concert
 
 
 Concert reports all Certificates present in an Environment and classifies them into four categories such as Valid Certificates,
@@ -249,33 +237,38 @@ In addition to automation rules, Concert can leverage ingestion jobs to pull dat
 in order to automatically update ticket status. This configuration is out of scope for this lab.
 :::
 
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
-
-* Click **Administration** > **Integrations**.
-* Select the **Automation rules** tab.
+* From the same **Administration** > **Integrations** page you are now, select the **Automation rules** tab.
 * Click the **Create automation rule** button on the right.
 
 ![](images/concert-automation-rules.png)
 
 * Enter a **Name** for the automation rule such as `github-issue-cert-mgmt`.
 * Skip the **Description** for the automation rule.
-* Under **Take this action**:
-    * Select **Open a GitHub issue**
-    * In **Enter target organization** type your GitHub username.
-    * In **Enter target repository** type `concert-operations-lab`.
-* Under **Using this connection**:
-    * Select the GitHub connection created during the previous step.
-    * For **assign to**, leave empty or undefined.
-* Under **When this condition occurs**:
+
+* Under **Trigger type**:
     * Select **An expiring or expired certificate is detected**.
-    * For **affecting**, select **development** from the  list of environments. `development` is the Concert environment which all Certificates will be discovered.
-* Under **With the following threshold values**:
-    * For **Certificates expiring within**, select **7 days** from the drop down list. This is the only condition that will trigger the issue creation.
+    * For **Environment**, select **development** from the list. `development` is the Concert environment which all Certificates will be discovered.
+
+* Under **Conditions**:
+    * For **Time until certificate expiration**, select **7 days** from the drop down list. This is the only condition that will trigger the issue creation.
+
+
+* Under **Action type**:
+    * Select **Open a GitHub issue**
+    * In **Target organization** type your GitHub username.
+    * In **Target repository** type `concert-operations-lab`.
+    * Skip the **Labels** field.
+    * In **Connection**, select the GitHub connection created during the previous step.
+    * Skip the **Assignees** field.
+
+
 
 Your configuration should look similar to the screenshot below. Your github name will be different:
 
 ![](images/automation-rule-config1.png)
 ![](images/automation-rule-config2.png)
+![](images/automation-rule-config3.png)
+
 
 * Click **Create** to create the automation rule.
 
@@ -285,7 +278,7 @@ expand the section and see more details. Review the conditions that will trigger
 ![](images/automation-rule-details.png)
 
 
-## 3.7: Installing the Workflows
+## 3.8: Installing the Workflows
 
 
 You will download custom Workflows from a public Box folder and save them on the Bastion local disk. Later you will upload them to 
@@ -297,19 +290,17 @@ From the Bastion Remote Desktop, open a new tab in the Firefox browser.
 * In the Box folder, you will find three Workflows : 
     * Linux_Keystore_Cert_Discovery.zip
     * Linux_Keystore_Cert_Renewal.zip
-    * updateGitHubIssueWithALabel.zip
 
-![](images/three-workflows-in-box.png)
 
-* Download all three Workflows and save them on Bastion's **Downloads** folder.
+* Download the two Workflows and save them on Bastion's **Downloads** folder.
 
 ![](images/bastion-downloads-folder.png)
 
-Next, you will create two new Folders in Concert Workflows for these 3 Workflows.
+Next, you will create two new Folders in Concert Workflows.
 
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
 
-* Click on the burger menu on the top left corner and select **Workflows -> Workflows**
+
+* Click on the **Workflows** tab on the top and select the **Workflows tile**.
 * Click on the three vertical dots on the top right corner and select **Create folder**
 
 ![](images/cw-create-folder.png)
@@ -318,6 +309,8 @@ From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab
 * Enter a description for the folder such as `Folder for Certificates Discovery` and click on **Create** button.
 
 ![](images/cw-certificatesDiscovery-newFolder.png)
+
+Now, one more time:
 
 * Click on the three vertical dots on the top right corner and select **Create folder**
 * Enter a name for the folder such as `certificatesRenewal`
@@ -353,28 +346,12 @@ Next, you will upload **Linux_Keystore_Cert_Renewal** workflow imported to **cer
 
 ![](images/cw-certificatesRenewal.png)
 
-* Still on **certificatesRenewal** folder in Concert Workflows, click again on **Import** button in Concert Workflows, 
-navigate to Bastion's **Downloads** folder, choose **updateGitHubIssueWithALabel.zip** and click **Open** button to complete the Import 
-
-![](images/cw-Import-updateGitHubIssue-Label.png)
-
-* At this stage, you will have **updateGitHubIssueWithALabel** workflow imported to **certificatesRenewal** folder
-
-![](images/cw-workflow-updateGitHub-withLabel.png)
-
-* Click on **3 vertical dots** on **updateGitHubIssueWithALabel** workflow and click **Expose externally** to expose the workflow.   
-
-![](images/cw-workflow-expose-externally.png)
-
-* On the **Expose externally** pop-up, click on the **Expose** button.   
-  We need the **updateGitHubIssueWithALabel** workflow to be exposed so it can be called within the Concert UI certificate **Renew** menu option.
-
-![](images/cw-workflow-expose-button.png)
-
-Now, you have all 3 Workflows uploaded to specific folders in Concert Workflows. In the next section, you will configure the Workflows and execute them.
 
 
-## 3.8: Summary
+Now, you have the two Workflows uploaded to specific folders in Concert Workflows. In the next section, you will configure the Workflows and execute them.
+
+
+## 3.9: Summary
 
 So far you have been able to accomplish the following:
 
