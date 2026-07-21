@@ -12,26 +12,26 @@ for both expired and expiring certificates.
 
 ## 5.2: Configuring the Discovery Workflow
 
-Let's configure user variables values for **Linux_Keystore_Cert_Discovery** Workflow by using Authentications created in previous section. 
+Let's configure user variables values for **Linux_Keystore_Cert_Discovery** Workflow by using the Authentications created in the previous section. 
 
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
 
 :::note
-For each default value shown below, begin the entry with a double quote (") and end it with a double quote (").
+For each default value shown below, make sure it begins and ends with a double quote (").
 :::
 
-* Click on the burger menu on the top left corner and select **Workflows -> Workflows** 
+* Click on the **Workflows** tab on the top and select the **Workflows tile** 
 * Click the **certificatesDiscovery** folder
-* Click the **Linux_Keystore_Cert_Discovery** workflow
+* Click the **Linux_Keystore_Cert_Discovery** workflow. You will now confirm that the Workflow input parameters are using the
+authentications you created previously.
 
-    * Under **keystorePath** name, click **Eye** icon as shown below to reveal the text, for Default value, type `"/opt/tomcat/ssl/server.jks"`
+    * Under **keystorePath** name, click **Eye** icon as shown below to reveal the text, for Default value, confirm it's `"/opt/tomcat/ssl/server.jks"`
 
     ![](images/cw-jks-certdiscovery-keystorepath.png)
 
-    * Under **env_name** name, for Default value, type `"development"` if it is not already set. This refers to the environment that you created in the Lab Preparation section
-    * Under **linuxAuth** name, for Default value, type `"ibmconcert/Ansible-apacheTomcat"` 
-    * Under **concertAuth** name, for Default value, type `"ibmconcert/ConcertAPIKey"` 
-    * Under **passwordMap** name, for Default value, type `"ibmconcert/CertConfigData"`
+    * Under **env_name** name, for Default value, confirm it's `"development"`. This refers to the environment that you created in the Lab Preparation section
+    * Under **linuxAuth** name, for Default value, confirm it's `"ibmconcert/Ansible-apacheTomcat"` 
+    * Under **concertAuth** name, for Default value, confirm it's `"ibmconcert/ConcertAPIKey"` 
+    * Under **passwordMap** name, for Default value, confirm it's `"ibmconcert/CertConfigData"`
     
 * Click **Save** icon on top right area to apply and save the workflow with the configurations 
 
@@ -46,14 +46,15 @@ For each default value shown below, begin the entry with a double quote (") and 
 You will now run **Linux_Keystore_Cert_Discovery** Workflow to discover certificates from Apache Tomcat Java KeyStore, then ingest them into Concert. 
 
 :::note
-In a customer environment, the **Linux_Keystore_Cert_Discovery** Workflow is configured to run automatically as a **job** through a workflow job scheduler. In this lab exercise, however, it is executed manually to demonstrate how it works.
+In a customer environment, the **Linux_Keystore_Cert_Discovery** Workflow should be configured to 
+run automatically as a **job** through a workflow job scheduler. In this lab exercise, however, it is executed manually to demonstrate how it works.
 :::
 
 :::note
 Be aware that the certificate serial number in your lab environment may differ from the one shown in the screenshot.
 :::
 
-* Click **Run** icon for **Linux_Keystore_Cert_Discovery** Workflow
+* Click the **Run** button for **Linux_Keystore_Cert_Discovery** Workflow
 
 ![](images/cw-run-workflow.png)
 
@@ -65,10 +66,11 @@ Be aware that the certificate serial number in your lab environment may differ f
 ### 5.3.2: Verifying the Results of the Discovery Workflow Execution
 
 Let's verify the results of the Discovery Workflow execution in the Concert's Operations Certificate page    
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
 
-* Click on the burger menu on the top left corner and select **Concert -> Dimensions -> Operations**
-* On the Certificates tab, you will see that the total number of Certificates in the **development** environment is 3,
+
+* Click on the **Resilience** tab on the top. 
+* On the left side menu, select **Dimensions -> Operations**
+* On the **Certificates** tab, you will see that the total number of Certificates in the **development** environment is 3,
   where:
 
   - One Certificate is nearing expiration
@@ -86,19 +88,23 @@ From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab
 
 ![](images/concert-certificate-serial-number.png) 
 
-* You will get into **Keystore entries UI** for a Certificate after performing previous action.
+* You will get into **Keystore entries UI** for a Certificate after performing the previous action.
 
 ![](images/concert-certificate-keystore-entries-ui.png)
 
-* Click 3 vertical dots at the right bottom of Certificate UI, to perform **Update attributes** action for the Certificate.
+* Click on Back on the top navigation to get back to the previous page. 
+
+Click on the 3 vertical dots at the right of the certificates. You will see the option to 
+update some certificate attributes or delete the certificate (don't make any change).
 
 ![](images/concert-certificates-3vertical-dots.png)
 
 
-### 5.3.3: Verifying GitHub Issues are Automatically Created
+### 5.3.3: Label the GitHub Issues for Certificate Renewal
 
-In GitHub, you will also see two GitHub issues created automatically by Concert Automation Rules. 
+In GitHub, you will see the two GitHub issues created automatically by Concert Automation Rules. 
 To recap, you created an Automation Rule in section **3.6: Creating Automation Rules in Concert**
+
   The two GitHub issues are associated with:
 
   - One Certificate nearing expiration
@@ -106,7 +112,23 @@ To recap, you created an Automation Rule in section **3.6: Creating Automation R
 
 ![](images/github-issues-for-exp-certificates.png)
 
-* For each GitHub issue, use the **Certificate Serial Number** to match it to the record in Concert
+
+Now, using the Ticket/Issue link on the certificate, we will label the issue that belongs to the expired certificate as **Approved** for renewal.
+
+* Click the twistie indicated by the red arrow on the **expired certificate**. Again, make sure you select the expired cert.
+* Scroll down and click on the link under the Ticket section to open the Issue created for this expired certificate.
+
+![](images/expired-cert.png)
+
+* On the Issue page, click on **Labels** on the right and check the **Approved** label. You should see the **Approved** label added to the issue as shown below:
+
+![](images/approved-issue.png)
+
+* Just to recap, we have labeled the issue that belongs to the expired certificate as **Approved**. This means that 
+we have approved the renewal of this certificate. We will see how it gets renewed in the next section.
+
+
+
 
 ## 5.4: Confirm All Tomcat JKS Certificates are Discovered
 
@@ -310,7 +332,7 @@ The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS
 
 ```
 
-## 5.5: Search a Certificate via Concert API
+## 5.5: Get the Certificate Metadata via Concert API
 
 Let's use Concert API to search for a Certificate using Certificate Serial Number. 
 
@@ -318,8 +340,9 @@ Let's use Concert API to search for a Certificate using Certificate Serial Numbe
 Be aware that the certificate serial number in your lab environment may differ from the one shown in the screenshot.
 :::
 
-From the Bastion SSH, run the **curl** command, after replacing the following **two** values :
-  - Replace the value after **search=** with the actual Certificate Serial Number obtained from your Concert Certificate UI
+From the Bastion SSH, run the following **curl** command. 
+Use the credentials file to copy the command below and update the following values:
+  - Replace the value after **search=** with the Certificate Serial Number that belongs to the expired certificate from the Concert Operations/Certificates page.
   - Replace the value after **C_API_KEY:** with your Concert API Key.
 
 ```sh title="Host: bastion-gym-lan"
@@ -328,7 +351,7 @@ curl -sk \
   --header 'Authorization: C_API_KEY: <YOUR_CONCERT_API_KEY>' \
   --header 'InstanceId: 0000-0000-0000-0000' \
   --header 'accept: application/json' \
-  --header 'content-type: application/json-patch+json'
+  --header 'content-type: application/json-patch+json' | jq
 ```
 
 This is an example of the expected output:
@@ -387,7 +410,7 @@ This is an example of the expected output:
 }
 ```
 * From the json output, you will notice that under **issues block** there is a GitHub issue associated with the certificate because it is already expired.
-* Repeat the same curl command using another certificate serial number from the Concert Certificate UI and observe the output.
+
 
 ## 5.6: Summary
 
@@ -399,5 +422,5 @@ In this section, you have been able to accomplish the following:
 4. Have verified that GitHub issues are automatically created by the Concert Automation Rules. 
 5. Have tried out Certificate Concert API to search for a Certificate using its Serial Number. 
 
-Now, it's time to move to the next step, please continue to the next section of the lab.
+Now, it's time to move to the next step. Please continue to the next section of the lab.
 

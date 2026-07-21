@@ -20,22 +20,10 @@ using the browser, please disregard it. Select **Advanced** → **Accept the Ris
 
 ---
 
-## 3.2: Using the Bastion Host Terminal and UI 
+## 3.2: Using SSH from the Bastion Host
 
-This section provides background information about the Bastion environment. You will execute actual 
-commands in later sections. This lab environment includes both **Concert** and **Workflows** installations.
-
-### Accessing the UIs
-
-From the **Bastion Host Terminal**, click on **Activities** and open **Firefox**.  
-Then click on the bookmark **Concert** to launch the Concert UI.
-
-- To open the **Concert UI**, click the **burger menu (☰)** at the top-left corner and select **Concert → Home**.  
-- To open the **Workflows UI**, click the **burger menu (☰)** and select **Workflows → Home**.
-
-### Using SSH from the Bastion Host
-
-You can connect from the Bastion host to other lab VMs using SSH commands as shown below.
+You can connect from the Bastion host to other VMs using the **jammer** user with the SSH commands as shown below. This is for 
+information only. You don't need to run these commands now.
 
 ```bash title="Host: bastion-gym-lan"
 # Access the Concert VM
@@ -62,22 +50,12 @@ All credentials will be consolidated into a single text file, which simplifies t
 ```yaml
 Bookmarks:
   Lab guide:  https://ibm.github.io/waiops-tech-jam/labs/concert/introduction/
-  Concert:    https://concert.ibmdte.local/
+  Concert:    https://concert.ibmdte.local:12443
 
 Concert Workflows: https://ibm.box.com/s/lrhd8y9d8bvkyv60v6kq989vdlf4du1v
 
-Concert URL: https://concert.ibmdte.local
-Concert Port: 12443
-
-Concert API Key:  
-Concert Request header: 
-
 concert_username: ibmconcert
 concert_password: Passw0rd
-
-ServiceNow Host:     
-ServiceNow Username: 
-ServiceNow Password: 
 
 demo-apps-ip:
 
@@ -89,7 +67,7 @@ rhel_vm_private_key: <paste the private key under this line, including the BEGIN
 
 ## 3.4 Retrieve the Demo App IP address
 
-Next, run the following command from the **Bastion SSH terminal** to capture the IP address of the demo application:
+Next, open a **Terminal** windows and run these commands to capture the IP address of the demo-apps VM:
 
 
 ```bash title="Host: bastion-gym-lan"
@@ -119,7 +97,7 @@ It relies on a mathematically linked pair: a Public Key (the lock) and a Private
 The demo-apps VM uses SSH key-based authentication. There is a pre-generated SSH key pair for the `jammer` user on the demo-apps VM, 
 and you will need to retrieve the private key so we can use it later in the lab to enable Concert to connect to this VM.
 
-Run the following command to connect from the Bastion host to the demo-apps VM:
+Using the **Terminal** window, run the following command to connect from the Bastion host to the demo-apps VM:
 ```bash title="Host: bastion-gym-lan"
 ssh jammer@demo-apps
 ```
@@ -146,46 +124,32 @@ exit
 Keep your private key confidential. Do not share it publicly or commit it to any version control repositories.
 ::: 
 
-## 3.6 ServiceNow Developer Instance
 
-Paste the ServiceNow Developer Instance credentials into the `credentials.txt` file. This is a prerequisite
-for the Lab as explained in the **Lab Environment** section of this Lab Guide. 
 
-## 3.7 Obtaining the IBM Concert API Key and Request Header
+## 3.6 Login into IBM Concert for the First Time
 
 From the **Bastion Remote Desktop**, open the **Firefox** browser and click on the **Concert** bookmark to launch the Concert UI.
-
-- To access the **Concert UI**, click the **burger menu (☰)** in the top-left corner and select **Concert → Home**.
 
 Login to the Concert UI using the credentials from your credentials file:
 
 - **concert_username**
 - **concert_password**
 
+![](images/login-page.png)
+
+On the Concert welcome page, select the **Resilience** option on the right and select **Skip** in the next page:
+
+![](images/welcome.png)
+
 :::danger
-If prompted with the **Welcome to IBM Concert** dialog, choose **Skip** to bypass the setup wizard.
+Make sure to choose **Skip** in the next page to bypass the setup wizard.
 
 ![](images/skip.png)
 :::
 
 ---
-### Generating the API Key and Request Header
 
-1. In the **Concert UI**, locate and click the **API Key** icon in the top-right corner.  
-2. Select **Generate API key**.  
-3. After the API key is generated, copy and save the following values to your **credentials file**:
-   - **Concert API Key** → `Concert API Key:`
-   - **Request Header** → `Concert Request Header:`  
-4. Click the **X** in the dialog window to close it.
-
-These values will be required when configuring workflows later in the lab.
-
-:::note Security Reminder
-Store your API key securely in the `credentials.txt` file.  
-**Do not share this file publicly** or commit it to any version control repositories.
-:::
-
-## 3.8 Forcing Red Hat Security Advisories (RHSA)
+## 3.7 Forcing Red Hat Security Advisories (RHSA)
 
 As this Lab runs on TechZone infrastructure, there is a chance that the RHEL VMs may not have any vulnerabilities (e.g. everything has been already patched). 
 To ensure that we have a vulnerable version of RHEL libraries on the demo-apps VM, we will force a downgrade of the **ghostscript** package to a 
@@ -210,7 +174,7 @@ exit
 ```
 
 
-## 3.9 Enable Firefox Menu Bar
+## 3.8 Enable Firefox Menu Bar
 
 Enable the menu bar in Firefox to facilitate copy and paste operations with workflows. Right-click any empty space in the tab 
 bar (or top toolbar) and check Menu Bar.
@@ -226,18 +190,8 @@ Tip: keep the **credentials file** window open for easy access during the Lab.
 ::: 
 
 
-## 3.10 Update the ServiceNow Integration
 
-We need to ensure that Concert Workflows uses the latest ServiceNow integration:
-
-1. From **credentials.txt**, open the **Concert Workflows** link in a new browser tab. 
-2. Select **ServiceNow_1.0.69.ssi.zip** and download it by clicking the download icon.
-3. From **Concert Workflows → Integration packages** tab, click **Import**.
-4. In the **Import Integrations** page, click the **Select integration package** button and select the 
-downloaded **ServiceNow_1.0.69.ssi.zip** file.
-5. Finally click **Upload integration** and wait for the process to complete.
-
-## 3.11 Remove Data from Previous Labs
+## 3.9 Remove Data from Previous Labs (if needed)
 
 If you have previously run other labs using the same Concert environment, there may be existing data such as applications or automation rules 
 that could interfere with the exercises in this lab.

@@ -13,190 +13,77 @@ We will also verify that the new certificate is visible in Concert's Operations 
 
 Let's configure user variables values for **Linux_Keystore_Cert_Renewal** Workflow by using Authentications created in previous section. 
 
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
-
 :::note
-For each default value shown below, begin the entry with a double quote (") and end it with a double quote (").
+For each default value shown below, confirm that begins and ends with a double quote (").
 :::
 
-* Click on the burger menu on the top left corner and select **Workflows -> Workflows** 
+* Click on the **Workflows** tab on the top and select the **Workflows tile** 
 * Click on the **certificateRenewal** folder
-* Click **Linux_Keystore_Cert_Renewal** workflow
+* Click **Linux_Keystore_Cert_Renewal** workflow. You will now confirm that the Workflow input parameters are using the
+authentications you created previously plus other configuration information.
 
-    * Under **ansibleAuth** name, for Default value, type `"ibmconcert/Ansible-apacheTomcat"`
-    * Under **passwordMap** name, for Default value, type `"ibmconcert/CertConfigData"`
-    * Under **caOrSelfSigned** name, for Default value, type `"ca"`
-    * Under **caServerAnsibleAuth** name, for Default value, type `"ibmconcert/Ansible-cfssl"`
-    * Under **caType** name, for Default value, type `cfssl`
-    * Under **tomcatServerAnsibleAuth** name, for Default value, type `"ibmconcert/Ansible-apacheTomcat"`
-    * Under **sFtpsrcFilePath** name, for Default value, type `"/opt/cfssl/cfssl-pki/all-certs/fullchain.pem"`
-    * Under **sFtpdestFilePath** name, for Default value, type `"/tmp/fullchain.pem"`
-    * Under **keyStoreFileName** name, for Default value, type `"server.jks"`
-    * Under **gitHubCredentials** name, for Default value, type `"ibmconcert/GitHub"`
-    * Under **gitHubOwner** name, for Default value, type `"<GitHub Username>"`
-    * Under **gitHubRepo** name, for Default value, type `"concert-operations-lab"`
-    * Under **gitHubIssueState** name, for Default value, type `"open"`
-    * Under **gitHubIssueLabel** name, for Default value, type `"approved"`
-    * Under **concertAuth** name, for Default value, type `"ibmconcert/ConcertAPIKey"`
-    * Under **commonSSHcfssl** name, for Default value, type `"ibmconcert/SSH-cfssl"`
-    * Under **commonSSHTomcat** name, for Default value, type `"ibmconcert/SSH-apacheTomcat"`
+    * Under **ansibleAuth** name, for Default value, confirm it's `"ibmconcert/Ansible-apacheTomcat"`
+    * Under **passwordMap** name, for Default value, confirm it's `"ibmconcert/CertConfigData"`
+    * Under **caOrSelfSigned** name, for Default value, confirm it's `"ca"`
+    * Under **caServerAnsibleAuth** name, for Default value, confirm it's `"ibmconcert/Ansible-cfssl"`
+    * Under **caType** name, for Default value, confirm it's `cfssl`
+    * Under **tomcatServerAnsibleAuth** name, for Default value, confirm it's `"ibmconcert/Ansible-apacheTomcat"`
+    * Under **sFtpsrcFilePath** name, for Default value, confirm it's `"/opt/cfssl/cfssl-pki/all-certs/fullchain.pem"`
+    * Under **sFtpdestFilePath** name, for Default value, confirm it's `"/tmp/fullchain.pem"`
+    * Under **keyStoreFileName** name, for Default value, confirm it's `"server.jks"`
+    * Under **gitHubCredentials** name, for Default value, confirm it's `"ibmconcert/GitHub"`
+    * Under **gitHubOwner** name, for Default value, **STOP, here you have to type your GitHub username** `"<replace with your GitHub username>"`
+    * Under **gitHubRepo** name, for Default value, **STOP, here you have to copy or type** `"concert-operations-lab"`
+    * Under **gitHubIssueState** name, for Default value, confirm it's `"open"`
+    * Under **gitHubIssueLabel** name, for Default value, confirm it's `"approved"`
+    * Under **concertAuth** name, for Default value, confirm it's `"ibmconcert/ConcertAPIKey"`
+    * Under **commonSSHcfssl** name, for Default value, confirm it's `"ibmconcert/SSH-cfssl"`
+    * Under **commonSSHTomcat** name, for Default value, confirm it's `"ibmconcert/SSH-apacheTomcat"`
 
 * Click the **Save** icon on top right area to apply and save the workflow with the configurations 
 
 ![](images/cw-save-workflow-with-configs.png)
 
-## 6.3: Scheduling the Certificate Renewal Workflow
-
-Let's create a job schedule for **Linux_Keystore_Cert_Renewal** Workflow. 
-
-:::note
-In a customer environment, the **Linux_Keystore_Cert_Renewal** Workflow is configured to run automatically as a **job** through a workflow job scheduler. You can also run **Linux_Keystore_Cert_Renewal** workflow manually.
-:::
-
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
-
-* Click on the burger menu on the top left corner and select **Workflows -> Jobs** 
-* Click **+ Create Job** button on top right side 
-* Under **Job details**:
-    * In **Name** type `certificateRenewal`
-    * In **Select workflow** browse to `certificatesRenewal` folder and select `Linux_Keystore_Cert_Renewal`
-    * In **Workflow version** select **Always use latest version**
-    * In **Enable job** slider, slide it to the right to enable it
-    
-* Under **Schedule job**:
-    * In **Time zone** select **the Time Zone for your location**
-    * In **Repeats** select **Advanced settings**
-    * Uncheck **Schedule immediately after saving** checkbox
-    * In **Select date** select **Current Date**
-    * In **Select time** select **Current Time + 5 minutes**
-    * In **Ends** select **After**
-    * In **Number of occurrences** select **5**
-    * In **Cron job expression** type `0 */5 * * * *`
-
-:::note
-For the schedule time, **Current Time + 5 minutes** is required to give us some time to complete section 6.4 below before `Linux_Keystore_Cert_Renewal` job kicks in.
-:::
-
-Your configuration should look similar to the screenshot below. Your scheduled date and time will be different.
-
-![](images/cw-job-creation-certificateRenewal-part1.png)
-![](images/cw-job-creation-certificateRenewal-part2.png)
-
-* Click the **Create** button to save the job schedule
-
-## 6.4: Triggering the Certificate Renewal Workflow
-
-We will use **Renewal** menu option in the Certificate Keystore page, to perform the following actions :
-
-  - Use Certificate Serial Number to **approve** the Apache Tomcat certificate for renewal
-  - Use Certificate Serial Number to **reject** the Intermediate certificate for renewal   
-
-For this lab Certificate Renewal scenario:
-
-*  **approving** Apache Tomcat certificate action means adding the **approved** label to the GiHub issue 
-for the Apache Tomcat certificate. The `Linux_Keystore_Cert_Renewal` workflow uses this condition to *perform* the certificate renewal.
-
-*  **rejecting** an Intermediate certificate action means adding the **rejected** label to GiHub issue for Apache Tomcat 
-certificate and the `Linux_Keystore_Cert_Renewal` workflow uses this condition to *skip* the certificate renewal.
-
-:::note
-Be aware that the certificate serial number in your lab environment may differ from the one shown in the screenshot.
-:::
-
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
-
-* Click on the burger menu on the top left corner and select **Concert -> Dimensions -> Operations**
-* Choose `Apache Tomcat certificate` or `expired certificate` from the list. It is Apache Tomcat certificate when you see **CN=demo-apps.ibmdte.local...** under Subject column
-* Click **the Certificate Serial Number** to navigate to the Certificate's **Keystore entries UI**.
-
-![](images/concert-certificate-serial-number.png) 
-
-* You will get into **Keystore entries UI** for a Certificate after performing previous action. We will be using **the Certificate Serial Number** in subsequent step. Copy **the Certificate Serial Number** into a text file.
-Click **Renew** option.
-
-![](images/concert-renewal-trigger-certificate-ui.png)
-
-* In **Renew certificate** UI, fill in these values :
-    * In **Workflow reference** select `updateGitHubIssueWithALabel`
-    * In **Certserial** type the Certificate Serial Number that you copied previously
-    * In **Concertauth** type `ibmconcert/ConcertAPIKey`
-    * In **Githubcredentials** type `ibmconcert/GitHub`
-    * In **Issuelabel** type `approved`
-
-Your configuration should look similar to the screenshot below.
-
-![](images/concert-renewal-trigger-parameters.png)
-
-* Alternatively, you can go to GitHub Issues and manually add the `approved` label.
-
-
-Now we will reject a certificate renewal:
-
-* Navigate back to previous screen or **Concert -> Dimensions -> Operations**
-* Choose `Intermediate CA` or `certificate expiring soon` from the list. It is Intermediate CA when you see **CN=Example Intermediate Certificate Authority...** under Subject column
-* Click **the Certificate Serial Number** to navigate to the Certificate's **Keystore entries UI**.
-
-![](images/concert-certificate-serial-number-intermediate.png) 
-
-* You will get into **Keystore entries UI** for a Certificate after performing previous action. We will be using **the Certificate Serial Number** in subsequent step. Copy **the Certificate Serial Number** into a text file.
-Click **Renew** option.
-
-![](images/concert-renewal-trigger-intermediate-certificate-ui.png)
-
-* In **Renew certificate** UI, fill in these values :
-    * In **Workflow reference** select `updateGitHubIssueWithALabel`
-    * In **Certserial** type the Certificate Serial Number that you copied previously
-    * In **Concertauth** type `ibmconcert/ConcertAPIKey`
-    * In **Githubcredentials** type `ibmconcert/GitHub`
-    * In **Issuelabel** type `rejected`
-
-Your configuration should look similar to the screenshot below.
-
-![](images/concert-renewal-trigger-parameters-rejected.png)
-
-* Alternatively, you can go to GitHub Issues and manually add the `rejected` label.
 
 
 
-You can now verify in GitHub that :
-  - 1 issue for Apache Tomcat Certificate has `approved` label 
-  - 1 issue for Intermediate CA has `rejected` label
+## 6.3: Manually Run the Renewal Workflow
 
-![](images/github-issues-with-approved-rejected-labels.png)
+Now we will run the certificate renewal workflow which:
 
-Let's wait for a while for `Linux_Keystore_Cert_Renewal` workflow job schedule kicks in.
+* will see what issues has been label as **approved**. Remember we did this in the previous section
+* collect the certificate information from the issue
+* renew the certificate using the private CA
+* install the new certificate
+* restart Apache Tomcat
+* remove the expired certificate metadata from Concert
 
-## 6.5: Verifying the Renewal Workflow Job Schedule
+While on the **Linux_Keystore_Cert_Renewal** workflow, click on the **Run** button. 
 
-Let's verify **Linux_Keystore_Cert_Renewal** workflow job log. 
+After the run finish, verify the logs. You will see run log similar to the screenshot below. The run log shows that the workflow 
+completed successfully for the certificate with serial number value.
 
-:::note
-Be aware that the certificate serial number in your lab environment may differ from the one shown in the screenshot.
-:::
 
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
+![](images/run-log.png)
 
-* Click on the burger menu on the top left corner and select **Workflows -> Logs** 
-* Search for **Linux_Keystore_Cert_Renewal** under **Workflow** column and **Job scheduler** under **Executed from** column
 
-You will see job log similar to the screenshot below. The job log shows that the workflow completed 
-successfully for the certificate with serial number value.
-
-![](images/cw-certificateRenewal-job-schedule-log.png)
 
 In GitHub, you will see the github issue for the certificate with serial number selected for renewal is marked as `Closed`. 
 You will also notice that there are comments for the issue added by Concert Automation.
 
 ![](images/github-issue-apache-tomcat-cert-closed.png)
 
-The github issue for the certificate with the serial number labeled as `rejected` is still `Open` and has no change.
+The github issue for the certificate that has not expired yet is still **Open** and has no changed.
 
-![](images/github-issue-intermediate-cert-opened.png)
 
-## 6.6: Performing the Certificate Discovery Again
+
+
+
+
+## 6.4: Performing the Certificate Discovery Again
 
 After a certificate in Apache Tomcat Java Keystore has been renewed, you will now run **Linux_Keystore_Cert_Discovery** 
-Workflow to discover certificates from Apache Tomcat Java KeyStore, then ingest them into Concert.    
+Workflow to discover certificates from Apache Tomcat Java KeyStore, then ingest them into Concert.
 This discovery step is essential for importing the renewed certificate into Concert.
 
 :::note
@@ -204,7 +91,12 @@ In a customer environment, the **Linux_Keystore_Cert_Discovery** Workflow is con
 through a workflow job scheduler. In this lab exercise, however, it is executed manually to demonstrate how it works.
 :::
 
-* Click **Run** icon for **Linux_Keystore_Cert_Discovery** Workflow
+
+
+* Click on the **Workflows** tab on the top and select the **Workflows tile**
+* Click the **certificatesDiscovery** folder
+* Click the **Linux_Keystore_Cert_Discovery** workflow
+* Click on the  **Run** button
 
 ![](images/cw-run-workflow.png)
 
@@ -214,12 +106,10 @@ through a workflow job scheduler. In this lab exercise, however, it is executed 
 
 Let's verify the Discovery Workflow execution in Concert UI. 
 
-From the Bastion Remote Desktop, on the Firefox browser click on the Concert tab.
-
-* Click on the burger menu on the top left corner and select **Concert -> Dimensions -> Operations**. Make sure to refresh the page 
+* Click on the **Resilience** tab on top and select **Dimensions -> Operations** on the left side. Make sure to refresh the page 
 to see the updates. 
 
-  On Certificates tab, you will see total number of Certificates in the **development** environment is 3,
+* On the **Certificates** tab, you will see total number of Certificates in the **development** environment is 3,
   where :
   - Two Certificate are now valid,
   - One Certificate is still nearing expiration.
@@ -228,20 +118,16 @@ to see the updates.
 
 * The renewed certificate is highlighted in the above screenshot where the expiry date is **+ 2 months** from present date
 
-:::note
-Be aware that the certificate serial number in your lab environment may differ from the one shown in the screenshot.
-:::
 
-## 6.7: Search a Certificate via Concert API
+
+
+## 6.5: Get Certificate Metadata via Concert API
 
 Let's use Concert API to search for the new Apache Tomcat Certificate using Certificate Serial Number. 
 
-:::note
-Be aware that the certificate serial number in your lab environment may differ from the one shown in the screenshot.
-:::
 
-From the Bastion SSH, run the **curl** command, after replacing the following **two** values :
-  - Replace the value after **search=** with the actual Certificate Serial Number obtained from your Concert Certificate UI
+From the Bastion SSH, run the **curl** command, after replacing the following **two** values:
+  - Replace the value after **search=** with the actual Certificate Serial Number obtained from the Concert Certificate UI with expiry date **+ 2 months** from present date
   - Replace the value after **C_API_KEY:** with your Concert API Key.
 
 ```sh title="Host: bastion-gym-lan"
@@ -250,7 +136,7 @@ curl -sk \
   --header 'Authorization: C_API_KEY: <YOUR_CONCERT_API_KEY>' \
   --header 'InstanceId: 0000-0000-0000-0000' \
   --header 'accept: application/json' \
-  --header 'content-type: application/json-patch+json'
+  --header 'content-type: application/json-patch+json' | jq
 ```
 
 This is an example of the expected output:
@@ -298,7 +184,7 @@ From the json output, you will notice that the **issues** block is empty which i
 the certificate because it is valid and not expiring.
 
 
-## 6.8: Confirm the certificate in Java Keystore has a New Expiration Date
+## 6.6: Confirm the Certificate in Java Keystore has a New Expiration Date
 
 
 Let's use Java Keytool command to verify the Apache Tomcat certificate in Java Keystore now has new Expiration Date. 
@@ -483,7 +369,7 @@ KeyIdentifier [
 
 ```
 
-## 6.9: Make the Firefox Browser to Trust the Certificates
+## 6.7: Make the Firefox Browser to Trust the Certificates
 
 Finally, let's update the Firefox browser settings to trust the Intermediate CA and Root CA produced by CFSSL as the internal private Certificate Authority.
 
@@ -526,7 +412,7 @@ You will see a padlock icon with a locked status, indicating a secure, encrypted
 
 You can also view the new certificate for Apache Tomcat via Firefox browser by clicking the padlock icon and navigate to **Connection secure -> More information -> View Certificate**
 
-## 6.10: Summary
+## 6.8: Summary
 
 In this section, you have been able to accomplish the following:
 
