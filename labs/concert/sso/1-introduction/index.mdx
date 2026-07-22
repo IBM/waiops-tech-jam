@@ -23,7 +23,9 @@ Single Sign-On (SSO) is an authentication method that allows users to access mul
 Concert's SSO implementation leverages three key components working together:
 
 ### 1. An LDAP compliant Directory Server - Users & Groups Directory
-This lab uses OpenLDAP. [OpenLDAP](https://www.openldap.org/doc/admin24/) serves as the centralized user directory, 
+There are many LDAP-compliant directory servers available in the market, including commercial and open-source solutions. 
+For this lab, OpenLDAP has been selected as the directory service because it is widely adopted, standards-based, and well suited for learning and testing LDAP integrations.<br/>
+[OpenLDAP](https://www.openldap.org/doc/admin24/) serves as the centralized user directory, 
 storing user accounts, credentials, and organizational structure. It provides:
 - Hierarchical organization of users and groups
 - Secure password storage and authentication
@@ -31,6 +33,8 @@ storing user accounts, credentials, and organizational structure. It provides:
 - Standard LDAP protocol support for broad compatibility
 
 ### 2. Keycloak - Identity Provider
+There are many Identity and Access Management (IAM) and Identity Provider (IdP) solutions available in the market, including both commercial and open-source offerings.
+For this lab, Keycloak has been selected because it is a widely adopted open-source identity platform that supports industry-standard authentication and authorization protocols.<br/>
 [Keycloak](https://www.keycloak.org/documentation) acts as the identity provider (IdP) and authentication broker. Embedded within Concert, it provides:
 - OpenID Connect (OIDC) and SAML 2.0 protocol support
 - User federation from external directories like OpenLDAP
