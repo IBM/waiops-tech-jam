@@ -15,26 +15,21 @@ Let's recap, Concert has 2 levels of role-based access:
 
 1. **Instance level** access
 
-A user with **Admin** role can perform the following actions:
+With **Instance level Role** access, user with **Admin** or **User** role can perform the following actions:
 
-| Role | Details | 
+| Instance level Role | Details | 
 |---------|-------|
 | **Admin** | Grant or revoke access to other users or user groups (except for the Owner role) |
 | | Create, edit, delete, and run ingestion jobs |
 | | View, use, create, update, and delete shared third-party credentials (connections) |
 | | Define applications and environments | 
-
-Whereas a user with **User** role can perform the following actions:
-
-| Role | Details | 
-|---------|-------|
 | **User** | View ingestion jobs |
 | |View and use shared third-party credentials (connections) |
 | | Define applications and environments |
 
 2. **Object level** access
 
-| Role | Access to applications or environments | Access to automation rules | Access to managing other users or user groups |
+| Object level Role | Access to applications or environments | Access to automation rules | Access to managing other users or user groups |
 |---------|-------|-------|-------|
 | **Admin** | View, edit, and delete an application or environment | View, create, edit, or delete an automation rule for applications/environments to which you have access | Grant or revoke access to other users |
 | **Editor** | View and update an application or environment | View, create, edit, or delete an automation rule for applications/environments to which you have access | No access |
@@ -58,7 +53,7 @@ For the above LDAP structure, let's imagine that: <br/>
 • **Bob** is a techie user in **HR** organization. <br/>
   He only supports HR applications. He will create a sample HR application and make Alice as an Editor and Charlie as a Viewer. <br/>
 • **Charlie** is a techie user in **Sales** organization. <br/>
-  He only supports Sales applications. He will create a sample Sales application and and make Alice as an Editor and Bob as a Viewer. <br/>
+  He only supports Sales applications. He will get Viewer role to the sample HR application. <br/>
 
 In this section, we will test :
 1. **Instance level** access for Alice, Bob and Charlie,
@@ -251,12 +246,6 @@ For instance level access with User role, the user will see message below when t
 
 ### 7.3.5: Keycloak signout Bob session
 
-:::info
-Why do I need to sign out? <br/>
-In a typical workplace, each person uses their own computer, so signing out of Keycloak isn't usually necessary. 
-If you don't sign out, the browser will remember the previous user's session, preventing you from properly testing the next user's login.
-:::
-
 From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
 1. Accept the certificate warning if prompted
 2. Log in with Keycloak admin credentials from your credentials file:
@@ -269,11 +258,6 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Keycl
 Bob's session is signed out from Keycloak and now, we can use other user account to login to Concert SSO. 
 Otherwise, Concert SSO uses Bob to login automatically without prompting username and password.
 
-:::info
-In a real-life production environment, you typically don't need to sign out of Keycloak because each user works on <br/>
-their own computer. For this lab, you must perform Keycloak sign out between users to avoid confusion and ensure proper testing.
-:::
-
 ![Keycloak Bob signout](images/keycloak-session-bob-signout.png)
 
 :::success
@@ -282,7 +266,7 @@ their own computer. For this lab, you must perform Keycloak sign out between use
 
 ---
 
-## 7.4: Test Charlie Login
+## 7.4: Test instance level access for Charlie
 
 In this section, you will test **instance-level** access for **Charlie**, who is assigned the User role at the instance level.
 You will log in to Concert SSO as `Charlie`.
@@ -343,12 +327,6 @@ For instance level access with User role, the user will see message below when t
 
 ### 7.4.5: Keycloak signout Charlie session
 
-:::info
-Why do I need to sign out? <br/>
-In a typical workplace, each person uses their own computer, so signing out of Keycloak isn't usually necessary. 
-If you don't sign out, the browser will remember the previous user's session, preventing you from properly testing the next user's login.
-:::
-
 From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
 1. Accept the certificate warning if prompted
 2. Log in with Keycloak admin credentials from your credentials file:
@@ -360,11 +338,6 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Keycl
 
 Charlie's session is signed out from Keycloak and now, we can use other user account to login to Concert SSO. 
 Otherwise, Concert SSO uses Charlie to login automatically without prompting username and password.
-
-:::info
-In a real-life production environment, you typically don't need to sign out of Keycloak because each user works on <br/>
-their own computer. For this lab, you must perform Keycloak sign out between users to avoid confusion and ensure proper testing.
-:::
 
 ![Keycloak Bob signout](images/keycloak-session-charlie-signout.png)
 
@@ -395,10 +368,6 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Conce
 ### 7.5.2: Verify Successful Login
 
 After successful authentication:
-- You should be redirected back to Concert. Click **Skip**
-
-![Concert Skip](images/concert-landingpage.png)
-
 - Concert dashboard should load
 - You should see Bob's name in the top-right corner
 
@@ -478,119 +447,26 @@ Let's create an Application in Concert as Bob.
 
 ---
 
-## 7.6: Create an Application in Concert as Charlie and grant role
-
-Next, you will login to Concert as Charlie, create an Application and grant role to Alice and Bob.
-
-### 7.6.1: Concert SSO Login as Charlie
-
-From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
-1. On the Concert login page, click **Log in with SSO**
-
-![Keycloak Login Page](images/concert-login-sso.png)
-
-2. You should be redirected to the Keycloak login page
-3. Enter Charlie's credentials:
-   - **Username**: `charlie`
-   - **Password**: `Charlie@123`
-4. Click **Sign In**
-
-![Keycloak Login Page Charlie](images/concert-keycloak-charlie-sso-login.png)
-
-### 7.6.2: Verify Successful Login
-
-After successful authentication:
-- You should be redirected back to Concert. Click **Skip**
-
-![Concert Skip](images/concert-landingpage.png)
-
-- Concert dashboard should load
-- You should see Charlie's name in the top-right corner
-
-![Concert Dashboard - Charlie](images/concert-dashboard-charlie.png)
-
-### 7.6.3: Create an Application in Concert
-
-Let's create an Application in Concert as Charlie.
-
-1. Click **Inventory** on left panel and click **Application inventory**.
-
-![Concert Charlie Application Inventory](images/concert-charlie-application-inventory.png)
-
-2. On **Application inventory** page, click **Define application** dropdown and select **From components**.
-
-![Concert Charlie From Components](images/concert-charlie-from-components.png)
-
-3. On **Define an application** page, under **Details** section, enter the following values:
-   - **Name**: `Sales-application`
-   - **Description (optional)**: `Sales application`
-   - **Version**: `2.2.0`
-   - **Criticality (optional)**: `Very low`
-   - **Data sensitivity (optional)**: `Very low`
-   - **Revenue per hour in $ (optional)**: `0`
-   - **Tags (optional)**: `**Leave empty**`
-   - **Add business details**: `NO`
-
-![Concert Charlie define an App details](images/concert-charlie-define-an-app-details.png)
-
-4. On the **Repositories (optional)** section, select **Select from inventory list** radio button.
-
-![Concert Charlie define an App repo](images/concert-charlie-define-an-app-repo.png)
-
-5. On the **Build artifacts (optional)** section, select **Select from inventory list** radio button.
-
-![Concert Charlie define an App artifacts](images/concert-charlie-define-an-app-artifacts.png)
-
-6. On the **Environments (optional)** section, leave as is.
-
-![Concert Charlie define an App envs](images/concert-charlie-define-an-app-environments.png)
-
-7. On the **Summary** section, click **Create** button.
-
-![Concert Charlie click create](images/concert-charlie-define-an-app-summary.png)
-
-8. The newly created application called **Sales-application** is now listed in Application Inventory page.
-
-![Concert Charlie new application](images/concert-charlie-application-inventory-Sales-application.png)
-
-9. Click the `⋮` (three vertical dots) menu icon on same row to perform **Manage collaborators** action
-
-![Concert Charlie manage collabs](images/concert-charlie-manage-collabs.png)
-
-10. You will make **Alice** as an **Editor** and **Bob** as a **Viewer** for **Sales-application**. Click **Grant access** button.
-
-![Concert Charlie grant access](images/concert-charlie-grant-access.png)
-
-11. On **Grant access to Sales-application** page, do the following:
-   - select **alice** by ticking the checkbox 
-   - assign **Editor** on right section
-   - click **Grant** button
-
-![Concert Charlie grant Alice Editor](images/concert-charlie-grant-alice-editor.png)
-
-12. On **Grant access to Sales-application** page, do the following:
-   - select **bob** by ticking the checkbox
-   - assign **Viewer** on right section
-   - click **Grant** button
-
-![Concert Charlie grant Bob Viewer](images/concert-charlie-grant-bob-viewer.png)
-
-13. Finally, as Charlie, you have granted **Sales-application** to Alice as an Editor and Bob as a Viewer. 
-
-![concert-charlie-after-grant-2-users](images/concert-charlie-after-grant-2-users.png)
-
-14. Log out from Concert as Charlie.
-
----
-
-## 7.7: Object level access testing
+## 7.6: Object level access testing
 
 Next, you will perform **object level** access testing as Alice, Bob and Charlie.
 
-### 7.7.1: Validate object level access as Alice
+### 7.6.1: Validate object level access as Alice
 
-For a quick recap, Alice belongs to Corporate IT organization. She gets Admin role and everybody else assigns her as **Editor** for Concert objects such as applications and environments including **HR-application** and **Sales-application**.
+For a quick recap, Alice belongs to Corporate IT organization. She gets Admin role and everybody else assigns her as **Editor** for Concert objects such as applications and environments including **HR-application**.
 
+First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
+1. Accept the certificate warning if prompted
+2. Log in with Keycloak admin credentials from your credentials file:
+   - **Username**: `admin`
+   - **Password**: (created in **Section 3.6**)
+3. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm (check the realm dropdown)
+4. In the left navigation menu, click **Sessions**
+5. Click **Sign out**
+
+Next, let's sign in to Concert as Alice to validate her object level access. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
 1. Log in to Concert as Alice.
 On the Concert login page, click **Log in with SSO**.
 
@@ -603,7 +479,7 @@ On the Concert login page, click **Log in with SSO**.
 
 ![Concert Alice application inventory](images/concert-alice-application-inventory.png)
 
-5. Alice will get to see all applications such as **HR-application** and **Sales-application** which have been granted to her with **Editor** role.
+5. Alice will be able to view all applications, such as **HR-application**, that have been granted to her.
 
 ![Concert Alice list of apps](images/concert-alice-list-of-apps.png)
 
@@ -620,23 +496,26 @@ Click **Edit application** for **HR-application**, you will be able to make chan
 
 ![concert-alice-edit-hr-application](images/concert-alice-edit-hr-application.png)
 
-7. For **Sales-application**, click the **⋮** (three vertical dots) menu icon on same row.
-Alice with **Editor** role, has the permission to perform the following actions :
-   - **Open in arena view**
-   - **Apply tags**
-   - **Edit details**
-   - **Edit application**
+7. Logout Concert as Alice.
 
-![Concert Alice Sales application](images/concert-alice-sales-application.png)
-
-8. Logout Concert as Alice.
-
-### 7.7.2: Validate object level access as Bob
+### 7.6.2: Validate object level access as Bob
 
 For a quick recap, Bob is a techie user in HR organization.
 He only supports HR applications within the company. 
-He has **Admin** role for **HR-application** and **Viewer** role for **Sales-application**.
+He has **Admin** role for **HR-application**.
 
+First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
+1. Accept the certificate warning if prompted
+2. Log in with Keycloak admin credentials from your credentials file:
+   - **Username**: `admin`
+   - **Password**: (created in **Section 3.6**)
+3. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm (check the realm dropdown)
+4. In the left navigation menu, click **Sessions**
+5. Click **Sign out**
+
+Next, let's sign in to Concert as Bob to validate his object level access. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
 1. Log in to Concert as Bob.
 On the Concert login page, click **Log in with SSO**.
 
@@ -649,7 +528,7 @@ On the Concert login page, click **Log in with SSO**.
 
 ![Concert Bob application inventory](images/concert-bob-application-inventory.png)
 
-5. Bob will get to see all applications such as **HR-application** and **Sales-application** which have been granted to him.
+5. Bob will be able to view all applications, such as **HR-application**, that have been granted to him.
 
 ![Concert Bob list of apps](images/concert-bob-list-of-apps.png)
 
@@ -658,21 +537,26 @@ Bob has the permission to perform all actions because Bob is the Admin for **HR-
 
 ![Concert Bob HR application](images/concert-bob-hr-application.png)
 
-7. For **Sales-application**, click the **⋮** (three vertical dots) menu icon on same row. <br/>
-Bob has the permission for the following action :
-   - **Open in arena view** <br/> 
-Bob has only one available action, as he is granted the **Viewer** role for the **Sales-application**.
+7. Logout Concert as Bob.
 
-![Concert Bob Sales application](images/concert-bob-sales-application.png)
-
-8. Logout Concert as Bob.
-
-### 7.7.3: Validate object level access as Charlie
+### 7.6.3: Validate object level access as Charlie
 
 For a quick recap, Charlie is a techie user in Sales organization.
 He only supports Sales applications within the company. 
-He has **Admin** role for **Sales-application** and **Viewer** role for **HR-application**.
+He has **Viewer** role for **HR-application**.
 
+First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
+1. Accept the certificate warning if prompted
+2. Log in with Keycloak admin credentials from your credentials file:
+   - **Username**: `admin`
+   - **Password**: (created in **Section 3.6**)
+3. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm (check the realm dropdown)
+4. In the left navigation menu, click **Sessions**
+5. Click **Sign out**
+
+Next, let's sign in to Concert as Charlie to validate his object level access. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
 1. Log in to Concert as Charlie.
 On the Concert login page, click **Log in with SSO**.
 
@@ -685,7 +569,7 @@ On the Concert login page, click **Log in with SSO**.
 
 ![Concert Charlie application inventory](images/concert-charlie-application-inventory.png)
 
-5. Charlie will get to see all applications such as **HR-application** and **Sales-application** which have been granted to him.
+5. Charlie will be able to view all applications, such as **HR-application**, which have been granted to him.
 
 ![Concert Charlie list of apps](images/concert-charlie-list-of-apps.png)
 
@@ -696,51 +580,7 @@ Charlie has only one available action, as he is granted the **Viewer** role for 
 
 ![Concert Charlie HR application](images/concert-charlie-hr-application.png)
 
-7. For **Sales-application**, click the **⋮** (three vertical dots) menu icon on same row. <br/>
-Charlie has the permission to perform all actions because Charlie is the Admin for **Sales-application**.
-
-![Concert Charlie Sales application](images/concert-charlie-sales-application.png)
-
-8. Logout Concert as Charlie.
-
----
-
-## 7.8: Verification Checklist
-
-Use this checklist to verify all SSO functionality:
-
-### Authentication Tests
-- [ ] Alice can login via SSO
-- [ ] Bob can login via SSO
-- [ ] Charlie can login via SSO
-- [ ] Invalid credentials are rejected
-- [ ] Non-existent users cannot login
-
-### Role-Based Access Control
-- [ ] Alice has Admin role at Instance level
-- [ ] Bob has User role at Instance level
-- [ ] Charlie has User role at Instance level
-- [ ] Admin role has permission to all actions for Concert objects
-- [ ] Editor role has permission to 4 actions for Concert objects
-- [ ] Viewer role cannot modify any data
-
-### Session Management
-- [ ] Users can logout successfully
-- [ ] Sessions expire after timeout period
-- [ ] Expired sessions require re-authentication
-- [ ] Single Logout works (if configured)
-
-### Group Synchronization
-- [ ] LDAP group changes sync to Keycloak
-- [ ] Group membership changes affect Concert roles
-- [ ] Role changes take effect after re-login
-
-### User Experience
-- [ ] SSO login button is visible and functional
-- [ ] Redirect to Keycloak works smoothly
-- [ ] Return to Concert after authentication works
-- [ ] User information displays correctly
-- [ ] No error messages during normal flow
+7. Logout Concert as Charlie.
 
 ---
 
@@ -750,6 +590,43 @@ Use this checklist to verify all SSO functionality:
 This section provides basic troubleshooting steps in case you encounter any issues while performing the steps above.
 These steps are optional and only need to be followed if you run into problems.
 :::
+
+### Verification Checklist
+
+Use this checklist to verify all SSO functionality:
+
+#### Authentication Tests
+- [ ] Alice can login via SSO
+- [ ] Bob can login via SSO
+- [ ] Charlie can login via SSO
+- [ ] Invalid credentials are rejected
+- [ ] Non-existent users cannot login
+
+#### Role-Based Access Control
+- [ ] Alice has Admin role at Instance level
+- [ ] Bob has User role at Instance level
+- [ ] Charlie has User role at Instance level
+- [ ] Admin role has permission to all actions for Concert objects
+- [ ] Editor role has permission to 4 actions for Concert objects
+- [ ] Viewer role cannot modify any data
+
+#### Session Management
+- [ ] Users can logout successfully
+- [ ] Sessions expire after timeout period
+- [ ] Expired sessions require re-authentication
+- [ ] Single Logout works (if configured)
+
+#### Group Synchronization
+- [ ] LDAP group changes sync to Keycloak
+- [ ] Group membership changes affect Concert roles
+- [ ] Role changes take effect after re-login
+
+#### User Experience
+- [ ] SSO login button is visible and functional
+- [ ] Redirect to Keycloak works smoothly
+- [ ] Return to Concert after authentication works
+- [ ] User information displays correctly
+- [ ] No error messages during normal flow
 
 ### Login Redirects to Keycloak but Fails
 

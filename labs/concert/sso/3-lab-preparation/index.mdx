@@ -133,6 +133,7 @@ Keep this credentials file open throughout the lab. You will update it with retr
 
 ## 3.4: Retrieve Host IP Addresses
 
+
 Run the following commands from the **Bastion SSH terminal** to capture the IP addresses of the lab hosts:
 
 ```bash title="Host: bastion-gym-lan"
@@ -143,11 +144,12 @@ getent hosts concert | awk '{print $1}'
 getent hosts bluebox | awk '{print $1}'
 ```
 
+At the bottom of your `credentials.txt` file, you will see `concert_ip` and `openldap_ip` fields. <br/>
 Copy the IP addresses displayed and update the corresponding sections in your `credentials.txt` file:
 
 ```text
-concert_ip:  192.168.252.35
-openldap_ip: 192.168.252.34
+concert_ip:  <IP Address>
+openldap_ip: <IP Address>
 ```
 
 ---
@@ -167,23 +169,28 @@ ssh jammer@concert
 2. Retrieve the Keycloak admin password from the **ibm-solis-embedded-keycloak** container environment variables:
 
 ```bash title="Host: concert"
-# Get the default Keycloak admin username and password
-podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOT
+# Get the default Keycloak admin username
+podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_USERNAME
 ```
+
+```bash title="Host: concert"
+# Get the default Keycloak admin password
+podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
+```
+
 You should see output similar to the one below:
 
 ```bash title="Example output"
 # Get the KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD
-[jammer@concert ~]$ podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOT
+[jammer@concert ~]$ podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_USERNAME
 KC_BOOTSTRAP_ADMIN_USERNAME=70ef10c2c12c17b74301624d
-UTILS_GENERATED_CONFIG="SOLIS_HUB_INTERNAL_SECRET KC_BOOTSTRAP_ADMIN_USERNAME KC_BOOTSTRAP_ADMIN_PASSWORD OOB_POSTGRES_USER OOB_POSTGRES_PASSWORD"
-UTILS_GENERATED_CONFIG_BYO_DB="SOLIS_HUB_INTERNAL_SECRET KC_BOOTSTRAP_ADMIN_USERNAME KC_BOOTSTRAP_ADMIN_PASSWORD OOB_POSTGRES_USER OOB_POSTGRES_PASSWORD"
+
+[jammer@concert ~]$ podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
 KC_BOOTSTRAP_ADMIN_PASSWORD=<your-secure-password>
-[jammer@concert ~]$ 
 ```
 
 :::note
-The Keycloak admin username and password are randomly generated during Concert installation. You must retrieve them from the **ibm-solis-embedded-keycloak container** environment variables as shown above.
+The Keycloak bootstrap admin username and password are randomly generated during Concert installation. You must retrieve them from the **ibm-solis-embedded-keycloak container** environment variables as shown above.
 :::
 
 3. Copy the admin username and admin password displayed and update your `credentials.txt` file:
@@ -192,6 +199,8 @@ The Keycloak admin username and password are randomly generated during Concert i
 keycloak_bootstrap_admin_username: 70ef10c2c12c17b74301624d
 keycloak_bootstrap_admin_password: <your-secure-password>
 ```
+
+These 2 values will be used in **Section 3.6** to log in to the Keycloak Admin Console for the first time.
 
 4. Exit the SSH session:
 
@@ -207,9 +216,12 @@ From the Bastion Host, open Firefox.
 
 1. Click on the Keycloak bookmark to open the Keycloak UI. Or navigate to: `https://concert.ibmdte.local:13443/sys/internal/kc/`
 2. Accept the certificate warning if prompted
-3. Enter keycloak_admin_username and keycloak_admin_password at the login page.
+3. Enter `keycloak_bootstrap_admin_username` and `keycloak_bootstrap_admin_password` at the login page
 
 ![Enable Menu Bar](images/keycloak-login-page.png)
+
+This is the initial login to Keycloak Admin Console using the bootstrap admin credentials retrieved in **Section 3.5**.
+Accept the browser pop-up prompt to save the username and password for future use. 
 
 4. After login, you will get a message highlighted in yellow that says "You are logged in as a temporary admin user. To harden security, create a permanent admin account and delete the temporary one".
 
@@ -236,6 +248,8 @@ From the Bastion Host, open Firefox.
    - **Password confirmation**: `secret`
    - **Temporary**: Toggle to **OFF** 
 
+This is the permanent password for the Admin user. Click `Save` button to save.
+
 ![Keycloak Create User](images/keycloak-create-admin-password.png)
 
 9. Copy the new **admin username** and **admin password** displayed and update your `credentials.txt` file:
@@ -251,9 +265,12 @@ Now, you have successfully created the admin user and password. Keep the admin u
 
 ![Keycloak Create User](images/keycloak-assign-admin-role.png)
 
-11. Sign out from Keycloak UI. Re-login to Keycloak UI using the new admin username and password.
+11. Sign out from Keycloak UI. 
 
 ![Keycloak Admin Logout](images/keycloak-admin-logout.png)
+
+12. Re-login to Keycloak UI using the new admin username and password. Accept the browser pop-up prompt to save the username and password for future use.
+You should now be logged in as the new admin user.
 
 We will use the new admin username and password from this point onward.
 
@@ -268,7 +285,7 @@ Let's bring up OpenLDAP service for this lab activity and check its connection f
 By default, OpenLDAP slapd service is stopped to minimize compute resources on `bluebox.ibmdte.local` virtual machine. 
 :::
 
-### 3.7.1: Check OpenLDAP Service Status
+### 3.7.1: Check OpenLDAP Service Status and Test LDAP Connectivity
 
 1. Connect to the bluebox via SSH:
 
@@ -288,25 +305,13 @@ sudo systemctl start slapd
 
 # Verify LDAP is listening on port 389
 sudo netstat -tlnp | grep 389
-
-# Exit back to Bastion
-exit
 ```
 
 Expected output:
 - Service status should show **active (running)**
 - Port 389 should be in **LISTEN** state
 
-### 3.7.2: Test LDAP Connectivity
-
-1. Connect to the bluebox via SSH:
-
-```bash title="Host: bastion-gym-lan"
-# Connect to bluebox
-ssh jammer@bluebox
-```
-
-2. Do LDAP search to verify connectivity and authentication:
+3. Do LDAP search to verify connectivity and authentication:
 
 ```bash title="Host: bluebox"
 # Test LDAP search from bluebox
@@ -428,38 +433,7 @@ Keep both Concert and Keycloak tabs open in Firefox. You'll switch between them 
 
 ---
 
-## 3.10: Verify Lab Tools
-
-Ensure that necessary command-line tools are available on the Bastion Host.
-
-1. Connect to the bluebox via SSH:
-
-```bash title="Host: bastion-gym-lan"
-# Connect to OpenLDAP host
-ssh jammer@bluebox
-```
-
-```bash title="Host: bluebox"
-# Verify LDAP client tools are installed
-which ldapsearch
-which ldapadd
-which ldapmodify
-
-# Verify OpenSSL is available
-which openssl
-
-# Verify curl is available
-which curl
-
-# Exit back to Bastion
-exit
-```
-
-All commands should return a path (e.g., `/usr/bin/ldapsearch`). 
-
----
-
-## 3.11: Preparation Checklist
+## 3.10: Preparation Checklist
 
 Before proceeding to the next section, verify that you have completed all preparation steps:
 
@@ -487,14 +461,14 @@ This section provides basic troubleshooting steps in case you encounter any issu
 These steps are optional and only need to be followed if you run into problems.
 :::
 
-### Cannot Retrieve Keycloak Password
+### Cannot Retrieve Temporary Keycloak Admin Password
 
-**Problem**: The `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOT` command fails or returns an error.
+**Problem**: The `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD` command fails or returns an error.
 
 **Solutions**:
 - Verify you're on the Concert host: `hostname` should return `concert`
 - Check if you have proper permissions as jammer user: `whoami`
-- Verify that KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD exist from : `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOT` command output, refer to **Section 3.5**
+- Verify that KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD exist from : `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD` command output, refer to **Section 3.5**
 
 ### Cannot Connect to OpenLDAP
 
