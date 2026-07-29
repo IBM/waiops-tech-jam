@@ -106,6 +106,8 @@ result: 0 Success
 # numEntries: 2
 ```
 
+Next, we will create user accounts and groups on the LDAP. Please leave the OpenLDAP host session open for the next steps.
+
 ---
 
 ## 4.3: Create Concert User Accounts
@@ -129,7 +131,7 @@ Each user entry will include:
 
 Let's create an LDIF file to add the users with a command that generates hashes automatically.
 
-1. Connect to the OpenLDAP host:
+1. On the OpenLDAP host, perform the following steps:
 
 ```bash title="Host: bluebox"
 cd /opt/openldap/ldap-config
