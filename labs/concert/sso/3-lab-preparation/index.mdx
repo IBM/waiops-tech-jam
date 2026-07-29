@@ -179,34 +179,32 @@ NAME                                          READY   STATUS    RESTARTS   AGE
 ibm-solis-embedded-keycloak-cb4df6d87-slskv   1/1     Running   0          80m
 ```
 
-3. Retrieve the Keycloak admin password from the **ibm-solis-embedded-keycloak** pod environment variables:
+3. Retrieve the Keycloak temporary admin username and password from the **ibm-solis-embedded-keycloak** pod environment variables:
 
 ```bash title="Host: concert"
 # Get the default Keycloak admin username
-kubectl exec -it ibm-solis-embedded-keycloak-cb4df6d87-slskv -n platform-hub -- env | grep KC_BOOTSTRAP_ADMIN_USERNAME
+kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep KC_BOOTSTRAP_ADMIN_USERNAME
 ```
 
 ```bash title="Host: concert"
 # Get the default Keycloak admin password
-kubectl exec -it ibm-solis-embedded-keycloak-cb4df6d87-slskv -n platform-hub -- env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
+kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
 ```
 
 You should see output similar to the one below:
 
 ```bash title="Example output"
 # Get the KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD
-[jammer@concert ~]$ kubectl exec -it ibm-solis-embedded-keycloak-cb4df6d87-slskv -n platform-hub -- env | grep KC_BOOTSTRAP_ADMIN_USERNAME
+[jammer@concert ~]$ kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep KC_BOOTSTRAP_ADMIN_USERNAME
 KC_BOOTSTRAP_ADMIN_USERNAME=70ef10c2c12c17b74301624d
 
-[jammer@concert ~]$ kubectl exec -it ibm-solis-embedded-keycloak-cb4df6d87-slskv -n platform-hub -- env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
+[jammer@concert ~]$ kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
 KC_BOOTSTRAP_ADMIN_PASSWORD=<your-secure-password>
 ```
-
-:::note
-The ibm-solis-embedded-keycloak pod name contains installation-specific hash suffixes (for example, ibm-solis-embedded-keycloak-cb4df6d87-slskv) 
-that are generated dynamically during Concert installation. Since the pod name varies across environments, retrieve it using 
-"kubectl get pods -n platform-hub | grep ibm-solis-embedded-keycloak" 
-:::
 
 :::note
 The Keycloak bootstrap admin username and password are randomly generated during Concert installation. You must retrieve them from the **ibm-solis-embedded-keycloak container** environment variables as shown above.
@@ -498,12 +496,14 @@ These steps are optional and only need to be followed if you run into problems.
 
 ### Cannot Retrieve Temporary Keycloak Admin Password
 
-**Problem**: The `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD` command fails or returns an error.
+**Problem**: The `kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep -E 'KC_BOOTSTRAP_ADMIN_USERNAME|KC_BOOTSTRAP_ADMIN_PASSWORD'` command fails or returns an error.
 
 **Solutions**:
 - Verify you're on the Concert host: `hostname` should return `concert`
 - Check if you have proper permissions as jammer user: `whoami`
-- Verify that KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD exist from : `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD` command output, refer to **Section 3.5**
+- Verify that KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD exist from : `kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep -E 'KC_BOOTSTRAP_ADMIN_USERNAME|KC_BOOTSTRAP_ADMIN_PASSWORD'` command output, refer to **Section 3.5**
 
 ### Cannot Connect to OpenLDAP
 
