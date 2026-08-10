@@ -130,7 +130,7 @@ The `setup-keycloak.sh` script performs the following actions:
 - Configures the client with the necessary redirect URIs and capabilities
 - Creates roles, service account roles and permissions to the client<br/>
 
-Let's verify that the Keycloak realm and client were created successfully in the following section.
+Let's verify that the new Keycloak realm and client were created successfully in the following section.
 
 ---
 
@@ -153,7 +153,7 @@ If you're already logged into Keycloak from the Lab Preparation section, you can
 
 ## 5.4: Verify the Creation of the new Realm for Concert SSO
 
-Keycloak uses realms to isolate different sets of users, applications, and configurations. We'll create a dedicated realm for Concert SSO.
+Keycloak uses realms to isolate different sets of users, applications, and configurations. We'll verify the new Concert SSO realm created by the `setup-keycloak.sh` script.
 
 ### 5.4.1: Why a New Realm is required?
 
@@ -165,7 +165,7 @@ Keycloak uses realms to isolate different sets of users, applications, and confi
 
 1. In the Keycloak Admin Console, click **Manage realms** in the left navigation menu.
 2. On Manage realms page, you will see a list of existing realms.
-3. The new realm created by `setup-keycloak.sh` script should be listed as `concert-realm`.
+3. Verify that the new realm created by the `setup-keycloak.sh` script is listed as `concert-realm`.
 4. Click **concert-realm** to enter the realm.
 
 ![Verify Realm](images/keycloak-verify-new-realm.png)

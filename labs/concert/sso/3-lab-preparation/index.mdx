@@ -156,7 +156,7 @@ openldap_ip: <IP Address>
 
 ## 3.5: Retrieve Keycloak Admin Password
 
-Keycloak is embedded within the Concert installation and runs as a container. The admin password is stored in an environment variable under **ibm-solis-embedded-keycloak** container.
+Keycloak is embedded within the Concert installation and runs as a pod. The admin password is stored in an environment variable under **ibm-solis-embedded-keycloak** pod.
 
 ### 3.5.1: Steps to Retrieve Keycloak Admin Password
 
@@ -166,7 +166,7 @@ Keycloak is embedded within the Concert installation and runs as a container. Th
 ssh jammer@concert
 ```
 
-2. List all pods under the Concert host to verify that the **ibm-solis-embedded-keycloak** container is running:
+2. List all pods under the Concert host to verify that the **ibm-solis-embedded-keycloak** pod is running:
 
 ```bash title="Host: concert"
 kubectl get pods -n platform-hub
@@ -207,7 +207,7 @@ KC_BOOTSTRAP_ADMIN_PASSWORD=<your-secure-password>
 ```
 
 :::note
-The Keycloak bootstrap admin username and password are randomly generated during Concert installation. You must retrieve them from the **ibm-solis-embedded-keycloak container** environment variables as shown above.
+The Keycloak bootstrap admin username and password are randomly generated during Concert installation. You must retrieve them from the **ibm-solis-embedded-keycloak pod** environment variables as shown above.
 :::
 
 3. Copy the admin username and admin password displayed and update your `credentials.txt` file:
