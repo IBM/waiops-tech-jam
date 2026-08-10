@@ -742,7 +742,7 @@ After testing, delete the test client:
 - Verify member attribute in LDAP contains full user DN
 - Check Membership Attribute Type is set to `DN`
 - Re-sync groups: Click **Sync LDAP Groups To Keycloak**
-- Verify in LDAP: `ldapsearch -x -b "ou=groups,dc=example,dc=com" "(cn=concert-admins)" member`
+- Verify in LDAP: `ldapsearch -x -b "ou=groups,dc=example,dc=com" "(cn=*)" member`
 
 ### Authentication Test Fails
 
