@@ -156,7 +156,7 @@ openldap_ip: <IP Address>
 
 ## 3.5: Retrieve Keycloak Admin Password
 
-Keycloak is embedded within the Concert installation and runs as a container. The admin password is stored in an environment variable under **ibm-solis-embedded-keycloak** container.
+Keycloak is embedded within the Concert installation and runs as a pod. The admin password is stored in an environment variable under **ibm-solis-embedded-keycloak** pod.
 
 ### 3.5.1: Steps to Retrieve Keycloak Admin Password
 
@@ -166,31 +166,48 @@ Keycloak is embedded within the Concert installation and runs as a container. Th
 ssh jammer@concert
 ```
 
-2. Retrieve the Keycloak admin password from the **ibm-solis-embedded-keycloak** container environment variables:
+2. List all pods under the Concert host to verify that the **ibm-solis-embedded-keycloak** pod is running:
+
+```bash title="Host: concert"
+kubectl get pods -n platform-hub
+```
+You should see output similar to the one below:
+
+```bash title="Example output"
+[jammer@concert ~]$ kubectl get pods -n platform-hub | grep ibm-solis-embedded-keycloak
+NAME                                          READY   STATUS    RESTARTS   AGE
+ibm-solis-embedded-keycloak-cb4df6d87-slskv   1/1     Running   0          80m
+```
+
+3. Retrieve the Keycloak temporary admin username and password from the **ibm-solis-embedded-keycloak** pod environment variables:
 
 ```bash title="Host: concert"
 # Get the default Keycloak admin username
-podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_USERNAME
+kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep KC_BOOTSTRAP_ADMIN_USERNAME
 ```
 
 ```bash title="Host: concert"
 # Get the default Keycloak admin password
-podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
+kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
 ```
 
 You should see output similar to the one below:
 
 ```bash title="Example output"
 # Get the KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD
-[jammer@concert ~]$ podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_USERNAME
+[jammer@concert ~]$ kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep KC_BOOTSTRAP_ADMIN_USERNAME
 KC_BOOTSTRAP_ADMIN_USERNAME=70ef10c2c12c17b74301624d
 
-[jammer@concert ~]$ podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
+[jammer@concert ~]$ kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep KC_BOOTSTRAP_ADMIN_PASSWORD
 KC_BOOTSTRAP_ADMIN_PASSWORD=<your-secure-password>
 ```
 
 :::note
-The Keycloak bootstrap admin username and password are randomly generated during Concert installation. You must retrieve them from the **ibm-solis-embedded-keycloak container** environment variables as shown above.
+The Keycloak bootstrap admin username and password are randomly generated during Concert installation. You must retrieve them from the **ibm-solis-embedded-keycloak pod** environment variables as shown above.
 :::
 
 3. Copy the admin username and admin password displayed and update your `credentials.txt` file:
@@ -210,7 +227,7 @@ exit
 
 ---
 
-## 3.6: Login to Keycloak
+## 3.6: Login to Keycloak for the first time
 
 From the Bastion Host, open Firefox.
 
@@ -239,20 +256,25 @@ Accept the browser pop-up prompt to save the username and password for future us
 
 ![Keycloak Create User](images/keycloak-create-admin-user.png)
 
-7. Next, set password for the Admin user. Still, under `Users` in the left side navigation, select `Credentials` tab and click `Set password` button.
+7. Next, set password for the Admin user. Still, under `Users` in the left side navigation, on `Admin` page, select `Credentials` tab and click `Set password` button.
 
 ![Keycloak Create User](images/keycloak-set-admin-password.png)
 
-8. Enter the following details:
+8. Delete the temporary auto created password for the user.
+
+9. Enter the following details:
    - **Password**: `secret`
    - **Password confirmation**: `secret`
    - **Temporary**: Toggle to **OFF** 
 
 This is the permanent password for the Admin user. Click `Save` button to save.
+And finally, click `Save password` button when `Set password?` dialog box appears to save the password.
 
 ![Keycloak Create User](images/keycloak-create-admin-password.png)
 
-9. Copy the new **admin username** and **admin password** displayed and update your `credentials.txt` file:
+![Keycloak Admin Set Password](images/keycloak-admin-setPassword-dialog.png)
+
+10. Copy the new **admin username** and **admin password** displayed and update your `credentials.txt` file:
 
 ```text
 keycloak_admin_username: admin
@@ -271,6 +293,8 @@ Now, you have successfully created the admin user and password. Keep the admin u
 
 12. Re-login to Keycloak UI using the new admin username and password. Accept the browser pop-up prompt to save the username and password for future use.
 You should now be logged in as the new admin user.
+
+![Keycloak Admin Login Save Password](images/keycloak-browser-save-admin-credentials.png)
 
 We will use the new admin username and password from this point onward.
 
@@ -386,18 +410,29 @@ Verify that you can access the Concert user interface.
 3. Accept the certificate warning if prompted.
 4. Login to the Concert UI with the credentials recorded in the credentials file (concert_username: and concert_password:).
 
+- **concert_username**
+- **concert_password**
+
+![](images/login-page.png)
+
+5. On the Concert welcome page, select the **Resilience** option on the right and select **Skip** in the next page:
+
+![](images/welcome.png)
+
 :::danger
-If prompted with the **Welcome to IBM Concert** dialog, choose **Skip** to bypass the setup wizard.
+If prompted with the **Welcome to IBM Concert!** dialog, choose **Skip** to bypass the setup wizard.
 
 ![Skip Welcome Dialog](images/skip.png)
 :::
 
 ### 3.8.2: Verify Concert Access
 
-After logging in, you should see:
+1. After logging in, you should see:
 - Concert dashboard with navigation menu
 - No error messages
 - Ability to navigate to different sections
+
+2. Logout from the Concert UI by clicking on your username in the top right corner and selecting **Logout**.
 
 :::note
 At this stage, SSO is not yet configured. You're logging in with the default **concert_username** and **concert_password**. After completing the lab, you'll be able to log in via SSO with LDAP users.
@@ -463,12 +498,14 @@ These steps are optional and only need to be followed if you run into problems.
 
 ### Cannot Retrieve Temporary Keycloak Admin Password
 
-**Problem**: The `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD` command fails or returns an error.
+**Problem**: The `kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep -E 'KC_BOOTSTRAP_ADMIN_USERNAME|KC_BOOTSTRAP_ADMIN_PASSWORD'` command fails or returns an error.
 
 **Solutions**:
 - Verify you're on the Concert host: `hostname` should return `concert`
 - Check if you have proper permissions as jammer user: `whoami`
-- Verify that KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD exist from : `podman exec -it ibm-solis-embedded-keycloak env | grep KC_BOOTSTRAP_ADMIN_PASSWORD` command output, refer to **Section 3.5**
+- Verify that KC_BOOTSTRAP_ADMIN_USERNAME and KC_BOOTSTRAP_ADMIN_PASSWORD exist from : `kubectl exec -it -n platform-hub $(kubectl get pod -n platform-hub -l component=ibm-solis-embedded-keycloak \
+    -o jsonpath='{.items[0].metadata.name}')   -- env | grep -E 'KC_BOOTSTRAP_ADMIN_USERNAME|KC_BOOTSTRAP_ADMIN_PASSWORD'` command output, refer to **Section 3.5**
 
 ### Cannot Connect to OpenLDAP
 

@@ -116,7 +116,11 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Conce
 ### 7.2.2: Verify Successful Login
 
 After successful authentication:
-- You should be redirected back to Concert. Click **Skip**
+- You should be redirected back to Concert. On the Concert welcome page, select the **Resilience** option on the right:
+
+![](images/welcome.png)
+
+- Click **Skip**
 
 ![Concert Skip](images/concert-landingpage.png)
 
@@ -127,18 +131,21 @@ After successful authentication:
 
 ### 7.2.3: Verify Instance level Admin Role
 
-With **Admin** role, Alice should have full access to all Concert features:
+With **Admin** role, Alice should have full access to all Concert features.
 
 1. **Check Navigation Menu** on left panel : Click the `Administration` icon at the bottom
 2. Under **Settings**:
    - You should be able to access all admin sections:
-     - Vulnerability priorities
+     - Vulnerability
+     - Risk remediation benchmarks
      - License preferences
      - Tags
-     - Miscellaneous
      - Certificate policies
-     - IBM Power preferences
+     - Action preferences
      - AI agents
+     - Job timeouts
+     - Security & Goals
+     - Miscellaneous
 
 ![Administrator Access](images/concert-alice-login-instance-lvl-admin-role.png)
 
@@ -208,7 +215,11 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Conce
 ### 7.3.2: Verify Successful Login
 
 After successful authentication:
-- You should be redirected back to Concert. Click **Skip**
+- You should be redirected back to Concert. On the Concert welcome page, select the **Resilience** option on the right:
+
+![](images/welcome.png)
+
+- Click **Skip**
 
 ![Concert Skip](images/concert-landingpage.png)
 
@@ -224,13 +235,16 @@ With **User** role, Bob should have partial access to all Concert features:
 1. **Check Navigation Menu** on left panel : Click the `Administration` icon at the bottom
 2. Under **Settings**:
    - You have **Read-only** access to all sections:
-     - Vulnerability priorities
+     - Vulnerability
+     - Risk remediation benchmarks
      - License preferences
      - Tags
-     - Miscellaneous
      - Certificate policies
-     - IBM Power preferences
+     - Action preferences
      - AI agents
+     - Job timeouts
+     - Security & Goals
+     - Miscellaneous
 
 ![User Access](images/concert-bob-read-only-user-role-instance-level.png)
 
@@ -289,7 +303,11 @@ From the Bastion Remote Desktop, open the Firefox browser and click on the Conce
 ### 7.4.2: Verify Successful Login
 
 After successful authentication:
-- You should be redirected back to Concert. Click **Skip**
+- You should be redirected back to Concert. On the Concert welcome page, select the **Resilience** option on the right:
+
+![](images/welcome.png)
+
+- Click **Skip**
 
 ![Concert Skip](images/concert-landingpage.png)
 
@@ -375,7 +393,7 @@ After successful authentication:
 
 ### 7.5.3: Create an Application in Concert
 
-Let's create an Application in Concert as Bob.
+Let's create an Application in Concert as `Bob`.
 
 1. Click **Inventory** on left panel and click **Application inventory**.
 
@@ -388,12 +406,13 @@ Let's create an Application in Concert as Bob.
 3. On **Define an application** page, under **Details** section, enter the following values:
    - **Name**: `HR-application`
    - **Description (optional)**: `HR application`
-   - **Version**: `2.2.0`
+   - **Version**: `3.0.0`
    - **Criticality (optional)**: `Very low`
    - **Data sensitivity (optional)**: `Very low`
    - **Revenue per hour in $ (optional)**: `0`
    - **Tags (optional)**: `**Leave empty**`
    - **Add business details**: `NO`
+   - **Custom properties** section: `**Leave undefined**`
 
 ![Concert Bob define an App details](images/concert-bob-define-an-app-details.png)
 
@@ -405,7 +424,7 @@ Let's create an Application in Concert as Bob.
 
 ![Concert Bob define an App artifacts](images/concert-bob-define-an-app-artifacts.png)
 
-6. On the **Environments (optional)** section, leave as is.
+6. On the **Component mapping (optional)** section, leave as is.
 
 ![Concert Bob define an App envs](images/concert-bob-define-an-app-environments.png)
 
@@ -421,29 +440,34 @@ Let's create an Application in Concert as Bob.
 
 ![Concert Bob manage collabs](images/concert-bob-manage-collabs.png)
 
-10. You will make **Alice** as an **Editor** and **Charlie** as a **Viewer** for **HR-application**. Click **Grant access** button.
+10. You will make **Alice** as an **Editor** and **Charlie** as a **Viewer** for **HR-application**. 
+11. Click **Grant access** button.
 
 ![Concert Bob grant access](images/concert-bob-grant-access.png)
 
-11. On **Grant access to HR-application** page, do the following:
+12. On **Grant access to HR-application** page, do the following:
    - select **alice** by ticking the checkbox 
-   - select **Editor** on right section
+   - select **Editor** from the drop down list
    - click **Grant** button
 
 ![Concert Bob grant Alice Editor](images/concert-bob-grant-alice-editor.png)
 
-12. On **Grant access to HR-application** page, do the following:
+13. Click **Grant access** button.
+
+![Concert Bob grant access 2](images/concert-bob-grant-access-2.png)
+
+14. On **Grant access to HR-application** page, do the following:
    - select **charlie** by ticking the checkbox
-   - assign **Viewer** on right section
+   - assign **Viewer** from the drop down list
    - click **Grant** button
 
 ![Concert Bob grant Charlie Viewer](images/concert-bob-grant-charlie-viewer.png)
 
-13. Finally, as Bob, you have granted **HR-application** to Alice as an Editor and Charlie as a Viewer. 
+15. Finally, as Bob, you have granted **HR-application** to Alice as an Editor and Charlie as a Viewer. 
 
 ![concert-bob-after-grant-2-users](images/concert-bob-after-grant-2-users.png)
 
-14. Log out from Concert as Bob.
+16. Log out from Concert as Bob.
 
 ---
 
@@ -473,76 +497,40 @@ On the Concert login page, click **Log in with SSO**.
 2. Enter Alice's credentials:
    - **Username**: `alice`
    - **Password**: `Alice@123`
-3. Click **Sign In**
+3. Click **Sign In**.
 
 4. Click **Inventory** on left panel, select **Application Inventory**
 
 ![Concert Alice application inventory](images/concert-alice-application-inventory.png)
 
-5. Alice will be able to view all applications, such as **HR-application**, that have been granted to her.
+5. Alice will be able to view all applications, such as **HR-application**, that have been granted to her.<br/>
+Click **HR-application**.
 
 ![Concert Alice list of apps](images/concert-alice-list-of-apps.png)
 
-6. For **HR-application**, click the **⋮** (three vertical dots) menu icon on same row.
+6. You will see **3.0.0** as the version.<br/>Click the **⋮** (three vertical dots) menu icon on same row.<br/>
 Alice with **Editor** role, has the permission to perform the following actions :
-   - **Open in arena view**
+   - **Use this version...**
    - **Apply tags**
    - **Edit details**
-   - **Edit application**
+   - **Delete**
 
-![Concert Alice HR application](images/concert-alice-hr-application.png)
+7. Click **Edit details** for **HR-application**, you will be able to make changes to the application attributes.
 
-Click **Edit application** for **HR-application**, you will be able to make changes to the application.
+![Concert Alice app version](images/concert-alice-hr-app-editor-edit-details.png)
 
-![concert-alice-edit-hr-application](images/concert-alice-edit-hr-application.png)
+8. On **Edit details**, make the following change:
+   - **Revenue per hour ($)**: `1000`
 
-7. Logout Concert as Alice.
+9. Click **Save**.
 
-### 7.6.2: Validate object level access as Bob
+![Concert Alice modify revenue](images/concert-alice-edit-details-chg-rev.png)
 
-For a quick recap, Bob is a techie user in HR organization.
-He only supports HR applications within the company. 
-He has **Admin** role for **HR-application**.
+10. Logout Concert as Alice.
 
-First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
-From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
-1. Accept the certificate warning if prompted
-2. Log in with Keycloak admin credentials from your credentials file:
-   - **Username**: `admin`
-   - **Password**: (created in **Section 3.6**)
-3. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm (check the realm dropdown)
-4. In the left navigation menu, click **Sessions**
-5. Click **Sign out**
-
-Next, let's sign in to Concert as Bob to validate his object level access. <br/>
-From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
-1. Log in to Concert as Bob.
-On the Concert login page, click **Log in with SSO**.
-
-2. Enter Bob's credentials:
-   - **Username**: `bob`
-   - **Password**: `Bob@123`
-3. Click **Sign In**
-
-4. Click **Inventory** on left panel, select **Application Inventory**
-
-![Concert Bob application inventory](images/concert-bob-application-inventory.png)
-
-5. Bob will be able to view all applications, such as **HR-application**, that have been granted to him.
-
-![Concert Bob list of apps](images/concert-bob-list-of-apps.png)
-
-6. For **HR-application**, click the **⋮** (three vertical dots) menu icon on same row.
-Bob has the permission to perform all actions because Bob is the Admin for **HR-application**.
-
-![Concert Bob HR application](images/concert-bob-hr-application.png)
-
-7. Logout Concert as Bob.
-
-### 7.6.3: Validate object level access as Charlie
+### 7.6.2: Validate object level access as Charlie
 
 For a quick recap, Charlie is a techie user in Sales organization.
-He only supports Sales applications within the company. 
 He has **Viewer** role for **HR-application**.
 
 First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
@@ -569,18 +557,59 @@ On the Concert login page, click **Log in with SSO**.
 
 ![Concert Charlie application inventory](images/concert-charlie-application-inventory.png)
 
-5. Charlie will be able to view all applications, such as **HR-application**, which have been granted to him.
+5. Charlie will be able to view all applications, such as **HR-application**, which have been granted to him.<br/>
+Click **HR-application**.
 
 ![Concert Charlie list of apps](images/concert-charlie-list-of-apps.png)
 
-6. For **HR-application**, click the **⋮** (three vertical dots) menu icon on same row. <br/>
-Charlie has the permission for the following action :
-   - **Open in arena view** <br/> 
-Charlie has only one available action, as he is granted the **Viewer** role for the **HR-application**.
+6.  You will see **3.0.0** as the version.<br/>Click the **⋮** (three vertical dots) menu icon on same row.<br/>
+Charlie with **Viewer** role for the **HR-application** does not have permission to perform any action.
 
-![Concert Charlie HR application](images/concert-charlie-hr-application.png)
+![Concert Charlie no permission](images/concert-charlie-no-permission.png)
 
 7. Logout Concert as Charlie.
+
+### 7.6.3: Validate object level access as Bob
+
+For a quick recap, Bob is a techie user in HR organization.
+He only supports HR applications within the company.<br/> 
+He has **Admin** role for **HR-application**.
+
+First, let's sign out Concert session under **concert-realm** from Keycloak to avoid any SSO issues. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Keycloak bookmark.
+1. Accept the certificate warning if prompted
+2. Log in with Keycloak admin credentials from your credentials file:
+   - **Username**: `admin`
+   - **Password**: (created in **Section 3.6**)
+3. In the Keycloak Admin Console, ensure you're in the **concert-realm** realm (check the realm dropdown)
+4. In the left navigation menu, click **Sessions**
+5. Click **Sign out**
+
+Next, let's sign in to Concert as Bob to validate his object level access. <br/>
+From the Bastion Remote Desktop, open the Firefox browser and click on the Concert bookmark.
+1. Log in to Concert as Bob.
+On the Concert login page, click **Log in with SSO**.
+
+2. Enter Bob's credentials:
+   - **Username**: `bob`
+   - **Password**: `Bob@123`
+3. Click **Sign In**
+
+4. Click **Inventory** on left panel, select **Application Inventory**
+
+![Concert Bob application inventory](images/concert-bob-application-inventory.png)
+
+5. Bob will be able to view all applications, such as **HR-application**.<br/>
+Click **HR-application**.
+
+![Concert Bob list of apps](images/concert-bob-list-of-apps.png)
+
+6. You will see **3.0.0** as the version. Click the **⋮** (three vertical dots) menu icon on same row.<br/>
+Bob has the permission to perform all actions because Bob is the Admin for **HR-application**.
+
+![Concert Bob HR application](images/concert-bob-hr-application.png)
+
+7. Logout Concert as Bob.
 
 ---
 
