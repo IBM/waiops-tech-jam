@@ -1,0 +1,22 @@
+if( match( @Manager, "ProbeWatch" ) )
+{
+        switch(@Summary)
+        {
+        case "Running ...":
+                @Severity = 1
+                @AlertGroup = "probestat"
+                @Type = 2
+        case "Going Down ...":
+                @Severity = 5
+                @AlertGroup = "probestat"
+                @Type = 1
+        default:
+                @Severity = 1
+        }
+        @AlertKey = @Agent
+        @Summary = @Agent + " probe on " + @Node + ": " + @Summary
+}
+else
+{
+   # event processing begins here
+}

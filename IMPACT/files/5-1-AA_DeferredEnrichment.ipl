@@ -1,0 +1,49 @@
+/*
+ * Policy: AA_DeferredEnrichment
+ * Purpose: Retry CMDB enrichment for alerts where ImpactFlag = 2
+ *          (previous enrichment attempt failed — no record found).
+ * Trigger: PolicyActivator (scheduled, not event-driven).
+ */
+
+pendingAlerts = GetByFilter("EVENTS", "ImpactFlag = 2", False);
+alertCount = Length(pendingAlerts);
+
+Log("AA_DeferredEnrichment: found " + alertCount + " alert(s) pending re-enrichment");
+
+if (alertCount > 0) {
+
+    counter = 0;
+
+    while (counter < alertCount) {
+
+        nodeValue = pendingAlerts[counter].Node;
+
+        nodeFilterValue = Replace(nodeValue, "'", "''");
+        filter = "NODE_NAME = '" + nodeFilterValue + "'";
+        inventoryRows = GetByFilter("DEVICE_INVENTORY", filter, False);
+
+        if (Length(inventoryRows) > 0) {
+
+            inventoryRow = inventoryRows[0];
+
+            Log("AA_DeferredEnrichment: enrichment applied for Node=" + nodeValue
+                + ", CustomerID=" + inventoryRow.CUSTOMER_ID);
+
+            DirectSQL("defaultobjectserver",
+                "update alerts.status set CustomerID='" + inventoryRow.CUSTOMER_ID
+                + "', Service='" + inventoryRow.SERVICE
+                + "', ImpactFlag=1 where Identifier='"
+                + pendingAlerts[counter].Identifier + "'", false);
+
+        } else {
+
+            Log("AA_DeferredEnrichment: still no record for Node=" + nodeValue
+                + "; leaving ImpactFlag=2");
+        }
+
+        counter = counter + 1;
+    }
+
+} else {
+    Log("AA_DeferredEnrichment: no alerts pending re-enrichment");
+}

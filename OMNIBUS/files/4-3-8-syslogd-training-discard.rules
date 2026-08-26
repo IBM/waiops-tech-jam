@@ -1,0 +1,92 @@
+table custdata = "/opt/IBM/tivoli/netcool/omnibus/probes/linux2x86/CUSTOMERS.lookup"
+
+if( match( @Manager, "ProbeWatch" ) )
+{
+        switch(@Summary)
+        {
+        case "Running ...":
+                @Severity = 1
+                @AlertGroup = "probestat"
+                @Type = 2
+        case "Going Down ...":
+                @Severity = 5
+                @AlertGroup = "probestat"
+                @Type = 1
+        default:
+                @Severity = 1
+        }
+        @AlertKey = @Agent
+        @Summary = @Agent + " probe on " + @Node + ": " + @Summary
+}
+else
+{
+        log(DEBUG, "===== Entering my rules file section")
+        @Manager = "MyProbe running on " + hostname()
+        @AlertGroup = "Network"
+        @EventId = extract($Raw, ".*ALERT - (.*?):.*")
+
+        switch(@EventId)
+        {
+                case "LinkDown":
+                        log(INFO, "===== Entering LinkDown segment")
+                        @Node = extract($Raw, ".* alert from (.*?) .*")
+                        @Summary = extract($Raw, ".* ALERT - LinkDown: (.*)")
+                        @AlertKey = extract($Raw, ".* interface (.*?) .*")
+                        @Type = 1
+                        @Severity = 5
+                        @Identifier = @Node + " : " + @AlertKey + ":" + @EventId + ":" + @Manager
+                case "LinkUp":
+                        log(INFO, "===== Entering LinkUp segment")
+                        @Node = extract($Raw, ".* alert from (.*?) .*")
+                        @Summary = extract($Raw, ".* ALERT - LinkUp: (.*)")
+                        @AlertKey = extract($Raw, ".* interface (.*?) .*")
+                        @Type = 2
+                        @Severity = 1
+                        @Identifier = @Node + " : " + @AlertKey + ":" + @EventId + ":" + @Manager + ":" + @Type
+                case "LinkUtilization":
+                        log(INFO, "===== Entering LinkUtilization segment")
+                        @Node = extract($Raw, ".* link utilization for (.*?) .*")
+                        @Summary = extract($Raw, ".* ALERT - LinkUtilization: (.*)")
+                        @AlertKey = extract($Raw, ".* ALERT.* interface (.*?) is.*")
+                        $utilval = extract($Raw, ".* ALERT.* is (.*)%.*")
+                        log(INFO, "$utilval is " + $utilval)
+                        if (int($utilval) < 70)
+                        {
+                                @Severity = 1
+                                @Type = 2
+                        }
+                        else if (int($utilval) <= 80)
+                        {
+                                @Severity = 3
+                                @Type = 1
+                        }
+                        else if (int($utilval) <= 95)
+                        {
+                                @Severity = 4
+                                @Type = 1
+                        }
+                        else if (int($utilval) <= 100)
+                        {
+                                @Severity = 5
+                                @Type = 1
+                        }
+                        else
+                        {
+                                @Summary = @Summary + " (unknown or non-integer utilization value)"
+                                @Type = 1
+                                @Severity = 5
+                        }
+                        @Identifier = @Node + " : " + @AlertKey + ":" + @EventId + ":" + @Manager + @Type
+                        update(@Severity)
+                case "WirelessAssociation":
+                        log(INFO, "===== Discarding wireless association alert")
+                        discard
+                default:
+                        log(INFO, "===== Found an unknown/unhandled event")
+                        @Summary = "Unhandled event: " + $Raw
+                        @Severity = 1
+        }
+
+        [ @CustomerID, @Service ] = lookup(@Node, custdata)
+        log(DEBUG, "===== Exiting my rules file section")
+}

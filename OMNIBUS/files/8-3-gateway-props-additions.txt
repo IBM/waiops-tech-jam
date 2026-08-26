@@ -1,0 +1,11 @@
+# Section 8.3 – Paste these lines at the bottom of $OMNIHOME/gates/events_backup/objserv_bi.props
+
+Name                                    : 'EVENTS_GATE'
+Gate.ObjectServerA.Server               : 'EVENTS'
+Gate.ObjectServerA.Username             : 'root'
+Gate.ObjectServerA.Password             : 'netcool'
+Gate.ObjectServerB.Server               : 'EVENTS_BACKUP'
+Gate.ObjectServerB.Username             : 'root'
+Gate.ObjectServerB.Password             : 'netcool'
+Gate.MapFile                            : '$OMNIHOME/gates/events_backup/objserv_bi.map'
+Gate.StartupCmdFile                     : '$OMNIHOME/gates/events_backup/objserv_bi.startup.cmd'

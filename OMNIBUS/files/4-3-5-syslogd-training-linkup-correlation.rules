@@ -1,0 +1,51 @@
+if( match( @Manager, "ProbeWatch" ) )
+{
+        switch(@Summary)
+        {
+        case "Running ...":
+                @Severity = 1
+                @AlertGroup = "probestat"
+                @Type = 2
+        case "Going Down ...":
+                @Severity = 5
+                @AlertGroup = "probestat"
+                @Type = 1
+        default:
+                @Severity = 1
+        }
+        @AlertKey = @Agent
+        @Summary = @Agent + " probe on " + @Node + ": " + @Summary
+}
+else
+{
+        log(DEBUG, "===== Entering my rules file section")
+        @Manager = "MyProbe running on " + hostname()
+        @AlertGroup = "Network"
+        @EventId = extract($Raw, ".*ALERT - (.*?):.*")
+
+        switch(@EventId)
+        {
+                case "LinkDown":
+                        log(INFO, "===== Entering LinkDown segment")
+                        @Node = extract($Raw, ".* alert from (.*?) .*")
+                        @Summary = extract($Raw, ".* ALERT - LinkDown: (.*)")
+                        @AlertKey = extract($Raw, ".* interface (.*?) .*")
+                        @Type = 1
+                        @Severity = 5
+                        @Identifier = @Node + " : " + @AlertKey + ":" + @EventId + ":" + @Manager
+                case "LinkUp":
+                        log(INFO, "===== Entering LinkUp segment")
+                        @Node = extract($Raw, ".* alert from (.*?) .*")
+                        @Summary = extract($Raw, ".* ALERT - LinkUp: (.*)")
+                        @AlertKey = extract($Raw, ".* interface (.*?) .*")
+                        @Type = 2
+                        @Severity = 1
+                        @Identifier = @Node + " : " + @AlertKey + ":" + @EventId + ":" + @Manager + ":" + @Type
+                default:
+                        log(INFO, "===== Found an unknown/unhandled event")
+                        @Summary = "Unhandled event: " + $Raw
+                        @Severity = 1
+        }
+
+        log(DEBUG, "===== Exiting my rules file section")
+}
