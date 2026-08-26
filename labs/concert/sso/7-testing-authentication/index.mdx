@@ -643,7 +643,6 @@ Use this checklist to verify all SSO functionality:
 - [ ] Users can logout successfully
 - [ ] Sessions expire after timeout period
 - [ ] Expired sessions require re-authentication
-- [ ] Single Logout works (if configured)
 
 #### Group Synchronization
 - [ ] LDAP group changes sync to Keycloak
@@ -672,8 +671,6 @@ Use this checklist to verify all SSO functionality:
 
 **Solutions**:
 - Verify OIDC configuration is applied in Concert
-- Check Concert containers for concert-hub service have restarted
-- Verify OIDC enabled flag is true
 - Clear browser cache and reload page
 
 ---
