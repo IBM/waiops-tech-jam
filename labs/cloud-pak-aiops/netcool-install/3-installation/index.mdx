@@ -144,7 +144,7 @@ systemctl restart sshd
 
 :::tip
 
-Set the `netcool` password to: `netcool`
+Set the `netcool` password to: `netcool` for this lab.
 
 :::
 
@@ -179,24 +179,23 @@ tar xvf IM_omnibus_impact.tar
 mv bits/agent.installer.linux.gtk.x86_64_1.8.6001.20170428_1156.zip im/.
 cd im
 unzip agent.installer.linux.gtk.x86_64_1.8.6001.20170428_1156.zip
-cd ..
+cd /opt/software
 
 mv bits/TVL_NTCL_OMN_V8.1.0.28_CORE_LNX.zip omnibus/.
 cd omnibus
 unzip TVL_NTCL_OMN_V8.1.0.28_CORE_LNX.zip
 unzip com.ibm.tivoli.omnibus.core.linux.x86_64.zip
-cd ..
+cd /opt/software
 
 mv NCOMNI_PROBE_FOR_SYSLOG.zip syslog/.
 cd syslog/
 unzip NCOMNI_PROBE_FOR_SYSLOG.zip 
-cd ..
+cd /opt/software
 
 mv bits/TNIV7.1.0.26__LNX_ML.zip impact/.
 cd impact
 unzip TNIV7.1.0.26__LNX_ML.zip
 unzip M06HVML.zip
-cd ..
 ```
 
 ## 3.5: Install IBM Installation Manager
@@ -623,6 +622,8 @@ Under the `All Events` filter box, click on the `View` button to bring up the Ev
 ![](images/event_list.png)
 
 If you scroll down within the Event List, you should see both Simnet and Syslog events present.
+
+Click on the **File** menu, the **Exit** to quit the Native Event List.
 
 ## 3.14: Install Netcool/Impact
 

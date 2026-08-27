@@ -1,15 +1,17 @@
 ---
 title: Labs Overview
-description: Welcome to the Cloud Pak for AIOps Jam-in-a-Box labs
+description: Welcome to the Cloud Pak for AIOps / Concert Operate Jam-in-a-Box labs
 sidebar_position: 1
 ---
 
-In the Cloud Pak for AIOps labs of the AIOps Jam-in-a-Box series, you will go through several key exercises to learn how to install and configure it.
+IBM Cloud Pak for AIOps was renamed to IBM Concert Operate from version 5.1.0 onwards. These labs are still relevant therefore and will be updated over time to incorporate new versions.
+
+In the Cloud Pak for AIOps / Concert Operate labs Jam-in-a-Box series, you will go through several key exercises to learn how to install and configure it.
 
 This is the current lab list:
 
 - **Installation**
-  - Install a small size deployment of the Cloud Pak for AIOps
+  - Install a small size deployment of the Cloud Pak for AIOps / Concert Operate
   - Choose between an [OpenShift](../install-lab/1-introduction/index.mdx) based deployment or a [Linux VM](../install-lab-linux/1-introduction/index.mdx) based deployment
   - Perform the installation
   - Calculate custom deployment sizes using the _custom sizing tool_
@@ -41,6 +43,27 @@ This is the current lab list:
   - Create a runbook
   - Create a runbook policy
 
-More labs will be added in the future to explore more features of IBM Cloud Pak for AIOps.
+- [**Netcool/OMNIbus and Netcool/Impact installation**](../netcool-install/1-introduction/index.mdx)
+  - Install needed operating system packages
+  - Set up the user, group, and environment
+  - Unpack the software
+  - Install IBM Installation Manager
+  - Install Netcool/OMNIbus
+  - Set up an ObjectServer and some Probes
+  - Configure and start the Netcool Process Agent
+  - Install Netcool/Impact
+  - Configure all components to start on machine boot
+
+- [**Netcool/WebGUI installation**](../netcool-webgui-install/1-introduction/index.mdx)
+  - Install needed operating system packages
+  - Set up the user, group, and environment
+  - Unpack the software
+  - Install IBM Installation Manager
+  - Install Netcool/OMNIbus, then configure and start an ObjectServer and a Probe
+  - Install Netcool/WebGUI, then integrate it with the ObjectServer as a sources of events
+  - Configure Netcool/WebGUI to auto-start on machine boot
+  - Log into the Netcool/WebGUI console
+
+More labs will be added in the future to explore more features of Cloud Pak for AIOps / Concert Operate.
 
 ---
