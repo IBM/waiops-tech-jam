@@ -111,10 +111,9 @@ echo "Creating ncodamin group..."
 groupadd ncoadmin
 
 echo "Creating netcool user..."
-useradd netcool -u 1005
-passwd netcool
+mypwd=`echo netcool | openssl passwd -6 -stdin`
+useradd netcool -u 1005 -p $mypwd
 usermod -g ncoadmin netcool
-
 echo "Changing ownership for /opt..."
 chown -R netcool:ncoadmin /opt
 
