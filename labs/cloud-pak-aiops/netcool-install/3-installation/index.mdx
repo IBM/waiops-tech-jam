@@ -111,8 +111,9 @@ echo "Creating ncodamin group..."
 groupadd ncoadmin
 
 echo "Creating netcool user..."
-useradd netcool -u 1005
-passwd netcool
+mypwd=`echo netcool | openssl passwd -6 -stdin`
+echo $mypwd
+useradd netcool -u 1005 -p $mypwd
 usermod -g ncoadmin netcool
 
 echo "Changing ownership for /opt..."
@@ -144,7 +145,7 @@ systemctl restart sshd
 
 :::tip
 
-Set the `netcool` password to: `netcool` for this lab.
+The `netcool` user password is set to `netcool` for this lab.
 
 :::
 
