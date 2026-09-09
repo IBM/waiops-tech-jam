@@ -114,6 +114,7 @@ echo "Creating netcool user..."
 mypwd=`echo netcool | openssl passwd -6 -stdin`
 useradd netcool -u 1005 -p $mypwd
 usermod -g ncoadmin netcool
+
 echo "Changing ownership for /opt..."
 chown -R netcool:ncoadmin /opt
 
@@ -141,9 +142,9 @@ echo "Restarting sshd..."
 systemctl restart sshd
 ```
 
-:::tip
+:::note
 
-Set the `netcool` password to: `netcool` for this lab.
+The operating system user: `netcool` password is set to: `netcool` for this lab.
 
 :::
 
@@ -673,7 +674,7 @@ Within the sub-menu, choose each of the following two items, one at a time:
 
 Set the password to `netcool` in both.
 
-Type **R** to "Return to Configurations Menu".
+Type **N** to move on to the Next step.
 
 Choose item 2: **User ID and Password**
 
@@ -685,8 +686,6 @@ Within the sub-menu, choose each of the following two items, one at a time:
 ```
 
 Set the password to `netcool` in both.
-
-Type **R** to "Return to Configurations Menu".
 
 Type **N** to move on to the Next step.
 
