@@ -168,7 +168,6 @@ Run the following command block as the **netcool** user on the **netcoolvm host*
 
 ```sh title="Host: netcoolvm"
 mkdir /opt/software/im
-mkdir /opt/software/omnibus
 mkdir /opt/software/syslog
 mkdir /opt/software/impact
 cd /opt/software
@@ -181,9 +180,7 @@ cd im
 unzip agent.installer.linux.gtk.x86_64_1.8.6001.20170428_1156.zip
 cd /opt/software
 
-mv bits/TVL_NTCL_OMN_V8.1.0.28_CORE_LNX.zip omnibus/.
 cd omnibus
-unzip TVL_NTCL_OMN_V8.1.0.28_CORE_LNX.zip
 unzip com.ibm.tivoli.omnibus.core.linux.x86_64.zip
 cd /opt/software
 
