@@ -116,7 +116,7 @@ Keycloak hostname, keycloak.example.com used in the configuration must be change
 ### Keycloak Config: Realm, LDAP Federation & Client
 
 #### Log in to Keycloak Admin Console
-1. Login to Keycloak Admin Console from your browser using the URL: https://keycloak.example.com:8443/admin/master/console/ (replace keycloak.example.com with your Keycloak hostname).
+1. Login to Keycloak Admin Console from your browser using the URL: `https://keycloak.example.com:8443/admin/master/console/` (replace keycloak.example.com with your Keycloak hostname).
 2. Accept the certificate warning if prompted.
 3. Log in with your Keycloak admin credentials.
 
@@ -125,7 +125,7 @@ Keycloak hostname, keycloak.example.com used in the configuration must be change
 2. Choose `sevone-realm` in the list of realms. We are going to use the `sevone-realm` which we created earlier in SevOne NMS SSO guide.
 3. For Cloud Pak for AIOps / Concert Operate SSO, we will use the same `sevone-realm` and create a new OIDC client in the `sevone-realm` realm.
 
-#### Create OIDC Client: sevoneDI
+#### Create OIDC Client: cp4aiops-client
 1. In sevone-realm, click **Clients** → **Create client**
 2. Configure **General Settings**:
    - Client Type: `OpenID Connect`
@@ -222,29 +222,75 @@ We are going to crete a new Mapper called `custom-sub`.
 7. Logout from Keycloak.
 
 ## CloudPak for AIOps Config: LDAP configuration
-In addition to OIDC (for authentication), CP4AIOps Foundational Services can also connect directly to LDAP for user/group search and role mapping. This guide follows the IBM Foundational Services LDAP connection guide.
+In addition to OIDC (for authentication), CloudPak Foundational Services can also connect directly to LDAP for user/group search and role mapping. This guide follows the IBM Foundational Services LDAP connection guide.
+The configuration below is specific to OpenLDAP structure.
 ### Configure LDAP via the CP4AIOps Management Console
-1. Log in to the CP4AIOps Management Hub: `https://<cp4aiops-route>/zen/`
+1. Log in to the CP4AIOps Management Hub: `https://<cp4aiops-route>/zen/#/homepage`
 2. Click the hamburger menu (☰) → Administration → Identity Provider
 3. On the **Identity providers** page → click **New connection** → select **LDAP**
-4. Configure the following settings for the new LDAP connection:
+4. On New LDAP server connection page, let's configure all the sections.
+5. Configure **Connection details** section:
 
 | Field | Value |
 |---------|-------|
 | Connection name | openldap |
 | Server type	| Custom |
+
+<div align="center">
+![ldap config section 1](./images/cp4aiops-ldap-config-part1.png)
+</div>
+
+6. Configure **LDAP authentication** section:
+
+| Field | Value |
+|---------|-------|
 | Base DN	| dc=example,dc=com |
-| Bind DN	| cn=admin,dc=example,dc=com |
-| Bind password	| secret |
+| Bind DN	(optional) | cn=admin,dc=example,dc=com |
+| Bind DN password (optional) | secret |
+
+<div align="center">
+![ldap config section 2](./images/cp4aiops-ldap-config-part2.png)
+</div>
+
+7. Configure **LDAP server** section:
+
+| Field | Value |
+|---------|-------|
 | LDAP server URL	| `ldap://<openldap.example.com>:389` |
+| Client certificate validation mode | `Leave empty` |
+| Enable LDAP failover | `OFF` |
+
+8. Click `Test connection` → expect green success indicator message such as "Successful connection to ldap://openldap.example.com:389"
+
+<div align="center">
+![ldap config section 3](./images/cp4aiops-ldap-config-part3.png)
+</div>
+
+9. Configure **Filters** section:
+
+| Field | Value |
+|---------|-------|
 | Group filter | (&(cn=%v)(objectclass=groupOfNames)) |
 | User filter	| (&(uid=%v)(objectclass=inetOrgPerson)) |
 | Group ID map | *:cn |
 | User ID map	| *:uid |
-| Group member ID map	| groupOfNames:member |
+| Group member ID map (optional)	| groupOfNames:member |
 
-5. Click `Test connection` → expect green success indicator
-6. Click `Create connection` to save the new LDAP connection
+<div align="center">
+![ldap config section 4](./images/cp4aiops-ldap-config-part4.png)
+</div>
+
+10. Configure **SCIM configuration** section:
+
+| Field | Value |
+|---------|-------|
+| Enable pagination for SCIM directory searches | `Leave unchecked` |
+
+<div align="center">
+![ldap config section 5](./images/cp4aiops-ldap-config-part5.png)
+</div>
+
+11. Click `Create` to save the new LDAP connection
 
 :::note 
 For production, use LDAPS such as `ldaps://<openldap.example.com>:636`
@@ -256,7 +302,7 @@ CP4AIOps uses IBM Cloud Pak Foundational Services (Common Services) IAM. OIDC is
 ### Create Keycloak CA Certificate Secret
 CP4AIOps must trust Keycloak's TLS certificate. Copy the Keycloak Self Signed cert or CA cert under a Secret.
 To achieve that, edit platform-auth-ldaps-ca-cert secret in cp4aiops namespace to include the Keycloak CA cert in PEM format under data.certificate.
-1. On the OCP Bastion VM, run the following command:
+1. On the OCP Bastion VM, run the following commands:
 ```bash title="Host: OCP Bastion VM"
 # Copy the Keycloak cert to your local machine
 openssl s_client -connect keycloak.example.com:8443 -showcerts 2>&1 < /dev/null \
@@ -296,7 +342,7 @@ type: Opaque
 3. Exit from the secret editor.
 
 ### Register Keycloak as OIDC Identity Provider in CP4AIOps
-1. Launch web browser, navigate to the CP4AIOps Login page and login as `cpadmin`
+1. Launch web browser, navigate to the CP4AIOps Login page <br/>i.e. `https://cpd-cp4aiops.apps.example.ibm.com/zen/#/homepage` and login as `cpadmin`
 2. On `CP4AIOps Landing` page, navigate to `Manage Users` → `Identity provider configuration`
 3. On `Identity provider configuration` page, click `New OIDC connection`
 4. Choose `OIDC` as the connection type.
@@ -306,8 +352,15 @@ type: Opaque
 |---------|-------|-------|
 | Name | `keycloak-oidc` | This value matches with Keycloak OIDC Client Login setting |
 | Description	| `This is an OIDC connection` | Any meaningful description |
-| Use in conjunction with an existing LDAP	| `ON` | Set to ON as our setup requires OpenLDAP for user directory | 
-| Specify LDAP connection | Choose `ldap` | This is the LDAP connection created in earlier steps |
+| Use in conjunction with an existing LDAP | `ON` | Set to ON as our setup requires OpenLDAP for user directory | 
+| Enable just in time provisioning | `OFF` | Set to OFF | 
+| This is a SCIM compliant identity provider | `OFF` | Set to OFF | 
+| Specify LDAP connection | Choose `openldap` | This is the LDAP connection created in earlier steps |
+| Enable on-behalf-of flow for Microsoft Azure | `OFF` | Set to OFF | 
+
+<div align="center">
+![oidc config section 1](./images/cp4aiops-oidc-keycloak-part1.png)
+</div>
 
 6. Configure **Token attribute mapping** section:
 
@@ -317,20 +370,33 @@ type: Opaque
 | Email | `email` |
 | Family name | `givenName` |
 | Given name | `userName` |
+| Groups | `groups` |
 | Preferred username (optional) | `preferred_username` |
 | Sub | `sub` |
 | Unique security name (optional) | `preferred_username` |
+
+<div align="center">
+![oidc config section 2](./images/cp4aiops-oidc-keycloak-part2.png)
+</div>
 
 7. Configure **Site settings** section:
 
 | Settings | Value |
 |---------|-------|
-| Well-known URI | `https://<keycloak.example.com>:<keycloak-port>/auth/realms/{realm}/.well-known/openid-configuration` |
+| Well-known URI | `https://<keycloak.example.com>:<keycloak-port>/realms/{realm}/.well-known/openid-configuration` |
 | Client ID | `cp4aiops-client` |
 | Client secret | `<oidc_client_secret>` |
 
+<div align="center">
+![oidc config section 3](./images/cp4aiops-oidc-keycloak-part3.png)
+</div>
+
 8. Click Save button
 9. Exit from CP4AIOps UI
+
+:::important
+The Well-known URI in Site settings section can be tested using `curl -k` such as `curl -k https://keycloak.example.com:8443/realms/sevone-realm/.well-known/openid-configuration`
+:::
 
 :::important
 The discovery_url must be the full RFC 8414 discovery endpoint. CP4AIOps will fetch it at registration time. If Keycloak's TLS cert is not trusted, this call will fail with x509: certificate signed by unknown authority. Ensure the CA cert secret was created in earlier step. 
@@ -353,15 +419,40 @@ oc get pods | grep platform-auth-service
 oc delete pod $(oc get pods | grep platform-auth-service | awk '{print $1}')
 ```
 
+3. After `platform-auth-service` pod under `cp4aiops` namespace has been restarted, run the following commands to verify Keycloak cert is present in JKS keystore file.
+```bash title="Host: OCP Bastion VM"
+# set project to cp4aiops
+oc project cp4aiops
+
+# rsh to platform-auth-service pod
+oc rsh $(oc get pods | grep platform-auth-service | awk '{print $1}') 
+
+# rsh to platform-auth-service pod
+sh-4.4$ keytool -list -v -keystore /opt/ibm/wlp/output/defaultServer/resources/security/key.jks -storepass insecurePass |grep -i "alias"
+
+sh-4.4$ exit
+```
+
+4. JKS file should contain the last entry which is Keycloak certificate
+```bash title="Expected output from keytool"
+sh-4.4$ keytool -list -v -keystore /opt/ibm/wlp/output/defaultServer/resources/security/key.jks -storepass insecurePass |grep -i "alias"
+Alias name: ca2
+Alias name: default
+Alias name: https://127.0.0.1:443/idauth/oidc/endpoint/op
+Alias name: icp-ldap-0
+Alias name: oidc123
+Alias name: keycloak.example.com:8443
+```
+
 :::important
 Must restart the platform-auth-service pod for changes to take effect. 
 These changes include the new OIDC connection and the new cert addition to JKS keystore in platform-auth-service pod. 
 :::
 
 ## CloudPak for AIOps Config: User Roles Assignment
-We will assign LDAP user with Roles in CP4AIOps.
+As admin, we will assign LDAP users with Roles in CP4AIOps before allowing LDAP users to login to CP4AIOps.
 ### Assign Role to LDAP Users
-1. Launch web browser, navigate to the CP4AIOps Login page and login as `cpadmin`
+1. Launch web browser, navigate to the CP4AIOps Login page <br/>i.e. `https://cpd-cp4aiops.apps.example.com/zen/#/homepage` and login as `cpadmin`
 2. On CP4AIOps landing page, click the hamburger menu (☰) → Administration → Access control
 3. On the **Access control** page → click **Add users +**
 4. Search for users such as `alice`, `bob`, `charlie`
@@ -378,16 +469,26 @@ We will assign LDAP user with Roles in CP4AIOps.
 
 ## CloudPak for AIOps SSO Login: Verification and Testing
 ### Verify SSO Login Button
-1. Launch new Private/Incognito Firefox window navigate to the CP4AIOps Login page
+1. Launch new Private/Incognito Firefox window and navigate to the CP4AIOps Login page <br/>i.e. `https://cpd-cp4aiops.apps.example.com/zen/#/homepage`
 2. You should see `keycloak-oidc` as an option under `Log in with` drop down list
-
-
 3. Select `keycloak-oidc` under `Log in with` drop down list
+
+<div align="center">
+![keycloak oidc login](./images/cp4aiops-keycloak-oidc-sso-login.png)
+</div>
+
 4. You will be redirected to Keycloak login page
 5. On Keycloak login page, enter your OpenLDAP user credentials (e.g., alice, bob, charlie) and click **Sign In**.
 
+<div align="center">
+![keycloak redirect login](./images/cp4aiops-keycloak-redirect-login.png)
+</div>
 
 6. You should be redirected back to CP4AIOps landing page, you will see you logged in as LDAP user on top right corner
+
+<div align="center">
+![keycloak redirect login](./images/cp4aiops-sso-successful-login.png)
+</div>
 
 ### Perform SevOne Observer discovery and configure right-click tool for launch in context
 1. Configure SevOne Observer
