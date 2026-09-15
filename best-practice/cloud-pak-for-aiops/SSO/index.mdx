@@ -514,13 +514,13 @@ window.open('https://sevoneDI.example.com/device-summary?datasourceId=1&deviceNa
 ![cp4aiops launch sevone](./images/cp4aiops-sevone-discovery-topology-tool.png)
 </div>
 
-6. You will be directed to SevOne DI dashboard for the device.
+6. You will be directed to the SevOne DI dashboard for the selected device, indicating that Single Sign-On (SSO) has been successfully configured between SevOne and CloudPak for AIOps.
 
 <div align="center">
 ![sevone cross launch](./images/sevoneDI-cross-launch.png)
 </div>
 
-7. Login to Keycloak UI as admin, under `sevone-realm` → `Session` you will see `alice` logged in to 2 clients which are `cp4aiops-client` and `sevoneDI`.
+7. To further validate the configuration, log in to the Keycloak administration console as an administrator. Under `sevone-realm` → `Sessions`, you should see that user `alice` has active sessions for both `cp4aiops-client` and `sevoneDI`, confirming successful authentication across the two applications.
 
 <div align="center">
 ![keycloak two clients](./images/keycloak-user-2-clients.png)
