@@ -490,9 +490,41 @@ As admin, we will assign LDAP users with Roles in CP4AIOps before allowing LDAP 
 ![keycloak redirect login](./images/cp4aiops-sso-successful-login.png)
 </div>
 
+7. Next, we will do cross launch from CP4AIOps to SevOne for SevOne discovered devices.
+
 ### Perform SevOne Observer discovery and configure right-click tool for launch in context
-1. Configure SevOne Observer
-2. Add menu option in topology to launch SevOne DI for discovered devices
+1. Configure SevOne Observer and perform the Observer discovery
+2. Use `Topology tools` to add menu option in topology to launch SevOne DI for discovered devices
+3. Assign name to the topology tool such as `launchSevOne` and its configuration as below
+
+<div align="center">
+![cp4aiops topology tool](./images/cp4aiops-topology-tool.png)
+</div>
+
+4. Define JavaScript implementation to the topology tool such as code block below 
+
+```bash title="Example JavaScript for Topology tool"
+window.open('https://sevoneDI.example.com/device-summary?datasourceId=1&deviceName='
+        + asmProperties.name);
+```
+
+5. In CP4AIOps topology, do right click for a SevOne discovered device where you will get `launchSevOne` menu option.
+
+<div align="center">
+![cp4aiops launch sevone](./images/cp4aiops-sevone-discovery-topology-tool.png)
+</div>
+
+6. You will be directed to SevOne DI dashboard for the device.
+
+<div align="center">
+![sevone cross launch](./images/sevoneDI-cross-launch.png)
+</div>
+
+7. Login to Keycloak UI as admin, under `sevone-realm` → `Session` you will see `alice` logged in to 2 clients which are `cp4aiops-client` and `sevoneDI`.
+
+<div align="center">
+![keycloak two clients](./images/keycloak-user-2-clients.png)
+</div>
 
 ================================
 ===================================
