@@ -184,29 +184,14 @@ may be different on your host.
 :::
 
 ```sh {23} title="Example Output"
-NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
-loop0                       7:0    0     4K  1 loop /snap/bare/5
-loop1                       7:1    0  55.6M  1 loop /snap/core18/2566
-loop2                       7:2    0    62M  1 loop /snap/core20/1587
-loop3                       7:3    0  63.2M  1 loop /snap/core20/1623
-loop4                       7:4    0 238.5M  1 loop /snap/firefox/2015
-loop5                       7:5    0 346.3M  1 loop /snap/gnome-3-38-2004/119
-loop6                       7:6    0 349.7M  1 loop /snap/gnome-3-38-2004/143
-loop7                       7:7    0  91.7M  1 loop /snap/gtk-common-themes/1535
-loop8                       7:8    0   103M  1 loop /snap/lxd/23541
-loop9                       7:9    0  89.4M  1 loop /snap/lxd/31333
-loop10                      7:10   0  68.2M  1 loop /snap/powershell/220
-loop11                      7:11   0  73.7M  1 loop /snap/powershell/283
-loop12                      7:12   0    71M  1 loop /snap/prometheus/86
-loop13                      7:13   0    47M  1 loop /snap/snapd/16292
-loop14                      7:14   0    48M  1 loop /snap/snapd/17336
-sda                         8:0    0   500G  0 disk
-├─sda1                      8:1    0     1M  0 part
-├─sda2                      8:2    0     2G  0 part /boot
-└─sda3                      8:3    0   498G  0 part
-  └─ubuntu--vg-ubuntu--lv 253:0    0   100G  0 lvm  /var/snap/firefox/common/host-hunspell
-                                                    /
-sdb                         8:16   0  1000G  0 disk
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+vda    252:0    0   500G  0 disk 
+├─vda1 252:1    0     1M  0 part 
+├─vda2 252:2    0   200M  0 part /boot/efi
+├─vda3 252:3    0     2G  0 part /boot
+└─vda4 252:4    0 497.8G  0 part /
+vdb    252:16   0     1M  0 disk 
+vdc    252:32   0  1000G  0 disk
 ```
 
 Capture the device name of the spare disk into the variable **OBJECTS_DISK**.
@@ -272,8 +257,8 @@ You should now see that your device is mounted on the
 `/mnt/instana/stanctl/objects` directory.
 
 ```sh title="Example Output"
-NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sdb    8:16   0 1000G  0 disk /mnt/instana/stanctl/objects
+NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+vdc  252:32   0  1000G  0 disk /mnt/instana/stanctl/objects
 ```
 
 #### 3.4.1.2. Prepare storage on **instana-1**
@@ -313,30 +298,16 @@ The device names may be different for each storage allocation on your host.
 :::
 
 ```sh {22-24} title="Example Output"
-NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
-loop0                       7:0    0  55.6M  1 loop /snap/core18/2566
-loop1                       7:1    0     4K  1 loop /snap/bare/5
-loop2                       7:2    0    62M  1 loop /snap/core20/1587
-loop3                       7:3    0  63.2M  1 loop /snap/core20/1623
-loop4                       7:4    0 238.5M  1 loop /snap/firefox/2015
-loop5                       7:5    0 346.3M  1 loop /snap/gnome-3-38-2004/119
-loop6                       7:6    0 349.7M  1 loop /snap/gnome-3-38-2004/143
-loop7                       7:7    0  91.7M  1 loop /snap/gtk-common-themes/1535
-loop8                       7:8    0   103M  1 loop /snap/lxd/23541
-loop9                       7:9    0  89.4M  1 loop /snap/lxd/31333
-loop10                      7:10   0  68.2M  1 loop /snap/powershell/220
-loop11                      7:11   0  73.7M  1 loop /snap/powershell/283
-loop12                      7:12   0    71M  1 loop /snap/prometheus/86
-loop13                      7:13   0  44.4M  1 loop /snap/snapd/23771
-sda                         8:0    0   500G  0 disk
-├─sda1                      8:1    0     1M  0 part
-├─sda2                      8:2    0     2G  0 part /boot
-└─sda3                      8:3    0   498G  0 part
-  └─ubuntu--vg-ubuntu--lv 253:0    0   100G  0 lvm  /var/snap/firefox/common/host-hunspell
-                                                    /
-sdb                         8:16   0   500G  0 disk
-sdc                         8:32   0  1000G  0 disk
-sdd                         8:48   0   1.2T  0 disk
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+vda    252:0    0   500G  0 disk 
+├─vda1 252:1    0     1M  0 part 
+├─vda2 252:2    0   200M  0 part /boot/efi
+├─vda3 252:3    0     2G  0 part /boot
+└─vda4 252:4    0 497.8G  0 part /
+vdb    252:16   0     1M  0 disk 
+vdc    252:32   0   500G  0 disk 
+vdd    252:48   0  1000G  0 disk 
+vde    252:64   0   1.2T  0 disk
 ```
 
 Capture the device names of the spare disks into the variables **DATA_DISK**,
@@ -441,9 +412,9 @@ You should now see that your devices are mounted on the
 ```sh title="Example Output"
 NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
 ...
-sdb                         8:16   0   500G  0 disk /mnt/instana/stanctl/data
-sdc                         8:32   0  1000G  0 disk /mnt/instana/stanctl/metrics
-sdd                         8:48   0   1.2T  0 disk /mnt/instana/stanctl/analytics
+vdc                       252:32   0   500G  0 disk /mnt/instana/stanctl/data
+vdd                       252:48   0  1000G  0 disk /mnt/instana/stanctl/metrics
+vde                       252:64   0   1.2T  0 disk /mnt/instana/stanctl/analytics
 ```
 
 ### 3.4.2. Set kernel parameters
@@ -480,7 +451,7 @@ for host in instana-0 instana-1 instana-2; do
   ssh $SSH_OPTIONS jammer@$host "sudo sh -c 'echo never > /sys/kernel/mm/transparent_hugepage/enabled && echo never > /sys/kernel/mm/transparent_hugepage/defrag'"
 
   # Disable the firewall
-  ssh $SSH_OPTIONS jammer@$host "sudo ufw disable"
+  ssh $SSH_OPTIONS jammer@$host "sudo systemctl disable firewalld"
 
   echo "$host completed"
 done
@@ -639,15 +610,15 @@ export SALES_KEY=<your-sales-key>
 Run the following commands to add the Instana repository.
 
 ```sh title="Host: instana-0"
-echo 'deb [signed-by=/usr/share/keyrings/instana-archive-keyring.gpg] https://artifact-public.instana.io/artifactory/rel-debian-public-virtual generic main' > /etc/apt/sources.list.d/instana-product.list
-
-cat << EOF > /etc/apt/auth.conf
-machine artifact-public.instana.io
-  login _
-  password $AGENT_DOWNLOAD_KEY
+cat << EOF > /etc/yum.repos.d/Instana-Product.repo
+[instana-product]
+name=Instana-Product
+baseurl=https://_:$AGENT_DOWNLOAD_KEY@artifact-public.instana.io/artifactory/rel-rpm-public-virtual/
+enabled=1
+gpgcheck=0
+gpgkey=https://_:$AGENT_DOWNLOAD_KEY@artifact-public.instana.io/artifactory/api/security/keypair/public/repositories/rel-rpm-public-virtual
+repo_gpgcheck=1
 EOF
-
-wget -nv -O- --user=_ --password="$AGENT_DOWNLOAD_KEY" https://artifact-public.instana.io/artifactory/api/security/keypair/public/repositories/rel-debian-public-virtual | gpg --dearmor > /usr/share/keyrings/instana-archive-keyring.gpg
 ```
 
 Update the package list and install the Instana **stanctl** utility. The
@@ -655,14 +626,15 @@ Update the package list and install the Instana **stanctl** utility. The
 administrative tasks.
 
 ```txt title="Host: instana-0"
-apt update -y && \
-apt install -y stanctl=1.13.1-1
+dnf clean expire-cache -y && dnf makecache -y
+dnf install -y stanctl-1.15.0-1
 ```
 
 Hold the stanctl package to prevent it from being upgraded unintentionally.
 
 ```sh title="Host: instana-0"
-apt-mark hold stanctl
+dnf install -y python3-dnf-plugin-versionlock
+dnf versionlock add stanctl
 ```
 
 You can now verify your stanctl version by typing:
@@ -712,9 +684,9 @@ Start the installation by running the following command:
 
 ```sh title="Host: instana-0"
 stanctl up \
-  --instana-version="3.317.488-0" \
+  --instana-version="3.323.470-0" \
   --multi-node-enable \
-  --multi-node-ips="192.168.252.30,192.168.252.31,192.168.252.32" \
+  --multi-node-ips="10.10.10.202,10.10.10.203,10.10.10.204" \
   --install-type="production" \
   --core-base-domain="instana-0.ibmdte.local" \
   --timeout="60m0s" \
@@ -728,7 +700,7 @@ stanctl up \
   --volume-objects="/mnt/instana/stanctl/objects" \
   --volume-data="/mnt/instana/stanctl/data" \
   --core-smtp-from="server@instana.com" \
-  --core-smtp-host="192.168.252.33" \
+  --core-smtp-host="10.10.10.205" \
   --core-smtp-port="30025" \
   --core-smtp-check-server-identity=false \
   --core-smtp-start-tls=false \
