@@ -49,7 +49,7 @@ a CLI with access to the K3s cluster.
 In the bastion terminal window use the following command to connect to the
 primary Instana host:
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 ssh jammer@instana-0
 ```
 
@@ -244,6 +244,52 @@ APP VERSION: 1.307.0
 
 ```
 
+Since Instana backend uses self-signed certificate we need to add the certificate into Trusted Certificate authorities of Synthetic Point of Presence's controller. For that:
+- Export existing certificate from Instana backend:
+```bash title="Host: instana-0"
+kubectl get secret instana-tls -n instana-core -o jsonpath='{.data.ca\.crt}' | base64 -d > ca.crt
+```
+
+- Create secret with the certificate of Instana backend in instana-synthetic namespace:
+```bash title="Host: instana-0"
+kubectl create secret generic instana-backend-ca --from-file=ca.crt=./ca.crt -n instana-synthetic
+```
+
+- Add the certificate into Trusted CA of PoP controller:
+```bash title="Host: instana-0"
+kubectl patch deployment synthetic-pop-controller \
+  -n instana-synthetic \
+  --type=json \
+  -p='[
+    {
+      "op": "add",
+      "path": "/spec/template/spec/volumes/-",
+      "value": {
+        "name": "instana-ca",
+        "secret": { "secretName": "instana-backend-ca" }
+      }
+    },
+    {
+      "op": "add",
+      "path": "/spec/template/spec/containers/0/volumeMounts/-",
+      "value": {
+        "name": "instana-ca",
+        "mountPath": "/etc/ssl/instana",
+        "readOnly": true
+      }
+    },
+    {
+      "op": "add",
+      "path": "/spec/template/spec/containers/0/env/-",
+      "value": {
+        "name": "BACKEND_CA_BUNDLE_PATH",
+        "value": "/etc/ssl/instana/ca.crt"
+      }
+    }
+  ]'
+
+```
+
 ## 3.3 Verify installation
 
 Confirm that all pods of the _Synthetic Point Of Presence_ are running:
@@ -339,23 +385,23 @@ We will not do it in this lab.
 
 Click **Next**
 
-Step "Add teams" is also optional and fot assigning permissions for a certain team.
-:::info Additional optional configuration
-
-We can associate **Teams** with the test. Members of the team will gain access 
-to the test.
-
-We will not use it in this lab.
-:::
-
-Click **Next**
-
 Step "Add custom properties" is optional and allows to add additional parameters 
 visible in notifications.
 :::info Additional optional configuration
 
 You can also set **Custom Properties** in order to differentiate projects or
 particular certificates for notifications.
+
+We will not use it in this lab.
+:::
+
+Click **Next**
+
+Step "Add teams" is also optional and fot assigning permissions for a certain team.
+:::info Additional optional configuration
+
+We can associate **Teams** with the test. Members of the team will gain access 
+to the test.
 
 We will not use it in this lab.
 :::
@@ -449,16 +495,6 @@ We will not do it in this lab.
 
 Click **Next**
 
-Step "Add teams" is also optional and fot assigning permissions for a certain team.
-:::info Additional optional configuration
-
-We can associate **Teams** with the test. Members of the team will gain access 
-to the test.
-
-We will not use it in this lab.
-:::
-
-Click **Next**
 
 Step "Add custom properties" is optional and allows to add additional parameters 
 visible in notifications.
@@ -466,6 +502,17 @@ visible in notifications.
 
 You can also set **Custom Properties** in order to differentiate projects or
 particular certificates for notifications.
+
+We will not use it in this lab.
+:::
+
+Click **Next**
+
+Step "Add teams" is also optional and fot assigning permissions for a certain team.
+:::info Additional optional configuration
+
+We can associate **Teams** with the test. Members of the team will gain access 
+to the test.
 
 We will not use it in this lab.
 :::
@@ -607,23 +654,23 @@ We will not do it in this lab.
 
 Click **Next**
 
-Step "Add teams" is also optional and fot assigning permissions for a certain team.
-:::info Additional optional configuration
-
-We can associate **Teams** with the test. Members of the team will gain access 
-to the test.
-
-We will not use it in this lab.
-:::
-
-Click **Next**
-
 Step "Add custom properties" is optional and allows to add additional parameters 
 visible in notifications.
 :::info Additional optional configuration
 
 You can also set **Custom Properties** in order to differentiate projects or
 particular certificates for notifications.
+
+We will not use it in this lab.
+:::
+
+Click **Next**
+
+Step "Add teams" is also optional and fot assigning permissions for a certain team.
+:::info Additional optional configuration
+
+We can associate **Teams** with the test. Members of the team will gain access 
+to the test.
 
 We will not use it in this lab.
 :::
@@ -763,14 +810,13 @@ Find the test you created earlier and select the **checkbox**. Then, click **Add
 
 ![alt text](images/selectTest.png)
 
-Click **Next** to go to **Step 2: Scope** of the dialog.
+Click **Next** to go to next step of the dialog.
 
 You may optionally add filters to scope what is being monitored. In this case,
-we will not be adding any filters, so click **Next** to go to the **Step 3: Time
-Threshold** section of the dialog.
+we will not be adding any filters, so click **Next** to go to the next step of the dialog.
 
 We choose 1 consecutive occurrence to fire an alert, then click **Next** to go
-to **Step 4: Alert channels**:
+to next step:
 
 ![](images/alert-consec-failures.png)
 
@@ -778,14 +824,11 @@ On this step, we will be selecting an _Alert Channel_. These allow you to notify
 people and teams through various **channels** such as email, slack, ServiceNow,
 etc.
 
-Click the **"Select alert channels"** link, then in the new dialog section that
-appears, click the **Create alert channel** link :
-
-![](images/select-alert-channel.png)
+Click the **Create alert channel** button:
 
 ![](images/create-alert-channel.png)
 
-Now, populate the alert channel details as below:
+then in the new dialog that appears, populate the alert channel details as below:
 
 - **Alert channel type:** `Email`
 - **Name:** `Quote of the Day admins`
@@ -797,14 +840,8 @@ Click the **Create Alert Channel** button to create the new channel:
 
 ![](images/SA_Step4_CreateChannel.png)
 
-Now, select the newly created channel and click the **Add 1 Channel** button:
-
-![](images/SA_Step4_AddChannel.png)
-
-You may miss the selected Item in the table, just ensure that in the top of the table you see "Selected 1 channel".
-
-Next, click the **Next** button to proceed to the **Step 5: Alert properties**
-section.
+Click the **Next** button to proceed to the **Alert properties**
+step.
 
 Configure the alert that will be visible when the threshold is violated. Set the
 following values:
