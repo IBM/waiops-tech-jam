@@ -137,7 +137,7 @@ within the ACE server is
 **"http://&lt;acemq_ipaddress&gt;:7081/supplychain/v1/order"**. This is what you
 need to use for the SUPPLY_CHAIN_URL value, but replace
 **&lt;acemq_ipaddress&gt;** with the IP address of your ACE/MQ server, in this
-demo environment that is **192.168.252.70**.
+demo environment that is **10.10.10.206**.
 
 You will also need to change the value for the SUPPLY_CHAIN_SIMULATE to
 **false** to disable the simulation.
@@ -147,7 +147,7 @@ When you are done, the lines should look like this:
 ```sh
 - name: SUPPLY_CHAIN_URL
 //highlight-next-line-emphasise
-  value: http://192.168.252.70:7081/supplychain/v1/order
+  value: http://10.10.10.206:7081/supplychain/v1/order
 - name: SUPPLY_CHAIN_SIMULATE
 //highlight-next-line-emphasise
   value: "false"
