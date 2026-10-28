@@ -40,7 +40,8 @@ bookmark.
 
 You can safely ignore the warning about the certificate being untrusted.
 
-![untrusted-cert-advance](images/untrusted-cert-advance.png)
+{/* ![untrusted-cert-advance](images/untrusted-cert-advance.png) */}
+<img src={require('./images/untrusted-cert-advance.png').default} alt="untrusted-cert-advance" width="75%" />
 
 :::
 
@@ -66,7 +67,8 @@ you open the Website & Mobile Apps page, you won't have any existing website
 configured, then you'll directly see this dialog). Enter `Robot Shop` as the
 website name and click the **Add website** button.
 
-![](images/add-website-name.png)
+{/* ![](images/add-website-name.png) */}
+<img src={require('./images/add-website-name.png').default} alt="add-website-name" width="50%" />
 
 A new dialog containing some options and javascript will open. Leave the default options
 as is and scroll down to **Add tracking script**.
@@ -92,7 +94,8 @@ the unique variables. There are two parameters within the javascript that we
 will need to copy and use when we do the install. You will need the **key** and
 the **reportingURL**. Make a copy of these values now by copying the code block to a text document.
 
-![](images/website-config-marked.png)
+{/* ![](images/website-config-marked.png) */}
+<img src={require('./images/website-config-marked.png').default} alt="website-config-marked" width="75%" />
 
 Select **Go to website dashboard**
 
@@ -125,7 +128,7 @@ the top left of the screen and then the terminal icon.
 
 Run the following to connect to the **demo-apps** vm:
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 ssh jammer@demo-apps
 ```
 
@@ -175,7 +178,7 @@ Install the **Robot Shop** application using Helm:
 export REPORTING_URL=<your-instana-reporting-url>
 ```
 
-1. Set your key value by replacing **your-instana-key** with the **key** from
+2. Set your key value by replacing **your-instana-key** with the **key** from
    your website definition in the Instana UI. Then, run the command below.
 
 :::info
@@ -189,7 +192,7 @@ user interface. <br /> Example: `cYd1TSDZQBCIUfYCGMvV8A`.
 export EUM_KEY=<your-instana-key>
 ```
 
-1. Deploy the Robot Shop application with the following Helm command:
+3. Deploy the Robot Shop application with the following Helm command:
 
    ```sh title="Host: demo-apps"
    helm install robot-shop \
@@ -203,7 +206,8 @@ export EUM_KEY=<your-instana-key>
 
 If successful, you should see the results similar to what's shown below.
 
-![](images/robot-shop-helm-install.png)
+{/* ![](images/robot-shop-helm-install.png) */}
+<img src={require('./images/robot-shop-helm-install.png').default} alt="robot-shop-helm-install" width="60%" />
 
 Check the status of the Robot Shop deployment by watching the pods:
 

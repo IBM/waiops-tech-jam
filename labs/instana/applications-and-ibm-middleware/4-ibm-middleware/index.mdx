@@ -31,7 +31,7 @@ user:
 
 > Type **yes** when asked if you are sure that you want to continue connecting.
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 ssh jammer@mqace
 sudo -i
 ```
@@ -84,7 +84,7 @@ The following should be completed from the **demo-apps** host running as the
 Open a new terminal tab, ssh to the **demo-apps** machine and change to the root
 user:
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 ssh jammer@demo-apps
 sudo -i
 ```
@@ -137,7 +137,7 @@ within the ACE server is
 **"http://&lt;acemq_ipaddress&gt;:7081/supplychain/v1/order"**. This is what you
 need to use for the SUPPLY_CHAIN_URL value, but replace
 **&lt;acemq_ipaddress&gt;** with the IP address of your ACE/MQ server, in this
-demo environment that is **192.168.252.70**.
+demo environment that is **10.10.10.206**.
 
 You will also need to change the value for the SUPPLY_CHAIN_SIMULATE to
 **false** to disable the simulation.
@@ -147,7 +147,7 @@ When you are done, the lines should look like this:
 ```sh
 - name: SUPPLY_CHAIN_URL
 //highlight-next-line-emphasise
-  value: http://192.168.252.70:7081/supplychain/v1/order
+  value: http://10.10.10.206:7081/supplychain/v1/order
 - name: SUPPLY_CHAIN_SIMULATE
 //highlight-next-line-emphasise
   value: "false"
@@ -172,7 +172,7 @@ kubectl rollout status deployment qotd-engraving -n qotd
 To verify that the changes were applied successfully, let's check the
 application UI.
 
-In Firefox, open the **Quote of the Day** bookmark.
+Back to the bastion host console, in Firefox, open the **Quote of the Day** bookmark.
 
 :::note
 
@@ -201,7 +201,7 @@ In this section, you will continue to perform these commands as root on the
 If you do not have a terminal opened to the **mqace** server you can run the
 following:
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 ssh jammer@mqace
 sudo -i
 ```
@@ -272,7 +272,7 @@ match the ACE/MQ configuration on this server. If you read the description on
 each line, you'll see that some parameters are optional.
 
 For more information about about the ACE configuration
-[view the online documentation](https://www.ibm.com/docs/en/instana-observability/1.0.291?topic=technologies-monitoring-app-connect-enterprise-ace)
+[view the online documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-app-connect-enterprise-ace)
 
 In addition,
 [here is a blog that provides additional information on configuring the sensor](https://community.ibm.com/community/user/blogs/hou-fang-zhao/2022/05/24/usefule-tips-for-ace-sensor-configuration)
@@ -337,7 +337,7 @@ file until you find the section titled "IBM MQ". You will be editing this
 section of the configuration to match the settings of the MQ server. There are a
 number of mandatory and optional parameters. For more information on the
 configuration settings, see the online documentation:
-[link](https://www.ibm.com/docs/en/obi/current?topic=technologies-monitoring-mq)
+[link](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-mq)
 
 The MQ sensor also has a number of different possible configurations. The most
 common is for the sensor to connect to a channel using credentials. But, it is
@@ -348,7 +348,7 @@ instrument MQ.
 
 For more information on configuring the MQ sensor, see the product
 documentation:
-[link](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-mq#configuring)
+[link](https://www.ibm.com/docs/en/instana-observability/current?topic=mq-configuring)
 
 In addition, this blog contains additional debugging steps:
 [link](https://community.ibm.com/community/user/blogs/tianxing-33ed/2024/05/20/how-to-debug-mq-sensor-connection-problem)
@@ -417,7 +417,7 @@ configuration for ACE.
 
 Open in a new Terminal tab and SSH to the **mqace** server
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 ssh jammer@mqace
 ```
 
@@ -749,7 +749,8 @@ Command Mode and then write your changes and exit the file by typing:
 :wq
 ```
 
-As soon as you save your changes to the file, Instana will detect those changes
+As soon as you save your changes to the file, the configuration file will be 
+hot-loaded, Instana will detect those changes
 and will start to implement what you have configured.
 
 After a few minutes you will see the updates displayed in the Instana UI on the
