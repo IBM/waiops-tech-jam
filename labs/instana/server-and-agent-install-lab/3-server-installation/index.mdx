@@ -45,7 +45,7 @@ current. For example, plan for upgrades every 2 months.
 For the installation of the Instana server, we'll be following the instructions
 from the Instana documentation for a **Self-Hosted Standard Edition
 Multi-node**. The instructions can be found
-[here](https://www.ibm.com/docs/en/instana-observability/290?topic=edition-installing)
+[here](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=edition-three-node-cluster)
 for your reference, but you can follow the steps below. You will be performing
 an online installation during this Tech Jam, but Instana does support off-line
 (air-gapped) installs.
@@ -81,7 +81,7 @@ For this multi-node installation, Instana requires the following:
 
 ~4TB of storage rated at at least 6000 IOPS (preferred 9000 IOPS) for production
 environments. A detailed storage breakdown can be found
-[here](https://www.ibm.com/docs/en/instana-observability/current?topic=mnc-system-requirements#storage-requirements).
+[here](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=tnc-system-requirements#storage-requirements__title__1).
 
 :::tip
 
@@ -96,14 +96,14 @@ Normally, you would need to ensure that the virtual machine has the correct
 ports opened in the firewall for the agent, UI, and EUM communications. We have
 already done this work for you. For reference, in an on-prem deployment, please
 check the ports on your host must be open and accessible for the
-[Single-node cluster](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-system-requirements#networking-requirements)
+[Single-node cluster](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=cluster-system-requirements#networking-requirements__title__1)
 and
-[Multi-node cluster](https://www.ibm.com/docs/en/instana-observability/current?topic=mnc-system-requirements#required-ports).
+[Multi-node cluster](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=tnc-system-requirements#networking-requirements__title__1).
 The ports for SaaS are slightly different.
 
 In addition, online installations need access to a number of repositories that
 are documented here for reference:
-[here are the repositories](https://www.ibm.com/docs/en/instana-observability/current?topic=requirements-instana-self-hosted-deployments)
+[here are the repositories](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=requirements-instana-self-hosted-deployments)
 
 ## 3.4. Preparing the server
 
@@ -132,7 +132,7 @@ If you are unsure how to get access to the Bastion host (Guacamole) see
 
 Use the terminal to login to the first Instana host:
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 ssh jammer@instana-0
 ```
 
@@ -196,7 +196,7 @@ vdc    252:32   0  1000G  0 disk
 
 Capture the device name of the spare disk into the variable **OBJECTS_DISK**.
 
-```php title="Host: instana-0"
+```sh title="Host: instana-0"
 OBJECTS_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
   $2 == "1000G" && $3 == "disk" {
     cmd = "lsblk -n /dev/" $1 " | wc -l";
@@ -210,13 +210,13 @@ OBJECTS_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
 You can run the following command to verify the value of the variable matches
 the device name of the spare disk:
 
-```php title="Host: instana-0"
+```sh title="Host: instana-0"
 echo $OBJECTS_DISK
 ```
 
 You can now create an Ext4 filesystem on the device.
 
-```php title="Host: instana-0"
+```sh title="Host: instana-0"
 for disk in $OBJECTS_DISK ; do
     echo "make filesystem for $disk"
     mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/$disk
@@ -226,14 +226,14 @@ done
 Now you will need to create the Objects directory that will be used to mount the
 device:
 
-```php title="Host: instana-0"
+```sh title="Host: instana-0"
 mkdir -p /mnt/instana/stanctl/objects
 ```
 
 Then make a backup of the existing fstab file, get the UUID of the device and
 add the new mount point for it:
 
-```php title="Host: instana-0"
+```sh title="Host: instana-0"
 # Backup the existing fstab file
 cp /etc/fstab /etc/fstab.backup
 
@@ -249,7 +249,7 @@ mount -a
 
 Verify the mount point was added correctly by running the following command:
 
-```php title="Host: instana-0"
+```sh title="Host: instana-0"
 lsblk /dev/$OBJECTS_DISK
 ```
 
@@ -270,7 +270,7 @@ Leave you current tab open, you will need it later.
 
 Open a new terminal tab and connect to **instana-1**:
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 ssh jammer@instana-1
 ```
 
@@ -322,7 +322,7 @@ partition status.
 
 :::
 
-```bash title="Host: instana-1"
+```sh title="Host: instana-1"
 DATA_DISK=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | awk '
   $2 == "500G" && $3 == "disk" {
     cmd = "lsblk -n /dev/" $1 " | wc -l";
@@ -423,8 +423,8 @@ There are some Kernel parameters that need to be set of each of the nodes. For
 full details on the parameters, please refer to the
 [Kernel Parameters documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#kernel-parameters).
 
-**Open a new terminal tab**, this will default you back to the **admin** user on
-the **bastion-gym-lan** host. From the bastion host, run the following command
+**Open a new terminal tab**, this will default you back to the **itzuser** user on
+the **bastion** host. From the bastion host, run the following command
 to iterate over each of the nodes and set the required kernel parameters:
 
 :::note
@@ -434,7 +434,7 @@ the instana-2 machine that we have not connected to yet.
 
 :::
 
-```php title="Host: bastion-gym-lan"
+```bash title="Host: bastion"
 export SSH_OPTIONS="-o StrictHostKeyChecking=no"
 
 for host in instana-0 instana-1 instana-2; do
@@ -485,7 +485,7 @@ install Instana components on the other hosts. To do this we need to generate a 
 
 ```mermaid
 sequenceDiagram
-    participant Bastion as bastion-gym-lan
+    participant Bastion as bastion
     participant Instana0 as instana-0
     participant Instana1 as instana-1
     participant Instana2 as instana-2
@@ -516,20 +516,28 @@ sequenceDiagram
 5. Ensure the new ssh key is used by by **instana-0** when connecting to
    **instana-1** and **instana-2**
 
-Ensure you are on the **bastion-gym-lan** host and operating as the **admin**
+Ensure you are on the **bastion** host and operating as the **itzuser**
 user.
+
+Additionally, Instana installation requires *root** ssh access. Ensure that **root** login is allowed on **instana-0**, **instana-1**, and **instana-2** hosts.
+
+```sh title="Host: bastion"
+for h in instana-0 instana-1 instana-2 ; do
+  ssh jammer@$h "echo $h && sudo sed -Ei 's/^(PermitRootLogin) .*/\1 yes/' /etc/ssh/sshd_config && sudo systemctl reload sshd"
+done
+```
 
 Run the following commands to create a new ssh key and store it in the
 environment variable **PUBLIC_KEY**.
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 ssh-keygen -t rsa -f ~/.ssh/instana-cluster -N "" -C "Instana Cluster Key"
 ```
 
 Run the following to add the new public ssh key to the root user on
 **instana-1** and **instana-2** hosts.
 
-```php title="Host: bastion-gym-lan"
+```bash title="Host: bastion"
 PUBLIC_KEY=$(cat ~/.ssh/instana-cluster.pub)
 for i in 1 2; do
   ssh jammer@instana-$i "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys' && echo \"SSH key added to instana-$i successfully\""
@@ -539,7 +547,7 @@ done
 Setup the **root** user on **instana-0** to use the new ssh key to connect to
 **instana-1** and **instana-2**:
 
-```sh title="Host: bastion-gym-lan"
+```sh title="Host: bastion"
 scp ~/.ssh/instana-cluster jammer@instana-0:/tmp/instana_key && echo "Key copied successfully" && \
 ssh jammer@instana-0 "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && \
 mv /tmp/instana_key ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && chown root:root ~/.ssh/id_rsa && \
@@ -623,9 +631,9 @@ EOF
 
 Update the package list and install the Instana **stanctl** utility. The
 **stanctl** tool is used to install Instana and perform other Instana
-administrative tasks.
+itzuseristrative tasks.
 
-```txt title="Host: instana-0"
+```sh title="Host: instana-0"
 dnf clean expire-cache -y && dnf makecache -y
 dnf install -y stanctl-1.15.0-1
 ```
@@ -643,7 +651,7 @@ You can now verify your stanctl version by typing:
 stanctl -v
 ```
 
-You should see that the version is 1.13.1.
+You should see that the version is 1.15.0.
 
 Install Instana
 
@@ -656,7 +664,7 @@ Install Instana
   has one or more tenant units. There are
   [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#tenant-and-unit-names).
   In this installation the tenant is **ibm** and the unit is **unit0**.
-- The default administrator username is `admin@instana.local` and the password
+- The default itzuseristrator username is `itzuser@instana.local` and the password
   is `Passw0rd`.
 - We are setting the volumes to the directories we created earlier during the
   storage configuration tasks.
@@ -692,7 +700,7 @@ stanctl up \
   --timeout="60m0s" \
   --download-key=$AGENT_DOWNLOAD_KEY \
   --sales-key=$SALES_KEY \
-  --unit-initial-admin-password="Passw0rd" \
+  --unit-initial-itzuser-password="Passw0rd" \
   --unit-tenant-name="ibm" \
   --unit-unit-name="unit0" \
   --volume-analytics="/mnt/instana/stanctl/analytics" \
@@ -746,9 +754,9 @@ Once the installation finished and you are prompted with the message....
 
 You can open a browser and login to the Instana user interface.
 
-Open a firefox browser and select the **Instana** bookmark.
+Open a Firefox browser and select the **Instana** bookmark.
 
-![open firefox](images/open-firefox.png)
+![open Firefox](images/open-firefox.png)
 
 :::info
 
@@ -760,7 +768,7 @@ You can safely ignore the warning about the certificate being untrusted.
 
 When prompted, enter the username and password that you updated earlier.
 
-- Username: **admin@instana.local**
+- Username: **itzuser@instana.local**
 - Password: **Passw0rd**
 
 ![](images/login.png)
@@ -856,13 +864,13 @@ you are using. As an example for Ubuntu you would run the following commands:
 
 ```sh title="Host: instana-0"
 # Unhold the stanctl package if it is held
-sudo apt-mark unhold stanctl
+sudo versionlock delete stanctl
 
-apt update -y
-apt install -y stanctl
+dnf makecache -y
+dnf update -y stanctl
 
 # Hold the stanctl package again to prevent it from being upgraded unintentionally.
-apt-mark hold stanctl
+dnf versionlock stanctl
 ```
 
 Then upgrade the backend:
