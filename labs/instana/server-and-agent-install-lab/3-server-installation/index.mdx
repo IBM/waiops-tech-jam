@@ -219,7 +219,7 @@ You can now create an Ext4 filesystem on the device.
 ```sh title="Host: instana-0"
 for disk in $OBJECTS_DISK ; do
     echo "make filesystem for $disk"
-    mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/$disk
+    mkfs.xfs -f -i size=1024 -L $disk /dev/$disk
 done
 ```
 
@@ -241,7 +241,7 @@ cp /etc/fstab /etc/fstab.backup
 OBJECTS_DEVICE_UUID=$(blkid -s UUID -o value /dev/$OBJECTS_DISK)
 
 # Add the new mount point to the fstab file in case of a reboot
-echo "UUID=$OBJECTS_DEVICE_UUID  /mnt/instana/stanctl/objects    ext4    discard,defaults,nofail        0 0" >> /etc/fstab
+echo "UUID=$OBJECTS_DEVICE_UUID  /mnt/instana/stanctl/objects    xfs    discard,defaults,nofail        0 0" >> /etc/fstab
 
 # Mount all filesystems
 mount -a
@@ -365,7 +365,7 @@ You can now create an Ext4 filesystem on the device.
 ```php title="Host: instana-1"
 for disk in $DATA_DISK $METRICS_DISK $ANALYTICS_DISK ; do
     echo "make filesystem for $disk"
-    mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/$disk
+    mkfs.xfs -f -i size=1024 -L $disk /dev/$disk
 done
 ```
 
@@ -391,9 +391,9 @@ METRICS_DEVICE_UUID=$(blkid -s UUID -o value /dev/$METRICS_DISK)
 ANALYTICS_DEVICE_UUID=$(blkid -s UUID -o value /dev/$ANALYTICS_DISK)
 
 # Add the new mount point to the fstab file in case of a reboot
-echo "UUID=$DATA_DEVICE_UUID  /mnt/instana/stanctl/data    ext4    discard,defaults,nofail        0 0" >> /etc/fstab
-echo "UUID=$METRICS_DEVICE_UUID  /mnt/instana/stanctl/metrics    ext4    discard,defaults,nofail        0 0" >> /etc/fstab
-echo "UUID=$ANALYTICS_DEVICE_UUID  /mnt/instana/stanctl/analytics    ext4    discard,defaults,nofail        0 0" >> /etc/fstab
+echo "UUID=$DATA_DEVICE_UUID  /mnt/instana/stanctl/data    xfs    discard,defaults,nofail        0 0" >> /etc/fstab
+echo "UUID=$METRICS_DEVICE_UUID  /mnt/instana/stanctl/metrics    xfs    discard,defaults,nofail        0 0" >> /etc/fstab
+echo "UUID=$ANALYTICS_DEVICE_UUID  /mnt/instana/stanctl/analytics    xfs    discard,defaults,nofail        0 0" >> /etc/fstab
 
 # Mount all filesystems
 mount -a
@@ -519,7 +519,7 @@ sequenceDiagram
 Ensure you are on the **bastion** host and operating as the **itzuser**
 user.
 
-Additionally, Instana installation requires *root** ssh access. Ensure that **root** login is allowed on **instana-0**, **instana-1**, and **instana-2** hosts.
+Additionally, Instana installation requires **root** ssh access. Ensure that **root** login is allowed on **instana-0**, **instana-1**, and **instana-2** hosts.
 
 ```sh title="Host: bastion"
 for h in instana-0 instana-1 instana-2 ; do
@@ -700,7 +700,7 @@ stanctl up \
   --timeout="60m0s" \
   --download-key=$AGENT_DOWNLOAD_KEY \
   --sales-key=$SALES_KEY \
-  --unit-initial-itzuser-password="Passw0rd" \
+  --unit-initial-admin-password="Passw0rd" \
   --unit-tenant-name="ibm" \
   --unit-unit-name="unit0" \
   --volume-analytics="/mnt/instana/stanctl/analytics" \
