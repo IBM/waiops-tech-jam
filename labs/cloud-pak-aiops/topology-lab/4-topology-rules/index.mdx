@@ -183,3 +183,158 @@ we defined.
 
 You have now completed this chapter and are ready for next one about "topology
 templates".
+
+## 4.2: Topology Geo-Spatial Enrichment
+
+Topology resources can be enriched with geographic location data so that they
+appear on an interactive map inside Concert Operate. This is useful for
+operations teams that manage distributed infrastructure across multiple sites or
+regions, as it provides an immediate visual indication of where a resource is
+located when investigating an incident.
+
+In this section we will configure the map tile provider, create an enrichment
+data file that maps resource names to coordinates, define a File enrichment
+rule, and then verify that our topology resources appear correctly on the map.
+
+#### Add the OpenStreetMap Tile Layer
+
+Before resources can appear on a map, Concert Operate needs to be pointed at a
+map tile server. We will use the publicly available OpenStreetMap tile service.
+
+From the burger menu in the top-left, navigate to: **Operate  Resource
+management**. In the **Resource management** page, click on the **Settings**
+gear icon in the top-right, then select **Topology configuration**.
+
+![](images/navigate-resource-mgmt.png)
+
+From the **Topology configuration** page, select the **Advanced settings**
+tab.
+
+![](images/advanced-config-tab.png)
+
+Locate the **Map tile URL** field and enter the following value:
+
+```
+https://tile.openstreetmap.org/{z}/{x}/{y}.png
+```
+
+In the **Map tile attribution** field, enter:
+
+```
+&copy; OpenStreetMap contributors
+```
+
+Click **Save**.
+
+![](images/tile-layer-save.png)
+
+#### Create the Geo-Spatial Enrichment Data File
+
+You will now create a tab-separated values (TSV) file that maps topology
+resource names to their latitude and longitude coordinates. Concert Operate will
+use this file to place resources on the map.
+
+Open a terminal and run the following command to create the file:
+
+```
+gedit techjam_topology_geo_data.tsv
+```
+
+Copy the data below (use the copy helper icon (top-right) for one-click copy),
+paste it into the text editor, click the **Save** button and close the editor
+window (click on the X).
+
+```sh title="techjam_topology_geo_data.tsv"
+ne-name	longitude	latitude
+router1	46.212019	6.197746
+computer1000	46.181919	6.107404
+```
+
+:::note
+The **ne-name** values must exactly match the **name** field of the topology
+resources loaded in the previous chapters. The coordinates above place both
+resources in Geneva, Switzerland.
+:::
+
+#### Create a File Enrichment Rule
+
+An enrichment rule tells Concert Operate how to map the data in your enrichment
+file onto your topology resources. In this step you will create a **File
+enrichment rule** that reads the TSV file you just created and applies the
+location data to the matching resources.
+
+From the burger menu in the top-left, navigate to: **Operate  Resource
+management**. In the **Resource management** page, click on the **Settings**
+gear icon in the top-right, then select **Topology configuration**.
+
+From the **Topology configuration** page, select the **Rules** card and click
+**Configure**.
+
+Click the **New** button in the top-right.
+
+![](images/enrichment-new.png)
+
+When prompted to select a rule type, select **File enrichment rule**.
+
+![](images/enrichment-rule-type.png)
+
+You will be presented with the enrichment rule configuration form. Complete the
+fields shown in the screenshot below.
+
+Give the rule the name **location enrichment rule**; the resource token we will
+be matching against will be the resource **name**.
+
+Select both the **infrastructure** and **application** Observer jobs, and upload
+the **techjam_topology_geo_data.tsv** file you created in the previous step;
+the enrichment file format will be **GeoPoint**.
+
+![](images/enrichment-rule-config.png)
+
+![](images/enrichment-rule-config-2.png)
+
+Click **Save** to save the new enrichment rule.
+
+#### Re-run the File Observer Jobs
+
+Enrichment rules are applied when an Observer job runs. You must re-run the
+File Observer jobs so that the location data from your TSV file is applied to
+the existing topology resources.
+
+From the burger menu in the top-left, navigate to: **Define  Integrations**.
+
+Click on **Manage observer jobs** tab and click on **Configure, schedule, and
+manage observer jobs**.
+
+Click on **Run** (Play button icon) under the Operation column for the
+**infrastructure** and **application** Observer jobs.
+
+![](images/run-job.png)
+
+Once the job has finished, click on the **History** icon next to the job to
+confirm it completed successfully.
+
+![](images/job-history.png)
+
+![](images/job-history-2.png)
+
+#### Verify Resources on the Map
+
+You can now verify that your topology resources have been enriched with location
+data and are visible on the geographic map.
+
+From the burger menu in the top-left, navigate to: **Operate  Resource
+management**. In the **Resource management** page, click on the **Resources**
+tab.
+
+Search for **router1** and click on it to open the resource detail view. You
+should see the resources **Location** properties showing its coordinates, and
+the resource should appear as a pin on the map in the Geneva area.
+
+![](images/resource-map.png)
+
+Repeat the search for **computer1000** to confirm that resource also appears on
+the map.
+
+You have now completed this chapter and are ready for the next one about
+"topology templates".
+

@@ -111,8 +111,8 @@ echo "Creating ncodamin group..."
 groupadd ncoadmin
 
 echo "Creating netcool user..."
-useradd netcool -u 1005
-passwd netcool
+mypwd=`echo netcool | openssl passwd -6 -stdin`
+useradd netcool -u 1005 -p $mypwd
 usermod -g ncoadmin netcool
 
 echo "Changing ownership for /opt..."
@@ -142,9 +142,9 @@ echo "Restarting sshd..."
 systemctl restart sshd
 ```
 
-:::tip
+:::note
 
-Set the `netcool` password to: `netcool` for this lab.
+The operating system user: `netcool` password is set to: `netcool` for this lab.
 
 :::
 
@@ -168,7 +168,6 @@ Run the following command block as the **netcool** user on the **netcoolvm host*
 
 ```sh title="Host: netcoolvm"
 mkdir /opt/software/im
-mkdir /opt/software/omnibus
 mkdir /opt/software/syslog
 mkdir /opt/software/impact
 cd /opt/software
@@ -181,9 +180,7 @@ cd im
 unzip agent.installer.linux.gtk.x86_64_1.8.6001.20170428_1156.zip
 cd /opt/software
 
-mv bits/TVL_NTCL_OMN_V8.1.0.28_CORE_LNX.zip omnibus/.
 cd omnibus
-unzip TVL_NTCL_OMN_V8.1.0.28_CORE_LNX.zip
 unzip com.ibm.tivoli.omnibus.core.linux.x86_64.zip
 cd /opt/software
 
@@ -674,7 +671,7 @@ Within the sub-menu, choose each of the following two items, one at a time:
 
 Set the password to `netcool` in both.
 
-Type **R** to "Return to Configurations Menu".
+Type **N** to move on to the Next step.
 
 Choose item 2: **User ID and Password**
 
@@ -686,8 +683,6 @@ Within the sub-menu, choose each of the following two items, one at a time:
 ```
 
 Set the password to `netcool` in both.
-
-Type **R** to "Return to Configurations Menu".
 
 Type **N** to move on to the Next step.
 

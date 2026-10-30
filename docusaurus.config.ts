@@ -8,10 +8,12 @@ const config: Config = {
   url: "https://github.com/",
   baseUrl: "/waiops-tech-jam/",
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.svg",
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
   },
 
   // GitHub pages deployment config.

@@ -45,9 +45,16 @@ graph TD
     end
 
     BH -.-> LB
+    BH -.-> CP1
     LB -.-> CP
     CP -.-> WN
+    CP1 -.-> WN
 ```
+
+* You access the environment via the bastion host (`bastion-gym-lan`)
+* You set up the cluster from the bastion host via the primary control plane node host (`aiopsc1`)
+* Your browser on the bastion host connects to the load balancer host (`aiopslb`)
+* The load balancer host load-balances incoming connections to the three control plane nodes
 
 :::note
 
@@ -832,6 +839,43 @@ ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} aiopsctl server up --load-balancer-host
 ```
 
 **The deployment will take up to 60 minutes to complete.**
+
+<details>
+<summary>What if my installation hangs?</summary>
+
+:::warning Only perform these steps if your installation fails
+
+You should not perform the steps in this sub-section unless you suspect your installation has hung.
+
+:::
+
+The installation should take under an hour to complete. If your installation takes longer than an hour, it may be stuck. This can happen if some pods get to an "Error" state, even when replacement pods subsequently start successfully. The presence of the Errored pods can cause the installation not to complete successfully and appear to hang.
+
+Leave the installation terminal window running and open a **new** terminal window session on the **bastion host**. Run the following command as the default **admin** user in the new terminal window session on the **bastion host** to check for any Errored pods:
+
+```sh title="Host: bastion-gym-lan"
+. /home/admin/aiops_var.sh
+ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} kubectl get pods --all-namespaces | grep Error
+```
+
+If you have any, you will see output that looks like the following:
+
+```
+connector-orchestrator-86c5645685-pvstn                           1/1     Running                       0               1h12m
+connector-orchestrator-86c5645685-t2tz8                           0/1     Error                         0               1h12m
+connector-orchestrator-86c5645685-tznpf                           1/1     Running                       0               1h13m
+```
+
+If you have any, run the following command as the default **admin** user in the new terminal window session on the **bastion host** to delete any Errored pods:
+
+
+```sh title="Host: bastion-gym-lan"
+ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} kubectl get pods --all-namespaces | grep Error | awk '{print $2 " --namespace=" $1}' | xargs ssh ${TARGET_USER}@${CONTROL_PLANE_NODE} kubectl delete pod
+```
+
+After the Errored pods have been deleted, the installation running in your other terminal window should then progress.
+
+</details>
 
 <details>
 <summary>What if my installation attempt fails?</summary>
