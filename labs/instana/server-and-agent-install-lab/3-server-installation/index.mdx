@@ -45,7 +45,7 @@ current. For example, plan for upgrades every 2 months.
 For the installation of the Instana server, we'll be following the instructions
 from the Instana documentation for a **Self-Hosted Standard Edition
 Multi-node**. The instructions can be found
-[here](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=edition-three-node-cluster)
+[here](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=edition-three-node-cluster)
 for your reference, but you can follow the steps below. You will be performing
 an online installation during this Tech Jam, but Instana does support off-line
 (air-gapped) installs.
@@ -81,7 +81,7 @@ For this multi-node installation, Instana requires the following:
 
 ~4TB of storage rated at at least 6000 IOPS (preferred 9000 IOPS) for production
 environments. A detailed storage breakdown can be found
-[here](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=tnc-system-requirements#storage-requirements__title__1).
+[here](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=tnc-system-requirements#storage-requirements__title__1).
 
 :::tip
 
@@ -96,14 +96,14 @@ Normally, you would need to ensure that the virtual machine has the correct
 ports opened in the firewall for the agent, UI, and EUM communications. We have
 already done this work for you. For reference, in an on-prem deployment, please
 check the ports on your host must be open and accessible for the
-[Single-node cluster](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=cluster-system-requirements#networking-requirements__title__1)
+[Single-node cluster](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=cluster-system-requirements#networking-requirements__title__1)
 and
-[Multi-node cluster](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=tnc-system-requirements#networking-requirements__title__1).
+[Multi-node cluster](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=tnc-system-requirements#networking-requirements__title__1).
 The ports for SaaS are slightly different.
 
 In addition, online installations need access to a number of repositories that
 are documented here for reference:
-[here are the repositories](https://www.ibm.com/docs/en/instana-observability/standard/current?topic=requirements-instana-self-hosted-deployments)
+[here are the repositories](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=requirements-instana-self-hosted-deployments)
 
 ## 3.4. Preparing the server
 
@@ -123,7 +123,7 @@ top left of the screen and then the terminal icon.
 
 :::tip
 
-If you are unsure how to get access to the Bastion host (Guacamole) see
+If you are unsure how to get access to the Bastion host see
 [Accessing a Lab Environment](/waiops-tech-jam/labs/jam-in-a-box/#accessing-a-lab-environment)
 
 :::
@@ -421,7 +421,7 @@ vde                       252:64   0   1.2T  0 disk /mnt/instana/stanctl/analyti
 
 There are some Kernel parameters that need to be set of each of the nodes. For
 full details on the parameters, please refer to the
-[Kernel Parameters documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#kernel-parameters).
+[Kernel Parameters documentation](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=tnc-preparing#kernel-parameters__title__1).
 
 **Open a new terminal tab**, this will default you back to the **itzuser** user on
 the **bastion** host. From the bastion host, run the following command
@@ -435,7 +435,7 @@ the instana-2 machine that we have not connected to yet.
 :::
 
 ```bash title="Host: bastion"
-export SSH_OPTIONS="-o StrictHostKeyChecking=no"
+export SSH_OPTIONS="-Tq -o StrictHostKeyChecking=no"
 
 for host in instana-0 instana-1 instana-2; do
   # Set vm.swappiness to 0 to make sure that application pages are not moved to swap space.
@@ -460,16 +460,30 @@ done
 ```sh title="Example Output"
 vm.swappiness = 0
 fs.inotify.max_user_instances = 8192
-Firewall stopped and disabled on system startup
+vm.swappiness = 0
+fs.inotify.max_user_instances = 8192
+vm.swappiness = 0
+fs.inotify.max_user_instances = 8192
+Removed "/etc/systemd/system/multi-user.target.wants/firewalld.service".
+Removed "/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service".
 instana-0 completed
 vm.swappiness = 0
 fs.inotify.max_user_instances = 8192
-Firewall stopped and disabled on system startup
-instana-1 completed
-Warning: Permanently added 'instana-2' (ECDSA) to the list of known hosts.
 vm.swappiness = 0
 fs.inotify.max_user_instances = 8192
-Firewall stopped and disabled on system startup
+vm.swappiness = 0
+fs.inotify.max_user_instances = 8192
+Removed "/etc/systemd/system/multi-user.target.wants/firewalld.service".
+Removed "/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service".
+instana-1 completed
+vm.swappiness = 0
+fs.inotify.max_user_instances = 8192
+vm.swappiness = 0
+fs.inotify.max_user_instances = 8192
+vm.swappiness = 0
+fs.inotify.max_user_instances = 8192
+Removed "/etc/systemd/system/multi-user.target.wants/firewalld.service".
+Removed "/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service".
 instana-2 completed
 ```
 
@@ -523,7 +537,7 @@ Additionally, Instana installation requires **root** ssh access. Ensure that **r
 
 ```sh title="Host: bastion"
 for h in instana-0 instana-1 instana-2 ; do
-  ssh jammer@$h "echo $h && sudo sed -Ei 's/^(PermitRootLogin) .*/\1 yes/' /etc/ssh/sshd_config && sudo systemctl reload sshd"
+  ssh -Tq jammer@$h "echo $h && sudo sed -Ei 's/^(PermitRootLogin) .*/\1 yes/' /etc/ssh/sshd_config && sudo systemctl reload sshd"
 done
 ```
 
@@ -540,7 +554,7 @@ Run the following to add the new public ssh key to the root user on
 ```bash title="Host: bastion"
 PUBLIC_KEY=$(cat ~/.ssh/instana-cluster.pub)
 for i in 1 2; do
-  ssh jammer@instana-$i "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys' && echo \"SSH key added to instana-$i successfully\""
+  ssh -Tq jammer@instana-$i "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys' && echo \"SSH key added to instana-$i successfully\""
 done
 ```
 
@@ -548,8 +562,8 @@ Setup the **root** user on **instana-0** to use the new ssh key to connect to
 **instana-1** and **instana-2**:
 
 ```sh title="Host: bastion"
-scp ~/.ssh/instana-cluster jammer@instana-0:/tmp/instana_key && echo "Key copied successfully" && \
-ssh jammer@instana-0 "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && \
+scp -Tq ~/.ssh/instana-cluster jammer@instana-0:/tmp/instana_key && echo "Key copied successfully" && \
+ssh -Tq jammer@instana-0 "sudo -i bash -c 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && \
 mv /tmp/instana_key ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && chown root:root ~/.ssh/id_rsa && \
 echo \"Host instana-1 instana-2 192.168.252.30 192.168.252.31 192.168.252.32\" > ~/.ssh/config && \
 echo \"    User root\" >> ~/.ssh/config && \
@@ -590,7 +604,7 @@ sudo -i
 Ensure you are able to connect to **instana-1** and **instana-2** as the root user using the newly created cluster key. Run the following:
 
 ```sh title="Host: instana-0"
-ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-1 "echo Connection to instana-1 successful" && ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-2 "echo Connection to instana-2 successful"
+ssh -Tq -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-1 "echo Connection to instana-1 successful" && ssh -Tq -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@instana-2 "echo Connection to instana-2 successful"
 ```
 
 You should see the following output:
@@ -659,12 +673,12 @@ Install Instana
   supports production mode.
 - DNS has already been configured in this environment for the Instana vm's.
   Instana can be reached at _instana-0.ibmdte.local_. Further details on
-  [required DNS entries can be found here](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#dns-settings).
+  [required DNS entries can be found here](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=tnc-preparing#dns-settings__title__1).
 - Internally, Instana has tenants, which are a logical construct. Each tenant
   has one or more tenant units. There are
-  [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/current?topic=cluster-preparing#tenant-and-unit-names).
+  [restrictions to the names that can be chosen](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=tnc-preparing#tenant-and-unit-names__title__1).
   In this installation the tenant is **ibm** and the unit is **unit0**.
-- The default itzuseristrator username is `itzuser@instana.local` and the password
+- The default administrator username is `admin@instana.local` and the password
   is `Passw0rd`.
 - We are setting the volumes to the directories we created earlier during the
   storage configuration tasks.
@@ -768,7 +782,7 @@ You can safely ignore the warning about the certificate being untrusted.
 
 When prompted, enter the username and password that you updated earlier.
 
-- Username: **itzuser@instana.local**
+- Username: **admin@instana.local**
 - Password: **Passw0rd**
 
 ![](images/login.png)
@@ -842,7 +856,7 @@ stanctl backend apply --core-feature-flags feature.vsphere.enabled
 ```
 
 You can view a
-[full list of available feature flags here.](https://www.ibm.com/docs/en/instana-observability/current?topic=configuring-enabling-optional-features)
+[full list of available feature flags here.](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=configuring-enabling-optional-features)
 
 
 </details>
