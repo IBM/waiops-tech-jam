@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Word and PDF exports — maintained separately
+OMNIBUS/docx/
+OMNIBUS/pdf/
+IMPACT/docx/
+IMPACT/pdf/

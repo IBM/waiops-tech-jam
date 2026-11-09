@@ -1,0 +1,98 @@
+IBM-TRAINING-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, NOTIFICATION-TYPE, Integer32,
+    enterprises
+        FROM SNMPv2-SMI
+    DisplayString
+        FROM SNMPv2-TC;
+
+ibmTraining MODULE-IDENTITY
+    LAST-UPDATED "202601010000Z"
+    ORGANIZATION "IBM Training"
+    CONTACT-INFO "IBM Training Lab Environment"
+    DESCRIPTION  "Custom MIB for OMNIbus training exercises."
+    REVISION     "202601010000Z"
+    DESCRIPTION  "Initial version."
+    ::= { enterprises 99999 }
+
+-- Object definitions
+
+ibmTrainingObjects OBJECT IDENTIFIER ::= { ibmTraining 1 }
+
+ibmTrainingServerName OBJECT-TYPE
+    SYNTAX      DisplayString (SIZE (0..255))
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "The hostname of the server generating the event."
+    ::= { ibmTrainingObjects 4 }
+
+ibmTrainingServerIP OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "The IP address of the server generating the event."
+    ::= { ibmTrainingObjects 5 }
+
+ibmTrainingDiskMount OBJECT-TYPE
+    SYNTAX      DisplayString (SIZE (0..255))
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "The filesystem mount point being reported."
+    ::= { ibmTrainingObjects 6 }
+
+ibmTrainingDiskPercent OBJECT-TYPE
+    SYNTAX      Integer32 (0..100)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Disk utilization as a percentage (0-100)."
+    ::= { ibmTrainingObjects 7 }
+
+ibmTrainingEventSeverity OBJECT-TYPE
+    SYNTAX      Integer32 (0..5)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Severity of the event, mapped to OMNIbus scale:
+         0=Clear, 1=Indeterminate, 2=Warning, 3=Minor, 4=Major, 5=Critical."
+    ::= { ibmTrainingObjects 8 }
+
+-- Notification definitions
+
+ibmTrainingNotifications OBJECT IDENTIFIER ::= { ibmTraining 2 }
+
+serverDown NOTIFICATION-TYPE
+    OBJECTS {
+        ibmTrainingServerName,
+        ibmTrainingServerIP,
+        ibmTrainingEventSeverity
+    }
+    STATUS  current
+    DESCRIPTION
+        "A server has gone down or become unreachable."
+    ::= { ibmTrainingNotifications 1 }
+
+serverUp NOTIFICATION-TYPE
+    OBJECTS {
+        ibmTrainingServerName,
+        ibmTrainingServerIP
+    }
+    STATUS  current
+    DESCRIPTION
+        "A server has recovered and is reachable."
+    ::= { ibmTrainingNotifications 2 }
+
+diskUtilization NOTIFICATION-TYPE
+    OBJECTS {
+        ibmTrainingServerName,
+        ibmTrainingServerIP,
+        ibmTrainingDiskMount,
+        ibmTrainingDiskPercent,
+        ibmTrainingEventSeverity
+    }
+    STATUS  current
+    DESCRIPTION
+        "Disk utilization on a server has crossed a threshold."
+    ::= { ibmTrainingNotifications 3 }
+
+END

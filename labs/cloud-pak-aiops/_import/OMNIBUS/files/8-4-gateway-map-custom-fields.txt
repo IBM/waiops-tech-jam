@@ -1,0 +1,12 @@
+# Section 8.4 – Add these lines inside the CREATE MAPPING StatusMap section
+# of $OMNIHOME/gates/events_backup/objserv_bi.map.
+#
+# Find the existing 'BSM_Identity' line near the end of the mapping block,
+# add a comma to its end, then append the two custom field lines below.
+# Do NOT add a trailing comma after 'CircuitID' — it will cause a parse error.
+
+        'BSM_Identity'    =   '@BSM_Identity',
+        'CustomerID'      =   '@CustomerID',
+        'CircuitID'       =   '@CircuitID'
+
+);

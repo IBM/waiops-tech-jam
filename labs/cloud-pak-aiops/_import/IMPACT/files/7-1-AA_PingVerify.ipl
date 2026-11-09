@@ -1,0 +1,73 @@
+/*
+ * Policy: AA_PingVerify
+ * Purpose: When a down event is received, ping the node immediately.
+ *          If the first ping fails, hibernate for 60 seconds then ping again.
+ *          Update the event with a journal entry recording the outcome.
+ *          ImpactFlag values:
+ *            0 = unprocessed (EventReader filter target)
+ *           88 = in progress (set before hibernating — excluded by mapping filter)
+ * Trigger: OMNIbusEventReader (event-driven).
+ */
+
+/* Set ImpactFlag = 88 immediately to prevent the EventReader from
+ * re-triggering this policy while it is sleeping. */
+
+EventContainer.ImpactFlag = 88;
+ReturnEvent(EventContainer);
+
+Log("AA_PingVerify: first ping attempt for Node=" + EventContainer.Node);
+
+PingOutputOne = JRExecAction("/usr/sbin/ping", { "-c", "1", "-W", "2", EventContainer.Node }, false, 120);
+
+if (Strip(PingOutputOne, "\n") like ".*received, 0% packet loss.*") {
+
+    /* Node is reachable — clear the event. */
+
+    EventContainer.Severity = 0;
+    EventContainer.JournalEntry = "AA_PingVerify: node is reachable on first ping — event cleared";
+
+    Log("AA_PingVerify: Node=" + EventContainer.Node + " is alive on first ping");
+
+} else {
+
+    /* First ping failed — hibernate for 60 seconds then try again. */
+
+    Log("AA_PingVerify: Node=" + EventContainer.Node + " did not respond — hibernating 60s");
+
+    ActionKey = "PingVerify:" + EventContainer.Identifier + GetDate();
+    WaitTime = 60;
+    Hibernate(ActionKey, "Waiting 60s before second ping", WaitTime);
+
+    /* ---- Policy resumes here after 60 seconds ---- */
+
+    Log("AA_PingVerify: woke up — second ping attempt for Node=" + EventContainer.Node);
+
+    PingOutputTwo = JRExecAction("/usr/sbin/ping", { "-c", "1", "-W", "2", EventContainer.Node }, false, 120);
+
+    if (Strip(PingOutputTwo, "\n") like ".*received, 0% packet loss.*") {
+
+        /* Node recovered during the wait — clear the event. */
+
+        EventContainer.Severity = 0;
+        EventContainer.JournalEntry = "AA_PingVerify: node recovered — alive on second ping";
+
+        Log("AA_PingVerify: Node=" + EventContainer.Node + " recovered on second ping");
+
+    } else {
+
+        /* Node is still unreachable — increase severity. */
+
+        if (EventContainer.Severity == 5) {
+            EventContainer.Flash = 1;
+        } else {
+            EventContainer.Severity = EventContainer.Severity + 1;
+        }
+        EventContainer.JournalEntry = "AA_PingVerify: node unreachable on both pings — confirmed down";
+
+        Log("AA_PingVerify: Node=" + EventContainer.Node + " still unreachable after second ping");
+    }
+
+    RemoveHibernation(ActionKey);
+}
+
+ReturnEvent(EventContainer);

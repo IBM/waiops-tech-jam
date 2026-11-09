@@ -1,0 +1,55 @@
+/*
+ * Policy: AA_EvalActionPolicy
+ * Purpose: Query the TAKEACTION rule table and evaluate the current event
+ *          against each filter expression using Eval(). When a match is found,
+ *          execute the corresponding action (email or suppress).
+ * Trigger: OMNIbusEventReader (event-driven).
+ */
+
+Actions = GetByFilter("TAKEACTION", "ACTID > 0", False);
+numActions = Length(Actions);
+
+Log("AA_EvalActionPolicy: " + numActions + " rule(s) loaded from TAKEACTION");
+
+i = 0;
+
+while (i < numActions) {
+
+    if (Eval(Actions[i].FILTERSTAT, EventContainer)) {
+
+        Log("AA_EvalActionPolicy: rule " + Actions[i].ACTID
+            + " matched (action=" + Actions[i].ACTION + ") for Node=" + EventContainer.Node);
+
+        if (Actions[i].ACTION == "email") {
+
+            spParams = Split(Actions[i].PARAMS, "|");
+            Contact = spParams[0];
+            Subject = spParams[1];
+            Message = EventContainer.Summary;
+
+            EventContainer.NotifyFlag = 1;
+            EventContainer.JournalEntry = "Emailed per rule " + Actions[i].ACTID
+                + " (" + Contact + ")";
+
+            /* SendEmail is commented out — SMTP not available in this lab.
+             * In production: SendEmail(null, Contact, Subject, Message, null, false); */
+
+            Log("AA_EvalActionPolicy: [SIMULATED] email to " + Contact
+                + " | subject: " + Subject + " | body: " + Message);
+
+        } elseif (Actions[i].ACTION == "suppress") {
+
+            EventContainer.SuppressEscl = Int(Actions[i].PARAMS);
+            EventContainer.NotifyFlag = 1;
+            EventContainer.JournalEntry = "Suppressed per rule " + Actions[i].ACTID
+                + " (SuppressEscl=" + Actions[i].PARAMS + ")";
+
+            Log("AA_EvalActionPolicy: SuppressEscl set to " + Actions[i].PARAMS
+                + " for Node=" + EventContainer.Node);
+        }
+    }
+
+    i = i + 1;
+}
+
+ReturnEvent(EventContainer);
