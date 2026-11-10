@@ -1,0 +1,6 @@
+table ibmTraining-IBM-TRAINING-MIB_sev =
+{
+        {"SNMPTRAP-IBM-TRAINING-MIB-serverDown","5","1","0"},
+        {"SNMPTRAP-IBM-TRAINING-MIB-diskUtilization","4","1","1800"},
+        {"SNMPTRAP-IBM-TRAINING-MIB-serverUp","1","2","0"}
+}

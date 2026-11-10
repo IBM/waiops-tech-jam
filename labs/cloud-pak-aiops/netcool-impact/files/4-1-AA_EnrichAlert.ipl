@@ -1,0 +1,53 @@
+/*
+ * Policy: AA_EnrichAlert
+ * Purpose: Look up the incoming event's Node in the DEVICE_INVENTORY CMDB
+ *          table and write CustomerID, Service, and ImpactFlag back to the
+ *          alert in the ObjectServer.
+ *          ImpactFlag values:
+ *            0 = unprocessed (default for new events)
+ *            1 = enriched successfully
+ *            2 = enrichment attempted, no CMDB record found
+ * Trigger: OMNIbusEventReader (event-driven).
+ */
+
+if (EventContainer.ImpactFlag != 0) {
+    Log("AA_EnrichAlert: Serial=" + EventContainer.Serial
+        + " already processed; ImpactFlag=" + EventContainer.ImpactFlag);
+} else {
+
+    nodeValue = EventContainer.Node;
+
+    Log("AA_EnrichAlert: enrichment started for Serial=" + EventContainer.Serial
+        + ", Node=" + nodeValue);
+
+    /* Escape embedded single quotes before building the filter string. */
+    nodeFilterValue = Replace(nodeValue, "'", "''");
+    filter = "NODE_NAME = '" + nodeFilterValue + "'";
+
+    inventoryRows = GetByFilter("DEVICE_INVENTORY", filter, False);
+
+    if (Length(inventoryRows) > 0) {
+
+        inventoryRow = inventoryRows[0];
+
+        EventContainer.CustomerID   = inventoryRow.CUSTOMER_ID;
+        EventContainer.Service      = inventoryRow.SERVICE;
+        EventContainer.ImpactFlag   = 1;
+
+        Log("AA_EnrichAlert: enrichment applied for Serial=" + EventContainer.Serial
+            + ", CustomerID=" + EventContainer.CustomerID
+            + ", Service=" + EventContainer.Service);
+
+    } else {
+
+        EventContainer.CustomerID   = "NOT_FOUND";
+        EventContainer.Service      = "NOT_FOUND";
+        EventContainer.ImpactFlag   = 2;
+
+        Log("AA_EnrichAlert: no inventory record found for Serial="
+            + EventContainer.Serial + ", Node=" + nodeValue
+            + "; ImpactFlag set to 2");
+    }
+
+    ReturnEvent(EventContainer);
+}

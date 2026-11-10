@@ -1,0 +1,5 @@
+Server : 'AGG_P'
+MessageLevel : 'debug'
+RulesFile : '/opt/IBM/tivoli/NcKL/rules/snmptrap.rules'
+MessageLog  : '/opt/IBM/tivoli/netcool/omnibus/log/mttrapd-training.log'
+RawCapture : 1

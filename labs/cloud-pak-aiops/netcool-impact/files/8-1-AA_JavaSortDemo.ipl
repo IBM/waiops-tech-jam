@@ -1,0 +1,18 @@
+/*
+ * Policy: AA_JavaSortDemo
+ * Purpose: Demonstrate JavaCall by sorting an array of strings using
+ *          the static method java.util.Arrays.sort().
+ * Trigger: Run manually via the Run icon in the policy editor toolbar.
+ */
+
+words = {"zipper", "apple", "carrot"};
+
+Log("AA_JavaSortDemo: before sort: " + words);
+
+/* Call the static Java method java.util.Arrays.sort().
+ * null = no object instance (static call).
+ * The array is sorted in place — words is updated directly. */
+
+JavaCall("java.util.Arrays", null, "sort", { words });
+
+Log("AA_JavaSortDemo: after sort: " + words);

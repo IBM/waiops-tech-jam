@@ -1,0 +1,57 @@
+/*
+ * Policy: AA_EscalatePlatinum
+ * Purpose: Escalate unacknowledged Platinum-tier alerts open longer than
+ *          the age threshold.
+ *          - Severity < 5: raise severity by 1.
+ *          - Severity = 5: set Flash = 1 (already at maximum severity).
+ * Trigger: PolicyActivator (scheduled — not event-driven).
+ */
+
+ageThreshold = 60;
+
+filter = "ServiceLevel = 'Platinum'"
+    + " AND Acknowledged = 0"
+    + " AND Severity >= 3"
+    + " AND FirstOccurrence < getdate() - " + ageThreshold
+    + " AND NOT (Severity = 5 AND Flash = 1)";
+
+alerts = GetByFilter("EVENTS", filter, False);
+alertCount = Length(alerts);
+
+Log("AA_EscalatePlatinum: " + alertCount + " Platinum alert(s) qualify for escalation");
+
+if (alertCount > 0) {
+
+    counter = 0;
+
+    while (counter < alertCount) {
+
+        alert = alerts[counter];
+        ageSeconds = GetDate() - alert.FirstOccurrence;
+
+        if (alert.Severity < 5) {
+
+            DirectSQL("defaultobjectserver",
+                "update alerts.status set Severity=" + (alert.Severity + 1)
+                + " where Identifier='" + alert.Identifier + "'", false);
+
+            Log("AA_EscalatePlatinum: severity raised to " + (alert.Severity + 1)
+                + " for Node=" + alert.Node
+                + " (age=" + ageSeconds + "s)");
+
+        } else {
+
+            DirectSQL("defaultobjectserver",
+                "update alerts.status set Flash=1"
+                + " where Identifier='" + alert.Identifier + "'", false);
+
+            Log("AA_EscalatePlatinum: Flash set for Node=" + alert.Node
+                + " (Severity=5, age=" + ageSeconds + "s)");
+        }
+
+        counter = counter + 1;
+    }
+
+} else {
+    Log("AA_EscalatePlatinum: no Platinum alerts qualify — nothing to do");
+}

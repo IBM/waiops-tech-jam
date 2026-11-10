@@ -1,0 +1,8 @@
+# Section 8.5 – Paste this entry into $NCHOME/etc/omni.dat
+# Replace <your-fqdn> with the fully qualified hostname of your lab server.
+# Use an unused port (4102 shown here; confirm it does not conflict with AGG_P or AGG_B).
+
+[AGG_GATE]
+{
+      Primary: <your-fqdn> 4102
+}
