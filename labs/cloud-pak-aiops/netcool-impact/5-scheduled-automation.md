@@ -198,7 +198,7 @@ In this exercise, you will simulate a failed enrichment by inserting a test aler
 1. Insert a test alert for a node that does not exist in the CMDB. The enrichment policy will process it, fail to find a record, and set `ImpactFlag = 2`:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('newnode-ams-01', 'Deferred enrichment test', 'deferred-key-01', 'TrainingAlerts', 3, 1, 'newnode-ams-01:deferred-key-01:TrainingAlerts', 'ImpactLab', 65534);
    go
@@ -394,7 +394,7 @@ In this exercise, you will confirm that the updated policy correctly limits retr
 1. Insert a test alert for a node that does not exist in the CMDB and will not be added — this simulates a genuinely unknown node:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('ghost-node-99', 'Retry limit test', 'retry-limit-01', 'TrainingAlerts', 3, 1, 'ghost-node-99:retry-limit-01:TrainingAlerts', 'ImpactLab', 65534);
    go

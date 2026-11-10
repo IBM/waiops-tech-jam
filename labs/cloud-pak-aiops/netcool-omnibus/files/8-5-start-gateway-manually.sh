@@ -19,7 +19,7 @@ $OMNIHOME/bin/nco_g_objserv_bi -propsfile $OMNIHOME/gates/events_backup/objserv_
 # Send the test LinkDown event (syslogd probe must be running)
 logger -n 127.0.0.1 'ALERT - LinkDown: Received a link down alert from routerA interface GigabitEthernet0/0 : unknown reason code'
 
-# --- Connect to EVENTS and verify, then EVENTS_BACKUP and verify (run interactively) ---
+# --- Connect to AGG_P and verify, then EVENTS_BACKUP and verify (run interactively) ---
 # Use 8-5-verify-replication.sql for the SELECT query.
 
 # Stop the manually started gateway before Section 8.6

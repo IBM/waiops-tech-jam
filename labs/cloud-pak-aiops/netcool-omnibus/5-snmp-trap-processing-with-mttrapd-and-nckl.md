@@ -189,14 +189,14 @@ Before updating MTTrapd, prepare the ObjectServer schema for NcKL and configure 
 #### Step 3 — Update the properties file to send alerts to our lab ObjectServer, and to use NcKL
 
 You need to tell MTTrapd to use:
-- Our ObjectServer **EVENTS**
+- Our ObjectServer **AGG_P**
 - The NcKL master rules file as its rules engine.
 - The NcKL MIB directory so that OIDs in incoming traps are resolved against NcKL's bundled MIB library.
 
 Add the following lines at the end of `$OMNIHOME/probes/linux2x86/mttrapd.props`:
 
 ```text
-Server : 'EVENTS'
+Server : 'AGG_P'
 MessageLevel : 'debug'
 RulesFile : '/opt/IBM/tivoli/NcKL/rules/snmptrap.rules'
 MessageLog  : '/opt/IBM/tivoli/netcool/omnibus/log/mttrapd-training.log'
@@ -210,7 +210,7 @@ Save the file. The `MessageLevel` change to `debug` will give you verbose output
 Run the nco_p_syntax checker to validate the NcKL rules. This will evaluate the top level snmptrap.rules file and any included `include` files that are uncommented in the snmptrap.rules. You will note that the output of the syntax check in this case is much more extensive (more on this later):
 
 ```bash
-$OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile /opt/IBM/tivoli/NcKL/rules/snmptrap.rules
+$OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile /opt/IBM/tivoli/NcKL/rules/snmptrap.rules
 ```
 
 Start MTTrapd in the background, sending its log output to a dedicated log file:
@@ -757,7 +757,7 @@ Once you have added our master.include.rules file as directed above, save and qu
 **Step 4 — Run a syntax check on the top-level NcKL rules file**
 
 ```bash
-$OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $NC_RULES_HOME/snmptrap.rules
+$OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $NC_RULES_HOME/snmptrap.rules
 ```
 
 When you run the **syntax checker**, it traverses the entire **NcKL include structure**, checking for:
@@ -976,7 +976,7 @@ kill $(pgrep nco_p_mttrapd)
 
 Perform a syntax check of the rules:
 ```bash
-$OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $NC_RULES_HOME/snmptrap.rules
+$OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $NC_RULES_HOME/snmptrap.rules
 ```
 If you don't see the following lines in the syntax check output, scroll back to find the file and the lines in the file that the syntax checker is complaining about, and address any errors before proceeding.
 ```text
@@ -1112,7 +1112,7 @@ kill $(pgrep nco_p_mttrapd)
 
 Perform a syntax check of the rules:
 ```bash
-$OMNIHOME/probes/nco_p_syntax -server EVENTS -server EVENTS -rulesfile $NC_RULES_HOME/snmptrap.rules
+$OMNIHOME/probes/nco_p_syntax -server AGG_P -server AGG_P -rulesfile $NC_RULES_HOME/snmptrap.rules
 ```
 
 If you don't see the following lines in the syntax check output, scroll back to find the file and the lines in the file that the syntax checker is complaining about, and address any errors before proceeding:
@@ -1260,7 +1260,7 @@ kill $(pgrep nco_p_mttrapd)
 
 Perform a syntax check of the rules:
 ```bash
-$OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $NC_RULES_HOME/snmptrap.rules
+$OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $NC_RULES_HOME/snmptrap.rules
 ```
 
 If you don't see the following lines in the syntax check output, scroll back to find the file and the lines in the file that the syntax checker is complaining about, and address any errors before proceeding.

@@ -49,7 +49,7 @@ In this exercise, you will extend the existing enrichment data model and pipelin
 3. Add the `ServiceLevel` field to the `alerts.status` table in the ObjectServer:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    ALTER TABLE alerts.status ADD COLUMN ServiceLevel VARCHAR(32);
    go
    EOF
@@ -58,7 +58,7 @@ In this exercise, you will extend the existing enrichment data model and pipelin
 4. Verify that the `ServiceLevel` column was added successfully:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    describe alerts.status;
    go
    EOF
@@ -390,7 +390,7 @@ In this exercise, you will insert test alerts for a Platinum-tier node and confi
 3. Insert a severity 3 test alert for `router-lon-01` — a Platinum-tier node:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('router-lon-01', 'Escalation test — Platinum node', 'escalate-platinum-01', 'TrainingAlerts', 3, 1, 'router-lon-01:escalate-platinum-01:TrainingAlerts', 'ImpactLab', 65534);
    go
@@ -400,7 +400,7 @@ In this exercise, you will insert test alerts for a Platinum-tier node and confi
 4. Insert a severity 3 test alert for `switch-nyc-01` — a non-Platinum node — to confirm it is not escalated:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('switch-nyc-01', 'Escalation test — non-Platinum node', 'escalate-nonplatinum-01', 'TrainingAlerts', 3, 1, 'switch-nyc-01:escalate-nonplatinum-01:TrainingAlerts', 'ImpactLab', 65534);
    go
@@ -410,7 +410,7 @@ In this exercise, you will insert test alerts for a Platinum-tier node and confi
 5. Insert a severity 3 test alert for `router-lon-02` — the second Platinum-tier node:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('router-lon-02', 'Escalation test — Platinum node', 'escalate-platinum-02', 'TrainingAlerts', 3, 1, 'router-lon-02:escalate-platinum-02:TrainingAlerts', 'ImpactLab', 65534);
    go

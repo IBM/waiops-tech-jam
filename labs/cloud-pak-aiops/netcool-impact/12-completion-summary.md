@@ -15,7 +15,7 @@ You learned what IBM Netcool Impact is and how it fits into the OMNIbus architec
 
 ### Section 2 — Data source adapters
 
-You configured the two data sources used throughout the lab: the **ObjectServer DSA** (`defaultobjectserver`) connecting Impact to the OMNIbus EVENTS ObjectServer, and the **DB2 CMDB DSA** (`CMDB`) connecting Impact to the device inventory database. You created the `DEVICE_INVENTORY` data type and validated both connections.
+You configured the two data sources used throughout the lab: the **ObjectServer DSA** (`defaultobjectserver`) connecting Impact to the OMNIbus AGG_P ObjectServer, and the **DB2 CMDB DSA** (`CMDB`) connecting Impact to the device inventory database. You created the `DEVICE_INVENTORY` data type and validated both connections.
 
 ---
 

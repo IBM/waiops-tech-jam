@@ -25,7 +25,7 @@ In this exercise, you will review the pre-configured ObjectServer DSA and verify
 
 - Completion of section 1.6.
 - The Impact Server is running.
-- The OMNIbus ObjectServer (`EVENTS`) is running.
+- The OMNIbus ObjectServer (`AGG_P`) is running.
 
 #### Background
 
@@ -34,7 +34,7 @@ The ObjectServer DSA is one of the most important DSAs in any Impact deployment 
 1. **Event source**: Services that monitor the ObjectServer use the ObjectServer DSA to receive a stream of events that match a defined filter condition. When a new alert arrives or an existing alert is updated in `alerts.status`, the service receives the event data and passes it to the configured policies.
 2. **Write-back target**: After a policy has looked up enrichment data or performed automation, it uses the ObjectServer DSA to write results back to `alerts.status`. This is how Impact-enriched fields such as `CustomerID`, `Service`, or `CircuitID` appear on an alert in the OMNIbus event list.
 
-The ObjectServer DSA is typically pre-configured during Impact installation and should already point to the `EVENTS` ObjectServer used in this lab.
+The ObjectServer DSA is typically pre-configured during Impact installation and should already point to the `AGG_P` ObjectServer used in this lab.
 
 #### Tasks
 
@@ -64,7 +64,7 @@ The ObjectServer DSA is typically pre-configured during Impact installation and 
 
    ![Test Connection result popup](screenshots/2-1-task4-1.png)
 
-   If the result does not say **Connection OK**, verify that the `EVENTS` ObjectServer is running on the lab server before retrying.
+   If the result does not say **Connection OK**, verify that the `AGG_P` ObjectServer is running on the lab server before retrying.
 
 5. The `defaultobjectserver` data source provides the underlying connection to the ObjectServer database. On its own, it can be used by policies to execute direct SQL calls against any table that the configured user has access to — for example, querying `alerts.status` or updating fields on specific alerts.
 
@@ -221,7 +221,7 @@ The `DEVICE_INVENTORY` table has the following structure:
    - **JDBC URL**: `jdbc:db2://localhost:50000/CMDB`
    - **JDBC Driver**: `com.ibm.db2.jcc.DB2Driver`
    - **Username**: `db2inst1`
-   - **Password**: `N3tc00l2024N3tc00l20204!`
+   - **Password**: `N3tc00l2024N3tc00l2024!`
    - **Maximum SQL Connections**: `10`
 
    ![JDBC DSA configuration for CMDB](screenshots/2-2-task7-1.png)

@@ -268,7 +268,7 @@ After import, validate and where necessary update any environment-specific data-
 12. Insert a smoke-test event to confirm the enrichment pipeline is intact after the restore:
 
     ```bash
-    $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+    $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
     INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
     VALUES ('router-lon-01', 'Post-import smoke test', 'import-test-01', 'TrainingAlerts', 3, 1, 'router-lon-01:import-test-01:TrainingAlerts', 'ImpactLab', 65534);
     go

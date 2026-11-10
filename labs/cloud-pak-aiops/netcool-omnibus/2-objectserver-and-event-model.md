@@ -30,11 +30,11 @@ The Windows client tools — including the native Windows Event List and Netcool
 
 The Servers Editor is a small Windows utility included with the OMNIbus core installation. It maintains a list of known ObjectServers and their connection details. Each entry in the list requires the following information:
 
-- **Server name** — the logical name of the ObjectServer, which in this lab is `EVENTS`.
+- **Server name** — the logical name of the ObjectServer, which in this lab is `AGG_P`.
 - **Hostname or IP address** — the hostname or IP address of the lab server where the ObjectServer is running. Either format is accepted.
 - **Port** — the port on which the ObjectServer listener is running. The default listener port is `4100`, however it is not unusual to have multiple ObjectServers in an environment running on different ports.
 
-Once the entry is saved, all OMNIbus client tools on the workstation will be able to connect to `EVENTS` by name, without needing to specify the hostname or port each time.
+Once the entry is saved, all OMNIbus client tools on the workstation will be able to connect to `AGG_P` by name, without needing to specify the hostname or port each time.
 
 #### Tasks
 
@@ -83,19 +83,19 @@ Once the entry is saved, all OMNIbus client tools on the workstation will be abl
    [root@ibm-training-server1 ~]# 
    ```
    Confirm that the MasterObjectServer status shows **RUNNING**.
-6. Run the following command to verify that the ObjectServer named EVENTS is available:
+6. Run the following command to verify that the ObjectServer named AGG_P is available:
 
    ```bash
-   nco_ping EVENTS
+   nco_ping AGG_P
    ```
 
-   The nco_ping utility contacts the specified Netcool/OMNIbus server and checks whether it can accept connections. In this example, EVENTS is the ObjectServer name defined in the OMNIbus interfaces configuration. A successful response confirms not only that the ObjectServer process is running, but also that the client can locate and communicate with it using its configured host and port.
+   The nco_ping utility contacts the specified Netcool/OMNIbus server and checks whether it can accept connections. In this example, AGG_P is the ObjectServer name defined in the OMNIbus interfaces configuration. A successful response confirms not only that the ObjectServer process is running, but also that the client can locate and communicate with it using its configured host and port.
 
    Confirm that the output includes: `NCO_PING: Server available.`
 
 7. Ensure that the JazzSM application server is running, which hosts the Web GUI and provides the browser-based OMNIbus user interface. First, verify that the JazzSM server is running by checking its status:
    ```bash
-   /opt/IBM/JazzSM/profile/bin/serverStatus.sh server1 -username smadmin -password netcool
+   /opt/IBM/JazzSM/profile/bin/serverStatus.sh server1 -username smadmin -password netcool123
    ```
    If the server is already running, the status command will output:
     ```text
@@ -121,17 +121,17 @@ Once the entry is saved, all OMNIbus client tools on the workstation will be abl
    ![Servers Editor tool](screenshots/2-1-task8-1.png)
 
    Locate the existing `NCOMS` server entry and edit both the server and listener settings:
-   - **Server name**: `EVENTS`
+   - **Server name**: `AGG_P`
    - **Hostname or IP address**: the hostname or IP address of your assigned lab server as provided by the instructor
    - **Port**: `4100`
 
    ![Netcool/OMNIbus Servers Editor](screenshots/2-1-task8-2.png)
 
-   The server entry defines the ObjectServer logical name and connection details, while the listener setting controls which network port the OMNIbus connection is actually established on. Before saving, validate the connection by selecting the `EVENTS` entry and clicking the **Test** button to verify that the ObjectServer is reachable.
+   The server entry defines the ObjectServer logical name and connection details, while the listener setting controls which network port the OMNIbus connection is actually established on. Before saving, validate the connection by selecting the `AGG_P` entry and clicking the **Test** button to verify that the ObjectServer is reachable.
 
    ![Test connection button](screenshots/2-1-task8-3.png)
 
-   Confirm that the test result returns **"Server available"**, indicating that the client can successfully connect to the ObjectServer. Once validated, save the updated entry by clicking **OK** to save the updates and exit the Servers Editor tool. All OMNIbus client tools can now connect to `EVENTS` by name.
+   Confirm that the test result returns **"Server available"**, indicating that the client can successfully connect to the ObjectServer. Once validated, save the updated entry by clicking **OK** to save the updates and exit the Servers Editor tool. All OMNIbus client tools can now connect to `AGG_P` by name.
 
    Change the remaining entries in the Server Editor from ``omnihost`` to the hostname of your lab server before continuing:
 
@@ -143,7 +143,7 @@ Once the entry is saved, all OMNIbus client tools on the workstation will be abl
 
    ![Event List](screenshots/2-1-task9-1.png)
 
-   - Ensure that `EVENTS` is selected as the server and log in with the following credentials:
+   - Ensure that `AGG_P` is selected as the server and log in with the following credentials:
      - **User**: `root`
      - **Password**: `netcool`
 
@@ -165,9 +165,9 @@ Once the entry is saved, all OMNIbus client tools on the workstation will be abl
 
      ![Import finish](screenshots/2-1-task10-3.png)
 
-   - You will see two windows, one for Process Agents and the other for Object Servers. For now, find your `EVENTS` object server and double-click the entry or right-click and select **Connect As...**
+   - You will see two windows, one for Process Agents and the other for Object Servers. For now, find your `AGG_P` object server and double-click the entry or right-click and select **Connect As...**
 
-     ![Connect to EVENTS](screenshots/2-1-task10-4.png)
+     ![Connect to AGG_P](screenshots/2-1-task10-4.png)
 
    - Enter the administrator credentials `root` and `netcool`. Note that this user is distinct from the operating system `root` user; it is the Netcool administrator user.
 
@@ -202,17 +202,17 @@ Once the entry is saved, all OMNIbus client tools on the workstation will be abl
 The exercise is successful when all of the following are true:
 
 - SSH login to the assigned lab server succeeds.
-- `nco_ping EVENTS` returns `NCO_PING: Server available.` after starting the ObjectServer.
+- `nco_ping AGG_P` returns `NCO_PING: Server available.` after starting the ObjectServer.
 - The JazzSM application server reports `ADMJ3000I: Server server1 open for e-business`.
-- The Windows event list opens and connects to `EVENTS`.
-- `Netcool/OMNIbus Administrator` connects successfully to `EVENTS`.
+- The Windows event list opens and connects to `AGG_P`.
+- `Netcool/OMNIbus Administrator` connects successfully to `AGG_P`.
 - The browser-based Web GUI opens to the landing page for IBM Tivoli Netcool OMNIbus.
 
 #### Expected result
 
 By completing this exercise, you have successfully established a fully functional Netcool/OMNIbus lab environment. You now have:
 
-- **Server-side services** running and operational: the ObjectServer (EVENTS) is actively processing events and the JazzSM application server is hosting the Web GUI.
+- **Server-side services** running and operational: the ObjectServer (AGG_P) is actively processing events and the JazzSM application server is hosting the Web GUI.
 - **Verified connectivity** from multiple client interfaces: SSH terminal access to the lab server, the Windows native event list client, the Netcool/OMNIbus Administrator tool, and the browser-based Web GUI all successfully connect to your ObjectServer.
 - **Confirmed network connectivity** between your workstation and lab server by testing the server connection in the Servers Editor tool.
 - **A foundation for advanced exercises**: this baseline environment is now ready for the rest of Chapter 2, where you will explore event handling, the ObjectServer database, event deduplication, and automation rules.
@@ -329,7 +329,7 @@ In the event list, severity levels are typically shown using distinct colors, al
 12. Next, we will generate some simulated events to see what more realistic externally generated alerts might look like. The Simnet probe is included in a base install of OMNIbus and is used to generate synthetic alert traffic for testing and demonstration purposes. SSH into the lab server if you are not already connected, then start the Simnet probe with the following command:
 
     ```bash
-    $OMNIHOME/probes/nco_p_simnet -server EVENTS &
+    $OMNIHOME/probes/nco_p_simnet -server AGG_P &
     ```
 
     Verify that the Simnet probe continues to run by executing the following command:
@@ -338,10 +338,10 @@ In the event list, severity levels are typically shown using distinct colors, al
     ps -ef | grep simnet
     ```
 
-    The expected output should show the Simnet probe process running and connected to the EVENTS server:
+    The expected output should show the Simnet probe process running and connected to the AGG_P server:
 
     ```text
-    root      434536  432237  1 10:23 pts/1    00:00:00 /opt/IBM/tivoli/netcool/omnibus/platform/linux2x86/probes64/nco_p_simnet -server EVENTS
+    root      434536  432237  1 10:23 pts/1    00:00:00 /opt/IBM/tivoli/netcool/omnibus/platform/linux2x86/probes64/nco_p_simnet -server AGG_P
     ```
 
     Confirm that the process is actively running before proceeding to the next step.

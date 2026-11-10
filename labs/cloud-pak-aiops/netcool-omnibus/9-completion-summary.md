@@ -45,13 +45,13 @@ You extended `nco_pa.conf` to define the syslogd and MTTrapd probes as managed `
 
 ### Section 7 — Cloning an ObjectServer with nco_osreport and nco_dbinit
 
-You exported the `EVENTS` ObjectServer configuration with `nco_osreport -dbinit`, reviewed the six generated SQL files, and deliberately omitted `alertsdata.sql` to create a clean configuration clone. You initialized `EVENTS_BACKUP` with `nco_dbinit`, added a unique communications endpoint to `omni.dat` on port 4101, and regenerated the interfaces file with `nco_igen`. You added `BackupObjectServer` as a `PaPA_AWARE` process in a `Non-Auto` service, restarted Process Agent, and started the clone on demand. You validated that the clone carries the full schema — including `CustomerID`, `CircuitID`, and the `jdoe` user — but contains zero historical alert rows.
+You exported the `AGG_P` ObjectServer configuration with `nco_osreport -dbinit`, reviewed the six generated SQL files, and deliberately omitted `alertsdata.sql` to create a clean configuration clone. You initialized `EVENTS_BACKUP` with `nco_dbinit`, added a unique communications endpoint to `omni.dat` on port 4101, and regenerated the interfaces file with `nco_igen`. You added `BackupObjectServer` as a `PaPA_AWARE` process in a `Non-Auto` service, restarted Process Agent, and started the clone on demand. You validated that the clone carries the full schema — including `CustomerID`, `CircuitID`, and the `jdoe` user — but contains zero historical alert rows.
 
 ---
 
 ### Section 8 — Configuring a Bidirectional ObjectServer Gateway
 
-You confirmed schema compatibility between `EVENTS` and `EVENTS_BACKUP`, created a dedicated gateway configuration directory from the `objserv_bi` template, and configured the gateway properties to connect both ObjectServers as `EVENTS_GATE`. You added explicit mappings for the `CustomerID` and `CircuitID` custom fields to the map file, registered the gateway in `omni.dat`, and started it manually to validate one-direction replication before adding it to Process Agent. You placed the gateway inside the `BackupObjectServerService` with a `BackupObjectServer` dependency, then ran bidirectional validation tests — inserting from each ObjectServer, updating the `CustomerID` field, and confirming that inserts, updates, and deletes all propagated in both directions.
+You confirmed schema compatibility between `AGG_P` and `EVENTS_BACKUP`, created a dedicated gateway configuration directory from the `objserv_bi` template, and configured the gateway properties to connect both ObjectServers as `EVENTS_GATE`. You added explicit mappings for the `CustomerID` and `CircuitID` custom fields to the map file, registered the gateway in `omni.dat`, and started it manually to validate one-direction replication before adding it to Process Agent. You placed the gateway inside the `BackupObjectServerService` with a `BackupObjectServer` dependency, then ran bidirectional validation tests — inserting from each ObjectServer, updating the `CustomerID` field, and confirming that inserts, updates, and deletes all propagated in both directions.
 
 ---
 
@@ -61,7 +61,7 @@ Over the course of the lab you assembled a complete, layered Netcool/OMNIbus env
 
 | Component | Purpose |
 |---|---|
-| `EVENTS` ObjectServer | Primary in-memory alert database; managed by Process Agent in the `Core` service |
+| `AGG_P` ObjectServer | Primary in-memory alert database; managed by Process Agent in the `Core` service |
 | `EVENTS_BACKUP` ObjectServer | Schema-identical clone; started on demand via the `BackupObjectServerService` |
 | `EVENTS_GATE` (bidirectional gateway) | Replicates inserts, updates, and deletes between both ObjectServers in both directions |
 | `nco_p_syslogd` + `syslogd-training.rules` | Custom syslogd probe with full rules pipeline: extraction, switch/case, deduplication, correlation, lookup enrichment, discard, expiry, and selective raw capture |
@@ -79,7 +79,7 @@ Over the course of the lab you assembled a complete, layered Netcool/OMNIbus env
 | `$OMNIHOME/probes/linux2x86/syslogd-training.rules` | Complete syslogd probe rules file with all lab concepts applied |
 | `$OMNIHOME/probes/linux2x86/CUSTOMERS.lookup` | Lookup table mapping router names to customer names and service tiers |
 | `$NC_RULES_HOME/include-snmptrap/ibmTraining/` | NcKL rules, severity lookup, and user include files for the IBM-TRAINING-MIB |
-| `$NCHOME/etc/omni.dat` | Communications endpoints for EVENTS (4100), EVENTS_BACKUP (4101), EVENTS_GATE (4102) |
+| `$NCHOME/etc/omni.dat` | Communications endpoints for AGG_P (4100), EVENTS_BACKUP (4101), EVENTS_GATE (4102) |
 | `$OMNIHOME/etc/nco_pa.conf` | Process Agent configuration managing all five processes across three services |
 | `$OMNIHOME/gates/events_backup/objserv_bi.props` | Gateway instance properties: names, credentials, map file and startup command paths |
 | `$OMNIHOME/gates/events_backup/objserv_bi.map` | Gateway field mapping including standard alert fields and custom `CustomerID` / `CircuitID` columns |
@@ -88,9 +88,9 @@ Over the course of the lab you assembled a complete, layered Netcool/OMNIbus env
 
 ### Where to go next — Netcool/Impact
 
-The OMNIbus environment you have built is the foundation for the Netcool/Impact training that follows. Impact connects to the `EVENTS` ObjectServer you configured here, queries the same `alerts.status` fields you know intimately, and uses the same `CustomerID` and `CircuitID` columns you added. The patterns you practised here translate directly.
+The OMNIbus environment you have built is the foundation for the Netcool/Impact training that follows. Impact connects to the `AGG_P` ObjectServer you configured here, queries the same `alerts.status` fields you know intimately, and uses the same `CustomerID` and `CircuitID` columns you added. The patterns you practised here translate directly.
 
-- The **ObjectServer DSA** in Impact connects to `EVENTS` — the same server you have been managing throughout this lab.
+- The **ObjectServer DSA** in Impact connects to `AGG_P` — the same server you have been managing throughout this lab.
 - Impact policies read and write the same `alerts.status` fields you mapped in probe rules — `Node`, `AlertGroup`, `AlertKey`, `Severity`, `Identifier`, and your custom columns.
 - The **deduplication** and **generic_clear** triggers you studied in Section 3 interact directly with Impact-written events — understanding them makes Impact automation easier to reason about.
 - The **NcKL-enriched SNMP traps** from Section 5 are the kind of real-world events Impact is built to act on — escalate, enrich, correlate, and dispatch.

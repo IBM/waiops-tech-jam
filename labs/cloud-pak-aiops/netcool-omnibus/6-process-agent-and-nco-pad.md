@@ -57,7 +57,7 @@ Confirm the current Process Agent and ObjectServer state before adding the probe
 
 #### Prerequisites
 
-- The `EVENTS` ObjectServer is running under Process Agent.
+- The `AGG_P` ObjectServer is running under Process Agent.
 - The `NCO_PA` Process Agent server is configured.
 - SSH access to the lab server.
 - The `OMNIHOME` environment variable is set.
@@ -75,7 +75,7 @@ Confirm the current Process Agent and ObjectServer state before adding the probe
 
    ```text
    root  1093023  1  1 16:08 ? 00:00:00 .../nco_pad -authenticate NONE
-   root  1093051 1093023 11 16:08 ? 00:00:00 .../nco_objserv -name EVENTS -pa NCO_PA
+   root  1093051 1093023 11 16:08 ? 00:00:00 .../nco_objserv -name AGG_P -pa NCO_PA
    ```
 
 2. Display the current Process Agent status:
@@ -99,7 +99,7 @@ Confirm the current Process Agent and ObjectServer state before adding the probe
 The exercise is successful when:
 
 - `nco_pad` is running.
-- `nco_objserv` is running with the `EVENTS` name and `NCO_PA` Process Agent.
+- `nco_objserv` is running with the `AGG_P` name and `NCO_PA` Process Agent.
 - `nco_pa_status` shows `MasterObjectServer` as `RUNNING` in the `Core` service.
 - The original configuration does not yet contain the probe process or service definitions.
 
@@ -140,7 +140,7 @@ The `Probes` service is a non-master service. Its processes are independent of t
    ```text
    nco_process 'SyslogdProbe'
    {
-           Command '$OMNIHOME/probes/nco_p_syslogd -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules' run as 0
+           Command '$OMNIHOME/probes/nco_p_syslogd -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules' run as 0
            Host            =       'ibm-training-server1.ibmtraining.org'
            Managed         =       True
            RestartMsg      =       '${NAME} running as ${EUID} has been restored on ${HOST}.'
@@ -151,7 +151,7 @@ The `Probes` service is a non-master service. Its processes are independent of t
 
    nco_process 'MttrapdProbe'
    {
-           Command '$OMNIHOME/probes/nco_p_mttrapd -server EVENTS -rulesfile $NC_RULES_HOME/snmptrap.rules' run as 0
+           Command '$OMNIHOME/probes/nco_p_mttrapd -server AGG_P -rulesfile $NC_RULES_HOME/snmptrap.rules' run as 0
            Host            =       'ibm-training-server1.ibmtraining.org'
            Managed         =       True
            RestartMsg      =       '${NAME} running as ${EUID} has been restored on ${HOST}.'

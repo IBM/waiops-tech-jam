@@ -1,6 +1,6 @@
 #!/bin/bash
-# Section 7 – Prerequisites: confirm EVENTS is reachable and EVENTS_BACKUP is not yet running.
+# Section 7 – Prerequisites: confirm AGG_P is reachable and EVENTS_BACKUP is not yet running.
 
-$OMNIHOME/bin/nco_ping EVENTS
+$OMNIHOME/bin/nco_ping AGG_P
 
 ps -efww | grep '[n]co_objserv'

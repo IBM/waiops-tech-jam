@@ -1,1 +1,1 @@
-nco_ping EVENTS
+nco_ping AGG_P

@@ -49,7 +49,7 @@ In this exercise, you will create the enrichment policy in the Impact GUI. By th
 1. SSH into the lab server and add the `ImpactFlag` column to the `alerts.status` table. This column will be used to track whether each alert has been processed by Impact:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    ALTER TABLE alerts.status ADD COLUMN ImpactFlag INTEGER;
    go
    EOF
@@ -60,7 +60,7 @@ In this exercise, you will create the enrichment policy in the Impact GUI. By th
 2. Verify the column was added:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    DESCRIBE alerts.status;
    go
    EOF
@@ -351,7 +351,7 @@ In this exercise, you will insert test events into the ObjectServer and confirm 
 
 5. Type `exit` to return to your root shell, then use the `nco_sql` tool to insert a test alert for `db-tok-01` into the ObjectServer:
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('db-tok-01', 'Enrichment test event', 'enrich-key-01', 'TrainingAlerts', 4, 1, 'db-tok-01:enrich-key-01:TrainingAlerts', 'ImpactLab', 65534);
    go
@@ -376,7 +376,7 @@ In this exercise, you will insert test events into the ObjectServer and confirm 
 
 8. Now test the not-found path. Insert a test alert for a node that does not exist in the inventory:
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('unknownhost99', 'Event from unknown node', 'unknown-key-01', 'TrainingAlerts', 3, 1, 'unknownhost99:unknown-key-01:TrainingAlerts', 'ImpactLab', 65534);
    go

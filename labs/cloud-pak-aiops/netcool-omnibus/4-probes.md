@@ -287,9 +287,9 @@ Debug logging and raw capture are two important diagnostic tools for probe admin
    ```bash
    vi $OMNIHOME/probes/linux2x86/syslogd.props
    ```
-   Note that all properties are commented out initially. Properties are listed and commented out in the properties file for reference, your configured properties should be added to the end of the file, after the section indicating "Add your settings here". Add the following line to the end of the file to direct the probe to connect to the EVENTS object server:
+   Note that all properties are commented out initially. Properties are listed and commented out in the properties file for reference, your configured properties should be added to the end of the file, after the section indicating "Add your settings here". Add the following line to the end of the file to direct the probe to connect to the AGG_P object server:
    ```text
-   Server :       'EVENTS'
+   Server :       'AGG_P'
    ```
    Write and close the file.
 
@@ -302,12 +302,12 @@ Debug logging and raw capture are two important diagnostic tools for probe admin
 
    ```text
    PollServer: 0 # INTEGER (No description available)
-   Server: 'EVENTS' # STRING (No description available)
+   Server: 'AGG_P' # STRING (No description available)
    ServerBackup: '' # STRING (No description available)
    SSLServerCommonName: '' # STRING (No description available)
    ```
 
-   The key line to verify is `Server: 'EVENTS'`, which confirms that your property file change is now active. This validates that the probe will connect to the `EVENTS` ObjectServer when started.
+   The key line to verify is `Server: 'AGG_P'`, which confirms that your property file change is now active. This validates that the probe will connect to the `AGG_P` ObjectServer when started.
 
 5. Start the syslogd probe using the default properties file:
    ```bash
@@ -352,7 +352,7 @@ Debug logging and raw capture are two important diagnostic tools for probe admin
     ```bash
     vi $OMNIHOME/probes/linux2x86/syslogd.props
     ```
-    Scroll to the end of the file and add the following lines. The convention in OMNIbus properties files is to place custom settings after the server entry for EVENTS at the end of the file, as shown below:
+    Scroll to the end of the file and add the following lines. The convention in OMNIbus properties files is to place custom settings after the server entry for AGG_P at the end of the file, as shown below:
     ```text
        
     MessageLevel            : 'debug'
@@ -530,7 +530,7 @@ All OMNIbus probes generate internal self-monitoring events known as ProbeWatch 
     The `nco_p_syntax` utility is a standalone **rules syntax checker** for Netcool probes. It reads a rules file, checks the syntax, connects to the requested ObjectServer to validate the existence of fields referenced in the rules, and reports any errors without having to start the actual probe.
 
     ```bash
-    $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+    $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
     ```
 
     ![Probe syntax checker command](screenshots/4-3-1-task4-1.png)
@@ -587,7 +587,7 @@ All OMNIbus probes generate internal self-monitoring events known as ProbeWatch 
    kill $(pgrep nco_p_syslogd)
    ```
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
    ```bash
    $OMNIHOME/probes/nco_p_syslogd -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules -messagelog $OMNIHOME/log/syslogd-training.log &
@@ -670,7 +670,7 @@ In this lab example alert for our purposes, the convention is that the event **t
    ```
 
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
 
    ```bash
@@ -783,7 +783,7 @@ Here we perform the following extractions and OMNIbus field assignments when we 
    ```
 
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
 
    ```bash
@@ -864,7 +864,7 @@ The `@Identifier` should be composed of fields that together uniquely identify t
    ```
 
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
 
    ```bash
@@ -947,7 +947,7 @@ The `@Identifier` for the resolution event should be distinct from the problem e
    ```
 
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
 
    ```bash
@@ -1060,7 +1060,7 @@ Also note that in this scenario the `@Identifier` includes `@Type`. Unlike `Link
    ```
 
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
 
    ```bash
@@ -1213,7 +1213,7 @@ In this lab, a lookup table maps router names to customer names and service leve
    ```
 
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
 
    ```bash
@@ -1296,7 +1296,7 @@ Common uses for discard in production environments include suppressing keepalive
    ```
 
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
 
    ```bash
@@ -1373,7 +1373,7 @@ This is particularly useful for event types that are known to be transient or se
    ```
 
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
 
    ```bash
@@ -1543,7 +1543,7 @@ This is a valuable production pattern: it gives you automatic capture of novel o
 4. Save the file and run a syntax check:
 
    ```bash
-   $OMNIHOME/probes/nco_p_syntax -server EVENTS -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
+   $OMNIHOME/probes/nco_p_syntax -server AGG_P -rulesfile $OMNIHOME/probes/linux2x86/syslogd-training.rules
    ```
 
 5. Restart the probe:

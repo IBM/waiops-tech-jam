@@ -21,7 +21,7 @@ In this exercise, you will write a policy that pings the node from a down event,
 - The `ImpactFlag` integer field exists in `alerts.status` (added in section 4.1). Verify with:
 
   ```bash
-  $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+  $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
   describe alerts.status;
   go
   EOF
@@ -30,7 +30,7 @@ In this exercise, you will write a policy that pings the node from a down event,
   Confirm `ImpactFlag` appears as an `INTEGER` column. If it is missing, add it:
 
   ```bash
-  $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+  $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
   ALTER TABLE alerts.status ADD COLUMN ImpactFlag INTEGER;
   go
   EOF
@@ -267,7 +267,7 @@ Test events need `EventId = 'PingFailure'` set at insert time so the `Enrichment
 2. Insert a test event for a **reachable** node. Use `localhost` — the Impact server can always ping itself:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID, EventId)
    VALUES ('127.0.0.1', 'Ping verify test — reachable node', 'ping-test-01', 'TrainingAlerts', 3, 1, 'localhost:ping-test-01:TrainingAlerts', 'ImpactLab', 65534, 'PingFailure');
    go
@@ -286,7 +286,7 @@ Test events need `EventId = 'PingFailure'` set at insert time so the `Enrichment
 4. Insert a test event for an **unreachable** node:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID, EventId)
    VALUES ('192.0.2.1', 'Ping verify test — unreachable node', 'ping-test-02', 'TrainingAlerts', 3, 1, '192.0.2.1:ping-test-02:TrainingAlerts', 'ImpactLab', 65534, 'PingFailure');
    go

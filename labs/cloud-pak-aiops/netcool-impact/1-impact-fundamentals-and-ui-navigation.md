@@ -55,7 +55,7 @@ The lab virtual machines include the following pre-installed components relevant
 
 - IBM Netcool/Impact server.
 - The Impact GUI, accessible through a browser on port `17311` at `http://<your-server>:17311/ibm/console`.
-- The OMNIbus ObjectServer (`EVENTS`), which Impact uses as its primary event source.
+- The OMNIbus ObjectServer (`AGG_P`), which Impact uses as its primary event source.
 - A sample SQL database pre-loaded with device inventory and customer records used in the enrichment labs.
 
 You should be comfortable with the OMNIbus ObjectServer from the previous lab chapters. Impact builds directly on that knowledge — the same events, the same alert fields, and the same `alerts.status` table are used throughout the Impact exercises.
@@ -69,7 +69,7 @@ In this exercise, you will log in to the Netcool Impact GUI, explore the main na
 #### Prerequisites
 
 - SSH access to the assigned lab server.
-- The OMNIbus ObjectServer (`EVENTS`) is running (completed in the OMNIbus labs).
+- The OMNIbus ObjectServer (`AGG_P`) is running (completed in the OMNIbus labs).
 - A web browser is available on the workstation.
 
 #### Background
@@ -121,15 +121,15 @@ The Impact GUI is organized around a top navigation bar with tabs. Clicking a ta
    ```
    If any variable prints as blank, return to step 2 and ensure the relevant line was added to `~/.bash_profile` and sourced correctly before continuing.
 
-4. Before starting the Impact Server, verify that the OMNIbus ObjectServer `EVENTS` is running:
+4. Before starting the Impact Server, verify that the OMNIbus ObjectServer `AGG_P` is running:
    ```bash
-   $OMNIHOME/bin/nco_ping EVENTS
+   $OMNIHOME/bin/nco_ping AGG_P
    ```
    Confirm that the output includes: `NCO_PING: Server available.`
 
    If the ObjectServer is not running, start it before proceeding:
    ```bash
-   $OMNIHOME/bin/nco_objserv -name EVENTS &
+   $OMNIHOME/bin/nco_objserv -name AGG_P &
    ```
    Then re-run `nco_ping` to confirm it is available before continuing.
 

@@ -121,7 +121,7 @@ In this exercise, you will write a policy that queries the `TAKEACTION` table, l
   **1. Add the column to the ObjectServer:**
 
   ```bash
-  $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+  $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
   ALTER TABLE alerts.status ADD COLUMN NotifyFlag INTEGER;
   go
   EOF
@@ -288,7 +288,7 @@ In this exercise, you will create an OMNIbusEventReader service that triggers `A
 5. Insert a severity 5 test alert for `router-lon-01` — this should match rule 1 and trigger the email action:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('router-lon-01', 'Critical interface failure', 'eval-test-01', 'TrainingAlerts', 5, 1, 'router-lon-01:eval-test-01:TrainingAlerts', 'ImpactLab', 65534);
    go
@@ -298,7 +298,7 @@ In this exercise, you will create an OMNIbusEventReader service that triggers `A
 6. Insert a severity 3 test alert for `switch-nyc-01` — this should match rule 2 and set `SuppressEscl = 4`:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('switch-nyc-01', 'Minor link degradation', 'eval-test-02', 'TrainingAlerts', 3, 1, 'switch-nyc-01:eval-test-02:TrainingAlerts', 'ImpactLab', 65534);
    go
@@ -308,7 +308,7 @@ In this exercise, you will create an OMNIbusEventReader service that triggers `A
 7. Insert a severity 3 test alert for `server-fra-01` — this should not match any rule and no action should be taken:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
    INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
    VALUES ('server-fra-01', 'Disk usage warning', 'eval-test-03', 'TrainingAlerts', 3, 1, 'server-fra-01:eval-test-03:TrainingAlerts', 'ImpactLab', 65534);
    go
@@ -350,7 +350,7 @@ In this exercise, you will create an OMNIbusEventReader service that triggers `A
 12. Insert a fresh severity 4 test alert for `server-fra-01` — this should now match rule 3 and trigger the email action. Note the distinct `AlertKey` and `Identifier` (`eval-test-04`) to ensure this arrives as a new event rather than deduplicating against the earlier severity 3 insert:
 
     ```bash
-    $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool << 'EOF'
+    $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool << 'EOF'
     INSERT INTO alerts.status (Node, Summary, AlertKey, AlertGroup, Severity, Type, Identifier, Manager, OwnerUID)
     VALUES ('server-fra-01', 'High disk utilisation', 'eval-test-04', 'TrainingAlerts', 4, 1, 'server-fra-01:eval-test-04:TrainingAlerts', 'ImpactLab', 65534);
     go

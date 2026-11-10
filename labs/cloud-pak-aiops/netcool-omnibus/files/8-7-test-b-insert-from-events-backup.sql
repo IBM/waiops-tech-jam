@@ -16,7 +16,7 @@ VALUES
 (
   'LAB-GW-<initials>-B',
   'gateway-lab',
-  'EVENTS_BACKUP to EVENTS replication test',
+  'EVENTS_BACKUP to AGG_P replication test',
   1,
   'GatewayLab',
   'LabGateway',
@@ -24,7 +24,7 @@ VALUES
 );
 go
 
--- After inserting, connect to EVENTS and run this SELECT to verify replication:
+-- After inserting, connect to AGG_P and run this SELECT to verify replication:
 SELECT Identifier, Node, Summary, Severity, AlertGroup, Manager, CustomerID
 FROM alerts.status
 WHERE Identifier = 'LAB-GW-<initials>-B';

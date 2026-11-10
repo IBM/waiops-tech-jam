@@ -23,7 +23,7 @@ Note that the `root` user referred to throughout this lab is the **ObjectServer*
 
 #### Tasks
 
-1. Launch the Netcool/OMNIbus Administration tool on the Windows workstation and log in to the `EVENTS` ObjectServer as `root` with password `netcool`.
+1. Launch the Netcool/OMNIbus Administration tool on the Windows workstation and log in to the `AGG_P` ObjectServer as `root` with password `netcool`.
 
     ![Netcool/OMNIbus Administrator Users window screenshot](screenshots/3-1-task1-1.png)
 
@@ -131,10 +131,10 @@ Note that the `root` user referred to throughout this lab is the **ObjectServer*
 18. Log out of the Web GUI by using the logout control in the lower-left corner, then log back in again as the `netcool` user to confirm that access persists after a fresh login.
 19. Users can also be added and managed from the command line by using the nco_sql utility. This utility provides an interactive SQL interface to the OMNIbus ObjectServer, allowing administrators to query and modify ObjectServer data and configuration, including users, groups, roles, and permissions. The nco_sql utility can also be used for automating object server administrative and query tasks in scripts as well.
 
-    Open a terminal on the workstation or lab server and connect to the EVENTS ObjectServer as the root administrator account:
+    Open a terminal on the workstation or lab server and connect to the AGG_P ObjectServer as the root administrator account:
 
       ```bash
-      $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool
+      $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool
       ```
 
 20. At the `nco_sql` prompt (**1>**), inspect the ObjectServer security tables to confirm their structure and column names:
@@ -159,7 +159,7 @@ Note that the `root` user referred to throughout this lab is the **ObjectServer*
       select * from security.groups;
       go
       ```
-      Here you can see the actual group records currently defined in the EVENTS ObjectServer. The result contains 13 groups. The first nine are standard OMNIbus groups created when the ObjectServer database is initialized, while the remaining groups—such as Netcool_OMNIbus_User, Netcool_OMNIbus_Admin, Network_Manager_IP_Admin, and Network_Manager_User—were added by installed products, integrations, or local configuration. IBM documents the standard groups, including Normal, Probe, Gateway, WebHA, ISQLWrite, and ISQL. 
+      Here you can see the actual group records currently defined in the AGG_P ObjectServer. The result contains 13 groups. The first nine are standard OMNIbus groups created when the ObjectServer database is initialized, while the remaining groups—such as Netcool_OMNIbus_User, Netcool_OMNIbus_Admin, Network_Manager_IP_Admin, and Network_Manager_User—were added by installed products, integrations, or local configuration. IBM documents the standard groups, including Normal, Probe, Gateway, WebHA, ISQLWrite, and ISQL. 
 
       It is important to note that this table does not show which users belong to each group or what permissions the group grants. Membership is stored in the security.group_members table, which maps UserID values to GroupID values. IBM identifies security.groups as the table containing the group name and ID, and security.group_members as the mapping table between users and groups.
 
@@ -250,7 +250,7 @@ Each row in the `alerts.status` table represents one active alert. The schema is
 
 #### Tasks
 
-1. Launch Netcool/OMNIbus Administrator on the Windows workstation and log in to the `EVENTS` ObjectServer as `root` with password `netcool`.
+1. Launch Netcool/OMNIbus Administrator on the Windows workstation and log in to the `AGG_P` ObjectServer as `root` with password `netcool`.
 2. In Netcool/OMNIbus Administrator, open the **System** menu drawer on the left, and select the **Databases** icon. In the database list, open the **alerts** database by clicking on the "plus" sign (`+`), then select the **status** table to open the definition of the `alerts.status` table:
 
    ![alerts.status table definition screenshot](screenshots/3-2-task2-1.png)
@@ -295,7 +295,7 @@ Each row in the `alerts.status` table represents one active alert. The schema is
 8. As with adding users, you can also use the command line equivalent tool to add custom colums. Open a terminal on your Netcool/OMNIbus lab server and run the following command:
 
    ```bash
-   $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool
+   $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool
    ```
 
    At the `nco_sql` prompt, run the following commands to describe the `alerts.status` schema to inspect the current the column definitions and their data types:
@@ -359,7 +359,7 @@ Trigger groups are used to organize related triggers so they can be enabled or d
 
 #### Tasks
 
-1. Launch `Netcool/OMNIbus Administrator` on the Windows workstation and log in to the `EVENTS` ObjectServer as `root` with password `netcool`.
+1. Launch `Netcool/OMNIbus Administrator` on the Windows workstation and log in to the `AGG_P` ObjectServer as `root` with password `netcool`.
 2. In Netcool/OMNIbus Administrator, open the **Automation** drawer and select **Triggers**:
 
    ![Netcool/OMNIbus Administrator triggers list screenshot](screenshots/3-3-task2-1.png)
@@ -602,7 +602,7 @@ The **Editable** flag indicates whether the property can be changed at runtime t
 
 The **Immediate** flag indicates whether a change to the property takes effect right away or only after the ObjectServer is restarted. Properties that are not immediate can still be changed, but the new value will not take effect until after a restart. Properties that are immediate take effect as soon as they are changed. For example, changing the ObjectServer MessageLevel from ```warn``` to ```debug``` takes effect immediately, while changing a property such as MessageLog (the ObjectServer log file path) typically requires a restart before the new location is used.
 
-Properties can be set in two ways. The ObjectServer properties file — typically named `EVENTS.props` and located in the `/opt/IBM/tivoli/netcool/omnibus/etc/` directory — is only read at startup and sets the initial values for all properties. Properties can also be modified at runtime through `nco_config` or `Netcool/OMNIbus Administrator` for properties that are marked as editable, with the caveat that non-immediate changes will not take effect until the next restart.
+Properties can be set in two ways. The ObjectServer properties file — typically named `AGG_P.props` and located in the `/opt/IBM/tivoli/netcool/omnibus/etc/` directory — is only read at startup and sets the initial values for all properties. Properties can also be modified at runtime through `nco_config` or `Netcool/OMNIbus Administrator` for properties that are marked as editable, with the caveat that non-immediate changes will not take effect until the next restart.
 
 The ObjectServer includes an embedded HTTP server and REST API that can be used to query alert data programmatically. This interface is controlled by the `NHttpd.*` and `NRestOS.*` ObjectServer properties. By default, `NRestOS.Enable` is set to `false` and `NHttpd.ListeningPort` is set to `0`, meaning the REST interface is disabled. Enabling it requires setting `NRestOS.Enable` to `true`, `NHttpd.EnableHTTP` to `true`, and `NHttpd.ListeningPort` to a valid port number, then restarting the ObjectServer.
 
@@ -610,7 +610,7 @@ To illustrate managing OMNIbus ObjectServer properties, we will enable the REST 
 
 #### Tasks
 
-1. Launch `Netcool/OMNIbus Administrator` on the Windows workstation and log in to the `EVENTS` ObjectServer as `root` with password `netcool`.
+1. Launch `Netcool/OMNIbus Administrator` on the Windows workstation and log in to the `AGG_P` ObjectServer as `root` with password `netcool`.
 2. In Netcool/OMNIbus Administrator, open the **System** drawer item on the left menue and select **Properties**.
 
     ![ObjectServer properties list](screenshots/3-4-task2-1.png)
@@ -629,9 +629,9 @@ To illustrate managing OMNIbus ObjectServer properties, we will enable the REST 
 11. Note that none of these properties are marked as **Immediate**, so the changes will not take effect until the ObjectServer is restarted. Connect to the lab server by using SSH and stop the ObjectServer, and run the `nco_sql` tool:
 
     ```bash
-    $OMNIHOME/bin/nco_sql -server EVENTS -user root -password netcool
+    $OMNIHOME/bin/nco_sql -server AGG_P -user root -password netcool
     ```
-    Once connected to the EVENTS ObjectServer `nco_sql` at the `1>` prompt, issue the following commands to gracefully shut down the ObjectServer:
+    Once connected to the AGG_P ObjectServer `nco_sql` at the `1>` prompt, issue the following commands to gracefully shut down the ObjectServer:
     ```sql
     1> alter system shutdown
     2> go
@@ -659,11 +659,11 @@ To illustrate managing OMNIbus ObjectServer properties, we will enable the REST 
     ```
 13. Verify that the ObjectServer is accepting connections with the following command:
     ```bash
-    $OMNIHOME/bin/nco_ping EVENTS
+    $OMNIHOME/bin/nco_ping AGG_P
     ```
 
     Confirm that the output includes: `NCO_PING: Server available.`
-14. Return to `Netcool/OMNIbus Administrator` on your Windows workstation. Note that the connection to `EVENTS` will have dropped during the restart — reconnect by logging in again as `root` with password `netcool`. Navigate to **System → Properties** and confirm that `NRestOS.Enable`, `NHttpd.EnableHTTP`, and `NHttpd.ListeningPort` now show the updated values.
+14. Return to `Netcool/OMNIbus Administrator` on your Windows workstation. Note that the connection to `AGG_P` will have dropped during the restart — reconnect by logging in again as `root` with password `netcool`. Navigate to **System → Properties** and confirm that `NRestOS.Enable`, `NHttpd.EnableHTTP`, and `NHttpd.ListeningPort` now show the updated values.
 16. From the SSH session on the lab server, run the following curl command to test the REST interface. `curl` is a command-line tool used to send HTTP requests — the `-u` flag supplies the username and password for basic authentication:
     ```bash
     curl -u root:netcool http://localhost:8888/objectserver/restapi/alerts/status
@@ -677,7 +677,7 @@ The exercise is successful when all of the following are true:
 - You can navigate to **System → Properties** in Netcool/OMNIbus Administrator and describe the purpose of the **Editable** and **Immediate** columns.
 - You can identify `NRestOS.Enable`, `NHttpd.EnableHTTP`, `NHttpd.ListeningPort`, and `NHttpd.BasicAuth` in the properties list and explain what each one controls.
 - The properties `NRestOS.Enable`, `NHttpd.EnableHTTP`, `NHttpd.ListeningPort`, and `NHttpd.BasicAuth` are updated to `true`, `true`, `8888`, and `true` respectively.
-- The ObjectServer restarts successfully and `nco_ping EVENTS` returns `NCO_PING: Server available.`
+- The ObjectServer restarts successfully and `nco_ping AGG_P` returns `NCO_PING: Server available.`
 - The curl command against `http://localhost:8888/objectserver/restapi/alerts/status` returns a valid JSON response containing alert data.
 
 #### Expected result

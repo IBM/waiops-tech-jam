@@ -5,7 +5,7 @@ sidebar_position: 11
 
 In a fresh Impact installation, the only Impact user is `impactadmin`, which is created during the installation process. All other users must be explicitly granted access before they can do anything in the Impact GUI.
 
-Impact authenticates users against a configured user repository. In this lab, Impact is configured to authenticate against the OMNIbus EVENTS ObjectServer. This means any user defined in the ObjectServer — including `ncoadmin`, which you have been using throughout the lab to log into the OMNIbus Web GUI and manipulate events — can present valid credentials at the Impact login page. However, being able to authenticate is not the same as having access: a user who can log in but has no Impact role mappings is presented with a completely blank workspace.
+Impact authenticates users against a configured user repository. In this lab, Impact is configured to authenticate against the OMNIbus AGG_P ObjectServer. This means any user defined in the ObjectServer — including `ncoadmin`, which you have been using throughout the lab to log into the OMNIbus Web GUI and manipulate events — can present valid credentials at the Impact login page. However, being able to authenticate is not the same as having access: a user who can log in but has no Impact role mappings is presented with a completely blank workspace.
 
 > **Note:** ObjectServer-based authentication is used in this lab for simplicity. Impact also supports authentication via LDAP and via Keycloak/OIDC for environments with centralized identity management.
 
@@ -25,7 +25,7 @@ In this exercise, you will log in to the Impact GUI as `ncoadmin` and observe wh
 
 #### Background
 
-`ncoadmin` is an ObjectServer user that you have used throughout this lab to log into the OMNIbus Web GUI. Because Impact in this lab is configured to authenticate against the EVENTS ObjectServer, `ncoadmin` can also log into the Impact GUI — but authentication alone grants no access. The user has no Impact role mappings, so Impact has nothing to display.
+`ncoadmin` is an ObjectServer user that you have used throughout this lab to log into the OMNIbus Web GUI. Because Impact in this lab is configured to authenticate against the AGG_P ObjectServer, `ncoadmin` can also log into the Impact GUI — but authentication alone grants no access. The user has no Impact role mappings, so Impact has nothing to display.
 
 This two-layer model — authenticate first, then authorize via role mappings — is standard Impact behavior. It means that adding a new user to Impact does not require creating a separate Impact account; you simply map an existing authenticated identity to the appropriate roles.
 
