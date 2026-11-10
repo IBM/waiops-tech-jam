@@ -1,4 +1,4 @@
--- Section 7.6 – Run inside nco_sql connected to EVENTS_BACKUP.
+-- Section 7.6 – Run inside nco_sql connected to AGG_B.
 -- Confirm the cloned schema and the jdoe user exist.
 
 DESCRIBE alerts.status;

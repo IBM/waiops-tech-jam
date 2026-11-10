@@ -6,4 +6,4 @@ cp $NCHOME/etc/omni.dat \
 
 $NCHOME/bin/nco_igen
 
-grep -A4 -B2 EVENTS_BACKUP $NCHOME/etc/interfaces.linux2x86
+grep -A4 -B2 AGG_B $NCHOME/etc/interfaces.linux2x86

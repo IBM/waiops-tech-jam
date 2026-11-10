@@ -1,6 +1,6 @@
--- Section 8.7 Test B – Run inside nco_sql connected to EVENTS_BACKUP.
+-- Section 8.7 Test B – Run inside nco_sql connected to AGG_B.
 -- Replace <initials> with your own initials (e.g. LAB-GW-JD-B).
--- Connect: $OMNIHOME/bin/nco_sql -server EVENTS_BACKUP -user root -password 'netcool'
+-- Connect: $OMNIHOME/bin/nco_sql -server AGG_B -user root -password 'netcool'
 
 INSERT INTO alerts.status
 (
@@ -16,11 +16,11 @@ VALUES
 (
   'LAB-GW-<initials>-B',
   'gateway-lab',
-  'EVENTS_BACKUP to AGG_P replication test',
+  'AGG_B to AGG_P replication test',
   1,
   'GatewayLab',
   'LabGateway',
-  'custom value from EVENTS_BACKUP'
+  'custom value from AGG_B'
 );
 go
 

@@ -5,29 +5,29 @@ sidebar_position: 8
 
 ## Objective
 
-Configure a bidirectional ObjectServer Gateway between `AGG_P` and `EVENTS_BACKUP`, verify that required custom alert fields are mapped, place the gateway under Process Agent control, and validate alert replication in both directions.
+Configure a bidirectional ObjectServer Gateway between `AGG_P` and `AGG_B`, verify that required custom alert fields are mapped, place the gateway under Process Agent control, and validate alert replication in both directions.
 
 At the end of this lab, you will be able to:
 
 - Explain the role of a bidirectional ObjectServer Gateway.
 - Confirm that both ObjectServers have compatible schemas.
-- Configure the gateway to connect `AGG_P` and `EVENTS_BACKUP`.
+- Configure the gateway to connect `AGG_P` and `AGG_B`.
 - Verify that custom `alerts.status` fields are mapped.
 - Add the gateway to Process Agent as a separately managed service.
 - Validate inserts and updates in both replication directions.
 
-> **Scope:** This lab uses `AGG_P` and `EVENTS_BACKUP` on the same host. It demonstrates ObjectServer replication and gateway process control. It does not provide host-level high availability. Probe peer-to-peer high availability is intentionally out of scope for this lab.
+> **Scope:** This lab uses `AGG_P` and `AGG_B` on the same host. It demonstrates ObjectServer replication and gateway process control. It does not provide host-level high availability. Probe peer-to-peer high availability is intentionally out of scope for this lab.
 
 ---
 
 ## Scenario
 
-The previous lab created `EVENTS_BACKUP` as a separate ObjectServer. In this lab, you will configure a bidirectional ObjectServer Gateway so alerts and selected updates can flow between the two ObjectServers.
+The previous lab created `AGG_B` as a separate ObjectServer. In this lab, you will configure a bidirectional ObjectServer Gateway so alerts and selected updates can flow between the two ObjectServers.
 
 ```text
                     Bidirectional ObjectServer Gateway
 
-       AGG_P  <------------------------------------->  EVENTS_BACKUP
+       AGG_P  <------------------------------------->  AGG_B
          |                                                     |
          |                                                     |
    Primary training                                  Backup/training
@@ -71,7 +71,7 @@ alerts.journal
 Before beginning, verify:
 
 - `AGG_P` is running.
-- `EVENTS_BACKUP` is running.
+- `AGG_B` is running.
 - Both ObjectServers are reachable through `omni.dat` and the generated interfaces file.
 - The ObjectServer Gateway package is installed.
 - You have authorized ObjectServer administrator credentials.
@@ -82,7 +82,7 @@ Confirm connectivity:
 
 ```sh
 $OMNIHOME/bin/nco_ping AGG_P
-$OMNIHOME/bin/nco_ping EVENTS_BACKUP
+$OMNIHOME/bin/nco_ping AGG_B
 ```
 
 Confirm the gateway installation and identify the supplied templates and executable:
@@ -99,7 +99,7 @@ find $OMNIHOME/gates -type f \( -name 'nco_g_objserv*' -o -name '*objserv*.props
 
 ## Objective
 
-Confirm that `AGG_P` and `EVENTS_BACKUP` have compatible `alerts.status` schemas before configuring replication.
+Confirm that `AGG_P` and `AGG_B` have compatible `alerts.status` schemas before configuring replication.
 
 A bidirectional gateway can replicate a custom field only when the field exists on both ObjectServers and has a compatible definition. Compare field names, data types, and string lengths.
 
@@ -111,18 +111,18 @@ A bidirectional gateway can replicate a custom field only when the field exists 
      > /tmp/AGG_P-schema-raw.txt
    ```
 
-2. Export the `EVENTS_BACKUP` schema description to a raw output file:
+2. Export the `AGG_B` schema description to a raw output file:
 
    ```sh
    printf 'DESCRIBE alerts.status;\ngo\n' \
-     | $OMNIHOME/bin/nco_sql -server EVENTS_BACKUP -user root -password 'netcool' \
-     > /tmp/EVENTS_BACKUP-schema-raw.txt
+     | $OMNIHOME/bin/nco_sql -server AGG_B -user root -password 'netcool' \
+     > /tmp/AGG_B-schema-raw.txt
    ```
 
 3. Identify the schema differences:
 
    ```sh
-   diff -u /tmp/AGG_P-schema-raw.txt /tmp/EVENTS_BACKUP-schema-raw.txt
+   diff -u /tmp/AGG_P-schema-raw.txt /tmp/AGG_B-schema-raw.txt
    ```
 
   If the `diff` command produces no output, the schema descriptions already match. If it produces output, review the differences in field names, data types, and string lengths, especially for the custom fields used by this lab.
@@ -135,7 +135,7 @@ Before continuing, confirm that every required custom field:
 - Uses the same or compatible type.
 - Uses the same or sufficient string length.
 
-If a field is missing from `EVENTS_BACKUP`, add it through the approved schema-management procedure before continuing. Do not attempt to solve a schema mismatch only by editing the gateway map.
+If a field is missing from `AGG_B`, add it through the approved schema-management procedure before continuing. Do not attempt to solve a schema mismatch only by editing the gateway map.
 
 ---
 
@@ -175,7 +175,7 @@ You should have a dedicated gateway configuration area that is separate from the
 
 ## Objective
 
-Configure a dedicated bidirectional gateway instance that connects `AGG_P` and `EVENTS_BACKUP`.
+Configure a dedicated bidirectional gateway instance that connects `AGG_P` and `AGG_B`.
 
 1. Open the copied properties file:
 
@@ -188,11 +188,11 @@ Configure a dedicated bidirectional gateway instance that connects `AGG_P` and `
 2. At the bottom of the properties file, configure the source and destination ObjectServer connection settings, as well as our custom mapping and startup command file locations:
 
    ```text
-   Name                                    : 'EVENTS_GATE'
+   Name                                    : 'AGG_GATE'
    Gate.ObjectServerA.Server               : 'AGG_P'
    Gate.ObjectServerA.Username             : 'root'
    Gate.ObjectServerA.Password             : 'netcool'
-   Gate.ObjectServerB.Server               : 'EVENTS_BACKUP'
+   Gate.ObjectServerB.Server               : 'AGG_B'
    Gate.ObjectServerB.Username             : 'root'
    Gate.ObjectServerB.Password             : 'netcool'
    Gate.MapFile                            : '$OMNIHOME/gates/events_backup/objserv_bi.map'
@@ -273,7 +273,7 @@ In this section we will confirm that the map definition includes the required st
 For every custom field required by the lab, verify:
 
 - The field exists in `AGG_P`.
-- The field exists in `EVENTS_BACKUP`.
+- The field exists in `AGG_B`.
 - The field is present in the gateway's `alerts.status` map.
 - The mapping preserves the field in both replication directions.
 
@@ -300,16 +300,16 @@ Before we start the gateway, we must add an entry to the $NCHOME/etc/omni.dat co
    vi $NCHOME/etc/omni.dat
    ```
 
-3. Add an entry for the gateway configured as `EVENTS_GATE` in Section 8.3. Use the actual fully qualified hostname and an unused port assigned for this lab. For example:
+3. Add an entry for the gateway configured as `AGG_GATE` in Section 8.3. Use the actual fully qualified hostname and an unused port assigned for this lab. For example:
 
    ```text
-   [EVENTS_GATE]
+   [AGG_GATE]
    {
          Primary: <your-fqdn> 4102
    }
    ```
 
-   **Use an unused port and the actual fully qualified hostname for your lab environment.** Do not reuse the port assigned to `AGG_P` or `EVENTS_BACKUP`.
+   **Use an unused port and the actual fully qualified hostname for your lab environment.** Do not reuse the port assigned to `AGG_P` or `AGG_B`.
 
 4. Regenerate the UNIX interfaces file:
 
@@ -320,7 +320,7 @@ Before we start the gateway, we must add an entry to the $NCHOME/etc/omni.dat co
 5. Confirm that the gateway is present in the generated interfaces:
 
    ```sh
-   grep -A4 -B2 EVENTS_GATE $NCHOME/etc/interfaces.linux2x86
+   grep -A4 -B2 AGG_GATE $NCHOME/etc/interfaces.linux2x86
    ```
 
 6. Start the gateway with the command:
@@ -336,7 +336,7 @@ Before we start the gateway, we must add an entry to the $NCHOME/etc/omni.dat co
 
    (C) Copyright IBM Corp. 1994, 2012
 
-   Server 'EVENTS_GATE' initialised - entering RUN state.
+   Server 'AGG_GATE' initialised - entering RUN state.
    ```
 
 8. We are going to test synchronization using the syslogd probe and the `logger` command. First, check whether the syslogd probe is running:
@@ -400,10 +400,10 @@ Before we start the gateway, we must add an entry to the $NCHOME/etc/omni.dat co
     quit
     ```
 
-12. Connect to `EVENTS_BACKUP` and confirm that the same `LinkDown` event replicated:
+12. Connect to `AGG_B` and confirm that the same `LinkDown` event replicated:
 
     ```sh
-    $OMNIHOME/bin/nco_sql -server EVENTS_BACKUP -user root -password 'netcool'
+    $OMNIHOME/bin/nco_sql -server AGG_B -user root -password 'netcool'
     ```
 
     At the `nco_sql` prompt, run the same query:
@@ -437,7 +437,7 @@ The exercise is successful when:
 
 - The syslogd probe is running and accepts the `logger` event.
 - The `LinkDown` event appears in `AGG_P`.
-- The same event appears in `EVENTS_BACKUP`.
+- The same event appears in `AGG_B`.
 - The expected standard and custom field mappings are present in the replicated event.
 
 ---
@@ -489,7 +489,7 @@ As we did earlier with the backup ObjectServer and the probes, we will now add t
    }
    ```
 
-   The gateway depends on `BackupObjectServer` because it must connect to `EVENTS_BACKUP` when it starts. Declaring the dependency lets Process Agent start the backup ObjectServer before the gateway and manage the gateway in the same operational service.
+   The gateway depends on `BackupObjectServer` because it must connect to `AGG_B` when it starts. Declaring the dependency lets Process Agent start the backup ObjectServer before the gateway and manage the gateway in the same operational service.
 
 5. Save the configuration.
 
@@ -589,11 +589,11 @@ The `BackupObjectServerService` should show both `BackupObjectServer` and `Event
 
 ## Objective
 
-Prove that alert inserts and custom-field updates replicate from `AGG_P` to `EVENTS_BACKUP` and from `EVENTS_BACKUP` to `AGG_P`.
+Prove that alert inserts and custom-field updates replicate from `AGG_P` to `AGG_B` and from `AGG_B` to `AGG_P`.
 
 Use a unique identifier for each test.
 
-## Test A: AGG_P to EVENTS_BACKUP
+## Test A: AGG_P to AGG_B
 
 1. Connect to `AGG_P`:
 
@@ -621,7 +621,7 @@ Use a unique identifier for each test.
    (
      'LAB-GW-<initials>-A',
      'gateway-lab',
-     'AGG_P to EVENTS_BACKUP replication test',
+     'AGG_P to AGG_B replication test',
      1,
      'GatewayLab',
      'LabGateway',
@@ -630,7 +630,7 @@ Use a unique identifier for each test.
    go
    ```
 
-3. Connect to `EVENTS_BACKUP` and verify the event and custom field:
+3. Connect to `AGG_B` and verify the event and custom field:
 
     ```sql<gateway-binary>
     SELECT Identifier, Node, Summary, Severity, AlertGroup, Manager, CustomerID
@@ -648,11 +648,11 @@ Use a unique identifier for each test.
     go
     ```
 
-5. On `EVENTS_BACKUP`, verify the updated custom field value.
+5. On `AGG_B`, verify the updated custom field value.
 
-## Test B: EVENTS_BACKUP to AGG_P
+## Test B: AGG_B to AGG_P
 
-1. Connect to `EVENTS_BACKUP`.
+1. Connect to `AGG_B`.
 
 2. Create a second controlled test event:
 
@@ -671,11 +671,11 @@ Use a unique identifier for each test.
    (
      'LAB-GW-<initials>-B',
      'gateway-lab',
-     'EVENTS_BACKUP to AGG_P replication test',
+     'AGG_B to AGG_P replication test',
      1,
      'GatewayLab',
      'LabGateway',
-     'custom value from EVENTS_BACKUP'
+     'custom value from AGG_B'
    );
    go
    ```
@@ -689,14 +689,14 @@ Use a unique identifier for each test.
     go
     ```
 
-4. On `EVENTS_BACKUP`, update `CustomerID` and confirm the updated value appears on `AGG_P`.
+4. On `AGG_B`, update `CustomerID` and confirm the updated value appears on `AGG_P`.
 
 ## Validation
 
 The lab is successful when:
 
-- An event inserted in `AGG_P` appears in `EVENTS_BACKUP`.
-- An event inserted in `EVENTS_BACKUP` appears in `AGG_P`.
+- An event inserted in `AGG_P` appears in `AGG_B`.
+- An event inserted in `AGG_B` appears in `AGG_P`.
 - Updates to the selected custom field replicate in both directions.
 - The gateway process remains `RUNNING` in `nco_pa_status`.
 - The gateway log contains no repeated mapping, connection, or replication errors.
@@ -723,7 +723,7 @@ Confirm that neither test identifier remains on either ObjectServer.
 
 ## Validation
 
-The test alerts are removed from both `AGG_P` and `EVENTS_BACKUP`.
+The test alerts are removed from both `AGG_P` and `AGG_B`.
 
 ---
 
@@ -731,7 +731,7 @@ The test alerts are removed from both `AGG_P` and `EVENTS_BACKUP`.
 
 In this lab, you:
 
-- Verified that `AGG_P` and `EVENTS_BACKUP` have compatible alert schemas.
+- Verified that `AGG_P` and `AGG_B` have compatible alert schemas.
 - Created a dedicated configuration area for a bidirectional gateway.
 - Configured gateway properties to connect both ObjectServers.
 - Verified mappings for standard and custom `alerts.status` fields.

@@ -12,9 +12,9 @@ nco_pa_start -service BackupObjectServerService
 
 nco_pa_status
 
-$OMNIHOME/bin/nco_ping EVENTS_BACKUP
+$OMNIHOME/bin/nco_ping AGG_B
 
 $OMNIHOME/bin/nco_sql \
-  -server EVENTS_BACKUP \
+  -server AGG_B \
   -user root \
   -password 'netcool'

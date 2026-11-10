@@ -1,4 +1,4 @@
--- Section 8.8 – Run inside nco_sql connected to either AGG_P or EVENTS_BACKUP.
+-- Section 8.8 – Run inside nco_sql connected to either AGG_P or AGG_B.
 -- Deletion replicates to the other ObjectServer via the gateway.
 -- Replace <initials> with your own initials.
 -- Connect: $OMNIHOME/bin/nco_sql -server AGG_P -user root -password 'netcool'

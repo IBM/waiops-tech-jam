@@ -6,7 +6,7 @@ printf 'DESCRIBE alerts.status;\ngo\n' \
   > /tmp/AGG_P-schema-raw.txt
 
 printf 'DESCRIBE alerts.status;\ngo\n' \
-  | $OMNIHOME/bin/nco_sql -server EVENTS_BACKUP -user root -password 'netcool' \
-  > /tmp/EVENTS_BACKUP-schema-raw.txt
+  | $OMNIHOME/bin/nco_sql -server AGG_B -user root -password 'netcool' \
+  > /tmp/AGG_B-schema-raw.txt
 
-diff -u /tmp/AGG_P-schema-raw.txt /tmp/EVENTS_BACKUP-schema-raw.txt
+diff -u /tmp/AGG_P-schema-raw.txt /tmp/AGG_B-schema-raw.txt

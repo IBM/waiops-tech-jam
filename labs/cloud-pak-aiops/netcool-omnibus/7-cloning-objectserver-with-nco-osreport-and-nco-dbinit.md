@@ -5,7 +5,7 @@ sidebar_position: 7
 
 ## Objective
 
-Create a separate ObjectServer named `EVENTS_BACKUP` by exporting the configuration of the existing `AGG_P` ObjectServer and using that export to initialize a new instance.
+Create a separate ObjectServer named `AGG_B` by exporting the configuration of the existing `AGG_P` ObjectServer and using that export to initialize a new instance.
 
 By the end of this lab, you will be able to:
 
@@ -17,7 +17,7 @@ By the end of this lab, you will be able to:
 
 ## Scenario
 
-`AGG_P` is the existing ObjectServer used by the lab environment. You will create `EVENTS_BACKUP` as a separate ObjectServer on the same host.
+`AGG_P` is the existing ObjectServer used by the lab environment. You will create `AGG_B` as a separate ObjectServer on the same host.
 
 The clone is intended for controlled testing and training. It will contain the source ObjectServer’s schema and selected configuration, but it will **not** include historical event rows from `alerts.status`.
 
@@ -30,7 +30,7 @@ AGG_P
   │
   └─ nco_dbinit
        │
-       └─ EVENTS_BACKUP
+       └─ AGG_B
             ├─ Separate ObjectServer database
             ├─ Separate omni.dat endpoint
             ├─ Separate Process Agent process
@@ -63,8 +63,8 @@ Before beginning, confirm:
 - You have authorized ObjectServer administrator credentials.
 - `OMNIHOME` is defined.
 - You can write to a temporary working directory.
-- `EVENTS_BACKUP` is not already configured or running.
-- You know the fully qualified host name and an unused port for `EVENTS_BACKUP`.
+- `AGG_B` is not already configured or running.
+- You know the fully qualified host name and an unused port for `AGG_B`.
 
 Confirm the source ObjectServer is reachable:
 
@@ -72,7 +72,7 @@ Confirm the source ObjectServer is reachable:
 $OMNIHOME/bin/nco_ping AGG_P
 ```
 
-Confirm that `EVENTS_BACKUP` is not already running:
+Confirm that `AGG_B` is not already running:
 
 ```sh
 ps -efww | grep '[n]co_objserv'
@@ -134,7 +134,7 @@ Do not continue if `nco_osreport` reports an authentication, communications, per
 
 Choose the configuration that belongs in a clean training/test ObjectServer.
 
-For this lab, initialize `EVENTS_BACKUP` with:
+For this lab, initialize `AGG_B` with:
 
 ```text
 system.sql
@@ -180,17 +180,17 @@ You should be able to explain the difference between:
 
 ---
 
-# 7.3 Initialize EVENTS_BACKUP
+# 7.3 Initialize AGG_B
 
 ## Objective
 
-Create a new ObjectServer named `EVENTS_BACKUP` from the selected export files.
+Create a new ObjectServer named `AGG_B` from the selected export files.
 
 From the export directory, run:
 
 ```sh
 $OMNIHOME/bin/nco_dbinit \
-  -server EVENTS_BACKUP \
+  -server AGG_B \
   -systemfile system.sql \
   -applicationfile application.sql \
   -desktopfile desktop.sql \
@@ -209,7 +209,7 @@ Do not add the `-alertsdata` or `-alertsdatafile` options. This lab intentionall
 Confirm that a properties file was created for the new ObjectServer:
 
 ```sh
-ls -l $OMNIHOME/etc/EVENTS_BACKUP.props
+ls -l $OMNIHOME/etc/AGG_B.props
 ```
 
 > Note: nco_osreport -dbinit does not clone the ObjectServer .props file, and that is intentional. It exports database-resident ObjectServer configuration into SQL, while an ObjectServer properties file is a local, file-based runtime configuration artifact.
@@ -222,9 +222,9 @@ ls -l $OMNIHOME/etc/EVENTS_BACKUP.props
 
 ## Objective
 
-Create a unique client communications endpoint for `EVENTS_BACKUP`.
+Create a unique client communications endpoint for `AGG_B`.
 
-Every ObjectServer requires its own name, host, and port. `EVENTS_BACKUP` must not reuse the communications port already assigned to `AGG_P`. 
+Every ObjectServer requires its own name, host, and port. `AGG_B` must not reuse the communications port already assigned to `AGG_P`. 
 
 `omni.dat` is the Netcool/OMNIbus connections data file. It maps component names—such as **ObjectServers**, **Process Agents**, **gateways**, and **proxies** to the hostnames and ports where those components listen.
 
@@ -245,12 +245,12 @@ cp $NCHOME/etc/omni.dat \
 vi $NCHOME/etc/omni.dat
 ```
 
-3. Add an entry for `EVENTS_BACKUP`.
+3. Add an entry for `AGG_B`.
 
 Use the hostname and an unused port. For example:
 
 ```text
-[EVENTS_BACKUP]
+[AGG_B]
 {
         Primary: <your-fqdn> 4101
 }
@@ -265,7 +265,7 @@ $NCHOME/bin/nco_igen
 5. Confirm the new ObjectServer is present in the generated interfaces:
 
 ```sh
-grep -A4 -B2 EVENTS_BACKUP $NCHOME/etc/interfaces.linux2x86
+grep -A4 -B2 AGG_B $NCHOME/etc/interfaces.linux2x86
 ```
 
 ## Validation
@@ -273,7 +273,7 @@ grep -A4 -B2 EVENTS_BACKUP $NCHOME/etc/interfaces.linux2x86
 The new ObjectServer name should resolve in the communications configuration, even though the ObjectServer is not yet running:
 
 ```sh
-grep -n EVENTS_BACKUP $NCHOME/etc/omni.dat
+grep -n AGG_B $NCHOME/etc/omni.dat
 ```
 
 ---
@@ -282,7 +282,7 @@ grep -n EVENTS_BACKUP $NCHOME/etc/omni.dat
 
 ## Objective
 
-Allow Process Agent to start and monitor `EVENTS_BACKUP` independently of `AGG_P`.
+Allow Process Agent to start and monitor `AGG_B` independently of `AGG_P`.
 
 The new ObjectServer is PA-aware. Its process definition must include `-pa NCO_PA` and use `ProcessType = PaPA_AWARE`.
 
@@ -306,7 +306,7 @@ The new ObjectServer is PA-aware. Its process definition must include `-pa NCO_P
     ```conf
     nco_process 'BackupObjectServer'
     {
-        Command '$OMNIHOME/bin/nco_objserv -name EVENTS_BACKUP -pa NCO_PA' run as 0
+        Command '$OMNIHOME/bin/nco_objserv -name AGG_B -pa NCO_PA' run as 0
         Host            =       '<YOUR-FQDN>'
         Managed         =       True
         RestartMsg      =       '${NAME} running as ${EUID} has been restored on ${HOST}.'
@@ -335,7 +335,7 @@ The new ObjectServer is PA-aware. Its process definition must include `-pa NCO_P
 Before restarting Process Agent, confirm:
 
 - The existing `MasterObjectServer` definition still uses `-name AGG_P`.
-- `BackupObjectServer` uses `-name EVENTS_BACKUP`.
+- `BackupObjectServer` uses `-name AGG_B`.
 - The clone has its own service.
 - The clone is `PaPA_AWARE`.
 - The service uses `ServiceStart = Non-Auto`.
@@ -346,7 +346,7 @@ Before restarting Process Agent, confirm:
 
 ## Objective
 
-Start `EVENTS_BACKUP`, confirm that it is running under Process Agent, and validate its schema and clean alert table.
+Start `AGG_B`, confirm that it is running under Process Agent, and validate its schema and clean alert table.
 
 1. Shut down and restart the Process Agent so it reads the updated configuration:
 
@@ -386,12 +386,12 @@ Start `EVENTS_BACKUP`, confirm that it is running under Process Agent, and valid
 4. Confirm that the new ObjectServer responds and connect to it with `nco_sql`:
 
     ```sh
-    $OMNIHOME/bin/nco_ping EVENTS_BACKUP
+    $OMNIHOME/bin/nco_ping AGG_B
     ```
 
     ```sh
     $OMNIHOME/bin/nco_sql \
-    -server EVENTS_BACKUP \
+    -server AGG_B \
     -user root \
     -password 'netcool'
     ```
@@ -425,8 +425,8 @@ Start `EVENTS_BACKUP`, confirm that it is running under Process Agent, and valid
 The lab is successful when:
 
 - `AGG_P` remains running.
-- `EVENTS_BACKUP` is independently running under Process Agent.
-- `nco_ping EVENTS_BACKUP` succeeds.
+- `AGG_B` is independently running under Process Agent.
+- `nco_ping AGG_B` succeeds.
 - The clone contains the expected schema and custom fields.
 - `alerts.status` contains no source historical events.
 
@@ -438,9 +438,9 @@ In this lab, you:
 
 - Exported the `AGG_P` ObjectServer configuration with `nco_osreport -dbinit`.
 - Selected configuration SQL files suitable for a clean training clone.
-- Initialized `EVENTS_BACKUP` with `nco_dbinit`.
+- Initialized `AGG_B` with `nco_dbinit`.
 - Deliberately omitted `alertsdata.sql`.
-- Added a unique `EVENTS_BACKUP` communications endpoint.
+- Added a unique `AGG_B` communications endpoint.
 - Added the clone as an independently controlled PA-aware ObjectServer process.
 - Started and validated the clone without affecting `AGG_P`.
 
