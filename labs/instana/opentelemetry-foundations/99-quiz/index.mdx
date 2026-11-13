@@ -1,0 +1,123 @@
+---
+unlisted: true
+title: Quiz
+description: Check your understanding of OpenTelemetry foundations and collectors
+sidebar_label: Quiz
+sidebar_position: 99
+---
+
+import MultiChoiceQuestion from "@site/src/components/multiChoice/multiChoice"
+
+# Quiz
+
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+  }}>
+
+<MultiChoiceQuestion
+  questionNumber="1"
+  question="An OpenTelemetry Collector has been installed on a host that runs a Java app with no OpenTelemetry SDK configured. What traces will the Collector produce for that application?"
+  answers={[
+    "Full traces of every request, because the Collector discovers processes automatically",
+    "None. Something inside the application process must create the spans",
+    "Only traces for HTTP requests",
+  ]}
+  correctAnswer="None. Something inside the application process must create the spans"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="2"
+  question="Which resource attribute does Instana use to determine which service a span belongs to?"
+  answers={["host.name", "service.name", "telemetry.sdk.name", "http.route"]}
+  correctAnswer="service.name"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="3"
+  question="When you started the otelcol-contrib service with the package's default configuration on bluebox, it failed with 'bind: address already in use' on port 4317. Why?"
+  answers={[
+    "The Collector needs root privileges to open ports",
+    "The Instana agent already listens for OTLP on 4317 and 4318",
+    "Port 4317 is reserved for IDOT",
+    "The package was installed twice",
+  ]}
+  correctAnswer="The Instana agent already listens for OTLP on 4317 and 4318"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="4"
+  question="A receiver is defined in the receivers section but is not listed in any pipeline. What happens?"
+  answers={[
+    "It runs and sends its data to every exporter",
+    "Nothing. Components only run when a pipeline uses them",
+    "The Collector refuses to start",
+  ]}
+  correctAnswer="Nothing. Components only run when a pipeline uses them"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="5"
+  question="Which receiver is available in IDOT but not in otelcol-contrib?"
+  answers={["snmp", "syslog", "shell", "file_log"]}
+  correctAnswer="shell"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="6"
+  question="A Collector sends OTLP directly to the Instana backend instead of to an agent. What must it add?"
+  answers={[
+    "Nothing, the backend accepts anonymous data",
+    "The x-instana-key header with the agent key, and a host identity such as host.id or the x-instana-host header",
+    "A user API token in the URL",
+  ]}
+  correctAnswer="The x-instana-key header with the agent key, and a host identity such as host.id or the x-instana-host header"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="7"
+  question="The 'otelcol-contrib validate' command reports that a configuration is valid, but no data reaches Instana. What does a successful validate prove?"
+  answers={[
+    "That the destination is reachable and accepting data",
+    "Only that the configuration is well formed and uses components that exist in this binary",
+    "That the data has been exported at least once",
+  ]}
+  correctAnswer="Only that the configuration is well formed and uses components that exist in this binary"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="8"
+  question="The Collector's own metrics show otelcol_receiver_accepted_spans rising and otelcol_exporter_queue_size above zero, but otelcol_exporter_sent_spans stays at zero. Where is the problem?"
+  answers={[
+    "The application is not producing spans",
+    "Between the exporter and its destination, for example a wrong address or an unavailable endpoint",
+    "In the Instana UI time range",
+  ]}
+  correctAnswer="Between the exporter and its destination, for example a wrong address or an unavailable endpoint"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="9"
+  question="Why did the lab configurations add resource with action: 'insert' rather than 'upsert'?"
+  answers={[
+    "insert is faster than upsert",
+    "insert adds the attribute only when it is missing, so it never overwrites a value the sender set",
+    "upsert is not supported by IDOT",
+  ]}
+  correctAnswer="insert adds the attribute only when it is missing, so it never overwrites a value the sender set"
+/>
+
+<MultiChoiceQuestion
+  questionNumber="10"
+  question="Why must the IDOT configuration file that contains shell receiver commands be protected?"
+  answers={[
+    "Because it contains the Instana agent key",
+    "Because the commands run with the collector's privileges, so whoever can edit the file can run commands on the host",
+    "Because Instana rejects configurations that are world readable",
+  ]}
+  correctAnswer="Because the commands run with the collector's privileges, so whoever can edit the file can run commands on the host"
+/>
+
+</div>

@@ -1,0 +1,130 @@
+.card {
+  margin-block: 0.5rem;
+  padding: 1.5rem;
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+}
+
+.question {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  width: 100%;
+  margin-bottom: 1.25rem;
+  padding: 0;
+}
+
+.questionNumber {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--ifm-color-primary);
+  font-size: 0.8rem;
+  font-weight: var(--ifm-font-weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.questionText {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: var(--ifm-font-weight-semibold);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.answer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--ifm-global-radius);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.answer:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.answer:has(:focus-visible) {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 3px;
+}
+
+.radio {
+  flex: 0 0 auto;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0.1875rem 0 0;
+  accent-color: var(--ifm-color-primary);
+  cursor: pointer;
+}
+
+.correct {
+  color: var(--ifm-color-success-contrast-foreground);
+  background: var(--ifm-color-success-contrast-background);
+}
+
+.incorrect {
+  color: var(--ifm-color-danger-contrast-foreground);
+  background: var(--ifm-color-danger-contrast-background);
+}
+
+.answer.correct:hover {
+  background: var(--ifm-color-success-contrast-background);
+}
+
+.answer.incorrect:hover {
+  background: var(--ifm-color-danger-contrast-background);
+}
+
+.correct .radio {
+  accent-color: var(--ifm-color-success-dark);
+}
+
+.incorrect .radio {
+  accent-color: var(--ifm-color-danger-dark);
+}
+
+.feedback {
+  min-height: 3rem;
+  margin-top: 1rem;
+}
+
+.feedbackMessage {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--ifm-global-radius);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.feedbackIcon {
+  flex-shrink: 0;
+  margin-top: 0.03125rem;
+}
+
+@media (max-width: 576px) {
+  .card {
+    padding: 1rem;
+  }
+
+  .answer {
+    padding: 0.75rem;
+  }
+}
