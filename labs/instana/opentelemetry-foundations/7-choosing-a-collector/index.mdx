@@ -1,0 +1,52 @@
+---
+title: 7. Choosing a collector
+description: When to use IDOT, otelcol-contrib, both, or neither, and what fleet management adds
+sidebar_position: 7
+---
+
+# Choosing a collector
+
+We have just installed both `IDOT` and `otelcol-contrib` to the one _bluebox_ host, so we know they can run together but do they need to? When should you pick one over the other? This short lesson provides a comparison to help you choose.
+
+## Side by side
+
+| Consideration | IDOT | otelcol-contrib |
+| --- | --- | --- |
+| Support | IBM | OpenTelemetry community |
+| Security patches | [IBM maintains and publishes releases](https://www.ibm.com/docs/en/instana-observability/standard/latest?topic=troubleshooting-support-strategy-idot). | Community releases |
+| Components | Curated list, fewer components | Many components for many use cases. |
+| IBM only receivers | `shell`, `apiscraper`, `s390` |  |
+| Contrib-only examples |  | `file_storage`, `kafka`, `redis`, `snmp`, `tls_check` and more |
+| Default configuration | Instana read out of the box | Generic config that needs customisation |
+| Runs as | `root` (by default, can be changed) | `otelcol-contrib` |
+| Remote management from Instana | Yes | Not through Instana fleet management |
+
+## Decision flow
+
+
+```mermaid
+flowchart TD
+    q1{"Is a Collector needed at all?"}
+    q2{"Does IDOT contain all the components you need?"}
+    q3{"Can Contrib provide the missing components<br/>as a separate Collector?"}
+    q4{"Does Contrib alone contain everything you need?"}
+
+    sdk["Send OTLP directly to the<br/>Instana agent or backend"]
+    idot["Use IDOT"]
+    both["Use IDOT and Contrib together"]
+    contrib["Use Contrib"]
+    custom["Build a custom distribution<br/>with OpenTelemetry Collector Builder"]
+
+    q1 -- No --> sdk
+    q1 -- Yes --> q2
+    q2 -- Yes --> idot
+    q2 -- No --> q3
+    q3 -- Yes --> both
+    q3 -- No --> q4
+    q4 -- Yes --> contrib
+    q4 -- No --> custom
+
+    click custom href "https://opentelemetry.io/docs/collector/extend/ocb/" "Open Collector Builder documentation" _blank
+```
+
+See [OpenTelemetry Collector Builder](https://opentelemetry.io/docs/collector/extend/ocb/) for building custom distributions.
